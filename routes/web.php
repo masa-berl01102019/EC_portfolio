@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/', function () {
+// どのURLにアクセスが来てもwelcome.blade.phpファイルが表示されるように以下の設定に変更します。
+Route::get('/{any}', function () {
     return view('welcome');
-});
+})->where('any','.*');
 
 Auth::routes();
 
