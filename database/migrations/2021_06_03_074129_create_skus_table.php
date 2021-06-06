@@ -14,8 +14,16 @@ class CreateSkusTable extends Migration
     public function up()
     {
         Schema::create('skus', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->increments('id');
+            $table->unsignedInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('items');
+            $table->unsignedInteger('size_id');
+            $table->foreign('size_id')->references('id')->on('sizes');
+            $table->unsignedInteger('color_id');
+            $table->foreign('color_id')->references('id')->on('colors');
+            $table->integer('quantity');
+            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
+            $table->softDeletes(); // 論理削除
         });
     }
 

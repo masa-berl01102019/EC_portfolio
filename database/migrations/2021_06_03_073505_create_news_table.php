@@ -14,8 +14,18 @@ class CreateNewsTable extends Migration
     public function up()
     {
         Schema::create('news', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->increments('id');
+            $table->unsignedInteger('brand_id'); // 外部キー
+            $table->foreign('brand_id')->references('id')->on('brands'); // 外部キー
+            $table->unsignedInteger('admin_id'); // 外部キー
+            $table->foreign('admin_id')->references('id')->on('admins'); // 外部キー
+            $table->string('title',255);
+            $table->mediumText('body');
+            $table->string('thumbnail',255);
+            $table->boolean('is_published'); // 0: 未公開　1: 公開
+            $table->dateTime('posted_at')->nullable();
+            $table->dateTime('modified_at')->nullable();
+            $table->softDeletes(); // 論理削除
         });
     }
 
