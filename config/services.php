@@ -29,5 +29,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    // 商品デモデータ作成用
+    'yahoo' => [
+        'app_id' => env('YAHOO_APP_ID'),
+    ],
 
 ];

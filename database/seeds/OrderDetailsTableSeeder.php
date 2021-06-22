@@ -17,7 +17,7 @@ class OrderDetailsTableSeeder extends Seeder
 
         DB::table('order_details')->truncate(); // テーブルごと削除して再構築
 
-        factory(OrderDetail::class, 3000)->create();
+//        factory(OrderDetail::class, 3000)->create();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }

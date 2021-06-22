@@ -18,17 +18,17 @@ class BrandsTableSeeder extends Seeder
 
         DB::table('brands')->insert([
             [
-                'brand_name' => 'Brand1',
+                'brand_name' => 'UNITED ARROWS',
                 'created_at' => '2010-04-01 00:00:00',
                 'updated_at' => '2010-04-01 00:00:00',
             ],
             [
-                'brand_name' => 'Brand2',
+                'brand_name' => 'UNITED TOKYO',
                 'created_at' => '2010-04-01 00:00:00',
                 'updated_at' => '2010-04-01 00:00:00',
             ],
             [
-                'brand_name' => 'Brand3',
+                'brand_name' => 'nano・universe',
                 'created_at' => '2010-04-01 00:00:00',
                 'updated_at' => '2010-04-01 00:00:00',
             ]

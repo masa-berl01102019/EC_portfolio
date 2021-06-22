@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->truncate(); // テーブルごと削除して再構築
 
-        factory(User::class, 50)->create();
+        factory(User::class, 1000)->create();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }
