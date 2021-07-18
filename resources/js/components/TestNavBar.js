@@ -8,11 +8,11 @@ function TestNavBar() {
                 <Link to="/">
                     <li className="ml-2">Top</li>
                 </Link>
-                <Link to="/about">
-                    <li className="ml-2">About</li>
+                <Link to="/admin/users">
+                    <li className="ml-2">User 一覧</li>
                 </Link>
-                <Link to="/user">
-                    <li className="ml-2">User</li>
+                <Link to="/admin/users/create">
+                    <li className="ml-2">User 新規作成</li>
                 </Link>
             </ul>
         </nav>

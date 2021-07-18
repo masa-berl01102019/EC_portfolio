@@ -10,7 +10,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-{{--    <script src="{{ asset('js/app.js') }}" defer></script>--}}
+    {{--  コンポーネント呼び出す為のapp.jsの呼び出し  --}}
+    <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -74,6 +75,8 @@
 
         <main class="py-4">
             @yield('content')
+            {{--       コンポーネントの呼び出し     --}}
+            <div id="test"></div>
         </main>
     </div>
 </body>

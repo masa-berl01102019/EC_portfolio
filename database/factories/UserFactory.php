@@ -49,6 +49,7 @@ $factory->define(User::class, function (Faker $faker) {
         'tel' => $faker->phoneNumber,
         'email' => $faker->unique()->safeEmail,
         'password' => Hash::make('abc12345'),
+        'is_received' => $faker->numberBetween($min = 0, $max = 1),
 //        'email_verified_at' => now(), メールアドレス認証してからログインする方式にするか検討中
         'remember_token' => Str::random(10),
         'created_at' => $created_at,

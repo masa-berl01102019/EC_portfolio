@@ -36,6 +36,7 @@ class CreateUsersTable extends Migration
             $table->string('tel', 15);
             $table->string('email',100)->unique();
             $table->string('password', 100);
+            $table->boolean('is_received'); // 0: 受取NG　1: 受取OK
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps(); // dateTime型の作成日時と更新日時を生成
