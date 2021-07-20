@@ -25,10 +25,19 @@ class UserController extends Controller
         $this->middleware('auth:admin');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // 一旦１０人分返しておく
-        $users = User::all()->take(10);
+        $query = User::query();
+
+        if($request->input('perPage')) {
+            $per_page = $request->input('perPage');
+            //　取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
+            $users = $query->orderBy('created_at','desc')->paginate((int)$per_page);
+        } else {
+            // デフォルトの表示件数　１０件
+            $users = $query->orderBy('created_at','desc')->paginate(10);
+        }
+
         // レスポンスを返却
         return response()->json(['users' => $users]);
     }
