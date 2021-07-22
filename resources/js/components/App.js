@@ -7,7 +7,6 @@ import ErrorBoundary from './ErrorBoundary';
 import UserIndex from './UserIndex';
 import TestNavBar from './TestNavBar';
 import TestTop from './TestTop';
-import UserShow from "./UserShow";
 import UserEdit from "./UserEdit";
 import UserCreate from "./UserCreate";
 
@@ -22,7 +21,6 @@ function App() {
                         <Route path="/" exact component={TestTop} />
                         <Route path="/admin/users" exact component={UserIndex} />
                         <Route path="/admin/users/create" exact component={UserCreate} />
-                        <Route path="/admin/users/:id" exact component={UserShow} />
                         <Route path="/admin/users/:id/edit" exact component={UserEdit} />
                     </Switch>
                 </div>

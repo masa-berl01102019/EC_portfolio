@@ -34,7 +34,7 @@ class UserController extends Controller
             //　取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
             $users = $query->orderBy('created_at','desc')->paginate((int)$per_page);
         } else {
-            // デフォルトの表示件数　１０件
+            // 取得件数が未設定の場合はデフォルトの表示件数　１０件
             $users = $query->orderBy('created_at','desc')->paginate(10);
         }
 
@@ -82,12 +82,6 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function show(User $user)
-    {
-        // レスポンスを返却
-        return response()->json(['user' => $user]);
-    }
-
     public function edit(User $user)
     {
         // レスポンスを返却
@@ -104,14 +98,18 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request)
     {
-         // 引数にモデルを指定することで渡ってきたIDに該当のインスタンスを生成して受け取れるので、そのまま論理削除
-         $user->delete();
-         // ユーザーを再取得
-         $users = User::all()->take(10);
-         // レスポンスを返却
-         return response()->json(['users' => $users]);
+        // 複数のIDが渡ってくるので全て取得する
+        $users = $request->all();
+
+        foreach($users as $user) {
+            // インスタンスを生成して削除
+            $user = User::find($user);
+            $user->delete();
+        }
+        // レスポンスを返却
+        return response()->json(['delete' => true]);
     }
 
 }
