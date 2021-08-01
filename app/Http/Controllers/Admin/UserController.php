@@ -29,13 +29,40 @@ class UserController extends Controller
     {
         $query = User::query();
 
-        if($request->input('perPage')) {
-            $per_page = $request->input('perPage');
+        // 名前順->生年月日順->作成日順->更新日順の優先順位でソートされる仕組み
+
+        // 名前でソート
+        if(!is_null($request->input('last_name_kana'))) {
+            $sort = $request->input('last_name_kana');
+            $query->orderBy('last_name_kana', $sort);
+        }
+
+        // 生年月日でソート　
+        if(!is_null($request->input('birthday'))) {
+            $sort = $request->input('birthday');
+            $query->orderBy('birthday', $sort);
+        }
+
+        // 作成日でソート
+        if(!is_null($request->input('created_at'))) {
+            $sort = $request->input('created_at');
+            $query->orderBy('created_at', $sort);
+        }
+
+        // 更新日でソート
+        if(!is_null($request->input('updated_at'))) {
+            $sort = $request->input('updated_at');
+            $query->orderBy('updated_at', $sort);
+        }
+
+        // 1ページ当たり件数の指定の有無を確認
+        if($request->input('per_page')) {
+            $per_page = $request->input('per_page');
             //　取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
-            $users = $query->orderBy('created_at','desc')->paginate((int)$per_page);
+            $users = $query->paginate((int)$per_page);
         } else {
             // 取得件数が未設定の場合はデフォルトの表示件数　１０件
-            $users = $query->orderBy('created_at','desc')->paginate(10);
+            $users = $query->paginate(10);
         }
 
         // レスポンスを返却
