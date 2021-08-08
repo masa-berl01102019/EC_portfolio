@@ -1,10 +1,10 @@
-import {useEffect, useReducer, useState, useContext} from "react";
+import {useEffect, useReducer, useState} from "react";
 import axios from "axios";
-import {shareParams} from '../App';
 import {useCreateUrl} from "./useCreateUrl";
 import {useDownloadCsv} from "./useDownloadCsv";
 import useSetErrorMsg from "./useSetErrorMsg";
 import {dataFetchReducer} from "../reducer/dataFetchReducer";
+import { useParamsContext } from '../context/ParamsContext';
 
 const useFetchApiData = (initialUrl, initialMethod, initialData) => {
 
@@ -17,7 +17,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
     // useReducerでreducer関数と初期値をセット
     const [state, dispatch] = useReducer(dataFetchReducer, initialState);
     // useContextで管理してるURLパラメータを呼び出し
-    const {params} = useContext(shareParams);
+    const {params} = useParamsContext();
     // API接続時の状態遷移(error/loading)と取得したデータと直前にコールしたAPIのURLを管理
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
@@ -60,7 +60,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
                 // ローディングアイコンストップ
                 setIsLoading(false);
             };
-
+            console.log(useCreateUrl(initialUrl, params), params);
             // 条件に応じて非同期通信の呼び出しの制御
             if(state.method === 'get' && !initialUrl.includes('edit') && !initialUrl.includes('create') && state.url !== useCreateUrl(initialUrl, params)) {
                 console.log('パラメータ変更検知');
@@ -83,7 +83,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
         }
         // クリーンアップ関数を返す
         return () => { unmounted = true; };
-    },[state.url,state.data, params]); // API接続時に渡すurlとデータとurlパラメータ変更時に再度実行
+    },[state.url, state.data, params]); // API接続時に渡すurlとデータとurlパラメータ変更時に再度実行
 
     // 画面描画に必要なエラー/ローディングアイコンの状態とアクションを呼び出すためのdispatch関数を返り値として返却
     return [{isLoading, errorMessage, data}, dispatch];
