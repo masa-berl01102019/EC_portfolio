@@ -11,9 +11,7 @@ import {useCreateUrl} from "./hooks/useCreateUrl";
 import ShowErrorMsg from "./ShowErrorMsg";
 import { useParamsContext } from './context/ParamsContext';
 
-// TODO 性別とDM送付の出力形式を変更
-// TODO 誕生日/郵便番号/電話番号の入出力の仕方を決める
-// TODO CSV出力内容修正　＊性別等がDBと同じで数値で出力されてるので要修正
+// TODO 削除後に再取得のAPIを叩く仕様をやめるか要検討
 // 注意事項　API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function UserIndex() {
@@ -41,7 +39,7 @@ function UserIndex() {
     const users = data.users? data.users.data: null;
 
     useEffect(() => {
-        // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐 // TODO デリート後に再取得のAPIを叩く仕様をやめるか要検討
+        // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐
         if(data.delete && data.delete === true) {
             // ページネーションの設定を保持して再度読み込み
             dispatch({ type: 'READ', url: useCreateUrl(baseUrl, params) });
@@ -86,7 +84,7 @@ function UserIndex() {
                                 <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={3} checked={params.filter.gender !== undefined ? params.filter.gender.includes(3): false} />設定しない</label>
                             </div>
                             <div>
-                                <span style={{'marginRight': '20px'}}>DM登録の有無</span>
+                                <span style={{'marginRight': '20px'}}>DM登録状況</span>
                                 <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={0} checked={params.filter.is_received !== undefined ? params.filter.is_received.includes(0): false} />DM未登録</label>
                                 <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={1} checked={params.filter.is_received !== undefined ? params.filter.is_received.includes(1): false} />DM登録</label>
                             </div>
@@ -94,9 +92,9 @@ function UserIndex() {
                                 <span style={{'marginRight': '20px'}}>期間指定</span>
                                 <select name='field' ref={dateRangeField} value={params.filter.dateRange !== undefined ? Object.keys(params.filter.dateRange)[0]: undefined} onChange={handleFilterDateRange}>
                                     <option value={'clear'}>フィールド選択</option>
-                                    <option value={'birthday'}>誕生日</option>
-                                    <option value={'created_at'}>作成日</option>
-                                    <option value={'updated_at'}>更新日</option>
+                                    <option value={'birthday'}>生年月日</option>
+                                    <option value={'created_at'}>作成日時</option>
+                                    <option value={'updated_at'}>更新日時</option>
                                 </select>
                                 <input type='text' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} />　〜　
                                 <input type='text' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} />
@@ -118,14 +116,14 @@ function UserIndex() {
                                     <option value={'asc'}>昇順</option>
                                 </select>
                             </label>
-                            <label>作成日
+                            <label>作成日時
                                 <select name='created_at' value={params.sort && params.sort.created_at} onChange={handleSort}>
                                     <option value={''}>未選択</option>
                                     <option value={'desc'}>降順</option>
                                     <option value={'asc'}>昇順</option>
                                 </select>
                             </label>
-                            <label>更新日
+                            <label>更新日時
                                 <select name='updated_at' value={params.sort && params.sort.updated_at} onChange={handleSort}>
                                     <option value={''}>未選択</option>
                                     <option value={'desc'}>降順</option>
@@ -145,13 +143,13 @@ function UserIndex() {
                                 <th>生年月日</th>
                                 <th>郵便番号</th>
                                 <th>住所</th>
-                                <th>配送先郵便番号</th>
-                                <th>配送先住所</th>
+                                <th>配送先-郵便番号</th>
+                                <th>配送先-住所</th>
                                 <th>電話番号</th>
                                 <th>メールアドレス</th>
-                                <th>DM送付有無</th>
-                                <th>作成日</th>
-                                <th>更新日</th>
+                                <th>DM登録</th>
+                                <th>作成日時</th>
+                                <th>更新日時</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -165,17 +163,17 @@ function UserIndex() {
                                         <td><input type='checkbox' onChange={handleCheck} value={user.id} checked={ checklist.includes(user.id) } /></td>
                                         <td>{user.id}</td>
                                         <td><Link to={`/admin/users/${user.id}/edit`}>編集</Link></td>
-                                        <td>{user.last_name}{user.first_name}</td>
-                                        <td>{user.last_name_kana}{user.first_name_kana}</td>
-                                        <td>{user.gender}</td>
+                                        <td>{user.last_name} {user.first_name}</td>
+                                        <td>{user.last_name_kana} {user.first_name_kana}</td>
+                                        <td>{user.ac_gender}</td>
                                         <td>{user.birthday}</td>
-                                        <td>〒{user.post_code}</td>
-                                        <td>{user.prefecture}{user.municipality}{user.street_name}{user.street_number}{user.building}</td>
-                                        <td>〒{user.delivery_post_code}</td>
-                                        <td>{user.delivery_prefecture}{user.delivery_municipality}{user.delivery_street_name}{user.delivery_street_number}{user.delivery_building}</td>
+                                        <td>{user.ac_post_code}</td>
+                                        <td>{user.prefecture}{user.municipality}{user.street_name}{user.street_number} {user.building}</td>
+                                        <td>{user.ac_delivery_post_code}</td>
+                                        <td>{user.delivery_prefecture}{user.delivery_municipality}{user.delivery_street_name}{user.delivery_street_number} {user.delivery_building}</td>
                                         <td>{user.tel}</td>
                                         <td>{user.email}</td>
-                                        <td>{user.is_received}</td>
+                                        <td>{user.ac_is_received}</td>
                                         <td>{user.created_at}</td>
                                         <td>{user.updated_at}</td>
                                     </tr>

@@ -5,14 +5,12 @@ import {CircularProgress} from "@material-ui/core";
 import useInputForm from "./hooks/useInputForm";
 import useToggle from "./hooks/useToggle";
 import ShowErrorMsg from "./ShowErrorMsg";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import jaLocale from "date-fns/locale/ja";
 
 // TODO フロント側でのバリデーション設定
-// TODO placeholderを設定
-// TODO バック側で正規表現でのバリデーションルール作成　＊カナetc
-// TODO 誕生日/郵便番号/電話番号の入出力の仕方を決める
-// TODO ボタンの制御(連打対策)
 // TODO 登録後に一覧へリダイレクトして成功のメッセージを表示
-// TODO preventDefault()しないとなぜかPOST後に'/api/admin/users/create?formData'の形でリクエストが飛んで落ちてしまう。。原因を調べる
 
 function UserEdit(props) {
 
@@ -54,6 +52,15 @@ function UserEdit(props) {
     // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値　}の形で返却されるので変数に代入しておく
     const user = data.user;
 
+    const handleDateChange = (date, name) => {
+        // date型に合わせてフォーマット
+        let formatted_date = date !== null ? date.getFullYear() + "-" + ("00" + (date.getMonth() + 1)).slice(-2) + "-" + ("00" + date.getDate()).slice(-2) : null;
+        setFormData({
+            ...formData,
+            [name]: formatted_date
+        });
+    };
+
     useEffect(() => {
         // 非同期で通信されるので初回読み込み時にuserが入ってこない場合があるので条件分岐してあげる
         if(user) {
@@ -61,7 +68,7 @@ function UserEdit(props) {
             setFormData({...user});
         }
         if(data.success === true) {
-            // 処理が完了した時点でリダイレクトの処理　＊TODO ルーティングをあとで変更
+            // 処理が完了した時点でリダイレクトの処理
             location.href = '/admin/home';
             // redirect先で成功したメッセージを表示必要
         }
@@ -79,12 +86,13 @@ function UserEdit(props) {
                         e.preventDefault();
                         dispatch({type: 'UPDATE', form: formData, url: `/api/admin/users/${props.match.params.id}` });
                     }}>
-                        <div>お名前</div>
+                        <div>氏名</div>
                         <div>
-                            <input type='text' name='last_name' onBlur={handleFormData} defaultValue={formData.last_name} />
-                            <input type='text' name='first_name' onBlur={handleFormData} defaultValue={formData.first_name} />
+                            <input type='text' name='last_name' onBlur={handleFormData} defaultValue={formData.last_name} placeholder='田中'/>
+                            <input type='text' name='first_name' onBlur={handleFormData} defaultValue={formData.first_name} placeholder='太郎
+                            '/>
                         </div>
-                        <div>お名前(カナ)</div>
+                        <div>氏名(カナ)</div>
                         <div>
                             <input type='text' name='last_name_kana' onBlur={handleFormData} defaultValue={formData.last_name_kana} />
                             <input type='text' name='first_name_kana' onBlur={handleFormData} defaultValue={formData.first_name_kana} />
@@ -96,10 +104,25 @@ function UserEdit(props) {
                             <label><input type='radio' name='gender' onClick={handleFormData} value={2} defaultChecked={formData.gender === 2 } />その他</label>
                             <label><input type='radio' name='gender' onClick={handleFormData} value={3} defaultChecked={formData.gender === 3 } />設定しない</label>
                         </div>
-                        <label htmlFor='birthday'>誕生日</label>
+                        <label htmlFor='birthday'>生年月日</label>
                         <div>
-                            <input id="birthday" type='text' name='birthday' onBlur={handleFormData} defaultValue={formData.birthday} />
-                            {/*  正規表現をつかう  */}
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>
+                                <KeyboardDatePicker
+                                    id="birthday"
+                                    format='yyyy/MM/dd'
+                                    disableToolbar // 年月日の選択時に上部に選択されるtoolbarを非表示にする
+                                    variant="dialog" // modal形式でのカレンダーの表示
+                                    inputVariant="outlined" // inputっぽい表示
+                                    openTo="year" // カレンダーアイコンクリック時に年->月->日の順に選択出来るように設定
+                                    views={["year", "month", "date"]}
+                                    value={formData.birthday}
+                                    onChange={e => {
+                                        handleDateChange(e, 'birthday')
+                                    }}
+                                    placeholder='1991/01/01'
+                                />
+                            </MuiPickersUtilsProvider>
+                            {/*<input id="birthday" type='date' name='birthday' onBlur={handleFormData} defaultValue={formData.birthday} />*/}
                         </div>
                         <label htmlFor='post_code'>郵便番号</label>
                         <div>
@@ -162,7 +185,7 @@ function UserEdit(props) {
                         <div>
                             <input id="email" type='email' name='email' onBlur={handleFormData} defaultValue={formData.email} />
                         </div>
-                        <div>DM送付</div>
+                        <div>DM登録</div>
                         <div>
                             <label><input type='radio' name='is_received' onClick={handleFormData} value={1} defaultChecked={formData.is_received === 1} />登録する</label>
                             <label><input type='radio' name='is_received' onClick={handleFormData} value={0} defaultChecked={formData.is_received === 0} />登録しない</label>
