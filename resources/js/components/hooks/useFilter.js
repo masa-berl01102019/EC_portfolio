@@ -32,7 +32,11 @@ const useFilter = (initialValue) => {
         const startDate = dateRangeStart.current.value;
         const endDate = dateRangeEnd.current.value;
 
-        if(field !== '' && field !== 'clear' && startDate !== '' && endDate !== '') {
+        if(startDate.length !== 8 || endDate.length !== 8) { // TODO フロントのバリデーション周りを実装する際にエラーを出すように修正する
+            return false
+        }
+
+        if(field !== 'clear' && startDate !== '' && endDate !== '') {
             // 検索開始日と終了日を配列に格納
             let dateRange = [startDate, endDate];
             // setFilter({ ...filter, dateRange: { [field]: dateRange } });
@@ -45,7 +49,7 @@ const useFilter = (initialValue) => {
                     }
                 }
             });
-        } else if(field !== '' && field === 'clear' && startDate !== '' && endDate !== '') {
+        } else if(field === 'clear' && startDate !== '' && endDate !== '') {
             // 一度日程の範囲指定した状態で元の戻す場合、「フィールドを選択」を選択した場合にdateRangeに空のオブジェクトを代入してリセットする
             setParams({
                 ...params,

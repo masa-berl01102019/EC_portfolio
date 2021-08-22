@@ -52,11 +52,9 @@ function UserIndex() {
     return (
         <div style={{'overflowX': 'hidden', 'width': '90%', 'margin': '0 auto'}}>
             <h1>User一覧</h1>
+            { errorMessage && <ShowErrorMsg errorMessage={errorMessage}/> }
             {   isLoading ? (
                     <CircularProgress disableShrink />
-                ):
-                errorMessage ? (
-                    <ShowErrorMsg errorMessage={errorMessage} />
                 ): (
                     <>
                         <button onClick={() => {
@@ -96,8 +94,8 @@ function UserIndex() {
                                     <option value={'created_at'}>作成日時</option>
                                     <option value={'updated_at'}>更新日時</option>
                                 </select>
-                                <input type='text' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} />　〜　
-                                <input type='text' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} />
+                                <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
+                                <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
                             </div>
                         </div>
                         <div style={{'marginTop': '10px'}}>
@@ -156,7 +154,7 @@ function UserIndex() {
                             {
                                 // 最初にUserIndex() -> DataFetchApi() -> UserIndex() と呼び出されてる間でも先に描画が走るがdata.usersは空なのでエラーになってしまう
                                 // なのでdata.usersがあれば表示すると条件をつければいい
-                                users &&
+                                users && !errorMessage &&
                                 users.map((user) =>
                                     <tr key={user.id}>
                                         {/* ページネーションで別のページに遷移した際にチェックが外れてしまわないようにlist.includes()でステートの配列に含まれてる値IDとユーザーのIDが一致する時にチェックがつくようにセット */}
