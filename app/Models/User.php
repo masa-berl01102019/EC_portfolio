@@ -24,6 +24,24 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    // モデルからシリアライズ時の日付形式の設定
+    protected $casts = [
+        'birthday' => 'date:Y-m-d',
+        'created_at' => 'date:Y-m-d H:m',
+        'updated_at' => 'date:Y-m-d H:m',
+        'email_verified_at' => 'datetime',
+    ];
+
+    // 日時データをCarbonインタンスへ自動変換するカラム名を指定
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'birthday',
+    ];
+
+    /** アクセサ */
+
     // 配列内に含めたい独自の属性(カラム名)を定義
     protected $appends = ['ac_post_code', 'ac_delivery_post_code', 'ac_gender', 'ac_is_received'];
 
@@ -52,22 +70,6 @@ class User extends Authenticatable
     public function getAcIsReceivedAttribute() {
         return isset($this->is_received) ? config('define.is_received')[$this->is_received]: '';
     }
-
-    // モデルからシリアライズ時の日付形式の設定
-    protected $casts = [
-        'birthday' => 'date:Y-m-d',
-        'created_at' => 'date:Y-m-d H:m',
-        'updated_at' => 'date:Y-m-d H:m',
-        'email_verified_at' => 'datetime',
-    ];
-
-    // 日時データをCarbonインタンスへ自動変換するカラム名を指定
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'birthday',
-    ];
 
     /** リレーション */
 

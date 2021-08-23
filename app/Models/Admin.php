@@ -26,8 +26,27 @@ class Admin extends Authenticatable
 
     // モデルからシリアライズ時の日付形式の設定
     protected $casts = [
+        'created_at' => 'date:Y-m-d H:m',
+        'updated_at' => 'date:Y-m-d H:m',
         'email_verified_at' => 'datetime',
     ];
+
+    // 日時データをCarbonインタンスへ自動変換するカラム名を指定
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    /** アクセサ */
+
+    // 関数の返却値を独自の属性(カラム名)として設定
+    public function getFullNameAttribute() {
+        return $this->last_name . ' ' . $this->first_name;
+    }
+    public function getFullNameKanaAttribute() {
+        return $this->last_name_kana . ' ' . $this->first_name_kana;
+    }
 
     /** リレーション */
 

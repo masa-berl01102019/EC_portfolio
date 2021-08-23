@@ -19,12 +19,6 @@ class CreateAdminsTable extends Migration
             $table->string('first_name',25);
             $table->string('last_name_kana',25);
             $table->string('first_name_kana',25);
-            $table->string('post_code', 10);
-            $table->string('prefecture',50);
-            $table->string('municipality',50);
-            $table->string('street_name',50);
-            $table->string('street_number',50);
-            $table->string('building',50)->nullable();
             $table->string('tel', 15);
             $table->string('email',100)->unique();
             $table->string('password', 100);
