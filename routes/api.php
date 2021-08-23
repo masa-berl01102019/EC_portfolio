@@ -39,8 +39,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::get('/admins', 'AdminController@index')->name('admins.index');
         Route::get('/admins/create', 'AdminController@create')->name('admins.create');
         Route::post('/admins', 'AdminController@store')->name('admins.store');
-        Route::get('/admins/{user}/edit', 'AdminController@edit')->name('admins.edit');
-        Route::put('/admins/{user}', 'AdminController@update')->name('admins.update');
+        Route::get('/admins/{admin}/edit', 'AdminController@edit')->name('admins.edit');
+        Route::put('/admins/{admin}', 'AdminController@update')->name('admins.update');
         Route::delete('/admins/delete', 'AdminController@destroy')->name('admins.destroy'); // 一括削除
         Route::post('/admins/csv', 'AdminController@csvExport')->name('admins.csvExport'); // 一括CSV出力
 
