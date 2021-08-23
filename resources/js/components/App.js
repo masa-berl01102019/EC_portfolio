@@ -5,11 +5,11 @@ import ErrorBoundary from './ErrorBoundary';
 import { ParamsProvider } from './context/ParamsContext';
 
 // routing test
-import UserIndex from './UserIndex';
-import TestNavBar from './TestNavBar';
-import TestTop from './TestTop';
-import UserEdit from "./UserEdit";
-import UserCreate from "./UserCreate";
+import UserIndex from './admin/users/UserIndex';
+import AdminNavBar from './AdminNavBar';
+import Dashboard from './admin/dashboard/Dashboard';
+import UserEdit from "./admin/users/UserEdit";
+import UserCreate from "./admin/users/UserCreate";
 
 function App() {
 
@@ -17,9 +17,9 @@ function App() {
         <ErrorBoundary>
             <Router>
                 <div>
-                    <TestNavBar />
+                    <AdminNavBar />
                     <Switch>
-                        <Route path="/" exact component={TestTop} />
+                        <Route path="/" exact component={Dashboard} />
                         <ParamsProvider>
                             <Route path="/admin/users" exact component={UserIndex} />
                             <Route path="/admin/users/create" exact component={UserCreate} />
