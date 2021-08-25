@@ -6,7 +6,7 @@ import useSetErrorMsg from "./useSetErrorMsg";
 import {dataFetchReducer} from "../reducer/dataFetchReducer";
 import { useParamsContext } from '../context/ParamsContext';
 
-const useFetchApiData = (initialUrl, initialMethod, initialData) => {
+const useFetchApiData = (initialUrl, initialMethod, initialData, initialScope) => {
 
     // useFetchApiData()で呼び出された際に渡された引数をreducerの初期値として設定
     const initialState = {
@@ -17,7 +17,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
     // useReducerでreducer関数と初期値をセット
     const [state, dispatch] = useReducer(dataFetchReducer, initialState);
     // useContextで管理してるURLパラメータを呼び出し
-    const {params} = useParamsContext();
+    const {params, scope} = useParamsContext();
     // API接続時の状態遷移(error/loading)と取得したデータと直前にコールしたAPIのURLを管理
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
@@ -25,11 +25,11 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
     const [prevUrl, setPrevUrl] = useState('');
 
     useEffect(() => {
-        console.log('useFetchApiDataのuseEffectが呼ばれました');
         // クリーンアップ関数用のフラグを宣言
         let unmounted = false;
         // アンマウントされていなかったら
-        if(!unmounted) {
+        if(!unmounted && initialScope === undefined || !unmounted && scope === initialScope) { // scopeで挙動の制御　各ページでの初回読み込み時にparamsの変更された時に2回呼び出されてしまうので制御 * createやeditページでは引数に渡してないのでundefinedが返ってくる
+            console.log('useFetchApiDataのuseEffectが実行されました');
             // 非同期でAPIサーバーからデータを取得する関数式を定義
             const fetchData = async() => {
                 // エラーの初期化
@@ -64,7 +64,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
                 // ローディングアイコンストップ
                 setIsLoading(false);
             };
-            console.log(useCreateUrl(initialUrl, params), params);
+            // console.log(useCreateUrl(initialUrl, params), params);
             // 条件に応じて非同期通信の呼び出しの制御
             if(state.method === 'get' && !initialUrl.includes('edit') && !initialUrl.includes('create') && state.url !== useCreateUrl(initialUrl, params)) {
                 console.log('パラメータ変更検知');
@@ -79,6 +79,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
                 // CSVダウンロードの処理後は再描画をかけない仕様にしてるのでstate.urlが更新されずパラメータを付与したURLとの差を比較出来ないので直前にAPIコールしたURLとの差を比較して差分があればAPIの呼び出し
                 dispatch({type: 'READ', url: useCreateUrl(initialUrl,params)});
             } else {
+                console.log(useCreateUrl(initialUrl, params), params);
                 // 直前のAPIコールのURLを保存
                 setPrevUrl(useCreateUrl(initialUrl, params));
                 // 非同期通信の呼び出し

@@ -7,16 +7,20 @@ export function useParamsContext() {
 }
 
 export function ParamsProvider({ children }) {
-
+    // paramsのstateをセット
     const [params, setParams] = useState({
         paginate: {},
         filter: {},
         sort: {}
     });
-
+    // paramsの適用範囲のstateをセット
+    const [scope, setScope] = useState(null);
+    // 値とメソッドを代入
     const value = {
         params,
-        setParams
+        setParams,
+        scope,
+        setScope,
     }
 
     return (
