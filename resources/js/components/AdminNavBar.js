@@ -20,6 +20,12 @@ function AdminNavBar() {
                 <Link to="/admin/admins/create">
                     <li className="ml-2">管理者新規登録</li>
                 </Link>
+                <Link to="/admin/notifications">
+                    <li className="ml-2">お知らせ一覧</li>
+                </Link>
+                <Link to="/admin/notifications/create">
+                    <li className="ml-2">お知らせ新規登録</li>
+                </Link>
             </ul>
         </nav>
     )

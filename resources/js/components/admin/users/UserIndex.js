@@ -51,7 +51,7 @@ function UserIndex() {
                 //     page_range_displayed: 5// ページネーションの表示個数
                 // }
             });
-            setScope('USER');
+            setScope(model);
         }
         // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐
         if(data.delete && data.delete === true) {
@@ -83,7 +83,7 @@ function UserIndex() {
                                 dispatch({ type:'CREATE', url:`/api/admin/users/csv`, form:checklist })
                         }}>CSV出力</button>
 
-                        {   Object.keys(params.filter).length > 0 &&
+                        {   Object.keys(params.filter).length > 0 &&　scope === model &&
 
                             <div style={{'marginTop': '10px'}}>
                                 <p style={{'marginBottom': '8px', 'fontWeight': 'bold'}}>フィルター機能</p>
@@ -117,7 +117,7 @@ function UserIndex() {
                             </div>
                         }
 
-                        {   Object.keys(params.sort).length > 0 &&
+                        {   Object.keys(params.sort).length > 0 && scope === model &&
 
                             <div style={{'marginTop': '10px'}}>
                                 <p style={{'marginBottom': '5px', 'fontWeight': 'bold'}}>ソート機能</p>
