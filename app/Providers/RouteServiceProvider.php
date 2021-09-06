@@ -17,18 +17,6 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'App\Http\Controllers';
 
     /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
-
-    // user ログイン済みの状態で/loginにアクセスしてきた時のリダイレクト先の定数を設定
-    public const HOME = '/user/home';
-
-    // admin リダイレクト先の設定
-    public const ADMIN_HOME = '/admin/home';
-
-    /**
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void

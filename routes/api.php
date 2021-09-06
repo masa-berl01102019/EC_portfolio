@@ -10,21 +10,14 @@
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
 
-    // ログイン認証関連の設定
-    Auth::routes([
-        'register' => true,
-        'reset' => false,
-        'verify' => false
-    ]);
+    Route::post('/login', 'AuthController@login')->name('login');
+    Route::post('/logout', 'AuthController@logout')->name('logout');
+    Route::get('/auth', 'AuthController@auth')->name('auth');
 
     // ログイン認証後
-    Route::middleware('auth:admin')->group(function() {
+    Route::middleware('auth:sanctum')->group(function() {
 
         // 会員情報のCRUD
         Route::get('/users', 'UserController@index')->name('users.index');
@@ -52,6 +45,21 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::put('/notifications/{notification}', 'NotificationController@update')->name('notifications.update');
         Route::delete('/notifications/delete', 'NotificationController@destroy')->name('notifications.destroy'); // 一括削除
         Route::post('/notifications/csv', 'NotificationController@csvExport')->name('notifications.csvExport'); // 一括CSV出力
+
+    });
+
+});
+
+Route::namespace('User')->prefix('user')->name('user.')->group(function() {
+
+    Route::post('/login', 'AuthController@login')->name('login');
+    Route::post('/logout', 'AuthController@logout')->name('logout');
+    Route::get('/auth', 'AuthController@auth')->name('auth');
+
+    // ログイン認証後
+    Route::middleware('auth:sanctum')->group(function() {
+        // マルチ認証テスト用　エンドポイント
+        Route::get('/users', 'UserController@index')->name('users.index');
 
     });
 
