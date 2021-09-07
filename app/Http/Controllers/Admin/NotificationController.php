@@ -15,10 +15,6 @@ class NotificationController extends Controller
     // TODO エラーハンドリングの統一 * auth認証されてない場合等のエラーと入力バリデーション等のエラーは出しどころを分ける必要あり
     // TODO フリーワード検索　カラムを指定して検索をかけるようにするか要検討
     // TODO 他のコントローラーでも使用する共通処理をヘルパー関数でまとめる
-    // TODO APIではAuthファサード使ったログイン者情報の取得が出来ないので認証周りの修正する
-    // TODO indexで管理者の名前順ソート機能追加
-    // TODO レコードの保存と編集の修正と動作確認
-    // TODO CSVに最終更新者名を追加
 
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'admin_id', 'title', 'body', 'is_published', 'expired_at', 'posted_at', 'modified_at' ];
@@ -31,7 +27,9 @@ class NotificationController extends Controller
 
     public function index(Request $request)
     {
-        $search_notification = Notification::query();
+        $search_notification = Notification::query()
+            ->select('notifications.id', 'title', 'body', 'is_published', 'expired_at', 'posted_at', 'modified_at', 'admins.last_name', 'admins.first_name', 'admins.last_name_kana', 'admins.first_name_kana')
+            ->join('admins','admins.id', '=', 'notifications.admin_id');
 
         // フリーワード検索
         if(!is_null($request->input('f_keyword'))) {
@@ -59,9 +57,8 @@ class NotificationController extends Controller
         if(!is_null($request->input('f_is_published'))) {
             // 全角スペースを半角スペースに変換
             $is_published = $request->input('f_is_published');
-            // 半角スペース区切りで配列に変換
+            // カンマ区切りで配列に変換
             $published_arr = explode(',',$is_published);
-
             // テーブル結合してキーワード検索で渡ってきた値と部分一致するアイテムに絞りこみ
             $search_notification->where(function ($query) use ($published_arr) {
                 foreach ($published_arr as $list) { // 複数のkeywordを検索
@@ -101,10 +98,10 @@ class NotificationController extends Controller
         // 名前順->掲載終了日順->投稿日順->更新日順の優先順位でソートされる仕組み
 
         // 名前でソート
-//        if(!is_null($request->input('last_name_kana'))) {
-//            $sort = $request->input('last_name_kana');
-//            $search_notification->orderBy('last_name_kana', $sort)->orderBy('first_name_kana', $sort);
-//        }
+        if(!is_null($request->input('last_name_kana'))) {
+            $sort = $request->input('last_name_kana');
+            $search_notification->orderBy('last_name_kana', $sort)->orderBy('first_name_kana', $sort);
+        }
 
         // 掲載終了日でソート
         if(!is_null($request->input('expired_at'))) {
@@ -152,7 +149,7 @@ class NotificationController extends Controller
 
         // DBに登録
         Notification::create([
-            'admin_id' => Auth::id(),
+            'admin_id' => Auth::guard('admin')->id(),
             'title' => $data['title'],
             'body' => $data['body'],
             'is_published' => $data['is_published'],
@@ -179,6 +176,7 @@ class NotificationController extends Controller
 
         // 編集項目をDBに保存
         $notification->fill([
+            'admin_id' => Auth::guard('admin')->id(),
             'title' => $data['title'],
             'body' => $data['body'],
             'is_published' => $data['is_published'],
@@ -209,13 +207,16 @@ class NotificationController extends Controller
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
         // 該当のIDのお知らせを取得
-        $notifications = Notification::select(['is_published', 'title', 'body', 'expired_at', 'posted_at', 'modified_at'])
-            ->whereIn('id', $id)->cursor();
+        $notifications = Notification::query()
+            ->select('notifications.id', 'title', 'body', 'is_published', 'expired_at', 'posted_at', 'modified_at', 'admins.last_name', 'admins.first_name', 'admins.last_name_kana', 'admins.first_name_kana')
+            ->join('admins','admins.id', '=', 'notifications.admin_id')
+            ->whereIn('notifications.id', $id)
+            ->cursor();
 
         // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
         return response()->streamDownload(function () use ($notifications) {
             // CSVのヘッダー作成
-            $csv_header = ['No', '公開状況', 'タイトル', '本文', '掲載終了日', '投稿日', '更新日'];
+            $csv_header = ['No', '公開状況', 'タイトル', '最終更新者', '本文', '掲載終了日', '投稿日', '更新日'];
             //　SplFileObjectのインスタンスを生成
             $file = new \SplFileObject('php://output', 'w');
             // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
@@ -225,10 +226,14 @@ class NotificationController extends Controller
             // 一行ずつ連想配列から値を取り出して配列に格納
             $num = 1;
             foreach ($notifications as $notification){
+                // 更新者名を変数に格納
+                $last_editor = $notification->last_name.' '.$notification->first_name.'('.$notification->last_name_kana.' '.$notification->first_name_kana.')';
+
                 $file->fputcsv([
                     $num,
                     $notification->ac_is_published,
                     $notification->title,
+                    $last_editor,
                     $notification->body,
                     $notification->expired_at !== null ? $notification->expired_at->format('Y-m-d'): '　　',
                     $notification->posted_at !== null ? $notification->posted_at->format('Y-m-d'): '　　',
