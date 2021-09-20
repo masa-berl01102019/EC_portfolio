@@ -1,7 +1,6 @@
 import React from 'react';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData from "../../../hooks/useFetchApiData";
-import ShowErrorMsg from "../../../ShowErrorMsg";
 
 // マルチ認証テスト用　コンポーネント
 function TestUserIndex() {
@@ -17,7 +16,7 @@ function TestUserIndex() {
     return (
         <div style={{'overflowX': 'hidden', 'width': '90%', 'margin': '0 auto'}}>
             <h1>TEST会員一覧</h1>
-            { errorMessage && <ShowErrorMsg errorMessage={errorMessage}/> }
+            { errorMessage && errorMessage.httpRequestError && <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p> }
             {   isLoading ? (
                     <CircularProgress disableShrink />
                 ): (

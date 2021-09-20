@@ -41,6 +41,8 @@ function Router() {
     const str = window.location.pathname.substr( 1, 5 );
     // Auth名の設定　＊ 今回のアプリでは管理画面のURLは全て /admin/* のルーティングになるので取得した文字列がadminかどうかで管理者ページへのアクセスか一般ページへのアクセスか判別してauth名を決定
     const auth = str !== 'admin' ? 'user': 'admin';
+    // axiosの処理が終わったかどうかをフラグ管理
+    const [isResolve, setIsResolve] = useState(false);
 
     useEffect(() => {
         // ログインしているかどうかをAPIにアクセスして調べる
@@ -58,6 +60,8 @@ function Router() {
             }
         }).catch( error => {
             console.log(error);
+        }).finally(() => {
+            setIsResolve(true);
         });
         // userとadminのステータスに変更があるたびにuseEffectを呼び出す　* リロード後もログイン状況を保持する為
     }, [isUserLogin, isAdminLogin]);
@@ -65,31 +69,33 @@ function Router() {
     return (
         <BrowserRouter>
             { auth === 'user' ? <UserHeader authName={authName} /> : <AdminHeader authName={authName} />}
-            <main>
-                <Suspense fallback={<CircularProgress disableShrink />}>
-                    <Switch>
-                        {/* USER ROUTING */}
-                        <Route path="/" exact component={Top} />
-                        <UserLoginRoute path="/user/login" exact component={UserLogin} />
-                        {/* test component */}
-                        <UserPrivateRoute path="/user/users" exact component={TestUserIndex} />
-                        {/* ADMIN ROUTING */}
-                        <AdminLoginRoute path="/admin/login" exact component={AdminLogin} />
-                        <AdminPrivateRoute path="/admin/Dashboard" exact component={Dashboard} />
-                        <AdminPrivateRoute path="/admin/users" exact component={UserIndex} />
-                        <AdminPrivateRoute path="/admin/users/create" exact component={UserCreate} />
-                        <AdminPrivateRoute path="/admin/users/:id/edit" exact component={UserEdit} />
-                        <AdminPrivateRoute path="/admin/admins" exact component={AdminIndex} />
-                        <AdminPrivateRoute path="/admin/admins/create" exact component={AdminCreate} />
-                        <AdminPrivateRoute path="/admin/admins/:id/edit" exact component={AdminEdit} />
-                        <AdminPrivateRoute path="/admin/notifications" exact component={NotificationIndex} />
-                        <AdminPrivateRoute path="/admin/notifications/create" exact component={NotificationCreate} />
-                        <AdminPrivateRoute path="/admin/notifications/:id/edit" exact component={NotificationEdit} />
-                        {/* NOT FOUND PAGE */}
-                        <Route component={NotFound} />
-                    </Switch>
-                </Suspense>
-            </main>
+            { isResolve &&
+                <main>
+                    <Suspense fallback={<CircularProgress disableShrink />}>
+                        <Switch>
+                            {/* USER ROUTING */}
+                            <Route path="/" exact component={Top} />
+                            <UserLoginRoute path="/user/login" exact component={UserLogin} />
+                            {/* test component */}
+                            <UserPrivateRoute path="/user/users" exact component={TestUserIndex} />
+                            {/* ADMIN ROUTING */}
+                            <AdminLoginRoute path="/admin/login" exact component={AdminLogin} />
+                            <AdminPrivateRoute path="/admin/Dashboard" exact component={Dashboard} />
+                            <AdminPrivateRoute path="/admin/users" exact component={UserIndex} />
+                            <AdminPrivateRoute path="/admin/users/create" exact component={UserCreate} />
+                            <AdminPrivateRoute path="/admin/users/:id/edit" exact component={UserEdit} />
+                            <AdminPrivateRoute path="/admin/admins" exact component={AdminIndex} />
+                            <AdminPrivateRoute path="/admin/admins/create" exact component={AdminCreate} />
+                            <AdminPrivateRoute path="/admin/admins/:id/edit" exact component={AdminEdit} />
+                            <AdminPrivateRoute path="/admin/notifications" exact component={NotificationIndex} />
+                            <AdminPrivateRoute path="/admin/notifications/create" exact component={NotificationCreate} />
+                            <AdminPrivateRoute path="/admin/notifications/:id/edit" exact component={NotificationEdit} />
+                            {/* NOT FOUND PAGE */}
+                            <Route component={NotFound} />
+                        </Switch>
+                    </Suspense>
+                </main>
+            }
             <Footer />
         </BrowserRouter>
     );

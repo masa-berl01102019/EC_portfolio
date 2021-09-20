@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import useAuth from "../../../hooks/useAuth";
-import ShowErrorMsg from "../../../ShowErrorMsg";
 
 function UserLogin() {
 
@@ -13,9 +12,9 @@ function UserLogin() {
     const {errorMessage, handleLogin} = useAuth(auth);
 
     return (
-        <div style={{'width': '50%', 'margin': '0 auto'}}>
+        <div style={{'width': '50%', 'margin': '40px auto 60px'}}>
             <h1>一般ログイン</h1>
-            { errorMessage && <ShowErrorMsg errorMessage={errorMessage} /> }
+            { errorMessage && errorMessage.httpRequestError && <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p> }
             <form onSubmit={ e => {
                 e.preventDefault();
                 handleLogin({email: email, password: password});
