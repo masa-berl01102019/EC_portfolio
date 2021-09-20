@@ -61,13 +61,13 @@ class UserController extends Controller
         }
 
         // レスポンスを返却
-        return response()->json(['users' => $users ]);
+        return response()->json(['users' => $users],200);
     }
 
     public function create()
     {
         // とりあえずなんか返す
-        return response()->json(['auth' => true]);
+        return response()->json(['read' => true],200);
     }
 
     public function store(UserRegisterRequest $request)
@@ -102,13 +102,13 @@ class UserController extends Controller
             'is_received' => $data['is_received'],
         ]);
         // レスポンスを返却
-        return response()->json(['success' => true]);
+        return response()->json(['create' => true, 'message' => '会員の新規登録を完了しました'], 200);
     }
 
     public function edit(User $user)
     {
         // レスポンスを返却
-        return response()->json(['user' => $user]);
+        return response()->json(['user' => $user],200);
     }
 
     public function update(UserEditRequest $request, User $user)
@@ -118,7 +118,7 @@ class UserController extends Controller
         // 編集項目をDBに保存
         $user->fill($data)->save();
         // レスポンスを返却
-        return response()->json(['success' => true]);
+        return response()->json(['update' => true, 'message' => '会員の編集を完了しました'], 200);
     }
 
     public function destroy(Request $request)
@@ -132,7 +132,7 @@ class UserController extends Controller
             $user->delete();
         }
         // レスポンスを返却
-        return response()->json(['delete' => true]);
+        return response()->json(['delete' => true, 'message' => '会員の削除を完了しました'], 200);
     }
 
     public function csvExport(Request $request)

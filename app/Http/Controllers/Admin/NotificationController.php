@@ -58,13 +58,13 @@ class NotificationController extends Controller
         }
 
         // レスポンスを返却
-        return response()->json(['notifications' => $notifications ]);
+        return response()->json(['notifications' => $notifications],200);
     }
 
     public function create()
     {
         // とりあえずなんか返す
-        return response()->json(['auth' => true]);
+        return response()->json(['read' => true],200);
     }
 
     public function store(NotificationRequest $request)
@@ -83,13 +83,13 @@ class NotificationController extends Controller
             'posted_at' => $data['is_published'] == 1 ? Carbon::now(): null, // 初公開された投稿日だけを登録したいので条件分岐を追加
         ]);
         // レスポンスを返却
-        return response()->json(['success' => true]);
+        return response()->json(['create' => true, 'message' => 'お知らせの新規登録を完了しました'], 200);
     }
 
     public function edit(Notification $notification)
     {
         // レスポンスを返却
-        return response()->json(['notification' => $notification]);
+        return response()->json(['notification' => $notification],200);
     }
 
     public function update(NotificationRequest $request, Notification $notification)
@@ -111,7 +111,7 @@ class NotificationController extends Controller
         ])->save();
 
         // レスポンスを返却
-        return response()->json(['success' => true]);
+        return response()->json(['update' => true, 'message' => 'お知らせの編集を完了しました'], 200);
     }
 
     public function destroy(Request $request)
@@ -125,7 +125,7 @@ class NotificationController extends Controller
             $notification->delete();
         }
         // レスポンスを返却
-        return response()->json(['delete' => true]);
+        return response()->json(['delete' => true, 'message' => 'お知らせの削除を完了しました'], 200);
     }
 
     public function csvExport(Request $request)
