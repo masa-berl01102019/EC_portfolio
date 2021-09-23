@@ -20,7 +20,7 @@ class CreateItemsTable extends Migration
             $table->unsignedInteger('admin_id'); // 外部キー
             $table->foreign('admin_id')->references('id')->on('admins'); // 外部キー
             $table->string('item_name',100);
-            $table->string('product_number',30);
+            $table->string('product_number',50);
             $table->unsignedInteger('price');
             $table->unsignedInteger('cost');
             $table->text('description');

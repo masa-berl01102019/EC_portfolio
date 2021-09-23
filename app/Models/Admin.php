@@ -70,5 +70,9 @@ class Admin extends Authenticatable
         return $this->hasMany('App\Models\Notification');
     }
 
+    public function contacts() {
+        return $this->hasMany('App\Models\Contact');
+    }
+
 
 }
