@@ -36,7 +36,7 @@ function AdminEdit(props) {
             // フォームのデフォルト値を設定するためにsetFormDataで値をセット
             setFormData({...admin});
         }
-        if(data.success === true) {
+        if(data.update === true) {
             // 処理が完了した時点でリダイレクトの処理
             history.push('/admin/admins');
         }

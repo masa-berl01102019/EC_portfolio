@@ -58,7 +58,7 @@ function UserEdit(props) {
             // フォームのデフォルト値を設定するためにsetUserInfoで値をセット
             setFormData({...user});
         }
-        if(data.success === true) {
+        if(data.update === true) {
             // 処理が完了した時点でリダイレクトの処理
             history.push('/admin/users');
         }

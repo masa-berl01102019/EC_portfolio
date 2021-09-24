@@ -50,7 +50,7 @@ function UserCreate() {
     const history = useHistory();
 
     useEffect(() => {
-        if(data.success === true) {
+        if(data.create === true) {
             // 処理が完了した時点でリダイレクトの処理
             history.push('/admin/users');
         }
