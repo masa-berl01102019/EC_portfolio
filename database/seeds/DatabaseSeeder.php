@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
              ItemsTableSeeder::class,
              ImagesTableSeeder::class,
              CategoriesTableSeeder::class,
+             CategoryItemTableSeeder::class,
              ColorsTableSeeder::class,
              SizesTableSeeder::class,
              MeasurementsTableSeeder::class,
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
              BookmarksTableSeeder::class,
              OrderDetailsTableSeeder::class,
              OrdersTableSeeder::class,
+             ItemTagTableSeeder::class,
          ]);
     }
 }
