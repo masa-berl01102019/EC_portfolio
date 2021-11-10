@@ -11,7 +11,7 @@ export const useCreateUrl = (baseUrl, params) => {
         Object.entries(params.filter).map(([key, value]) => {
             // 空の文字列を定義
             let str = '';
-            if(key === 'keyword') {
+            if(key === 'keyword') { // input keyword用
                 // 前後の空白を削除
                 str = value.replace(/^\s+|\s+$/g,'');
                 // 文字列間のスペースをカンマに置換
@@ -31,7 +31,7 @@ export const useCreateUrl = (baseUrl, params) => {
                     ...filter_obj,
                     ['f_dr_' + column_name]: str
                 }
-            } else if (Array.isArray(value) && value.length > 0) {
+            } else if (Array.isArray(value) && value.length > 0) { //　checkbox用
                 // 配列をカンマ区切りの文字列に変換
                 str = value.join(',');
                 // オブジェクトに分割代入 * filterとsortを区別するためにfilterに関しては「f_」をつける
@@ -39,8 +39,15 @@ export const useCreateUrl = (baseUrl, params) => {
                     ...filter_obj,
                     ['f_' + [key]]: str
                 }
+            }  else if(typeof value === "string" || value instanceof String) { // 文字列か判定 select用
+                // 前後の空白を削除
+                str = value.replace(/^\s+|\s+$/g,'');
+                // オブジェクトに分割代入 * filterとsortを区別するためにfilterに関しては「f_」をつける
+                filter_obj = {
+                    ...filter_obj,
+                    ['f_' + [key]]: str
+                }
             }
-
         });
     }
 

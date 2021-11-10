@@ -21,7 +21,7 @@ class CreateSkusTable extends Migration
             $table->foreign('size_id')->references('id')->on('sizes');
             $table->unsignedInteger('color_id');
             $table->foreign('color_id')->references('id')->on('colors');
-            $table->integer('quantity');
+            $table->integer('quantity')->nullable();
             $table->timestamps(); // dateTime型の作成日時と更新日時を生成
             $table->softDeletes(); // 論理削除
         });

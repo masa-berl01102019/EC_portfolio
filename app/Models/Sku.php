@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Sku extends Model
 {
@@ -15,6 +17,15 @@ class Sku extends Model
     protected $guarded = [
         'id'
     ];
+
+    // timestamp型はconfig.phpのlocaleに依存しているので
+    //　DB保存時はセットされてるlocaleのタイムゾーンを確認してUTCに変換してDBにinsertするがselect時にはタイムゾーンを確認してセットされたタイムゾーンで表示される
+    // JSON形式にシリアライズする際はタイムゾーンを考慮しないでUTCの時間でシリアライズされるので時間がずれてしまう
+    // その為、serializeDate()をオーバーライドしてシリアライズ時にタイムゾーンをセットして日付文字列に変換する必要がある
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return Carbon::instance($date)->tz('Asia/Tokyo')->format('Y-m-d H:i');
+    }
 
     /** リレーション */
 
@@ -38,7 +49,7 @@ class Sku extends Model
         return $this->hasMany('App\Models\Bookmark');
     }
 
-    public function Carts() {
+    public function carts() {
         return $this->hasMany('App\Models\Cart');
     }
 }

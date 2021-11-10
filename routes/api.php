@@ -53,6 +53,22 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::delete('/contacts/delete', 'ContactController@destroy')->name('contacts.destroy'); // 一括削除
         Route::post('/contacts/csv', 'ContactController@csvExport')->name('contacts.csvExport'); // 一括CSV出力
 
+        // アイテム情報のCRUD
+        Route::get('/items', 'ItemController@index')->name('items.index');
+        Route::get('/items/create', 'ItemController@create')->name('items.create');
+        Route::post('/items', 'ItemController@store')->name('items.store');
+        Route::get('/items/{item}/edit', 'ItemController@edit')->name('items.edit');
+        Route::put('/items/{item}', 'ItemController@update')->name('items.update');
+        Route::put('/items/{item}/categories', 'ItemController@updateCategory')->name('items.updateCategory');
+        Route::put('/items/{item}/tags', 'ItemController@updateTag')->name('items.updateTag');
+        Route::put('/items/{item}/images', 'ItemController@updateImage')->name('items.updateImage');
+        Route::put('/items/{item}/measurements', 'ItemController@updateMeasurement')->name('items.updateMeasurement');
+        Route::put('/items/{item}/skus', 'ItemController@updateSku')->name('items.updateSku');
+        Route::delete('/items/delete', 'ItemController@destroy')->name('items.destroy'); // 一括削除
+        Route::delete('/items/delete/measurements', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
+        Route::delete('/items/delete/skus', 'ItemController@destroySku')->name('items.destroySku');
+        Route::post('/items/csv', 'ItemController@csvExport')->name('items.csvExport'); // 一括CSV出力
+
     });
 
 });
