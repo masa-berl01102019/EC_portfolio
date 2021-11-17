@@ -1,11 +1,12 @@
 <?php
+namespace Database\Seeders;
 
 use App\Models\Item;
 use GuzzleHttp\Client;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class SizesTableSeeder extends Seeder
+class ColorsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +17,7 @@ class SizesTableSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
 
-        DB::table('sizes')->truncate(); // テーブルごと削除して再構築
+        DB::table('colors')->truncate(); // テーブルごと削除して再構築
 
         // Yahoo商品検索API パラメータ
         $appid = config('services.yahoo.app_id'); // APIキー　＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
@@ -29,7 +30,7 @@ class SizesTableSeeder extends Seeder
         $items = Item::all();
 
         // 配列の初期化
-        $sizes = [];
+        $colors = [];
 
         // for文で展開
         for($i = 0; $i < count($items); $i++) {
@@ -53,27 +54,27 @@ class SizesTableSeeder extends Seeder
             $item_detail = explode('<br>', $response_data['hits'][0]['description']);
 
             // preg_grep()で配列内の文字列を部分一致検索してマッチした配列を抽出
-            $size_array = preg_grep("/^サイズ:/", $item_detail);
+            $color_array = preg_grep("/^カラー:/", $item_detail);
 
             // preg_grep()で取り出された配列は元の配列のインデックスが保持された状態で帰ってくるので,array_shift()で配列の最初の要素を文字列として取り出し、substr()で「カラー:」以降を切り出す
-            $size = mb_substr(array_shift($size_array), 4);
+            $color = mb_substr(array_shift($color_array), 4);
 
             // mb_convert_kana() で全角を半角に変換し、str_replace()でスペースを削除
-            $size = str_replace([' ','　'], '', mb_convert_kana($size, 'a', 'UTF-8'));
+            $color = str_replace([' ','　'], '', mb_convert_kana($color, 'a', 'UTF-8'));
 
             // 複数のカラーの文字列をカンマ区切りでexplode()で配列化して$colorsにマージする
-            $sizes = array_merge($sizes, explode(',',$size));
+            $colors = array_merge($colors, explode(',',$color));
 
         }
 
         // 配列内の重複を削除
-        $sizes = array_unique($sizes);
+        $colors = array_unique($colors);
 
         // array_unique()で展開した配列はインデックスは元の配列を受け継ぐのでforeachで展開
-        foreach($sizes as $value) {
+        foreach($colors as $value) {
             // データの挿入
-            DB::table('sizes')->insert([
-                'size_name' => $value,
+            DB::table('colors')->insert([
+                'color_name' => $value,
                 'created_at' => '2010-04-01 00:00:00',
                 'updated_at' => '2010-04-01 00:00:00',
             ]);

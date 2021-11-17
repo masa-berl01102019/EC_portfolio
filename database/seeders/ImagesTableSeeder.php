@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use App\Models\Item;
 use GuzzleHttp\Client;
@@ -19,7 +20,7 @@ class ImagesTableSeeder extends Seeder
         DB::table('images')->truncate(); // テーブルごと削除して再構築
 
         // Yahoo商品検索API パラメータ
-        $appid = config('services.yahoo.app_id'); // APIキー　＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
+        $appid = config('services.yahoo.app_id'); // APIキー ＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
         $results = 1; // 取得件数
         $genre_category_id = '37019,37052,36861,36913,36887,36903,36571,36583,36504,36624,48271'; // カテゴリを絞ってシューズ・アクセサリ・バッグ等の余計なデータが入らない様にする
         $seller_id = 'zozo'; // ストアID
@@ -37,7 +38,7 @@ class ImagesTableSeeder extends Seeder
             // ブランド品番(product_number)をクエリにしこむ
             $query = $items[$i]->product_number;
 
-            // urlの生成　＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
+            // urlの生成 ＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
             $url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid='.$appid.'&results='.$results.'&query='.$query.'&seller_id='.$seller_id.'&brand_id='.$brand_id.'&genre_category_id='.$genre_category_id;
 
             // Clientクラスを初期化

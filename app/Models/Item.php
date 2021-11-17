@@ -11,9 +11,11 @@ use App\Traits\PriceAccessorTrait;
 use App\Traits\PublishAccessorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
+    use HasFactory; // laravel8 factory関数使用する為
     use SoftDeletes; //　論理削除
     use PublishAccessorTrait;
     use PriceAccessorTrait;

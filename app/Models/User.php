@@ -18,9 +18,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
+    use HasFactory; // laravel8 factory関数使用する為
     use Notifiable; // 通知(使うか未定)
     use SoftDeletes; //　論理削除
     use NameAccessorTrait;

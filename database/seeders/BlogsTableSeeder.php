@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use App\Models\Blog;
 use Illuminate\Database\Seeder;
@@ -17,7 +18,7 @@ class BlogsTableSeeder extends Seeder
 
         DB::table('blogs')->truncate(); // テーブルごと削除して再構築
 
-        factory(Blog::class, 50)->create();
+        Blog::factory(50)->create();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }

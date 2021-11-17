@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use App\Models\Color;
 use App\Models\Item;
@@ -75,7 +76,7 @@ class OrdersTableSeeder extends Seeder
                 // SKUに紐づくカラーとサイズを取得
                 $color = Color::find($skus->color_id)->color_name;
                 $size = Size::find($skus->size_id)->size_name;
-                //　注文テーブルと整合性がとれるようOrderDetailsのインスタンスを作成して保存
+                // 注文テーブルと整合性がとれるようOrderDetailsのインスタンスを作成して保存
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'sku_id' => $skus->id,
