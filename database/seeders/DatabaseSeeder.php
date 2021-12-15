@@ -17,16 +17,15 @@ class DatabaseSeeder extends Seeder
              AdminsTableSeeder::class,
              BrandsTableSeeder::class,
              TagsTableSeeder::class,
-             ContactsTableSeeder::class,
+             CategoriesTableSeeder::class,
              NotificationsTableSeeder::class,
+             ContactsTableSeeder::class,
              NewsTableSeeder::class,
              BlogsTableSeeder::class,
              ItemsTableSeeder::class,
-             ImagesTableSeeder::class,
-             CategoriesTableSeeder::class,
-             CategoryItemTableSeeder::class,
              ColorsTableSeeder::class,
              SizesTableSeeder::class,
+             ImagesTableSeeder::class,
              MeasurementsTableSeeder::class,
              SkusTableSeeder::class,
              CartsTableSeeder::class,
@@ -34,6 +33,7 @@ class DatabaseSeeder extends Seeder
              OrderDetailsTableSeeder::class,
              OrdersTableSeeder::class,
              ItemTagTableSeeder::class,
+             CategoryItemTableSeeder::class,
          ]);
     }
 }

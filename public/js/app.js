@@ -104413,7 +104413,7 @@ var ItemIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(
   return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemIndex */ "./resources/js/components/pages/admin/items/ItemIndex.js"));
 });
 var ItemCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemCreate */ "./resources/js/components/pages/admin/items/ItemCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemCreate */ "./resources/js/components/pages/admin/items/ItemCreate.js"));
 });
 var ItemEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
   return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemEdit */ "./resources/js/components/pages/admin/items/ItemEdit.js"));
@@ -104929,7 +104929,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-
+ // TODO 403/405/413...それぞれのエラーメッセージを設定する
 
 var useSetErrorMsg = function useSetErrorMsg(initialValue) {
   // error message管理

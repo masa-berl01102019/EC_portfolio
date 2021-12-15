@@ -9,6 +9,7 @@ export const dataFetchReducer = (state, action) => {
                 url: action.url, // POST '/api/admin/users'
                 method: 'post',
                 data: action.form,
+                headers: action.headers
             };
         case 'READ':
             return {

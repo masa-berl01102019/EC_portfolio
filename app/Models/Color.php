@@ -23,6 +23,6 @@ class Color extends Model
     }
 
     public function images() {
-        return $this->belongsToMany('App\Models\Image');
+        return $this->hasMany('App\Models\Image');
     }
 }

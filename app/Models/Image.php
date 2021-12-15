@@ -16,15 +16,6 @@ class Image extends Model
         'id'
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
-    protected $appends = ['image_category_text'];
-
-    public function getImageCategoryTextAttribute() {
-        return isset($this->image_category) ? config('define.image_category')[$this->image_category]: '';
-    }
-
     /** リレーション */
 
     public function item() {
@@ -32,7 +23,7 @@ class Image extends Model
     }
 
     public function colors() {
-        return $this->belongsToMany('App\Models\Color');
+        return $this->belongsTo('App\Models\Color');
     }
 
 }

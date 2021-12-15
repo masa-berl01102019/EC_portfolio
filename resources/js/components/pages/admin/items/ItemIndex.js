@@ -49,7 +49,7 @@ function ItemIndex() {
             setParams({
                 ...params,
                 sort: { 'product_number' : '', 'item_name' : '', 'price' : '', 'cost' : '', 'posted_at' : '', 'modified_at' : ''},
-                filter: { 'keyword' : '', 'is_published' : [],　'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '',　'main_category' : '',　'sub_category' : '', 'dateRange': {} },
+                filter: { 'keyword' : '', 'is_published' : [],　'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '',　'main_category' : '', 'sub_category' : '', 'dateRange': {} },
             });
             setScope(model);
         }

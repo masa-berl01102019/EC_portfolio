@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 
+// TODO 403/405/413...それぞれのエラーメッセージを設定する
+
 const useSetErrorMsg = (initialValue) => {
 
     // error message管理

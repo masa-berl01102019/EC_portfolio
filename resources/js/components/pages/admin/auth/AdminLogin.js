@@ -6,7 +6,7 @@ function AdminLogin() {
     // Auth名の設定
     const auth = 'admin'
     // 入力値のステート管理
-    const [email, setEmail] = useState('shota.murayama@example.net');
+    const [email, setEmail] = useState('koizumi.satomi@example.net');
     const [password, setPassword] = useState('abc12345');
     // Auth hooksの呼び出し
     const {errorMessage, handleLogin} = useAuth(auth);

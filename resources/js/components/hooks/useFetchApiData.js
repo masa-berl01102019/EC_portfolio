@@ -38,7 +38,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData, initialScope) =
                 setIsLoading(true);
                 // 非同期通信
                 await axios({
-                    method: state.method, url: state.url, data: state.data
+                    method: state.method, url: state.url, data: state.data, headers: state.headers
                 }).then(response => {
                     console.log('取得成功したデータは',response.data);
                     // CSVダウンロード時には再描画を走らせたくないのでresponseヘッダのcontent-type形式がCSVかどうかで条件分岐

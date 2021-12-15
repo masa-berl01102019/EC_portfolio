@@ -2,6 +2,7 @@
 namespace Database\Seeders;
 
 use App\Models\Item;
+use App\Models\Color;
 use GuzzleHttp\Client;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -50,16 +51,32 @@ class ImagesTableSeeder extends Seeder
             // $response->getBody()でGuzzleHttp\Psr7\Streamクラスのオブジェクトを取得し、getContents()で文字列に変換してからjson_decodeで変換 * 第二引数にtrueで連想配列を指定して変換
             $response_data = json_decode($response->getBody()->getContents(), true);
 
+            // yahoo APIでは商品に関する詳細情報がbrタグを挟んで文字列で帰ってくるのでexplode()で配列にする
+            $item_detail = explode('<br>', $response_data['hits'][0]['description']);
+
+            // preg_grep()で配列内の文字列を部分一致検索してマッチした配列を抽出
+            $color_array = preg_grep("/^カラー:/", $item_detail);
+
+            // preg_grep()で取り出された配列は元の配列のインデックスが保持された状態で帰ってくるので,array_shift()で配列の最初の要素を文字列として取り出し、substr()で「カラー:」以降を切り出す
+            $color = mb_substr(array_shift($color_array), 4);
+
+            // mb_convert_kana() で全角を半角に変換し、str_replace()でスペースを削除してカンマ区切りで配列に変換
+            $color = explode(',', str_replace([' ','　'], '', mb_convert_kana($color, 'a', 'UTF-8')));
+
+            // colorモデルに登録されているものと一致するものをインスタンスで取得
+            $color_instance = Color::select('id')->where('color_name', $color[0])->first();
+
             // 商品画像のURLを取得
             $img_url = $response_data['hits'][0]['image']['medium'];
 
-            // https://item-shopping.c.yimg.jp/i/g/画像ID　の形で返ってくるがこのままだとサイズが小さい　→　/g/の部分で引き出す画像の大きさを調整している様なのでURLを書き換える　a < z
+            // https://item-shopping.c.yimg.jp/i/g/画像IDの形で返ってくるがこのままだとサイズが小さい→/g/の部分で引き出す画像の大きさを調整している様なのでURLを書き換えるa < z
             $replaced_img_url = str_replace('/g/', '/f/', $img_url);
 
             $images[$i] = [
                 'item_id' => $items[$i]->id,
+                'color_id' => $color_instance->id,
                 'image' => $replaced_img_url,
-                'image_category' => 1, // 0: メイン画像, 1: サムネイル画像 *Yahoo商品検索APIではサムネイル画像は取得出来ないのでメイン画像だけ登録する
+                'image_category' => 0, // 0: メイン画像, 1: サムネイル画像 *Yahoo商品検索APIではサムネイル画像は取得出来ないのでメイン画像だけ登録する
                 'created_at' => !is_null($items[$i]->posted_at)? $items[$i]->posted_at: '2010-04-01 00:00:00',
                 'updated_at' => !is_null($items[$i]->modified_at)? $items[$i]->modified_at: '2010-04-01 00:00:00',
             ];
