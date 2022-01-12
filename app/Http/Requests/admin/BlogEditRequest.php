@@ -4,7 +4,7 @@ namespace App\Http\Requests\admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NotificationRequest extends FormRequest
+class BlogEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,8 +26,13 @@ class NotificationRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'body' => 'required|string',
+            'brand_id' => 'required|integer',
+            'category_id' => 'required|integer',
+            'items_id.*' => 'nullable|integer',
+            'tags_id.*' => 'nullable|integer',
             'is_published' => 'required|integer|min:0|max:1',
-            'expired_at' => 'nullable|date',
+            'file' => 'nullable|file|image|mimes:png,jpeg,jpg,svg,svgz|max:1024',
+            'thumbnail' => 'required|string|max:255'
         ];
     }
 
@@ -36,8 +41,13 @@ class NotificationRequest extends FormRequest
         return [
             'title' => 'タイトル',
             'body' => '本文',
+            'brand_id' => 'ブランドカテゴリ',
+            'category_id' => '性別カテゴリ',
+            'items_id.*' => '関連品番',
+            'tags_id.*' => 'タグ',
             'is_published' => '公開設定',
-            'expired_at' => '掲載終了日',
+            'file' => 'サムネイル画像',
+            'thumbnail' => 'サムネイル画像'
         ];
     }
 }

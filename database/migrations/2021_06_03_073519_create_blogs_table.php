@@ -19,6 +19,8 @@ class CreateBlogsTable extends Migration
             $table->foreign('brand_id')->references('id')->on('brands'); // 外部キー
             $table->unsignedInteger('admin_id'); // 外部キー
             $table->foreign('admin_id')->references('id')->on('admins'); // 外部キー
+            $table->unsignedInteger('category_id'); // 外部キー
+            $table->foreign('category_id')->references('id')->on('categories'); // 外部キー
             $table->string('title',255);
             $table->mediumText('body');
             $table->string('thumbnail',255);

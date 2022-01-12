@@ -158,7 +158,7 @@ class ItemController extends Controller
             // カテゴリ中間テーブルへの保存 ＊ 配列形式でIDを渡して配列外のIDは削除される
             $item->categories()->sync([$data['gender_category'], $data['main_category'], $data['sub_category']]);
             // タグ中間テーブルへの保存
-            $item->tags()->sync($data['tags_id']);
+            $item->tags()->sync(!empty($data['tags_id'])? $data['tags_id']: []);
             // skusは配列形式で複数レコードが返ってくるのでfor文で展開してレコードを挿入
             for($i = 0; $i < count($data['skus']); $i++) {
                 Sku::create([
@@ -209,7 +209,6 @@ class ItemController extends Controller
             DB::commit();
             return response()->json(['create' => true, 'message' => '商品の新規登録を完了しました'], 200);
         } catch (Throwable $e) {
-            Storage::delete($path_as);
             Log::error($e->getMessage());
             DB::rollBack();
             return response()->json(['create' => false, 'message' => '商品の新規登録を失敗しました'], 200);
@@ -296,7 +295,7 @@ class ItemController extends Controller
             // カテゴリ中間テーブルへの保存 ＊ 配列形式でIDを渡して配列外のIDは削除される
             $item->categories()->sync([$data['gender_category'], $data['main_category'], $data['sub_category']]);
             // タグ中間テーブルへの保存
-            $item->tags()->sync($data['tags_id']);
+            $item->tags()->sync(!empty($data['tags_id'])? $data['tags_id']: []);
             // skusは配列形式で複数レコードが返ってくるのでfor文で展開してレコードを挿入
             for($i = 0; $i < count($data['skus']); $i++) {
                 // 更新もしくはIDがnull渡ってくる場合はレコードを挿入
@@ -336,7 +335,6 @@ class ItemController extends Controller
             DB::commit();
             return response()->json(['update' => true, 'message' => '商品の編集を完了しました'], 200);
         } catch (Throwable $e) {
-            Storage::delete($path_as);
             Log::error($e->getMessage());
             DB::rollBack();
             return response()->json(['update' => false, 'message' => '商品の編集を失敗しました'], 200);

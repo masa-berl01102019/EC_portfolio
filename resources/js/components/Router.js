@@ -9,12 +9,12 @@ import {UserPrivateRoute, UserLoginRoute,AdminPrivateRoute, AdminLoginRoute} fro
 import AdminHeader from "./AdminHeader" ;
 import UserHeader from "./UserHeader";
 import Footer from './Footer' ;
-// user用　各ページコンポーネント
+// user用 各ページコンポーネント
 const Top = lazy(() => import( "./pages/user/Top" ));
 const UserLogin = lazy(() => import( "./pages/user/auth/UserLogin" ));
-// マルチ認証Test用　コンポーネント
+// マルチ認証Test用 コンポーネント
 const TestUserIndex = lazy(() => import( "./pages/user/users/TestUserIndex" ));
-// admin用　各ページコンポーネント
+// admin用 各ページコンポーネント
 const AdminLogin = lazy(() => import( "./pages/admin/auth/AdminLogin" ));
 const Dashboard = lazy(() => import( './pages/admin/dashboard/Dashboard' ));
 const UserIndex = lazy(() => import( './pages/admin/users/UserIndex' ));
@@ -31,7 +31,10 @@ const ContactEdit = lazy(() => import( "./pages/admin/contacts/ContactEdit" ));
 const ItemIndex = lazy(() => import( "./pages/admin/items/ItemIndex" ));
 const ItemCreate = lazy(() => import( "./pages/admin/items/ItemCreate" ));
 const ItemEdit = lazy(() => import( "./pages/admin/items/ItemEdit" ));
-// エラーページ用　コンポーネント
+const BlogIndex = lazy(() => import( "./pages/admin/blogs/BlogIndex" ));
+const BlogCreate = lazy(() => import( "./pages/admin/blogs/BlogCreate" ));
+const BlogEdit = lazy(() => import( "./pages/admin/blogs/BlogEdit" ));
+// エラーページ用 コンポーネント
 const NotFound = lazy(() => import( "./pages/error/NotFound" ));
 
 
@@ -44,7 +47,7 @@ function Router() {
     const [authName, setAuthName] = useState('');
     // ブラウザからのアクセスされたURLのドメイン以下を取得して文字列を切り出す
     const str = window.location.pathname.substr( 1, 5 );
-    // Auth名の設定　＊ 今回のアプリでは管理画面のURLは全て /admin/* のルーティングになるので取得した文字列がadminかどうかで管理者ページへのアクセスか一般ページへのアクセスか判別してauth名を決定
+    // Auth名の設定 ＊ 今回のアプリでは管理画面のURLは全て /admin/* のルーティングになるので取得した文字列がadminかどうかで管理者ページへのアクセスか一般ページへのアクセスか判別してauth名を決定
     const auth = str !== 'admin' ? 'user': 'admin';
     // axiosの処理が終わったかどうかをフラグ管理
     const [isResolve, setIsResolve] = useState(false);
@@ -68,7 +71,7 @@ function Router() {
         }).finally(() => {
             setIsResolve(true);
         });
-        // userとadminのステータスに変更があるたびにuseEffectを呼び出す　* リロード後もログイン状況を保持する為
+        // userとadminのステータスに変更があるたびにuseEffectを呼び出す * リロード後もログイン状況を保持する為
     }, [isUserLogin, isAdminLogin]);
 
     return (
@@ -100,6 +103,9 @@ function Router() {
                             <AdminPrivateRoute path="/admin/items" exact component={ItemIndex} />
                             <AdminPrivateRoute path="/admin/items/create" exact component={ItemCreate} />
                             <AdminPrivateRoute path="/admin/items/:id/edit" exact component={ItemEdit} />
+                            <AdminPrivateRoute path="/admin/blogs" exact component={BlogIndex} />
+                            <AdminPrivateRoute path="/admin/blogs/create" exact component={BlogCreate} />
+                            <AdminPrivateRoute path="/admin/blogs/:id/edit" exact component={BlogEdit} />
                             {/* NOT FOUND PAGE */}
                             <Route component={NotFound} />
                         </Switch>

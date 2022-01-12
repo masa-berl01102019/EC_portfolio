@@ -32,7 +32,7 @@ class UserRegisterRequest extends FormRequest
             'first_name' => 'required|string|max:25',
             'last_name_kana' => ['required','string','max:25', new Kana],
             'first_name_kana' => ['required','string','max:25', new Kana],
-            'gender' => 'required|numeric|min:0|max:3',
+            'gender' => 'required|integer|min:0|max:3',
             'birthday' => 'required|date',
             'post_code' => ['required','string', new JapanesePostCode, 'max:10'],
             'prefecture' => 'required|string|max:50',
@@ -49,7 +49,7 @@ class UserRegisterRequest extends FormRequest
             'tel' => ['required','string', new JapanesePhoneNumber, 'max:15'],
             'email' => 'required|email:strict,dns,spoof|max:100|unique:users', // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
             'password' => 'required|string|alpha_num|min:8|max:100', // hash::make()してても入力時100字以内ならバリデーション通る
-            'is_received' => 'required|numeric|min:0|max:1',
+            'is_received' => 'required|integer|min:0|max:1',
         ];
     }
 

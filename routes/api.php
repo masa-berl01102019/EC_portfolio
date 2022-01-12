@@ -67,6 +67,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::delete('/items/delete/skus', 'ItemController@destroySku')->name('items.destroySku');
         Route::delete('/items/delete/images', 'ItemController@destroyImage')->name('items.destroyImage');
         Route::post('/items/csv', 'ItemController@csvExport')->name('items.csvExport'); // 一括CSV出力
+
+        // ブログ情報のCRUD
+        Route::get('/blogs', 'BlogController@index')->name('blogs.index');
+        Route::get('/blogs/create', 'BlogController@create')->name('blogs.create');
+        Route::post('/blogs', 'BlogController@store')->name('blogs.store');
+        Route::get('/blogs/{blog}/edit', 'BlogController@edit')->name('blogs.edit');
+        Route::post('/blogs/{blog}', 'BlogController@update')->name('blogs.update')->where('blog', '[0-9]+'); // ファイルはPOSTでしか受け取れない;
+        Route::delete('/blogs/delete', 'BlogController@destroy')->name('blogs.destroy'); // 一括削除
+        Route::post('/blogs/csv', 'BlogController@csvExport')->name('blogs.csvExport'); // 一括CSV出力
     });
 
 });

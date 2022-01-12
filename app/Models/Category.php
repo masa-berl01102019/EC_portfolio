@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use SoftDeletes; //　論理削除
+    use SoftDeletes; // 論理削除
 
     /** シリアライズ */
 
@@ -36,4 +36,9 @@ class Category extends Model
     public function grandChildren() {
         return $this->hasMany('App\Models\Category', "parent_id", "id");
     }
+
+    public function blog() {
+        return $this->hasOne('App\Models\Blog');
+    }
+
 }

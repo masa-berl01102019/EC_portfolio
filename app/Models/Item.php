@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use App\Traits\FilterDateRangeScopeTrait;
-use App\Traits\FilterIsPublishedScopeTrait;
-use App\Traits\FilterKeywordScopeTrait;
-use App\Traits\OrderByModifiedAtScopeTrait;
-use App\Traits\OrderByPostedAtScopeTrait;
 use App\Traits\PriceAccessorTrait;
+use App\Traits\FilterTagScopeTrait;
 use App\Traits\PublishAccessorTrait;
+use App\Traits\FilterBrandScopeTrait;
+use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\OrderByPostedAtScopeTrait;
+use App\Traits\FilterIsPublishedScopeTrait;
+use App\Traits\OrderByModifiedAtScopeTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,6 +26,8 @@ class Item extends Model
     use FilterKeywordScopeTrait;
     use FilterDateRangeScopeTrait;
     use FilterIsPublishedScopeTrait;
+    use FilterTagScopeTrait;
+    use FilterBrandScopeTrait;
 
     // timestamp無効にしないとデータ挿入時にエラーになる
     public $timestamps = false;
@@ -47,19 +51,6 @@ class Item extends Model
     protected $appends = ['is_published_text', 'price_text', 'cost_text'];
 
     /** スコープ */
-
-    public function scopeFilterTag($query, $request) {
-        $filter = $request->input('f_tag');
-        $flag = $filter !== null ? true : false;
-        $query->when($flag, function($query) use($filter) {
-            $query->whereHas('tags', function ($query) use($filter) {
-                // カンマ区切りで配列に変換
-                $receiver_arr = explode(',',$filter);
-                // 配列内に該当する項目を絞り込み検索
-                return $query->whereIn('tags.id', $receiver_arr);
-            });
-        });
-    }
 
     public function scopeFilterCategory($query, $request) {
         $gender_category = $request->input('f_gender_category');
@@ -102,19 +93,6 @@ class Item extends Model
         $flag = $filter !== null ? true : false;
         $query->when($flag, function($query) use($filter) {
             $query->whereHas('skus.size', function ($query) use($filter) {
-                // カンマ区切りで配列に変換
-                $receiver_arr = explode(',',$filter);
-                // 配列内に該当する項目を絞り込み検索
-                return $query->whereIn('id', $receiver_arr);
-            });
-        });
-    }
-
-    public function scopeFilterBrand($query, $request) {
-        $filter = $request->input('f_brand');
-        $flag = $filter !== null ? true : false;
-        $query->when($flag, function($query) use($filter) {
-            $query->whereHas('brand', function ($query) use($filter) {
                 // カンマ区切りで配列に変換
                 $receiver_arr = explode(',',$filter);
                 // 配列内に該当する項目を絞り込み検索

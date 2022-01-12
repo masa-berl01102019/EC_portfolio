@@ -32,7 +32,7 @@ class UserEditRequest extends FormRequest
             'first_name' => 'required|string|max:25',
             'last_name_kana' => ['required','string','max:25', new Kana],
             'first_name_kana' => ['required','string','max:25', new Kana],
-            'gender' => 'required|numeric|min:0|max:3',
+            'gender' => 'required|integer|min:0|max:3',
             'birthday' => 'required|date',
             'post_code' => ['required','string', new JapanesePostCode, 'max:10'],
             'prefecture' => 'required|string|max:50',
@@ -54,7 +54,7 @@ class UserEditRequest extends FormRequest
                 'max:100',
                 Rule::unique('users')->ignore($this->id), // 該当ID以外でユニークを適用
             ], // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
-            'is_received' => 'required|numeric|min:0|max:1',
+            'is_received' => 'required|integer|min:0|max:1',
         ];
     }
 

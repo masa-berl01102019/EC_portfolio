@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
              OrdersTableSeeder::class,
              ItemTagTableSeeder::class,
              CategoryItemTableSeeder::class,
+             BlogTagTableSeeder::class,
+             BlogItemTableSeeder::class
          ]);
     }
 }
