@@ -25,8 +25,14 @@ class NewsFactory extends Factory
         // ランダムでブランドIDを一つ取り出し
         $brand_id = $this->faker->randomElement($brands_id);
 
+        // カテゴリIDを配列で用意 1:メンズ 2:レディース
+        $categories_id = [1,2];
+
+        // ランダムでカテゴリIDを一つ取り出し
+        $category_id = $this->faker->randomElement($categories_id);
+
         // 公開状況
-        $is_published = $this->faker->numberBetween($min = 0, $max = 1); // 0: 未公開　1: 公開
+        $is_published = $this->faker->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開
 
         // 公開日
         $posted_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
@@ -37,6 +43,7 @@ class NewsFactory extends Factory
         return [
             'brand_id' => $brand_id,
             'admin_id' => $admin_id,
+            'category_id' => $category_id,
             'title' => $this->faker->realText(20),
             'body' => $this->faker->randomHtml(2, 3),
             'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480),

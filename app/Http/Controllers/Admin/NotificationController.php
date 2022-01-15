@@ -99,6 +99,8 @@ class NotificationController extends Controller
 
         // 初回登録時に非公開の状態で保存されている場合もあるのでカラム名の出し分け
         $registered_date = $notification->posted_at !== null ? 'modified_at': 'posted_at';
+        // 編集した内容を非公開で保存する場合は日付を更新したくないので該当インスタンスに登録されてる日付を取得
+        $date = $registered_date === 'modified_at'? $notification->modified_at : $notification->posted_at;
 
         // 編集項目をDBに保存
         $notification->fill([
@@ -107,7 +109,7 @@ class NotificationController extends Controller
             'body' => $data['body'],
             'is_published' => $data['is_published'],
             'expired_at' => $data['expired_at'],
-            $registered_date => $data['is_published'] == 1 ? Carbon::now(): null, // 公開日ベースで更新日を保存したいので条件分岐を追加
+            $registered_date => $data['is_published'] == 1 ? Carbon::now(): $date, // 公開日ベースで更新日を保存したいので条件分岐を追加
         ])->save();
 
         // レスポンスを返却

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Throwable;
 use App\Models\Tag;
-use App\Models\Blog;
-use App\Models\Item;
+use App\Models\News;
 use App\Models\Brand;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -15,10 +14,10 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\admin\BlogEditRequest;
-use App\Http\Requests\admin\BlogRegisterRequest;
+use App\Http\Requests\admin\NewsEditRequest;
+use App\Http\Requests\admin\NewsRegisterRequest;
 
-class BlogController extends Controller
+class NewsController extends Controller
 {
     // TODO Resource APIでレスポンスの返却形式を決めるか要検討
     // TODO フリーワード検索でカラムを指定受けて検索をかける仕様にするか要検討
@@ -34,57 +33,52 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {
-        $search_blog = Blog::select(['blogs.id', 'title', 'thumbnail', 'is_published', 'posted_at', 'modified_at', 'brand_id', 'admin_id', 'category_id'])->with([
+        $search_news = News::select(['news.id', 'title', 'thumbnail', 'is_published', 'posted_at', 'modified_at', 'brand_id', 'admin_id', 'category_id'])->with([
             'admin:id,first_name,last_name,first_name_kana,last_name_kana',
             'brand:id,brand_name',
-            'tags:id,tag_name',
-            'items:id,product_number',
+            'tags:id,tag_name'
         ]);
 
         // フリーワード検索
-        $search_blog->filterKeyword($request, ['title']);
+        $search_news->filterKeyword($request, ['title']);
         // 検索期間の指定フィルター
-        $search_blog->filterDateRange($request);
+        $search_news->filterDateRange($request);
         // 公開の有無フィルター
-        $search_blog->filterIsPublished($request);
+        $search_news->filterIsPublished($request);
         // ブランドのフィルター
-        $search_blog->filterBrand($request);
+        $search_news->filterBrand($request);
         // カテゴリのフィルター
-        $search_blog->filterGenderCategory($request);
-        // 関連商品のフィルター
-        $search_blog->filterItem($request);
+        $search_news->filterGenderCategory($request);
         // タグのフィルター
-        $search_blog->filterTag($request);
+        $search_news->filterTag($request);
 
         // 投稿日順->更新日順の優先順位でソートされる仕組み
 
         // 投稿日でソート
-        $search_blog->orderByPostedAt($request);
+        $search_news->orderByPostedAt($request);
         // 修正更新日でソート
-        $search_blog->orderByModifiedAt($request);
+        $search_news->orderByModifiedAt($request);
 
         // 1ページ当たり件数の指定の有無を確認
         if($request->input('per_page')) {
             $per_page = $request->input('per_page');
             // 取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
-            $blogs = $search_blog->paginate((int)$per_page);
+            $news = $search_news->paginate((int)$per_page);
         } else {
             // 取得件数が未設定の場合はデフォルトの表示件数　１０件
-            $blogs = $search_blog->paginate(10);
+            $news = $search_news->paginate(10);
         }
 
         // 各種フィルター用選択肢を取得
         $brands = Brand::select('id','brand_name')->get();
         $gender_categories = Category::select('id', 'category_name')->whereIn('id', [1,2])->get();
-        $items = Item::select('id','product_number')->orderBy('product_number')->get();
         $tags = Tag::select('id','tag_name')->get();
 
         // レスポンスを返却
         return response()->json([
-            'blogs' => $blogs,
+            'news' => $news,
             'brands' => $brands,
             'gender_categories' => $gender_categories,
-            'items' => $items,
             'tags' => $tags,
         ],200);
     }
@@ -94,19 +88,17 @@ class BlogController extends Controller
         // 各種選択肢を取得
         $brands = Brand::select('id','brand_name')->get();
         $gender_categories = Category::select('id', 'category_name')->whereIn('id', [1,2])->get();
-        $items = Item::select('id','product_number')->orderBy('product_number')->get();
         $tags = Tag::select('id','tag_name')->get();
         
         // レスポンスを返却
         return response()->json([
             'brands' => $brands,
             'gender_categories' => $gender_categories,
-            'items' => $items,
             'tags' => $tags,
         ],200);
     }
 
-    public function store(BlogRegisterRequest $request)
+    public function store(NewsRegisterRequest $request)
     {
         // 項目制限
         $data = $request->only($this->form_items);
@@ -120,7 +112,7 @@ class BlogController extends Controller
                 $db_reserve_path = str_replace('public/img/', '/storage/img/', $path_as);
             }
             // 基本情報をDBに保存
-            $blog = Blog::create([
+            $news = News::create([
                 'title' => $data['title'],
                 'body' => $data['body'],
                 'brand_id' => $data['brand_id'],
@@ -131,48 +123,43 @@ class BlogController extends Controller
                 'posted_at' => $data['is_published'] == 1 ? Carbon::now(): null, // 公開日ベースで更新日を保存したいので条件分岐を追加
             ]);
             // タグ中間テーブルへの保存
-            $blog->tags()->sync(!empty($data['tags_id'])? $data['tags_id']: []);
-            // 商品中間テーブルへの保存
-            $blog->items()->sync(!empty($data['items_id'])? $data['items_id']: []);         
+            $news->tags()->sync(!empty($data['tags_id'])? $data['tags_id']: []);       
             DB::commit();
-            return response()->json(['create' => true, 'message' => 'ブログの新規登録を完了しました'], 200);
+            return response()->json(['create' => true, 'message' => 'ニュースの新規登録を完了しました'], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['create' => false, 'message' => 'ブログの新規登録を失敗しました'], 200);
+            return response()->json(['create' => false, 'message' => 'ニュースの新規登録を失敗しました'], 200);
         }
     }
 
-    public function edit(Blog $blog)
+    public function edit(News $news)
     {
         // 各種選択肢を取得
         $brands = Brand::select('id','brand_name')->get();
         $gender_categories = Category::select('id', 'category_name')->whereIn('id', [1,2])->get();
-        $items = Item::select('id','product_number')->orderBy('product_number')->get();
         $tags = Tag::select('id','tag_name')->get();
 
         $arr = [
-            'title' => $blog->title,
-            'body' => $blog->body,
-            'brand_id' => $blog->brand_id,
-            'category_id' => $blog->category_id,
-            'thumbnail' => $blog->thumbnail,
-            'is_published' => $blog->is_published,
-            'items_id' => $blog->items->pluck('id')->toArray(), // 別テーブル
-            'tags_id' => $blog->tags->pluck('id')->toArray() // 別テーブル
+            'title' => $news->title,
+            'body' => $news->body,
+            'brand_id' => $news->brand_id,
+            'category_id' => $news->category_id,
+            'thumbnail' => $news->thumbnail,
+            'is_published' => $news->is_published,
+            'tags_id' => $news->tags->pluck('id')->toArray() // 別テーブル
         ];
         
         // レスポンスを返却
         return response()->json([
-            'blog' => $arr,
+            'news' => $arr,
             'brands' => $brands,
             'gender_categories' => $gender_categories,
-            'items' => $items,
             'tags' => $tags,
         ],200);
     }
 
-    public function update(BlogEditRequest $request, Blog $blog)
+    public function update(NewsEditRequest $request, News $news)
     {
         // 項目制限
         $data = $request->only($this->form_items);
@@ -185,17 +172,17 @@ class BlogController extends Controller
                 $path_as = Storage::putFile('public/img', $data['file']);
                 // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
                 $db_reserve_path = str_replace('public/img/', '/storage/img/', $path_as);
-                // 変更時はブログの古いサムネイル画像を削除する必要があるのでパスを取得して変換
-                $old_img = str_replace('/storage/img/', 'public/img/', $blog->thumbnail !== null ? $blog->thumbnail : '');
+                // 変更時はニュースの古いサムネイル画像を削除する必要があるのでパスを取得して変換
+                $old_img = str_replace('/storage/img/', 'public/img/', $news->thumbnail !== null ? $news->thumbnail : '');
                 // fileの存在をチェックして削除
                 if(Storage::exists($old_img)) Storage::delete($old_img);
             }
             // 初回登録時に非公開の状態で保存されている場合もあるのでカラム名の出し分け
-            $registered_date = $blog->posted_at !== null ? 'modified_at': 'posted_at';
+            $registered_date = $news->posted_at !== null ? 'modified_at': 'posted_at';
             // 編集した内容を非公開で保存する場合は日付を更新したくないので該当インスタンスに登録されてる日付を取得
-            $date = $registered_date === 'modified_at'? $blog->modified_at : $blog->posted_at;
+            $date = $registered_date === 'modified_at'? $news->modified_at : $news->posted_at;
             // 基本情報をDBに保存
-            $blog->fill([
+            $news->fill([
                 'title' => $data['title'],
                 'body' => $data['body'],
                 'brand_id' => $data['brand_id'],
@@ -206,48 +193,45 @@ class BlogController extends Controller
                 $registered_date => $data['is_published'] == 1 ? Carbon::now(): $date, // 公開日ベースで更新日を保存したいので条件分岐を追加
             ])->save();
             // タグ中間テーブルへの保存
-            $blog->tags()->sync(!empty($data['tags_id'])? $data['tags_id']: []);
-            // 商品中間テーブルへの保存
-            $blog->items()->sync(!empty($data['items_id'])? $data['items_id']: []);
+            $news->tags()->sync(!empty($data['tags_id'])? $data['tags_id']: []);
             DB::commit();
-            return response()->json(['update' => true, 'message' => 'ブログの編集を完了しました'], 200);
+            return response()->json(['update' => true, 'message' => 'ニュースの編集を完了しました'], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['update' => false, 'message' => 'ブログの編集を失敗しました'], 200);
+            return response()->json(['update' => false, 'message' => 'ニュースの編集を失敗しました'], 200);
         }
     }
 
     public function destroy(Request $request)
     {
         // 複数のIDが渡ってくるので全て取得する
-        $blogs = $request->all();
+        $id = $request->all();
 
-        foreach($blogs as $blog) {
+        foreach($id as $item) {
             // インスタンスを生成して削除
-            $blog = Blog::find($blog);
-            $blog->delete();
+            $news = News::find($item);
+            $news->delete();
         }
         // レスポンスを返却
-        return response()->json(['delete' => true, 'message' => 'ブログの削除を完了しました'], 200);
+        return response()->json(['delete' => true, 'message' => 'ニュースの削除を完了しました'], 200);
     }
 
     public function csvExport(Request $request)
     {
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
-        // 該当のIDのブログを取得
-        $blogs = Blog::whereIn('id', $id)->select(['blogs.id', 'title', 'thumbnail', 'is_published', 'posted_at', 'modified_at', 'brand_id', 'admin_id', 'category_id'])->with([
+        // 該当のIDのニュースを取得
+        $news = News::whereIn('id', $id)->select(['news.id', 'title', 'thumbnail', 'is_published', 'posted_at', 'modified_at', 'brand_id', 'admin_id', 'category_id'])->with([
             'admin:id,first_name,last_name,first_name_kana,last_name_kana',
             'brand:id,brand_name',
-            'tags:id,tag_name',
-            'items:id,product_number',
+            'tags:id,tag_name'
         ])->cursor();
 
         // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
-        return response()->streamDownload(function () use ($blogs) {
+        return response()->streamDownload(function () use ($news) {
             // CSVのヘッダー作成
-            $csv_header = ['No', '公開状況', 'タイトル', 'ブランド', 'カテゴリ', '関連品番', 'タグ', '最終更新者', '投稿日', '更新日'];
+            $csv_header = ['No', '公開状況', 'タイトル', 'ブランド', 'カテゴリ', 'タグ', '最終更新者', '投稿日', '更新日'];
             // SplFileObjectのインスタンスを生成
             $file = new \SplFileObject('php://output', 'w');
             // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
@@ -256,24 +240,23 @@ class BlogController extends Controller
             $file->fputcsv($csv_header);
             // 一行ずつ連想配列から値を取り出して配列に格納
             $num = 1;
-            foreach ($blogs as $blog){
+            foreach ($news as $item){
 
                 $file->fputcsv([
                     $num,
-                    $blog->is_published_text,
-                    $blog->title,
-                    $blog->brand->brand_name,
-                    $blog->gender_category_text,
-                    implode(' / ', $blog->items->pluck('product_number')->toArray()),
-                    implode(' / ', $blog->tags->pluck('tag_name')->toArray()),
-                    $blog->admin->full_name.'('.$blog->admin->full_name_kana.')',
-                    $blog->posted_at !== null ? $blog->posted_at->format('Y-m-d'): '　　',
-                    $blog->modified_at !== null ? $blog->modified_at->format('Y-m-d'): '　　',
+                    $item->is_published_text,
+                    $item->title,
+                    $item->brand->brand_name,
+                    $item->gender_category_text,
+                    implode(' / ', $item->tags->pluck('tag_name')->toArray()),
+                    $item->admin->full_name.'('.$item->admin->full_name_kana.')',
+                    $item->posted_at !== null ? $item->posted_at->format('Y-m-d'): '　　',
+                    $item->modified_at !== null ? $item->modified_at->format('Y-m-d'): '　　',
                 ]);
                 $num++;
             }
 
-        }, 'ブログ情報出力.csv', [
+        }, 'ニュース情報出力.csv', [
             'Content-Type' => 'text/csv'
         ]);
     }

@@ -76,6 +76,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/blogs/{blog}', 'BlogController@update')->name('blogs.update')->where('blog', '[0-9]+'); // ファイルはPOSTでしか受け取れない;
         Route::delete('/blogs/delete', 'BlogController@destroy')->name('blogs.destroy'); // 一括削除
         Route::post('/blogs/csv', 'BlogController@csvExport')->name('blogs.csvExport'); // 一括CSV出力
+
+        // ニュース情報のCRUD
+        Route::get('/news', 'NewsController@index')->name('news.index');
+        Route::get('/news/create', 'NewsController@create')->name('news.create');
+        Route::post('/news', 'NewsController@store')->name('news.store');
+        Route::get('/news/{news}/edit', 'NewsController@edit')->name('news.edit');
+        Route::post('/news/{news}', 'NewsController@update')->name('news.update')->where('news', '[0-9]+'); // ファイルはPOSTでしか受け取れない;
+        Route::delete('/news/delete', 'NewsController@destroy')->name('news.destroy'); // 一括削除
+        Route::post('/news/csv', 'NewsController@csvExport')->name('news.csvExport'); // 一括CSV出力
     });
 
 });
