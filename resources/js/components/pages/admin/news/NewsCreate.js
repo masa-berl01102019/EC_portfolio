@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {EditorState, convertToRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
