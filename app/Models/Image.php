@@ -22,7 +22,7 @@ class Image extends Model
         return $this->belongsTo('App\Models\Item');
     }
 
-    public function colors() {
+    public function color() {
         return $this->belongsTo('App\Models\Color');
     }
 

@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
              SkusTableSeeder::class,
              CartsTableSeeder::class,
              BookmarksTableSeeder::class,
-             OrderDetailsTableSeeder::class,
              OrdersTableSeeder::class,
              ItemTagTableSeeder::class,
              CategoryItemTableSeeder::class,

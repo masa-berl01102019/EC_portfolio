@@ -41,10 +41,6 @@ class Sku extends Model
         return $this->belongsTo('App\Models\Size');
     }
 
-    public function images() {
-        return $this->hasMany('App\Models\Image');
-    }
-
     public function bookmarks() {
         return $this->hasMany('App\Models\Bookmark');
     }
