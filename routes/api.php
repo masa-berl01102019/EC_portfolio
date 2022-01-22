@@ -89,9 +89,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         // 注文情報のCRUD
         Route::get('/orders', 'OrderController@index')->name('orders.index');
         Route::get('/orders/{order}/edit', 'OrderController@edit')->name('orders.edit');
-        Route::put('/orders/{order}', 'OrderController@update')->name('orders.update'); // ファイルはPOSTでしか受け取れない;
+        Route::put('/orders/{order}', 'OrderController@update')->name('orders.update');
         Route::delete('/orders/delete', 'OrderController@destroy')->name('orders.destroy'); // 一括削除
         Route::post('/orders/csv', 'OrderController@csvExport')->name('orders.csvExport'); // 一括CSV出力
+
+        // カラー情報のCRUD
+        Route::get('/colors', 'ColorController@index')->name('colors.index');
+        Route::post('/colors', 'ColorController@store')->name('colors.store');
+        Route::put('/colors/{color}', 'ColorController@update')->name('colors.update'); 
+        Route::delete('/colors/delete', 'ColorController@destroy')->name('colors.destroy'); // 一括削除
     });
 
 });
