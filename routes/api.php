@@ -98,6 +98,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/colors', 'ColorController@store')->name('colors.store');
         Route::put('/colors/{color}', 'ColorController@update')->name('colors.update'); 
         Route::delete('/colors/delete', 'ColorController@destroy')->name('colors.destroy'); // 一括削除
+
+        // ブランド情報のCRUD
+        Route::get('/brands', 'BrandController@index')->name('brands.index');
+        Route::post('/brands', 'BrandController@store')->name('brands.store');
+        Route::put('/brands/{brand}', 'BrandController@update')->name('brands.update'); 
+        Route::delete('/brands/delete', 'BrandController@destroy')->name('brands.destroy'); // 一括削除
     });
 
 });
