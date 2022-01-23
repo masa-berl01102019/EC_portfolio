@@ -104,6 +104,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/brands', 'BrandController@store')->name('brands.store');
         Route::put('/brands/{brand}', 'BrandController@update')->name('brands.update'); 
         Route::delete('/brands/delete', 'BrandController@destroy')->name('brands.destroy'); // 一括削除
+
+        // タグ情報のCRUD
+        Route::get('/tags', 'TagController@index')->name('tags.index');
+        Route::post('/tags', 'TagController@store')->name('tags.store');
+        Route::put('/tags/{tag}', 'TagController@update')->name('tags.update'); 
+        Route::delete('/tags/delete', 'TagController@destroy')->name('tags.destroy'); // 一括削除
     });
 
 });

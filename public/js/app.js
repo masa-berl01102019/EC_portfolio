@@ -106213,7 +106213,9 @@ function AdminHeader(props) {
     to: "/admin/colors"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30AB\u30E9\u30FC\u30DE\u30B9\u30BF")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
     to: "/admin/brands"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30D6\u30E9\u30F3\u30C9\u30DE\u30B9\u30BF")))));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30D6\u30E9\u30F3\u30C9\u30DE\u30B9\u30BF")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
+    to: "/admin/tags"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30BF\u30B0\u30DE\u30B9\u30BF")))));
 
   if (!isAdminLogin) {
     return BeforeLoginHeader;
@@ -106615,6 +106617,9 @@ var ColorIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])
 });
 var BrandIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
   return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, /*! ./pages/admin/brands/BrandIndex */ "./resources/js/components/pages/admin/brands/BrandIndex.js"));
+});
+var TagIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(36)]).then(__webpack_require__.bind(null, /*! ./pages/admin/tags/TagIndex */ "./resources/js/components/pages/admin/tags/TagIndex.js"));
 }); // エラーページ用 コンポーネント
 
 var NotFound = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
@@ -106790,6 +106795,10 @@ function Router() {
     path: "/admin/brands",
     exact: true,
     component: BrandIndex
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GuardRoute__WEBPACK_IMPORTED_MODULE_5__["AdminPrivateRoute"], {
+    path: "/admin/tags",
+    exact: true,
+    component: TagIndex
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     component: NotFound
   })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Footer__WEBPACK_IMPORTED_MODULE_8__["default"], null));
