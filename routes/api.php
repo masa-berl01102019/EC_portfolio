@@ -97,19 +97,25 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::get('/colors', 'ColorController@index')->name('colors.index');
         Route::post('/colors', 'ColorController@store')->name('colors.store');
         Route::put('/colors/{color}', 'ColorController@update')->name('colors.update'); 
-        Route::delete('/colors/delete', 'ColorController@destroy')->name('colors.destroy'); // 一括削除
+        Route::delete('/colors/delete', 'ColorController@destroy')->name('colors.destroy');
 
         // ブランド情報のCRUD
         Route::get('/brands', 'BrandController@index')->name('brands.index');
         Route::post('/brands', 'BrandController@store')->name('brands.store');
         Route::put('/brands/{brand}', 'BrandController@update')->name('brands.update'); 
-        Route::delete('/brands/delete', 'BrandController@destroy')->name('brands.destroy'); // 一括削除
+        Route::delete('/brands/delete', 'BrandController@destroy')->name('brands.destroy');
 
         // タグ情報のCRUD
         Route::get('/tags', 'TagController@index')->name('tags.index');
         Route::post('/tags', 'TagController@store')->name('tags.store');
         Route::put('/tags/{tag}', 'TagController@update')->name('tags.update'); 
-        Route::delete('/tags/delete', 'TagController@destroy')->name('tags.destroy'); // 一括削除
+        Route::delete('/tags/delete', 'TagController@destroy')->name('tags.destroy');
+
+        // カテゴリー情報のCRUD
+        Route::get('/categories', 'CategoryController@index')->name('categories.index');
+        Route::post('/categories', 'CategoryController@store')->name('categories.store');
+        Route::put('/categories/{category}', 'CategoryController@update')->name('categories.update'); 
+        Route::delete('/categories/delete', 'CategoryController@destroy')->name('categories.destroy');
     });
 
 });

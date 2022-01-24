@@ -7,7 +7,6 @@ import useInputForm from "../../../hooks/useInputForm";
 
 // TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
 // 注意事項 API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
-/* 既に紐づけられたタグを消すと商品一覧でエラーが走る(論理削除の場合) / 物理削除の場合は500番代のエラー発生 */
 
 function TagIndex() {
 
@@ -76,7 +75,7 @@ function TagIndex() {
                                         <input type="text" name="tag_name" onChange={e => setEditTag(e.target.value)} defaultValue={tag.tag_name} placeholder='タグ名' style={{'width': '60%'}}/>
                                         <button onClick={() => { dispatch({type:'UPDATE', form: {tag_name: `${editTag}`},  url:`/api/admin/tags/${tag.id}`});}}>編集</button>
                                         <button onClick={ () => {
-                                            let answer = confirm(`選択タグを使用している商品や画像をする必要があります。\n本当に削除しますか？`);
+                                            let answer = confirm(`選択タグを本当に削除しますか？`);
                                             answer && dispatch({type:'DELETE', form: {id: `${tag.id}`},  url:`/api/admin/tags/delete`});
                                         }}>削除</button>
                                     </div>

@@ -92,6 +92,9 @@ function AdminHeader(props) {
                     <Link to="/admin/tags">
                         <li>タグマスタ</li>
                     </Link>
+                    <Link to="/admin/categories">
+                        <li>カテゴリマスタ</li>
+                    </Link>
                 </ul>
             </nav>
         </>

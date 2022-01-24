@@ -7,7 +7,6 @@ import useInputForm from "../../../hooks/useInputForm";
 
 // TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
 // 注意事項 API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
-/* 既に紐づけられたカラーを消すと商品一覧でエラーが走る(論理削除の場合) / 物理削除の場合は500番代のエラー発生 */
 
 function ColorIndex() {
 
@@ -62,7 +61,7 @@ function ColorIndex() {
                         e.preventDefault();
                         dispatch({type: 'CREATE', form: formData, url:'/api/admin/colors'});
                     }}>
-                        <input type='text' name='color_name' onBlur={handleFormData} defaultValue={formData.color_name} placeholder='ブルー'/>
+                        <input type='text' name='color_name' onBlur={handleFormData} defaultValue={formData.color_name} placeholder='カラー名'/>
                         <button type="submit">カラー追加</button>
                     </form>
                 </div>
@@ -73,10 +72,10 @@ function ColorIndex() {
                             <div key={color.id} style={{'width': '300px'}}>
                                 { color.id === editableForm ? (
                                     <div style={{'display': 'flex'}}>
-                                        <input type="text" name="color_name" onChange={e => setEditColor(e.target.value)} defaultValue={color.color_name} placeholder='ブルー' style={{'width': '60%'}}/>
+                                        <input type="text" name="color_name" onChange={e => setEditColor(e.target.value)} defaultValue={color.color_name} placeholder='カラー名' style={{'width': '60%'}}/>
                                         <button onClick={() => { dispatch({type:'UPDATE', form: {color_name: `${editColor}`},  url:`/api/admin/colors/${color.id}`});}}>編集</button>
                                         <button onClick={ () => {
-                                            let answer = confirm(`選択カラーを使用している商品や画像をする必要があります。\n本当に削除しますか？`);
+                                            let answer = confirm(`選択カラーを本当に削除しますか？`);
                                             answer && dispatch({type:'DELETE', form: {id: `${color.id}`},  url:`/api/admin/colors/delete`});
                                         }}>削除</button>
                                     </div>
