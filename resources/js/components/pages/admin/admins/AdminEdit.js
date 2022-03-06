@@ -2,20 +2,16 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import {CircularProgress} from "@material-ui/core";
 import useFetchApiData from "../../../hooks/useFetchApiData";
-import useInputForm from "../../../hooks/useInputForm";
-
-// TODO フロント側でのバリデーション設定
+import useForm from "../../../hooks/useForm";
 
 function AdminEdit(props) {
 
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/admins/${props.match.params.id}/edit`;
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useInputForm({
+    const [formData, {setFormData, handleFormData}] = useForm({
         'last_name': null,
         'first_name': null,
         'last_name_kana': null,
@@ -24,10 +20,9 @@ function AdminEdit(props) {
         'email': null,
         'password': null,
     });
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値　}の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const admin = data.admin;
 
     useEffect(() => {

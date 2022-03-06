@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait PriceAccessorTrait
+trait AccessorPriceTrait
 {
     public function getPriceTextAttribute() {
         return !empty($this->price)? number_format($this->price).'円' : '';

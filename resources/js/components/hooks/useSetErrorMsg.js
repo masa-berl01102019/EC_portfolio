@@ -15,15 +15,15 @@ const useSetErrorMsg = (initialValue) => {
         // 422 バリデーションエラー時は複数エラーメッセージが返ってくるので条件分岐
         if(error.response.status === 422 ) {
             // 取得したエラーオブジェクトを変数に格納
-            const errors = error.response.data.errors;
+            const errors = error.response.data.errMessage;
             // for~in で展開して配列に格納
             for (let key in errors) {
                 // オブジェクトにカラム名をキーにして代入
-                arrayErrors[key] = errors[key][0] ;
+                arrayErrors[key] = errors[key] ;
             }
         } else {
             // オブジェクトに格納
-            arrayErrors.httpRequestError = `${error.response.status} ${error.response.data.message}`;
+            arrayErrors.httpRequestError = `${error.response.data.errMessage}`;
         }
         // エラーメッセージをセット
         setErrorMessage({...arrayErrors});

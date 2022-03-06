@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Bookmark extends Model
 {
     use HasFactory; // laravel8 factory関数使用する為
-    use SoftDeletes; //　論理削除
+    use SoftDeletes; // 論理削除
 
     /** シリアライズ */
 

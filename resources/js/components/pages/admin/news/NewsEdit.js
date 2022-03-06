@@ -5,21 +5,18 @@ import {stateFromHTML} from 'draft-js-import-html';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
-
-// TODO フロント側でのバリデーション設定
-// TODO ニュース本文で保存された画像をどうするか考える
+import useForm from "../../../hooks/useForm";
+import useObjectForm from "../../../hooks/useObjectForm";
+import useHelper from "../../../hooks/useHelper";
 
 function NewsEdit(props) {
 
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/news/${props.match.params.id}/edit`;
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useInputForm({
+    const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm({
         'title': '',
         'body': '',
         'brand_id': '',
@@ -28,12 +25,15 @@ function NewsEdit(props) {
         'is_published': 0, // 0: 非公開 1: 公開中
         'thumbnail': '/img/no_image.png'
     });
-
+    // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
+    // file送信用にフォームのラッパー関数呼び出し
+    const {handleSendObjectForm} = useObjectForm(formData, setFormData);
+    // 便利関数の呼び出し
+    const {isJson} = useHelper();
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値 }の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const news = data.news;
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
@@ -45,7 +45,7 @@ function NewsEdit(props) {
             // フォームのデフォルト値を設定するためにsetFormDataで値をセット
             setFormData({...news});
             // newsの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
-            const contentState = is_json(news.body) ? convertFromRaw(JSON.parse(news.body)) : stateFromHTML(news.body);
+            const contentState = isJson(news.body) ? convertFromRaw(JSON.parse(news.body)) : stateFromHTML(news.body);
             // contentStateをeditorStateに変換
             const editorState = EditorState.createWithContent(contentState);
             // editorStateをdraft.jsにセット
@@ -56,87 +56,6 @@ function NewsEdit(props) {
             history.push('/admin/news');
         }
     },[data]);
-
-    // JSON判定用の関数
-    const is_json = (data) => {
-        try {
-            JSON.parse(data);
-        } catch (error) {
-            return false;
-        }
-        return true;
-    }
-
-    // ItemIndexにも使われてるもののオブジェクトではない番
-    const handleFormFile = (e) => {
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const file = e.target.files[0]; // fileオブジェクトを変数に格納
-        const imageUrl = URL.createObjectURL(file); // 新しいオブジェクトURLを生成
-        // ステートを更新
-        setFormData({
-            ...formData,
-            [name]: imageUrl,
-            'file': file
-        });
-    };
-
-    // objecy判定便利関数 ItemIndexにも使われてるので後で切り出す
-    function isObject(val) {
-        if( val !== null && typeof(val) === 'object' && val.constructor === Object ) {
-            return true;
-        }
-        return false;
-    }
-
-    // ItemIndexにも使われてるので後で切り出す
-    const handleFormSendwithFile = () => {
-        // FormDataオブジェクトのインスタンス生成
-        const params = new FormData();
-        // formオブジェクトを展開
-        Object.entries(formData).forEach(([key, value]) => {
-            // valueが配列形式か判定
-            if(Array.isArray(value)) {
-                // 配列を展開
-                for(let i = 0; i < value.length; i++) {
-                    // 展開した配列内に複数オブジェクトを持つか単純な配列か判定
-                    if(isObject(value[i])) {
-                        // FormDataは配列やオブジェクトそのままappend()で追加出来ないので formData.images = [ {id:'1', item_id:'2'...} {id:'2', item_id:'3'...}] の場合
-                        // 全て展開してkey: valueの形でappend()で代入する際に文字列を下記のように加工すればサーバー側に渡る際にオブジェクトの形式で渡せる
-                        Object.entries(value[i]).forEach(([key2, value2]) => {
-                            params.append(key+'['+i+']['+key2+']', value2)
-                        })
-                    } else {
-                        // 全て展開してkey[]: valueの形でappend()で代入すればサーバー側に渡る際に配列の形式で渡せる
-                        params.append(key+'[]', value[i])
-                    }
-                }
-            } else {
-                params.append(key, value);
-            }
-        });
-        // axiosで画像等のファイル形式を送信する際はcontent-typeを'multipart/form-data'にしないと送信出来ない
-        // post形式でないと正しく送れない * axiosの仕様的な問題？？
-        dispatch({type: 'CREATE', form: params, url:`/api/admin/news/${props.match.params.id}`, headers: {'content-type': 'multipart/form-data'}});
-    }
-
-    // ItemIndexにも使われてるので後で切り出す
-    const handleFormCheckbox = (e) => {
-        let new_arr; // 配列用の変数を宣言
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const value = Number(e.target.value); // 渡ってきた値を取得
-
-        if(formData[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
-            new_arr = formData[name].filter(item => item !== value );
-        } else {
-            new_arr = formData[name];
-            new_arr.push(value);
-        }
-
-        setFormData({
-            ...formData,
-            [name]: new_arr
-        });
-    };
 
     const onEditorStateChange = (editorState) => {
         // 現在のeditorStateからcontentStateを取得 
@@ -163,7 +82,7 @@ function NewsEdit(props) {
                 <h1>ニュース編集</h1>
                 <form onSubmit={ e => {
                     e.preventDefault();
-                    handleFormSendwithFile();
+                    handleSendObjectForm(`/api/admin/news/${props.match.params.id}`, dispatch);
                 }}>
                     <div>
                         <label>
@@ -233,13 +152,7 @@ function NewsEdit(props) {
                                 }
                             </div>
                         </div>
-                        {   errorMessage &&
-                            Object.entries(errorMessage).map((value, index) => {
-                                if(value[0].includes('tags_id')) {
-                                    return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                }
-                            })
-                        }
+                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.tags_id}</p> }
                     </div>
 
                     <div>

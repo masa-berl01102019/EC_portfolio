@@ -3,18 +3,28 @@
 namespace App\Exceptions;
 
 use Throwable;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\ErrorResource;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
 
 class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that are not reported.
-     *
+     * ログ出力しない例外の設定
      * @var array
      */
     protected $dontReport = [
-        //
+        // \Illuminate\Auth\AuthenticationException::class, // 認証
+        // \Illuminate\Auth\Access\AuthorizationException::class, // 認可
+        // \Illuminate\Validation\ValidationException::class, // バリデーション
+        // \Symfony\Component\HttpKernel\Exception\HttpException::class, // HTTPステータス
+        // \Illuminate\Database\Eloquent\ModelNotFoundException::class, // モデル関係
     ];
 
     /**
@@ -50,6 +60,49 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+        if (!$request->is('api/*')) {
+            // API以外は何もしない
+            return parent::render($request, $exception);
+        } else if ($exception instanceof AuthenticationException) {
+            // 認証エラー
+            return response()->json(['errCode' => 'Unauthorized', 'errMessage' => $exception->getMessage()], 401);
+        } else if ($exception instanceof ValidationException) {
+            // バリデーションエラー
+            return response()->json(new ErrorResource($exception),422);
+        } else if ($exception instanceof HttpException) {
+            // HTTPステータスエラー
+            $err_code = $exception->getStatusCode();
+            switch($err_code) {
+                case 403 || 404:
+                    return response()->json(['errCode' => 'Not Found','errMessage' => 'リソースが存在しません'], 404);
+                    break;
+                case 405:
+                    return response()->json(['errCode' => 'Method Not Allowed','errMessage' => '未許可のメソッドが実行されております'], 405);
+                    break;
+                case 408:
+                    return response()->json(['errCode' => 'Request Timeout','errMessage' => 'リクエストが時間内に完了出来ませんでした'], 408);
+                    break;
+                case 414:
+                    return response()->json(['errCode' => 'URI Too Long','errMessage' => 'URIの長さがサーバーの上限を超えてます'], 414);
+                    break;
+                case 415:
+                    return response()->json(['errCode' => 'Unsupported Media Type','errMessage' => 'メディア形式が正しくありません'], 414);
+                    break;
+                case 429:
+                    return response()->json(['errCode' => 'Too Many Requests','errMessage' => 'APIの利用上限を超過しています'], 429);
+                    break;
+                case $err_code >= 400 && $err_code < 500:
+                    return response()->json(['errCode' => 'Bad Request','errMessage' => '無効なリクエストです'], 400);
+                    break;
+                case 503:
+                    return response()->json(['errCode' => 'Service Unavailable','errMessage' => '一時的にAPIアクセスが出来ません'], 503);
+                    break;
+                case $err_code >= 500 && $err_code < 600:
+                    return response()->json(['errCode' => 'Internal Server Error','errMessage' => 'サーバーで何らかの異常が発生しました'], 500);
+                    break;
+            }
+        } else {
+            return parent::render($request, $exception);
+        }
     }
 }

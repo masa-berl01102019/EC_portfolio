@@ -19,6 +19,6 @@ class Authenticate extends Middleware
             return route('login');
         }
 
-        //　上記のredirectToメソッドは認証が完了していないユーザーをリダイレクトする　＊ 今回はlaravelをAPIとして利用してるので利用しない
+        // 上記のredirectToメソッドは認証が完了していないユーザーをリダイレクトする ＊ 今回はlaravelをAPIとして利用してるので利用しない
     }
 }

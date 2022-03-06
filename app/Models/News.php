@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use App\Traits\NameAccessorTrait;
+use App\Traits\AccessorNameTrait;
 use App\Traits\FilterTagScopeTrait;
-use App\Traits\PublishAccessorTrait;
+use App\Traits\AccessorPublishTrait;
 use App\Traits\FilterBrandScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CustomPaginateScopeTrait;
 use App\Traits\FilterDateRangeScopeTrait;
 use App\Traits\OrderByPostedAtScopeTrait;
+use App\Traits\AccessorGenderCategoryTrait;
 use App\Traits\FilterIsPublishedScopeTrait;
-use App\Traits\GenderCategoryAccessorTrait;
 use App\Traits\OrderByModifiedAtScopeTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\FilterGenderCategoryScopeTrait;
@@ -21,8 +22,9 @@ class News extends Model
 {
     use HasFactory; // laravel8 factory関数使用する為
     use SoftDeletes; // 論理削除
-    use NameAccessorTrait;
-    use PublishAccessorTrait;
+    use AccessorNameTrait;
+    use AccessorPublishTrait;
+    use AccessorGenderCategoryTrait;
     use OrderByPostedAtScopeTrait;
     use OrderByModifiedAtScopeTrait;
     use FilterKeywordScopeTrait;
@@ -30,8 +32,8 @@ class News extends Model
     use FilterIsPublishedScopeTrait;
     use FilterTagScopeTrait;
     use FilterBrandScopeTrait;
-    use GenderCategoryAccessorTrait;
     use FilterGenderCategoryScopeTrait;
+    use CustomPaginateScopeTrait;
 
     // timestamp無効にしないとデータ挿入時にエラーになる
     public $timestamps = false;
@@ -45,8 +47,8 @@ class News extends Model
 
     // モデルからシリアライズ時の日付形式の設定
     protected $casts = [
-        'posted_at' => 'date:Y-m-d',
-        'modified_at' => 'date:Y-m-d',
+        'posted_at' => 'date:Y/m/d H:i',
+        'modified_at' => 'date:Y/m/d H:i',
     ];
 
     /** アクセサ */

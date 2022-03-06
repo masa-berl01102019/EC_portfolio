@@ -16,6 +16,22 @@ class Category extends Model
         'id'
     ];
 
+    /** static method */
+
+    public static function genderCategories () {
+        return  Self::select('id', 'category_name', 'parent_id')->whereIn('id', [1,2]);
+    }
+
+    public static function mainCategories () {
+        return Self::select('id', 'category_name', 'parent_id')->whereIn('parent_id', [1,2]);
+    }
+
+    public static function subCategories () {
+        return Self::select('depth_3.id', 'depth_3.category_name', 'depth_3.parent_id')
+                    ->join('categories as depth_2','depth_2.parent_id','=','categories.id')
+                    ->join('categories as depth_3','depth_3.parent_id','=','depth_2.id');
+    }
+
     /** リレーション */
 
     public function items() {

@@ -2,31 +2,33 @@
 
 namespace App\Models;
 
-use App\Traits\FilterDateRangeScopeTrait;
-use App\Traits\FilterKeywordScopeTrait;
-use App\Traits\NameAccessorTrait;
-use App\Traits\OrderByCreatedAtScopeTrait;
+use App\Traits\AccessorNameTrait;
+use App\Traits\TimestampCastTrait;
 use App\Traits\OrderByNameScopeTrait;
-use App\Traits\OrderByUpdatedAtScopeTrait;
-use DateTimeInterface;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\FilterKeywordScopeTrait;
+use App\Traits\CustomPaginateScopeTrait;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
+use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\OrderByCreatedAtScopeTrait;
+use App\Traits\OrderByUpdatedAtScopeTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Admin extends Authenticatable
 {
     use HasFactory; // laravel8 factory関数使用する為
     use Notifiable; // 通知(使うか未定)
-    use SoftDeletes; //　論理削除
-    use NameAccessorTrait;
+    use SoftDeletes; // 論理削除
+    use AccessorNameTrait;
     use OrderByNameScopeTrait;
     use OrderByCreatedAtScopeTrait;
     use OrderByUpdatedAtScopeTrait;
     use FilterKeywordScopeTrait;
     use FilterDateRangeScopeTrait;
+    use TimestampCastTrait;
+    use CustomPaginateScopeTrait;
 
     /** シリアライズ */
 
@@ -39,15 +41,6 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    // timestamp型はconfig.phpのlocaleに依存しているので
-    //　DB保存時はセットされてるlocaleのタイムゾーンを確認してUTCに変換してDBにinsertするがselect時にはタイムゾーンを確認してセットされたタイムゾーンで表示される
-    // JSON形式にシリアライズする際はタイムゾーンを考慮しないでUTCの時間でシリアライズされるので時間がずれてしまう
-    // その為、serializeDate()をオーバーライドしてシリアライズ時にタイムゾーンをセットして日付文字列に変換する必要がある
-    protected function serializeDate(DateTimeInterface $date)
-    {
-        return Carbon::instance($date)->tz('Asia/Tokyo')->format('Y-m-d H:i');
-    }
 
     /** アクセサ */
 

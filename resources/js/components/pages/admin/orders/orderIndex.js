@@ -4,14 +4,9 @@ import {CircularProgress} from '@material-ui/core';
 import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import useInputCheckBox from "../../../hooks/useInputCheckBox";
-import usePaginate from "../../../hooks/usePaginate";
-import useSort from "../../../hooks/useSort";
-import useFilter from "../../../hooks/useFilter";
+import useCreateParams from "../../../hooks/useCreateParams";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import { useParamsContext } from '../../../context/ParamsContext';
-
-// TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
-// 注意事項 API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function OrderIndex() {
 
@@ -19,12 +14,8 @@ function OrderIndex() {
     const baseUrl = `/api/admin/orders`;
     // paramsの適用範囲を決めるscope名を定義
     const model = 'ORDER';
-    // paginateフックの呼び出し
-    const { handlePageChange, handleTableRow} = usePaginate();
-    // sortフックの呼び出し
-    const {handleSort} = useSort();
-    // filterフックの呼び出し
-    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter();
+    // URLパラメータ変更のフックの呼び出し
+    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterCheckbox, handleFilterDateRange, handleCurrentPage, handlePerPage, handleSort}] = useCreateParams();
     // checkboxフックの呼び出し
     const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
     // useContext呼び出し
@@ -32,8 +23,7 @@ function OrderIndex() {
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
     // APIから取得したデータを変数に格納
-    const orders = data.orders? data.orders.data: null;
-
+    const orders = data.data? data.data: null;
 
     useEffect(() => {
         // paramsのデフォルト値と適用範囲を設定
@@ -70,7 +60,7 @@ function OrderIndex() {
                 }}>選択解除</button>
                 <button onClick={ () => {
                     let answer = confirm(`選択項目${checklist.length}件を削除しますか？`);
-                    answer && dispatch({type:'DELETE', url:`/api/admin/orders/delete`, form:checklist});
+                    answer && dispatch({type:'DELETE', url:`/api/admin/orders`, form:checklist});
                 }}>一括削除</button>
                 <button onClick={ () => {
                         dispatch({ type:'CREATE', url:`/api/admin/orders/csv`, form:checklist })
@@ -102,7 +92,7 @@ function OrderIndex() {
                                 <option value={'created_at'}>購入日</option>
                                 <option value={'updated_at'}>ステータス更新日</option>
                             </select>
-                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜
+                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
                             <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
                         </div>
                     </div>
@@ -168,12 +158,12 @@ function OrderIndex() {
                                 <td>{order.payment_method_text}</td>
                                 <td>{order.is_paid_text}</td>
                                 <td>{order.is_shipped_text}</td>
-                                {   order.user && <td>{order.user.full_name}({order.user.full_name_kana})</td> }
-                                <td>{order.user.tel}</td>
-                                <td>{order.user.email}</td>
+                                <td>{order.full_name && order.full_name_kana && (`${order.full_name}(${order.full_name_kana})`)}</td>
+                                <td>{order.tel}</td>
+                                <td>{order.email}</td>
                                 {/* 配送先住所が設定されていた場合はそちらを優先する */}
-                                <td>{order.user.delivery_post_code_text ? order.user.delivery_post_code_text : order.user.post_code_text}</td>
-                                <td>{order.user.full_delivery_address ? order.user.full_delivery_address : order.user.full_address}</td>
+                                <td>{order.delivery_post_code_text ? order.delivery_post_code_text : order.post_code_text}</td>
+                                <td>{order.full_delivery_address ? order.full_delivery_address : order.full_address}</td>
                                 <td>{order.updated_at}</td>
                             </tr>
                         )
@@ -181,17 +171,17 @@ function OrderIndex() {
                     </tbody>
                 </table>
  
-                { data.orders &&
+                { data.meta &&
                     <>
-                        <label>行数<input type='number' onBlur={handleTableRow} defaultValue={data.orders.per_page} style={{'width': '40px'}} /></label>
-                        <div>検索結果{data.orders.total}</div>
-                        <div>現在のページ{data.orders.current_page}</div>
+                        <label>行数<input type='number' onBlur={handlePerPage} defaultValue={data.meta.per_page} style={{'width': '40px'}} /></label>
+                        <div>検索結果{data.meta.total}</div>
+                        <div>現在のページ{data.meta.current_page}</div>
                         <Pagination
-                            activePage={data.orders.current_page}
-                            ordersCountPerPage={data.orders.per_page}
-                            totalItemsCount={data.orders.total}
-                            pageRangeDisplayed={data.orders.page_range_displayed}
-                            onChange={handlePageChange}
+                            activePage={data.meta.current_page}
+                            itemsCountPerPage={data.meta.per_page}
+                            totalItemsCount={data.meta.total}
+                            pageRangeDisplayed={data.meta.page_range_displayed}
+                            onChange={handleCurrentPage}
                         />
                     </>
                 }

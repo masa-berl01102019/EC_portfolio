@@ -15,7 +15,7 @@ export const useCreateUrl = (baseUrl, params) => {
                 // 前後の空白を削除
                 str = value.replace(/^\s+|\s+$/g,'');
                 // 文字列間のスペースをカンマに置換
-                str =　str.replace(/\s+/g,',');
+                str = str.replace(/\s+/g,',');
                 // オブジェクトに分割代入 * filterとsortを区別するためにfilterに関しては「f_」をつける
                 filter_obj = {
                     ...filter_obj,
@@ -31,7 +31,7 @@ export const useCreateUrl = (baseUrl, params) => {
                     ...filter_obj,
                     ['f_dr_' + column_name]: str
                 }
-            } else if (Array.isArray(value) && value.length > 0) { //　checkbox用
+            } else if (Array.isArray(value) && value.length > 0) { // checkbox用
                 // 配列をカンマ区切りの文字列に変換
                 str = value.join(',');
                 // オブジェクトに分割代入 * filterとsortを区別するためにfilterに関しては「f_」をつける
@@ -51,7 +51,7 @@ export const useCreateUrl = (baseUrl, params) => {
         });
     }
 
-    // オブジェクトの整形　* sortはオブジェクト形式を展開して代入　paginationはパラメータ作成に必要な値を引っ張って代入
+    // オブジェクトの整形 * sortはオブジェクト形式を展開して代入 paginationはパラメータ作成に必要な値を引っ張って代入
     let obj = {
         page: params.paginate.current_page ? params.paginate.current_page: '',
         per_page: params.paginate.per_page ? params.paginate.per_page: '',

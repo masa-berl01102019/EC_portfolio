@@ -46,10 +46,10 @@ class ContactFactory extends Factory
             'first_name_kana' => empty($user)? $this->faker->firstKanaName: $user->first_name_kana,
             'tel' => empty($user)? $this->faker->phoneNumber: $user->tel,
             'email' => empty($user)? $this->faker->safeEmail: $user->email,
-            'title' => $this->faker->realText(20),
-            'body' => $this->faker->realText(200),
+            'title' => $this->faker->text($maxNbChars = 20),
+            'body' => $this->faker->text($maxNbChars = 200),
             'response_status' => $response_status,
-            'memo' => $response_status !== 0 ? $this->faker->realText(200) : null,
+            'memo' => $response_status !== 0 ? $this->faker->text($maxNbChars = 200) : null,
             'created_at' => $created_at,
             'updated_at' => $response_status === 0 ? null: $this->faker->dateTimeBetween($startDate = $created_at, $endDate = 'now', $timezone = null),
         ];

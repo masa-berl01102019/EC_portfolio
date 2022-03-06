@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\admin\AdminEditRequest;
-use App\Http\Requests\admin\AdminRegisterRequest;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\AdminResource;
+use App\Http\Requests\admin\AdminEditRequest;
+use App\Http\Requests\admin\AdminRegisterRequest;
 
 class AdminController extends Controller
 {
-    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
-    // TODO フリーワード検索でカラムを指定受けて検索をかける仕様にするか要検討
-
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = ['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'password'];
 
@@ -42,30 +39,17 @@ class AdminController extends Controller
         // 更新日でソート
         $search_admin->orderByUpdatedAt($request);
 
-        // 1ページ当たり件数の指定の有無を確認
-        if($request->input('per_page')) {
-            $per_page = $request->input('per_page');
-            //　取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
-            $admins = $search_admin->paginate((int)$per_page);
-        } else {
-            // 取得件数が未設定の場合はデフォルトの表示件数　１０件
-            $admins = $search_admin->paginate(10);
-        }
+        // ページネーション
+        $admins = $search_admin->customPaginate($request);
 
         // レスポンスを返却
-        return response()->json(['admins' => $admins], 200);
-    }
-
-    public function create()
-    {
-        // レスポンスを返却
-        return response()->json(['read' => true], 200);
+        return AdminResource::collection($admins);
     }
 
     public function store(AdminRegisterRequest $request)
     {
         // ブラウザで不正に仕込んだinputに対してaxios側で制御出来ない上、フォームリクエストを通過してしまうので
-        //　ホワイトリスト以外のカラム名は受け付けないように制御　＊　{last_name: 髙田, first_name: 清雅} の形でPOSTされてくる
+        // ホワイトリスト以外のカラム名は受け付けないように制御 ＊ {last_name: 髙田, first_name: 清雅} の形でPOSTされてくる
         $data = $request->only($this->form_items);
 
         // DBに登録
@@ -85,7 +69,7 @@ class AdminController extends Controller
     public function edit(Admin $admin)
     {
         // レスポンスを返却
-        return response()->json(['admin' => $admin], 200);
+        return new AdminResource ($admin);
     }
 
     public function update(AdminEditRequest $request, Admin $admin)
@@ -117,37 +101,27 @@ class AdminController extends Controller
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
         // 該当のIDのユーザーを取得
-        $admins = Admin::select(['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'created_at', 'updated_at' ])
-            ->whereIn('id', $id)->cursor();
-
-        // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
-        return response()->streamDownload(function () use ($admins) {
-            // CSVのヘッダー作成
-            $csv_header = ['No','氏名', '氏名（カナ）', '電話番号', 'メールアドレス', '作成日時', '更新日時'];
-            //　SplFileObjectのインスタンスを生成
-            $file = new \SplFileObject('php://output', 'w');
-            // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
-            $file->fwrite(pack('C*',0xEF,0xBB,0xBF));
-            // ヘッダーの読み込み
-            $file->fputcsv($csv_header);
-            // 一行ずつ連想配列から値を取り出して配列に格納
-            $num = 1;
-            foreach ($admins as $admin){
-                $file->fputcsv([
-                    $num,                                    // NO
-                    $admin->full_name,                       // 氏名
-                    $admin->full_name_kana,                  // 氏名（カナ）
-                    $admin->tel,                             // 電話番号
-                    $admin->email,                           // メールアドレス
-                    $admin->created_at,                      // 作成日時
-                    $admin->updated_at,                      // 更新日時
-                ]);
-                $num++;
-            }
-
-        }, '管理者情報出力.csv', [
-            'Content-Type' => 'text/csv'
-        ]);
+        $admins = Admin::whereIn('id', $id)->cursor();
+        // 配列の初期化
+        $csv_body = [];
+        // CSVに必要な項目を配列に格納
+        $num = 1;
+        foreach ($admins as $admin){
+            $csv_body[] = [
+                $num,
+                $admin->id,
+                $admin->full_name.'('.$admin->full_name_kana.')',
+                $admin->tel,
+                $admin->email,
+                $admin->created_at,
+                $admin->updated_at,
+            ];
+            $num++;
+        }
+        // headerの作成
+        $csv_header = ['No', 'ID', '氏名', '電話番号', 'メールアドレス', '作成日時', '更新日時'];
+        // 独自helper関数呼び出し
+        return csvExport($csv_body,$csv_header,'管理者情報出力.csv');
     }
 
 

@@ -8,12 +8,11 @@ use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ColorResource;
 use App\Http\Requests\admin\ColorRequest;
 
 class ColorController extends Controller
 {
-    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
-
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'id', 'color_name' ];
 
@@ -25,10 +24,8 @@ class ColorController extends Controller
 
     public function index(Request $request)
     {
-        $colors = Color::all();
-
         // レスポンスを返却
-        return response()->json(['colors' => $colors],200);
+        return response()->json(['colors' => ColorResource::collection(Color::all())],200);
     }
 
     public function store(ColorRequest $request)
@@ -53,18 +50,14 @@ class ColorController extends Controller
         return response()->json(['update' => true, 'message' => 'カラーマスタの編集を完了しました'], 200);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Color $color)
     {
         try {
-            // インスタンスを生成して削除
-            $color = Color::find($request->id);
             $color->delete();
             // レスポンスを返却
             return response()->json(['delete' => true, 'message' => 'カラーマスタの削除を完了しました'], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            // インスタンスを生成
-            $color = Color::find($request->id);
             $related_items_id = $color->skus->pluck('item_id');
             $product_numbers = implode(' / ', Item::whereIn('id', $related_items_id)->pluck('product_number')->toArray());
             // レスポンスを返却

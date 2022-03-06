@@ -2,27 +2,22 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
+import useForm from "../../../hooks/useForm";
 import useToggle from "../../../hooks/useToggle";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import jaLocale from "date-fns/locale/ja";
 
-// TODO フロント側でのバリデーション設定
-
 function UserEdit(props) {
 
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/users/${props.match.params.id}/edit`;
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
     const [toggle, {handleToggle}] = useToggle(false);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData, handleDateChange}] = useInputForm({
+    const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
         'last_name': null,
         'first_name': null,
         'last_name_kana': null,
@@ -44,12 +39,11 @@ function UserEdit(props) {
         'tel': null,
         'email': null,
         'password': null,
-        'is_received': null, // 0: 受取NG　1: 受取OK
+        'is_received': null, // 0: 受取NG 1: 受取OK
     });
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値　}の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const user = data.user;
 
     useEffect(() => {
@@ -112,7 +106,7 @@ function UserEdit(props) {
                                 views={["year", "month", "date"]}
                                 value={formData.birthday}
                                 onChange={e => {
-                                    handleDateChange(e, 'birthday')
+                                    handleFormDate(e, 'birthday')
                                 }}
                                 placeholder='1991/01/01'
                             />

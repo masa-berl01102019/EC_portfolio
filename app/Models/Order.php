@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use DateTimeInterface;
-use Illuminate\Support\Carbon;
-use App\Traits\PriceAccessorTrait;
+use App\Traits\AccessorPriceTrait;
+use App\Traits\TimestampCastTrait;
 use App\Traits\OrderByNameScopeTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CustomPaginateScopeTrait;
 use App\Traits\FilterDateRangeScopeTrait;
 use App\Traits\OrderByCreatedAtScopeTrait;
 use App\Traits\OrderByUpdatedAtScopeTrait;
@@ -15,11 +15,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
     use SoftDeletes; // 論理削除
+    use AccessorPriceTrait;
     use OrderByNameScopeTrait;
     use OrderByCreatedAtScopeTrait;
     use OrderByUpdatedAtScopeTrait;
     use FilterDateRangeScopeTrait;
-    use PriceAccessorTrait;
+    use TimestampCastTrait;
+    use CustomPaginateScopeTrait;
 
     /** シリアライズ */
 
@@ -27,15 +29,6 @@ class Order extends Model
     protected $guarded = [
         'id'
     ];
-
-    // timestamp型はconfig.phpのlocaleに依存しているので
-    // DB保存時はセットされてるlocaleのタイムゾーンを確認してUTCに変換してDBにinsertするがselect時にはタイムゾーンを確認してセットされたタイムゾーンで表示される
-    // JSON形式にシリアライズする際はタイムゾーンを考慮しないでUTCの時間でシリアライズされるので時間がずれてしまう
-    // その為、serializeDate()をオーバーライドしてシリアライズ時にタイムゾーンをセットして日付文字列に変換する必要がある
-    protected function serializeDate(DateTimeInterface $date)
-    {
-       return Carbon::instance($date)->tz('Asia/Tokyo')->format('Y/m/d H:i');
-    }
 
     /** アクセサ */
 

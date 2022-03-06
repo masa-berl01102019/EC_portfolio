@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Admin;
 use Throwable;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use App\Http\Resources\TagResource;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\TagRequest;
 
 class TagController extends Controller
 {
-    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
-
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'id', 'tag_name' ];
 
@@ -24,10 +23,8 @@ class TagController extends Controller
 
     public function index(Request $request)
     {
-        $tags = Tag::all();
-
         // レスポンスを返却
-        return response()->json(['tags' => $tags],200);
+        return response()->json(['tags' => TagResource::collection(Tag::all())],200);
     }
 
     public function store(TagRequest $request)
@@ -52,11 +49,9 @@ class TagController extends Controller
         return response()->json(['update' => true, 'message' => 'タグの編集を完了しました'], 200);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Tag $tag)
     {
         try {
-            // インスタンスを生成
-            $tag = Tag::find($request->id);
             // 関連の中間テーブルの削除
             $tag->items()->sync([]);
             $tag->blogs()->sync([]);

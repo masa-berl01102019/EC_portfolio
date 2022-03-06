@@ -2,30 +2,22 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import jaLocale from "date-fns/locale/ja";
-
-// TODO フロント側でのバリデーション設定
+import useForm from "../../../hooks/useForm";
 
 function ContactEdit(props) {
 
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/contacts/${props.match.params.id}/edit`;
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData, handleDateChange}] = useInputForm({
-        'response_status': 0, // 0: 未対応　1: 対応中 2: 対応済
+    const [formData, {setFormData, handleFormData}] = useForm({
+        'response_status': 0, // 0: 未対応 1: 対応中 2: 対応済
         'memo': null
     });
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値　}の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const contact = data.contact;
 
     useEffect(() => {
@@ -54,7 +46,7 @@ function ContactEdit(props) {
                     dispatch({type: 'UPDATE', form: formData, url: `/api/admin/contacts/${props.match.params.id}` });
                 }}>
                     <div style={{'width': '100%', 'padding': '8px', 'border': '1px solid #000', 'marginBottom': '16px'}}>
-                        <p>氏名: {contact.full_name}({contact.full_name_kana})</p>
+                        <p>氏名: {contact.full_name && contact.full_name_kana && (`${contact.full_name}(${contact.full_name_kana})`)}</p>
                         <p>TEL: {contact.tel}</p>
                         <p>Email: {contact.email}</p>
                         <p>お問い合わせ日: {contact.created_at}</p>

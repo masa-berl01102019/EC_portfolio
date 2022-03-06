@@ -31,8 +31,8 @@ class NotificationFactory extends Factory
 
         return [
             'admin_id' => $admin_id,
-            'title' => $this->faker->realText(20),
-            'body' => $this->faker->realText(200),
+            'title' => $this->faker->text($maxNbChars = 20),
+            'body' => $this->faker->text($maxNbChars = 200),
             'is_published' => $is_published,
             'expired_at' => $is_published === 1? $expired_at: null,
             'posted_at' => $is_published === 1? $posted_at: null,

@@ -9,7 +9,7 @@ trait FilterDateRangeScopeTrait
     public function scopeFilterDateRange($query, $request, $prefix = null) {
 
         // パラメータを取得してarray_flip()でkeyとvalueを反転させてpreg_grep()で正規表現を使って該当の連想配列を取り出す * keyとvalueが反転した状態で連想配列が返されてる
-        $flip_array = preg_grep( '/f_dr_/', array_flip($request->query()) ); // f_dr_ = 期間指定のフィルタリング　
+        $flip_array = preg_grep( '/f_dr_/', array_flip($request->query()) ); // f_dr_ = 期間指定のフィルタリング 
         // 該当のkeyがあるかチェック
         $flag = !empty($flip_array) ? true : false;
 

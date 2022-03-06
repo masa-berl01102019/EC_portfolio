@@ -28,7 +28,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData, initialScope) =
         // クリーンアップ関数用のフラグを宣言
         let unmounted = false;
         // アンマウントされていなかったら
-        if(!unmounted && initialScope === undefined || !unmounted && scope === initialScope) { // scopeで挙動の制御　各ページでの初回読み込み時にparamsの変更された時に2回呼び出されてしまうので制御 * createやeditページでは引数に渡してないのでundefinedが返ってくる
+        if(!unmounted && initialScope === undefined || !unmounted && scope === initialScope) { // scopeで挙動の制御 各ページでの初回読み込み時にparamsの変更された時に2回呼び出されてしまうので制御 * createやeditページでは引数に渡してないのでundefinedが返ってくる
             console.log('useFetchApiDataのuseEffectが実行されました');
             // 非同期でAPIサーバーからデータを取得する関数式を定義
             const fetchData = async() => {

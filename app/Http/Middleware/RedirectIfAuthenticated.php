@@ -15,7 +15,7 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    // ログイン済みの状態で/loginにアクセスしてきた時のリダイレクト先を指定を行う　＊ 今回はlaravelをAPIとして利用してるので利用しない
+    // ログイン済みの状態で/loginにアクセスしてきた時のリダイレクト先を指定を行う ＊ 今回はlaravelをAPIとして利用してるので利用しない
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {

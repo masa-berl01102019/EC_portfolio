@@ -4,14 +4,9 @@ import {CircularProgress} from '@material-ui/core';
 import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import useInputCheckBox from "../../../hooks/useInputCheckBox";
-import usePaginate from "../../../hooks/usePaginate";
-import useSort from "../../../hooks/useSort";
-import useFilter from "../../../hooks/useFilter";
+import useCreateParams from "../../../hooks/useCreateParams";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import { useParamsContext } from '../../../context/ParamsContext';
-
-// TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
-// 注意事項　API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function ContactIndex() {
 
@@ -19,12 +14,8 @@ function ContactIndex() {
     const baseUrl = `/api/admin/contacts`;
     // paramsの適用範囲を決めるscope名を定義
     const model = 'CONTACT';
-    // paginateフックの呼び出し
-    const {handlePageChange, handleTableRow} = usePaginate();
-    // sortフックの呼び出し
-    const {handleSort} = useSort();
-    // filterフックの呼び出し
-    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter();
+    // URLパラメータ変更のフックの呼び出し
+    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilter, handleFilterCheckbox, handleFilterDateRange, handleCurrentPage, handlePerPage, handleSort}] = useCreateParams();
     // checkboxフックの呼び出し
     const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
     // useContext呼び出し
@@ -32,7 +23,7 @@ function ContactIndex() {
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
     // APIから取得したデータを変数に格納
-    const contacts = data.contacts? data.contacts.data: null;
+    const contacts = data.data? data.data: null;
 
     useEffect(() => {
         // paramsのデフォルト値と適用範囲を設定
@@ -69,19 +60,19 @@ function ContactIndex() {
                 }}>選択解除</button>
                 <button onClick={ () => {
                     let answer = confirm(`選択項目${checklist.length}件を削除しますか？`);
-                    answer && dispatch({type:'DELETE', url:`/api/admin/contacts/delete`, form:checklist});
+                    answer && dispatch({type:'DELETE', url:`/api/admin/contacts`, form:checklist});
                 }}>一括削除</button>
                 <button onClick={ () => {
                         dispatch({ type:'CREATE', url:`/api/admin/contacts/csv`, form:checklist })
                 }}>CSV出力</button>
 
-                {   Object.keys(params.filter).length > 0 &&　scope === model &&
+                {   Object.keys(params.filter).length > 0 && scope === model &&
 
                     <div className={'filter'}>
                         <h3>フィルター機能</h3>
                         <div>
                             <span>キーワード検索</span>
-                            <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword} placeholder={'名前を検索'}/>
+                            <input type='text' name='keyword' onBlur={handleFilter} defaultValue={params.filter.keyword} placeholder={'名前を検索'}/>
                         </div>
                         <div>
                             <span style={{'marginRight': '20px'}}>対応状況</span>
@@ -96,7 +87,7 @@ function ContactIndex() {
                                 <option value={'created_at'}>お問い合わせ日</option>
                                 <option value={'updated_at'}>対応日</option>
                             </select>
-                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜
+                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
                             <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
                         </div>
                     </div>
@@ -170,11 +161,7 @@ function ContactIndex() {
                                 <td><span style={{ 'display':'block', 'width': '318px', 'overflowX':'hidden' }}>{contact.title}</span></td>
                                 <td><span style={{ 'display':'block', 'width': '318px', 'overflowX':'hidden' }}>{contact.body}</span></td>
                                 <td>{contact.response_status_text}</td>
-                                {   contact.admin_last_name ? (
-                                    <td>{contact.admin_last_name} {contact.admin_first_name}({contact.admin_last_name_kana} {contact.admin_first_name_kana})</td>
-                                ) : (
-                                    <td> </td>
-                                )}
+                                <td>{contact.full_name && contact.full_name_kana && (`${contact.full_name}(${contact.full_name_kana})`)}</td>
                                 <td><span style={{ 'display':'block', 'width': '318px', 'overflowX':'hidden' }}>{contact.memo}</span></td>
                                 <td>{contact.updated_at}</td>
                             </tr>
@@ -182,17 +169,17 @@ function ContactIndex() {
                     }
                     </tbody>
                 </table>
-                { data.contacts &&
+                { data.meta &&
                     <>
-                        <label>行数<input type='number' onBlur={handleTableRow} defaultValue={data.contacts.per_page} style={{'width': '40px'}} /></label>
-                        <div>検索結果{data.contacts.total}</div>
-                        <div>現在のページ{data.contacts.current_page}</div>
+                        <label>行数<input type='number' onBlur={handlePerPage} defaultValue={data.meta.per_page} style={{'width': '40px'}} /></label>
+                        <div>検索結果{data.meta.total}</div>
+                        <div>現在のページ{data.meta.current_page}</div>
                         <Pagination
-                            activePage={data.contacts.current_page}
-                            itemsCountPerPage={data.contacts.per_page}
-                            totalItemsCount={data.contacts.total}
-                            pageRangeDisplayed={data.contacts.page_range_displayed}
-                            onChange={handlePageChange}
+                            activePage={data.meta.current_page}
+                            itemsCountPerPage={data.meta.per_page}
+                            totalItemsCount={data.meta.total}
+                            pageRangeDisplayed={data.meta.page_range_displayed}
+                            onChange={handleCurrentPage}
                         />
                     </>
                 }

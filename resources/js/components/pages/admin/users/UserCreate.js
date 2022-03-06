@@ -2,27 +2,22 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
+import useForm from "../../../hooks/useForm";
 import useToggle from "../../../hooks/useToggle";
 import DateFnsUtils from '@date-io/date-fns';
 import jaLocale from "date-fns/locale/ja";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
-// TODO フロント側でのバリデーション設定
-
 function UserCreate() {
 
     // urlの設定
     const baseUrl = '/api/admin/users/create';
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
     const [toggle, {handleToggle}] = useToggle(false);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData, handleDateChange}] = useInputForm({
+    const [formData, {handleFormData, handleFormDate}] = useForm({
         'last_name': null,
         'first_name': null,
         'last_name_kana': null,
@@ -44,9 +39,9 @@ function UserCreate() {
         'tel': null,
         'email': null,
         'password': null,
-        'is_received': null, // 0: 受取NG　1: 受取OK
+        'is_received': null, // 0: 受取NG 1: 受取OK
     });
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
 
     useEffect(() => {
@@ -103,7 +98,7 @@ function UserCreate() {
                                     views={["year", "month", "date"]}
                                     value={formData.birthday}
                                     onChange={e => {
-                                        handleDateChange(e, 'birthday')
+                                        handleFormDate(e, 'birthday')
                                     }}
                                     placeholder='1991/01/01'
                                 />

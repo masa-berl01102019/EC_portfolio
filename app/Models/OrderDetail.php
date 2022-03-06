@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetail extends Model
 {
-    use SoftDeletes; //　論理削除
+    use SoftDeletes; // 論理削除
 
     /** シリアライズ */
 
