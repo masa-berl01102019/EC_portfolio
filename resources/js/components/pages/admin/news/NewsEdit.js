@@ -28,7 +28,7 @@ function NewsEdit(props) {
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     // file送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm} = useObjectForm(formData, setFormData);
+    const {handleSendObjectForm} = useObjectForm(formData, setFormData, dispatch);
     // 便利関数の呼び出し
     const {isJson} = useHelper();
     // リダイレクト用の関数呼び出し
@@ -82,7 +82,7 @@ function NewsEdit(props) {
                 <h1>ニュース編集</h1>
                 <form onSubmit={ e => {
                     e.preventDefault();
-                    handleSendObjectForm(`/api/admin/news/${props.match.params.id}`, dispatch);
+                    handleSendObjectForm(`/api/admin/news/${props.match.params.id}`);
                 }}>
                     <div>
                         <label>

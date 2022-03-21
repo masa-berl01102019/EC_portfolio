@@ -31,7 +31,7 @@ function ItemCreate() {
         'measurements': [ {size_id: '', width: '', shoulder_width: '', raglan_sleeve_length: '', sleeve_length: '', length: '', waist: '', hip: '', rise: '', inseam: '', thigh_width: '', outseam: '', sk_length: '', hem_width: '', weight: ''}  ]
     });
     // 複数オブジェクト送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData);
+    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData, dispatch);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // API接続の返却値を変数に格納
@@ -63,7 +63,7 @@ function ItemCreate() {
                 <div>
                     <form onSubmit={ e => {
                         e.preventDefault();
-                        handleSendObjectForm(`/api/admin/items`, dispatch);
+                        handleSendObjectForm(`/api/admin/items`);
                     }}>
                         <div>
                             <h2>基本情報</h2>
@@ -289,7 +289,7 @@ function ItemCreate() {
                                             <td>
                                                 <select name='color_id' value={list.color_id} onChange={ e => handleChangeObjectForm('images', index, e) }>
                                                     <option value={''}>関連カラーを選択</option>
-                                                    {   colors && colors.filter((color) => formData.skus.map(item => item.color_id).includes(String(color.id))).map((color) => (
+                                                    {   colors && colors.filter((color) => formData.skus.map(item => item.color_id).includes(color.id)).map((color) => (
                                                             <option key={color.id} value={color.id}>{color.color_name}</option>
                                                         ))
                                                     }
@@ -340,7 +340,7 @@ function ItemCreate() {
                                             <td>
                                                 <select name='size_id' value={list.size_id} onChange={ e => handleChangeObjectForm('measurements', index, e) }>
                                                     <option value={''}>未設定</option>
-                                                    {   sizes && sizes.filter((size) => formData.skus.map(item => item.size_id).includes(String(size.id))).map((size) => (
+                                                    {   sizes && sizes.filter((size) => formData.skus.map(item => item.size_id).includes(size.id)).map((size) => (
                                                             <option key={size.id} value={size.id}>{size.size_name}</option>
                                                         ))
                                                     }

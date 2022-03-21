@@ -2,13 +2,13 @@ import React from 'react';
 import useHelper from "./useHelper";
 
  // オブジェクトを送信するラッパー関数
-const useObjectForm = (formData, setFormData) => {
+const useObjectForm = (formData, setFormData, dispatch) => {
 
   // 便利関数の呼び出し
   const {isObject} = useHelper();
 
   // content-typeを'multipart/form-data'にしないと送信出来ないフォームの送信 ex) 画像等のファイル形式
-  const handleSendObjectForm = (sendUrl, dispatch) => {
+  const handleSendObjectForm = (sendUrl) => {
     console.log('handleSendObjectForm');
     // FormDataオブジェクトのインスタンス生成
     const params = new FormData();

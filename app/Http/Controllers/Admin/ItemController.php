@@ -256,7 +256,7 @@ class ItemController extends Controller
                     // 該当IDのインスタンスを取得
                     $img = Image::find($data['images'][$i]['id']);
                     // 新しい画像の保存と古い画像の削除
-                    $db_reserve_path = saveImage($data['images'][$i]['file'], $img->image);
+                    $db_reserve_path = saveImage($data['images'][$i]['file'], !empty($img) ? $img->image : null);
                     // imageカラムにはプレビュー用に生成されたURLが格納されてるのでパスを差し替え
                     $data['images'][$i]['image'] = $db_reserve_path;
                 }

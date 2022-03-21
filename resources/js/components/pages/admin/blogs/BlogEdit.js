@@ -33,7 +33,7 @@ function BlogEdit(props) {
     // 便利関数の呼び出し
     const {isJson} = useHelper();
     // file送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm} = useObjectForm(formData, setFormData);
+    const {handleSendObjectForm} = useObjectForm(formData, setFormData, dispatch);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // API接続の返却値を変数に格納
@@ -86,7 +86,7 @@ function BlogEdit(props) {
                 <h1>ブログ編集</h1>
                 <form onSubmit={ e => {
                     e.preventDefault();
-                    handleSendObjectForm(`/api/admin/blogs/${props.match.params.id}`, dispatch);
+                    handleSendObjectForm(`/api/admin/blogs/${props.match.params.id}`);
                 }}>
                     <div>
                         <label>
