@@ -21,12 +21,18 @@ class ImageResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'item_id' => $this->item_id,
-            'color_id' => $this->color_id,
-            'image' => $this->image,
-            'image_category' => $this->image_category,
-        ];
+        if ($request->routeIs('user.items.show')) {
+            return [
+                'image' => $this->image
+            ];
+        } else {
+            return [
+                'id' => $this->id,
+                'item_id' => $this->item_id,
+                'color_id' => $this->color_id,
+                'image' => $this->image,
+                'image_category' => $this->image_category,
+            ];
+        }
     } 
 }

@@ -74,7 +74,25 @@ function ItemEdit(props) {
                 <div>
                     <form onSubmit={ e => {
                         e.preventDefault();
-                        handleSendObjectForm(`/api/admin/items/${props.match.params.id}`);
+                        // SKUの二次元配列をmapで展開
+                        const arr = formData.skus.map(item => {
+                            // 比較したい組合せのサイズとカラーのプロパティを分割代入
+                            const {size_id, color_id} = item;
+                            // 取得した組合せをjson形式→文字列化して配列を生成
+                            return JSON.stringify({size:size_id, color:color_id});
+                        });
+                        // 生成した配列をSetオブジェクトに変換する * Setオブジェクトは重複した値を格納出来ない
+                        const setObj = new Set(arr);
+
+                        if(setObj.size != arr.length) { // もと配列とsetオブジェクトが要素の数が一致してなければ組合せに重複がある
+                            alert('SKUセクションで選択されてるカラーとサイズの組み合わせに重複が存在しております。');
+                        } else if(formData.skus.map(item => item['size_id']).filter(el => !formData.measurements.map(item => item['size_id']).includes(el) ).length > 0) { // SKUのカラーと画像の関連カラーが一致してるか確認
+                            alert('SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。');
+                        }else if(formData.skus.map(item => item['color_id']).filter(el => !formData.images.map(item => item['color_id']).includes(el) ).length > 0) { // SKUのサイズと寸法のサイズが一致してるか確認
+                            alert('SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。');
+                        } else {
+                            handleSendObjectForm(`/api/admin/items/${props.match.params.id}`);
+                        }
                     }}>
                         <div>
                             <h2>基本情報</h2>
@@ -221,31 +239,20 @@ function ItemEdit(props) {
                                     formData.skus.map((list, index) =>
                                         <tr key={index}>
                                             <td>
-                                                <span 
-                                                    onClick={() => {
-                                                        if(list.size_id !== '' && formData.measurements.map(item => item.size_id).includes(list.size_id)) {
-                                                            alert('寸法セクションで選択されたサイズが含まれておりますので削除出来ません。\n先に寸法セクションのサイズを変更してください。');
-                                                        } else if(list.color_id !== '' && formData.images.map(item => item.color_id).includes(list.color_id)) {
-                                                            alert('画像セクションで選択されたカラーが含まれておりますので削除出来ません。\n先に画像セクションのカラーを変更してください。');
-                                                        } else {
-                                                            handleDeleteObjectForm('skus', index, list.id)
-                                                        }
-                                                    }} 
-                                                    style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}
-                                                >
-                                                    削除
-                                                </span>
+                                                <span onClick={() => handleDeleteObjectForm('skus', index, list.id)} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span>
                                             </td>
                                             <td>{list.id}</td>
                                             <td>
                                                 <select name='size_id' value={list.size_id} onChange={ e => handleChangeObjectForm('skus', index, e) }>
-                                                    <option value={''}>未設定</option>
+                                                    {/* フォーム追加以外未設定の表示を制限 */}
+                                                    { list.size_id == '' && <option value={''}>未設定</option>}
                                                     { sizes && sizes.map( size => ( <option key={size.id} value={size.id}>{size.size_name}</option>)) }
                                                 </select>
                                             </td>
                                             <td>
                                                 <select name='color_id' value={list.color_id} onChange={ e => handleChangeObjectForm('skus', index, e) }>
-                                                    <option value={''}>未設定</option>
+                                                    {/* フォーム追加以外未設定の表示を制限 */}
+                                                    { list.color_id == '' && <option value={''}>未設定</option>}
                                                     { colors && colors.map( color => ( <option key={color.id} value={color.id}>{color.color_name}</option>)) }
                                                 </select>
                                             </td>
@@ -296,14 +303,16 @@ function ItemEdit(props) {
                                             </td>
                                             <td>
                                                 <select name='image_category' value={list.image_category} onChange={ e => handleChangeObjectForm('images', index, e) }>
-                                                    <option value={''}>画像カテゴリを選択</option>
+                                                    {/* フォーム追加以外未設定の表示を制限 */}
+                                                    { list.image_category === '' && <option value={''}>未設定</option>}
                                                     <option value={0}>メイン画像</option>
                                                     <option value={1}>サムネイル画像</option>
                                                 </select>
                                             </td>
                                             <td>
                                                 <select name='color_id' value={list.color_id} onChange={ e => handleChangeObjectForm('images', index, e) }>
-                                                    <option value={''}>関連カラーを選択</option>
+                                                    {/* フォーム追加以外未設定の表示を制限 */}
+                                                    { list.color_id == '' && <option value={''}>未設定</option>}
                                                     {   colors && colors.filter((color) => formData.skus.map(item => item.color_id).includes(color.id)).map((color) => (
                                                             <option key={color.id} value={color.id}>{color.color_name}</option>
                                                         ))
@@ -351,10 +360,19 @@ function ItemEdit(props) {
                                     formData.measurements &&
                                     formData.measurements.map((list, index) =>
                                         <tr key={index}>
-                                            <td><span onClick={() => handleDeleteObjectForm('measurements', index, list.id)} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span></td>
                                             <td>
-                                                <select name='size_id' value={list.size_id} onChange={ e => handleChangeObjectForm('measurements', index, e) }>
-                                                    <option value={''}>未設定</option>
+                                                <span onClick={() => handleDeleteObjectForm('measurements', index, list.id)} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span>
+                                            </td>
+                                            <td>
+                                                <select name='size_id' value={list.size_id} onChange={ e => {
+                                                    if(formData.measurements.map(item => item['size_id']).includes(Number(e.target.value))) {
+                                                        alert('選択されたサイズは既に使用されております。');
+                                                    } else {
+                                                        handleChangeObjectForm('measurements', index, e) 
+                                                    }
+                                                }}>
+                                                    {/* フォーム追加以外未設定の表示を制限 */}
+                                                    { list.size_id == '' && <option value={''}>未設定</option>}
                                                     {   sizes && sizes.filter((size) => formData.skus.map(item => item.size_id).includes(size.id)).map((size) => (
                                                             <option key={size.id} value={size.id}>{size.size_name}</option>
                                                         ))

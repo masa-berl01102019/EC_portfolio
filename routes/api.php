@@ -122,7 +122,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::delete('/sizes/{size}', 'SizeController@destroy')->name('sizes.destroy');
     });
 
-});
+}); 
 
 Route::namespace('User')->prefix('user')->name('user.')->group(function() {
 
@@ -130,11 +130,43 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function() {
     Route::post('/logout', 'AuthController@logout')->name('logout');
     Route::get('/auth', 'AuthController@auth')->name('auth');
 
+    // TOP画面
+    Route::get('/home', 'HomeController@index')->name('home.index');
+    // 商品一覧・詳細
+    Route::get('/items', 'ItemController@index')->name('items.index');
+    Route::get('/items/{item}', 'ItemController@show')->name('items.show');
+    // ブログ一覧・詳細
+    Route::get('/blogs', 'BlogController@index')->name('blogs.index');
+    Route::get('/blogs/{blog}', 'BlogController@show')->name('blogs.show');
+    // ニュース一覧・詳細
+    Route::get('/news', 'NewsController@index')->name('news.index');
+    Route::get('/news/{news}', 'NewsController@show')->name('news.show');
+    // お知らせ一覧
+    Route::get('/notifications', 'NotificationController@index')->name('notifications.index');
+    // 会員登録
+    Route::post('/users', 'UserController@store')->name('users.store');
+    // 問い合わせ
+    Route::post('/contacts', 'ContactController@store')->name('contacts.store');
+
+
     // ログイン認証後
     Route::middleware('auth:sanctum')->group(function() {
-        // マルチ認証テスト用　エンドポイント
-        Route::get('/users', 'UserController@index')->name('users.index');
-
+        // カート一覧
+        Route::get('/carts', 'CartController@index')->name('carts.index');
+        Route::post('/carts', 'CartController@store')->name('carts.store');
+        Route::put('/carts/{cart}', 'CartController@update')->name('carts.update');
+        Route::delete('/carts/{cart}', 'CartController@destroy')->name('carts.destroy');
+        // お気に入り一覧
+        Route::get('/bookmarks', 'BookmarkController@index')->name('bookmarks.index');
+        Route::post('/bookmarks', 'BookmarkController@store')->name('bookmarks.store');
+        Route::delete('/bookmarks/{bookmark}', 'BookmarkController@destroy')->name('bookmarks.destroy');
+        // 購入履歴一覧
+        Route::get('/orders', 'OrderController@index')->name('orders.index');
+        Route::post('/orders', 'OrderController@store')->name('orders.store');
+        // 会員 編集・削除
+        Route::get('/users/edit', 'UserController@edit')->name('users.edit');
+        Route::put('/users/{user}', 'UserController@update')->name('users.update');
+        Route::delete('/users/{user}', 'UserController@destroy')->name('users.destroy');
     });
 
 });

@@ -3,6 +3,9 @@ import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import jaLocale from "date-fns/locale/ja";
 
 // TODO モーダルで実装する
 
@@ -13,9 +16,11 @@ function OrderEdit(props) {
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useForm({
+    const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
         'is_paid': '', 
-        'is_shipped': ''
+        'is_shipped': '',
+        'delivery_date': null,
+        'delivery_time': ''
     });
     // API接続の返却値を変数に格納
     const order = data.order;
@@ -86,6 +91,37 @@ function OrderEdit(props) {
                                 <h3 style={{'borderBottom': '1px solid #666', 'marginTop': '16px', 'marginLeft': 'auto', 'width': '30%', 'textAlign': 'right' }}>
                                     <span>税込合計</span> <span>{order && order.total_amount_text}</span>
                                 </h3>
+                            </div>
+
+                            <div style={{'marginTop': '30px'}}>
+                                <label htmlFor='delivery_date'>配達希望日
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>
+                                        <KeyboardDatePicker
+                                            id="delivery_date"
+                                            format='yyyy/MM/dd'
+                                            disableToolbar // 年月日の選択時に上部に選択されるtoolbarを非表示にする
+                                            variant="dialog" // modal形式でのカレンダーの表示
+                                            inputVariant="outlined" // inputっぽい表示
+                                            openTo="date" // カレンダーアイコンクリック時に年->月->日の順に選択出来るように設定
+                                            views={["date"]}
+                                            value={formData.delivery_date}
+                                            onChange={e => {handleFormDate(e, 'delivery_date')}}
+                                            placeholder='1991/01/01'
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                </label>
+                                <br />
+                                { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_date}</p> }
+                                <label htmlFor='delivery_time'>配達希望時間帯
+                                    <select name="delivery_time" value={formData.delivery_time} onChange={handleFormData} >
+                                        <option value={''}>指定しない</option>
+                                        <option value={'8:00 - 12:00'}>8:00 - 12:00</option>
+                                        <option value={'14:00 - 16:00'}>14:00 - 16:00</option>
+                                        <option value={'16:00 - 18:00'}>16:00 - 18:00</option>
+                                        <option value={'18:00 - 20:00'}>18:00 - 20:00</option>
+                                    </select>
+                                </label>
+                                { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_time}</p> }
                             </div>
         
                             <div>
