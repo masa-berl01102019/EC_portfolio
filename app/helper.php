@@ -1,5 +1,6 @@
 <?php 
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -57,4 +58,24 @@ function saveImage($file, $old_img_url = null)
         if(Storage::exists($old_img)) Storage::delete($old_img);
     }
     return $db_reserve_path;
+}
+
+/**
+ * 商品に紐づくタグを配列で取得する関数
+ * @param int $item_id
+ * @return array
+ */
+function getRelatedTagId($item_id)
+{
+    return DB::table('item_tag')->where('item_id', $item_id)->pluck('tag_id')->toArray();
+}
+
+/**
+ * 商品に紐づくカテゴリを配列で取得する関数
+ * @param int $item_id
+ * @return array
+ */
+function getRelatedCategoryId($item_id)
+{
+    return DB::table('category_item')->where('item_id', $item_id)->pluck('category_id')->toArray();
 }

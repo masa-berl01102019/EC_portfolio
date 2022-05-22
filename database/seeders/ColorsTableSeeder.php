@@ -38,7 +38,7 @@ class ColorsTableSeeder extends Seeder
             // ブランド品番(product_number)をクエリにしこむ
             $query = $items[$i]->product_number;
 
-            // urlの生成　＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
+            // urlの生成 ＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
             $url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid='.$appid.'&results='.$results.'&query='.$query.'&seller_id='.$seller_id.'&brand_id='.$brand_id.'&genre_category_id='.$genre_category_id;
 
             // Clientクラスを初期化

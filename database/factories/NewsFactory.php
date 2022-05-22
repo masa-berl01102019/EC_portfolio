@@ -13,40 +13,31 @@ class NewsFactory extends Factory
 
     public function definition()
     {
-        // 管理者IDをすべて配列で取得
-        $admins_id = Admin::pluck('id')->all();
+        // ランダムに管理者インスタンスを取得
+        $admin = Admin::inRandomOrder()->first();
 
-        // ランダムで管理者IDを一つ取り出し
-        $admin_id = $this->faker->randomElement($admins_id);
+        // ランダムにブランドのインスタンスを取得
+        $brand = Brand::inRandomOrder()->first();
 
-        // ブランドIDをすべて配列で取得
-        $brands_id = Brand::pluck('id')->all();
+        // カテゴリID (1:メンズ 2:レディース) をランダムに一つ取り出し格納
+        $category_id = $this->faker->randomElement([1,2]);
 
-        // ランダムでブランドIDを一つ取り出し
-        $brand_id = $this->faker->randomElement($brands_id);
+        // 公開状況 * 80%の確率で公開
+        $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開
 
-        // カテゴリIDを配列で用意 1:メンズ 2:レディース
-        $categories_id = [1,2];
-
-        // ランダムでカテゴリIDを一つ取り出し
-        $category_id = $this->faker->randomElement($categories_id);
-
-        // 公開状況
-        $is_published = $this->faker->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開
-
-        // 公開日
+        // 投稿日
         $posted_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
 
         // 更新日
         $modified_at = $this->faker->dateTimeBetween($startDate = $posted_at, $endDate = 'now', $timezone = null);
 
         return [
-            'brand_id' => $brand_id,
-            'admin_id' => $admin_id,
+            'brand_id' => $brand->id,
+            'admin_id' => $admin->id,
             'category_id' => $category_id,
             'title' => $this->faker->text($maxNbChars = 20),
             'body' => $this->faker->randomHtml(2, 3),
-            'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480),
+            'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480, $category='NEWS', $randomize = true),
             'is_published' => $is_published,
             'posted_at' => $is_published === 1? $posted_at: null,
             'modified_at' => $is_published === 1? $modified_at: null,

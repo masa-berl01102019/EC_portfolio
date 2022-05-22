@@ -3,13 +3,19 @@
 namespace App\Models;
 
 use App\Traits\AccessorPriceTrait;
+use Illuminate\Support\Facades\DB;
 use App\Traits\FilterTagScopeTrait;
 use App\Traits\AccessorPublishTrait;
+use App\Traits\FilterSizeScopeTrait;
 use App\Traits\FilterBrandScopeTrait;
+use App\Traits\FilterColorScopeTrait;
+use App\Traits\GetPublishedScopeTrait;
+use App\Traits\OrderByPriceScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
 use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\OrderByItemNameScopeTrait;
 use App\Traits\OrderByPostedAtScopeTrait;
 use App\Traits\FilterIsPublishedScopeTrait;
 use App\Traits\OrderByModifiedAtScopeTrait;
@@ -24,11 +30,16 @@ class Item extends Model
     use AccessorPriceTrait;
     use OrderByPostedAtScopeTrait;
     use OrderByModifiedAtScopeTrait;
+    use OrderByItemNameScopeTrait;
+    use OrderByPriceScopeTrait;
     use FilterKeywordScopeTrait;
     use FilterDateRangeScopeTrait;
     use FilterIsPublishedScopeTrait;
     use FilterTagScopeTrait;
     use FilterBrandScopeTrait;
+    use FilterColorScopeTrait;
+    use FilterSizeScopeTrait;
+    use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
     // timestamp無効にしないとデータ挿入時にエラーになる
@@ -50,7 +61,7 @@ class Item extends Model
     /** アクセサ */
 
     // 配列内に含めたい独自の属性(カラム名)を定義
-    protected $appends = ['is_published_text', 'price_text', 'cost_text'];
+    protected $appends = ['is_published_text', 'price_text', 'cost_text', 'included_tax_price', 'included_tax_price_text'];
 
     /** スコープ */
 
@@ -77,50 +88,10 @@ class Item extends Model
         });
     }
 
-    public function scopeFilterColor($query, $request) {
-        $filter = $request->input('f_color');
-        $flag = $filter !== null ? true : false;
-        $query->when($flag, function($query) use($filter) {
-            $query->whereHas('skus.color', function ($query) use($filter) {
-                // カンマ区切りで配列に変換
-                $receiver_arr = explode(',',$filter);
-                // 配列内に該当する項目を絞り込み検索
-                return $query->whereIn('id', $receiver_arr);
-            });
-        });
-    }
-
-    public function scopeFilterSize($query, $request) {
-        $filter = $request->input('f_size');
-        $flag = $filter !== null ? true : false;
-        $query->when($flag, function($query) use($filter) {
-            $query->whereHas('skus.size', function ($query) use($filter) {
-                // カンマ区切りで配列に変換
-                $receiver_arr = explode(',',$filter);
-                // 配列内に該当する項目を絞り込み検索
-                return $query->whereIn('id', $receiver_arr);
-            });
-        });
-    }
-
     public function scopeOrderByProductNumber($query, $request) {
         $sort = $request->input('product_number');
         $query->when($sort, function($query, $sort) {
             return $query->orderBy('product_number', $sort);
-        });
-    }
-
-    public function scopeOrderByItemName($query, $request) {
-        $sort = $request->input('item_name');
-        $query->when($sort, function($query, $sort) {
-            return $query->orderBy('item_name', $sort);
-        });
-    }
-
-    public function scopeOrderByPrice($query, $request) {
-        $sort = $request->input('price');
-        $query->when($sort, function($query, $sort) {
-            return $query->orderBy('price', $sort);
         });
     }
 
@@ -129,6 +100,86 @@ class Item extends Model
         $query->when($sort, function($query, $sort) {
             return $query->orderBy('cost', $sort);
         });
+    }
+
+    public function scopeItemRanking($query) {
+        // 商品の非公開ステータスも含んだ商品単位のブックマークの集計 * skuの論理削除されたものは除外してる
+        $bookmark_quantity = DB::table('skus')
+            ->join('bookmarks', 'skus.id', '=', 'bookmarks.sku_id')
+            ->select('item_id', DB::raw('count(bookmarks.id) as booked'))
+            ->where('skus.deleted_at', null)
+            ->groupBy('item_id');
+
+        // 商品の非公開ステータスも含んだ商品単位のカートの集計 * skuの論理削除されたものは除外してる 同SKUの数量単位では集計してない
+        $cart_quantity = DB::table('skus')
+            ->join('carts', 'skus.id', '=', 'carts.sku_id')
+            ->select('item_id', DB::raw('count(carts.id) as cart'))
+            ->where('skus.deleted_at', null)
+            ->groupBy('item_id');
+
+        // 商品の非公開ステータスも含んだ商品単位の購入実績点数の集計 * skuの論理削除されたものは除外してる
+        $order_quantity = DB::table('skus')
+            ->join('order_details', 'skus.id', '=', 'order_details.sku_id')
+            ->select('item_id', DB::raw('sum(order_details.order_quantity) as ordered'))
+            ->where('skus.deleted_at', null)
+            ->groupBy('item_id');
+
+        // 上記で集計した物をjoinSubでサブクエリとして挿入
+        return $query->getPublished()
+            ->join('brands', 'brands.id', '=', 'items.brand_id')
+            ->join('images', function ($join) {
+                $join->on('items.id', '=', 'images.item_id')
+                     ->where('images.image_category', '=', 0);
+            })
+            ->joinSub($bookmark_quantity, 'bookmark_quantity', function ($join) {
+                $join->on('items.id', '=', 'bookmark_quantity.item_id');
+            })
+            ->joinSub($cart_quantity, 'cart_quantity', function ($join) {
+                $join->on('items.id', '=', 'cart_quantity.item_id');
+            })
+            ->joinSub($order_quantity, 'order_quantity', function ($join) {
+                $join->on('items.id', '=', 'order_quantity.item_id');
+            })
+            ->orderBy('ordered', 'desc')
+            ->orderBy('cart', 'desc')
+            ->orderBy('booked', 'desc');
+    }
+
+    /** static method */
+
+    public static function getRelatedItems ($item_id) {
+        // 中間テーブルから商品IDをもつカテゴリIDを取得
+        $tag_arr = getRelatedTagId($item_id);
+        // 中間テーブルから商品IDをもつカテゴリIDを取得
+        $category_arr = getRelatedCategoryId($item_id);
+        // gender_categoryを除外
+        array_shift($category_arr);
+        // 関連商品の取得
+        $related_item = Self::getPublished()->where('id', '!=', $item_id)
+            ->with(['categories', 'tags', 'brand', 'topImage'])
+            ->whereHas('categories', function ($query) use($category_arr) {
+                // メインカテゴリもしくはサブカテゴリが一致する商品を絞り込む
+                return $query->whereIn('categories.id', $category_arr);
+            })
+            ->whereHas('tags', function ($query) use($tag_arr) {
+                // タグが一致する商品を絞り込む
+                return $query->whereIn('tags.id', $tag_arr);
+            })->get();
+
+        // 取得した関連商品を展開
+        foreach($related_item as $key => $value) {
+            // 関連商品に紐づくカテゴリやタグのIDを配列で抜き出しarray_intersectで共通項を取得しカウントした値を元の関連商品のプロパティと各配列に格納
+            $related_item[$key]['category_similarity'] = count(array_intersect($category_arr, array_column($value['categories']->toArray(), 'id')));
+            $related_item[$key]['tag_similarity'] = count(array_intersect($tag_arr, array_column($value['tags']->toArray(), 'id')));
+        }
+
+        // ソートして先頭6件を抜き出し
+        $collection = $related_item->sortBy([
+            ['category_similarity', 'desc'],
+            ['tag_similarity', 'desc'],
+        ])->values()->take(6);
+        
+        return $collection;
     }
 
     /** リレーション */
@@ -166,6 +217,16 @@ class Item extends Model
     }
 
     /** 条件付きリレーション * withでリレーション組んで静的に呼び出せる */
+
+    public function publishedBlogs() {
+        // 紐づくのブログの内、公開ステータスが公開のブログのみを取得
+        return $this->belongsToMany('App\Models\Blog')->getPublished();
+    }
+
+    public function topImage() {
+        // 紐づくの画像の内、main画像を取得出来る
+        return $this->hasMany('App\Models\Image')->where('image_category', config('define.image_category_r.main'));
+    }
 
     public function genderCategory() {
         // men's: 1 ladies: 2 は固定なのでリレーションとしてインスタンス化する際に予めに絞っておく

@@ -11,14 +11,11 @@ class NotificationFactory extends Factory
 
     public function definition()
     {
-        // 管理者IDをすべて配列で取得
-        $admins_id = Admin::pluck('id')->all();
+        // ランダムに管理者インスタンスを取得
+        $admin = Admin::inRandomOrder()->first();
 
-        // ランダムで管理者IDを一つ取り出し
-        $admin_id = $this->faker->randomElement($admins_id);
-
-        // 公開状況
-        $is_published = $this->faker->numberBetween($min = 0, $max = 1); // 0: 未公開　1: 公開
+        // 公開状況 60%の確率で公開
+        $is_published = $this->faker->optional($weight = 0.4, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開
 
         // 公開日
         $posted_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
@@ -27,10 +24,10 @@ class NotificationFactory extends Factory
         $modified_at = $this->faker->dateTimeBetween($startDate = $posted_at, $endDate = 'now', $timezone = null);
 
         // 有効期限
-        $expired_at = $this->faker->dateTimeBetween($startDate = $modified_at, $endDate = 'now', $timezone = null);
+        $expired_at = $this->faker->dateTimeBetween($startDate = $modified_at, $endDate = '+12 week', $timezone = null);
 
         return [
-            'admin_id' => $admin_id,
+            'admin_id' => $admin->id,
             'title' => $this->faker->text($maxNbChars = 20),
             'body' => $this->faker->text($maxNbChars = 200),
             'is_published' => $is_published,

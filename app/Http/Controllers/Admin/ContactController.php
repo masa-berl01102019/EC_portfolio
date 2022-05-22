@@ -12,7 +12,6 @@ use App\Http\Requests\admin\ContactRequest;
 
 class ContactController extends Controller
 {
-    // TODO 新規登録時にログインしていたらidを渡す実装
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'user_id', 'response_status', 'memo' ];
 

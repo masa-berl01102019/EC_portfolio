@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\AccessorPriceTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CustomPaginateScopeTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetail extends Model
 {
     use SoftDeletes; // 論理削除
+    use CustomPaginateScopeTrait;
+    use AccessorPriceTrait;
 
     /** シリアライズ */
 
@@ -15,6 +19,11 @@ class OrderDetail extends Model
     protected $guarded = [
         'id'
     ];
+
+    /** アクセサ */
+
+    // 配列内に含めたい独自の属性(カラム名)を定義
+    protected $appends = ['order_price_text'];
 
     /** リレーション */
 

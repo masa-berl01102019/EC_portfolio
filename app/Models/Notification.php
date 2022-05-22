@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\AccessorNameTrait;
 use App\Traits\AccessorPublishTrait;
 use App\Traits\OrderByNameScopeTrait;
+use App\Traits\GetPublishedScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
@@ -27,6 +28,7 @@ class Notification extends Model
     use FilterKeywordScopeTrait;
     use FilterDateRangeScopeTrait;
     use FilterIsPublishedScopeTrait;
+    use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
     // timestamp無効にしないとデータ挿入時にエラーになる
