@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\Cart;
 use App\Models\Size;
 use App\Models\Brand;
 use App\Models\Color;

@@ -134,7 +134,10 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function() {
     Route::get('/home', 'HomeController@index')->name('home.index');
     // 商品一覧・詳細
     Route::get('/items', 'ItemController@index')->name('items.index');
-    Route::get('/items/{item}', 'ItemController@show')->name('items.show');
+    Route::get('/items/rank', 'ItemController@rank')->name('items.rank');
+    Route::get('/items/recommend', 'ItemController@recommend')->name('items.recommend');
+    Route::get('/items/option', 'ItemController@option')->name('items.option');
+    Route::get('/items/{item}', 'ItemController@show')->name('items.show')->where('item', '[0-9]+');;
     // ブログ一覧・詳細
     Route::get('/blogs', 'BlogController@index')->name('blogs.index');
     Route::get('/blogs/{blog}', 'BlogController@show')->name('blogs.show');

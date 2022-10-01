@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from "axios";
-import { useAuthContext } from '../context/AuthContext';
 import useSetErrorMsg from "./useSetErrorMsg";
+import { authAdminState, authUserState } from '../store/authState';
+import { useSetRecoilState } from 'recoil';
 
 const useAuth = (auth) => {
-    // auth contextを呼び出し
-    const {setIsUserLogin, setIsAdminLogin} = useAuthContext();
+    // グローバルステートの呼び出し
+    const setIsUserLogin = useSetRecoilState(authUserState);
+    const setIsAdminLogin = useSetRecoilState(authAdminState);
     // 非同期通信のエラーハンドリング用 hooksの呼び出し
     const [errorMessage, {handleApiErrorMessage}] = useSetErrorMsg(null);
 

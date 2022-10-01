@@ -4,12 +4,11 @@ namespace App\Traits;
 
 trait FilterKeywordScopeTrait
 {
-    // TODO 現状の仕様ではリレーション先のカラム名に対して検索ワードの指定が出来ないので修正必要
-    // TODO フリーワード検索でカラムを指定受けて検索をかける仕様にするか要検討
+    // TODO リレーション先のカラム名に対して検索ワードの指定が出来るように修正必要
     
     public function scopeFilterKeyword($query, $request, $columns) {
 
-        $filter = $request->input('f_keyword');
+        $filter = $request->input('f_search');
 
         $flag = $filter !== null ? true : false;
 

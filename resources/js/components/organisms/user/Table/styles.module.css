@@ -1,0 +1,21 @@
+
+.table {
+  display: block;
+  overflow-x: scroll;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+/* MeasurementTable override */
+.th {
+  background: #d4d4d4 !important;
+  border: 1px solid #666 !important;
+  color: #666 !important;
+}
+.td {
+  border: 1px solid #666 !important;
+  text-align: center !important;
+}
+.bg_gray {
+  background: #d4d4d4 !important;
+}

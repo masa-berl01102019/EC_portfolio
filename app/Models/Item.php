@@ -102,7 +102,9 @@ class Item extends Model
         });
     }
 
-    public function scopeItemRanking($query) {
+    /** static method */
+
+    public static function itemRanking() {
         // 商品の非公開ステータスも含んだ商品単位のブックマークの集計 * skuの論理削除されたものは除外してる
         $bookmark_quantity = DB::table('skus')
             ->join('bookmarks', 'skus.id', '=', 'bookmarks.sku_id')
@@ -125,12 +127,7 @@ class Item extends Model
             ->groupBy('item_id');
 
         // 上記で集計した物をjoinSubでサブクエリとして挿入
-        return $query->getPublished()
-            ->join('brands', 'brands.id', '=', 'items.brand_id')
-            ->join('images', function ($join) {
-                $join->on('items.id', '=', 'images.item_id')
-                     ->where('images.image_category', '=', 0);
-            })
+        return Self::getPublished()->with([ 'brand', 'categories', 'topImage' ])
             ->joinSub($bookmark_quantity, 'bookmark_quantity', function ($join) {
                 $join->on('items.id', '=', 'bookmark_quantity.item_id');
             })
@@ -144,8 +141,6 @@ class Item extends Model
             ->orderBy('cart', 'desc')
             ->orderBy('booked', 'desc');
     }
-
-    /** static method */
 
     public static function getRelatedItems ($item_id) {
         // 中間テーブルから商品IDをもつカテゴリIDを取得

@@ -1,0 +1,66 @@
+
+.container {
+  background: #fff;
+  width: calc(300 / 320 * 100%);
+  max-height: 90%;
+  max-width: 720px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  padding: 16px 8px;
+  box-sizing: border-box
+}
+.scroll_area {
+  overflow-y: scroll;
+  max-height: 200px;
+  border: 1px solid #E6E7E9;
+}
+
+/* button override */
+.close_btn {
+  display: block;
+  margin: 24px auto 0;
+}
+
+/* input override */
+.w_100 {
+  width: 100%;
+}
+
+/* 配置 */
+.mb_8 {
+  margin-bottom: 8px;
+}
+.mr_8 {
+  margin-right: 8px;
+}
+.mb_16 {
+  margin-bottom: 16px;
+}
+.mb_24 {
+  margin-bottom: 24px;
+}
+.mb_32 {
+  margin-bottom: 32px;
+}
+.flex_row {
+  display : flex;
+}
+.flex_column {
+  display : flex;
+  flex-flow: column;
+}
+.flex_wrap {
+  display : flex;
+  flex-flow: wrap;
+}
+.text_center {
+  text-align: center;
+}
+.justify_center {
+  justify-content: center;
+}
+
+

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\AccessorNameTrait;
 use App\Traits\AccessorPublishTrait;
-use App\Traits\OrderByNameScopeTrait;
 use App\Traits\GetPublishedScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +21,6 @@ class Notification extends Model
     use SoftDeletes; // 論理削除
     use AccessorPublishTrait;
     use AccessorNameTrait;
-    use OrderByNameScopeTrait;
     use OrderByPostedAtScopeTrait;
     use OrderByModifiedAtScopeTrait;
     use FilterKeywordScopeTrait;
@@ -55,17 +53,18 @@ class Notification extends Model
 
     /** スコープ */
 
-    public function scopeOrderByExpiredAt($query, $request) {
+    public function scopeOrderByExpiredAt($query, $request)
+    {
         $sort = $request->input('expired_at');
-        $query->when($sort, function($query, $sort) {
+        $query->when($sort, function ($query, $sort) {
             return $query->orderBy('expired_at', $sort);
         });
     }
 
     /** リレーション */
 
-    public function admin() {
+    public function admin()
+    {
         return $this->belongsTo('App\Models\Admin');
     }
-
 }

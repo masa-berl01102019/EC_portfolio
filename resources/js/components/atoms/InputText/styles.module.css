@@ -1,0 +1,25 @@
+.input {
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid #666;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.input::placeholder {
+  color: #a2a2a2;
+}
+.input:hover,.input:focus-visible, .input:focus, .input:active  {
+  outline:0 
+}
+.input:hover {
+  border: 1px solid #25bfc652;
+}
+.input:focus, .input:active {
+  border: 1px solid #257dc6f2;
+}
+
+

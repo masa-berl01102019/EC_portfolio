@@ -29,7 +29,7 @@ class ItemResource extends JsonResource
     public function toArray($request)
     {
         // 受信リクエストが名前付きルートに一致するかを判定
-        if($request->routeIs('user.home.index') || $request->routeIs('user.items.index')) {
+        if($request->routeIs('user.home.index') || $request->routeIs('user.items.index') || $request->routeIs('user.items.rank') || $request->routeIs('user.items.recommend')) {
             return [
                 'id' => $this->id,
                 'item_name' => $this->item_name,

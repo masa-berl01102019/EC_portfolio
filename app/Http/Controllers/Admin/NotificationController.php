@@ -32,10 +32,8 @@ class NotificationController extends Controller
         // 公開の有無フィルター
         $search_notification->filterIsPublished($request);
 
-        // 名前順->掲載終了日順->投稿日順->更新日順の優先順位でソートされる仕組み
+        // 掲載終了日順->投稿日順->更新日順の優先順位でソートされる仕組み
 
-        // 名前でソート
-        $search_notification->orderByName($request);
         // 掲載終了日でソート
         $search_notification->orderByExpiredAt($request);
         // 投稿日でソート
@@ -130,7 +128,7 @@ class NotificationController extends Controller
                 $notification->is_published_text,
                 $notification->title,
                 $notification->body,
-                $notification->admin->full_name.'('.$notification->admin->full_name_kana.')',
+                optional($notification->admin)->full_name.'('.optional($notification->admin)->full_name_kana.')',
                 $notification->expired_at !== null ? $notification->expired_at->format('Y/m/d H:i'): '　　',
                 $notification->posted_at !== null ? $notification->posted_at->format('Y/m/d H:i'): '　　',
                 $notification->modified_at !== null ? $notification->modified_at->format('Y/m/d H:i'): '　　',

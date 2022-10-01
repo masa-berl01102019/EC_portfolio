@@ -1,0 +1,70 @@
+.nav_bar {
+  height: 100%;
+  width: 250px;
+  padding: 10px;
+  background: #fff;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  position: relative;
+}
+.memu_title {
+  border-left: 2px solid rgb(73, 163, 216);
+  font-weight: bold;
+  padding-left: 4px;
+}
+.menu_text {
+  height: 24px;
+  line-height: 24px;
+}
+.menu_text:hover {
+  background: #25bfc652;
+  color: #fff;
+}
+.menu_text:active {
+  background: #0D3F67;
+  color: #fff;
+}
+
+.menu_text2 {
+  font-weight: 400;
+}
+.menu_text2:hover {
+  color: #25bfc652;
+  font-weight: 600;
+}
+.menu_text2:active {
+  color: #0D3F67;
+  font-weight: 600;
+}
+
+.mb_16 {
+  margin-bottom: 16px;
+}
+.mb_8 {
+  margin-bottom: 8px;
+}
+
+
+/* 以下はデザイン保留 */
+
+/* .search_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.add_icon {
+  border: 1px solid #d4d4d4;
+  box-sizing: border-box;
+}
+.memu_icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+}
+.memu_icon_text {
+  text-align: center;
+  font-size: 11px !important;
+} */
+
+

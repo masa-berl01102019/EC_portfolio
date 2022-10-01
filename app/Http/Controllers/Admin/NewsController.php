@@ -199,7 +199,7 @@ class NewsController extends Controller
                 $item->brand->brand_name,
                 $item->gender_category_text,
                 implode(' / ', $item->tags->pluck('tag_name')->toArray()),
-                $item->admin->full_name.'('.$item->admin->full_name_kana.')',
+                optional($item->admin)->full_name.'('.optional($item->admin)->full_name_kana.')',
                 $item->posted_at !== null ? $item->posted_at->format('Y/m/d H:i'): '　　',
                 $item->modified_at !== null ? $item->modified_at->format('Y/m/d H:i'): '　　',
             ];

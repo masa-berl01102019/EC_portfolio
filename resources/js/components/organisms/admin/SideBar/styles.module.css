@@ -1,0 +1,91 @@
+.sec_title {
+  margin-bottom : 16px;
+  border-bottom : 2px solid #49A3D8;
+  padding-bottom : 4px;
+  color : #49A3D8;
+}
+.container {
+  background : #fff;
+  padding : 16px;
+  box-shadow : 0px 2px 4px #00000057;
+  height: calc(100vh - 180px);
+  overflow : scroll;
+  width: 288px;
+  box-sizing : border-box;
+}
+.scroll_area {
+  overflow-y: scroll;
+  max-height: 200px;
+  border: 1px solid #E6E7E9;
+}
+
+.close_btn {
+  display: none;
+}
+
+@media screen and (max-width : 1023px) {
+  .sidebar {
+    background: rgb(16 15 15 / 64%);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000000;
+  }
+  .container {
+    max-height: 90% !important;
+    width: 90% !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000000;
+  }
+  .close_btn {
+    display: block;
+    margin: 24px auto 0;
+  }
+}
+
+
+/* input override */
+.w_100 {
+  width: 100%;
+}
+
+/* 配置 */
+.mb_8 {
+  margin-bottom: 8px;
+}
+.mb_16 {
+  margin-bottom: 16px;
+}
+.mb_24 {
+  margin-bottom: 24px;
+}
+.mb_32 {
+  margin-bottom: 32px;
+}
+.mr_8 {
+  margin-right: 8px;
+}
+.flex_row {
+  display : flex;
+}
+.flex_column {
+  display : flex;
+  flex-flow: column;
+}
+.flex_wrap {
+  display : flex;
+  flex-flow: wrap;
+}
+.text_center {
+  text-align: center;
+}
+.justify_center {
+  justify-content: center;
+}
+
+

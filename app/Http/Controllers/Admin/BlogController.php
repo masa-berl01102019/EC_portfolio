@@ -212,7 +212,7 @@ class BlogController extends Controller
                 $blog->gender_category_text,
                 implode(' / ', $blog->items->pluck('product_number')->toArray()),
                 implode(' / ', $blog->tags->pluck('tag_name')->toArray()),
-                $blog->admin->full_name.'('.$blog->admin->full_name_kana.')',
+                optional($blog->admin)->full_name.'('.optional($blog->admin)->full_name_kana.')',
                 $blog->posted_at !== null ? $blog->posted_at->format('Y/m/d H:i'): '　　',
                 $blog->modified_at !== null ? $blog->modified_at->format('Y/m/d H:i'): '　　',
             ];

@@ -1,20 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {EditorState, convertToRaw, convertFromRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import {stateFromHTML} from 'draft-js-import-html';
 import {Link, useHistory} from "react-router-dom";
-import useFetchApiData from "../../../hooks/useFetchApiData";
+import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
 import useObjectForm from "../../../hooks/useObjectForm";
 import useHelper from "../../../hooks/useHelper";
+import Heading from '../../../atoms/Heading/Heading';
+import Button from '../../../atoms/Button/Button';
+import FormSelectbox from '../../../molecules/FormSelectbox/FormSelectbox';
+import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import Badge from '../../../atoms/Badge/Badge';
+import Text from '../../../atoms/Text/Text';
+import CheckboxTag from '../../../atoms/CheckboxTag/CheckboxTag';
+import styles from '../styles.module.css';
+import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import { useRecoilValue } from 'recoil';
+import { menuAdminState } from '../../../store/menuState';
 
 function NewsEdit(props) {
-
-    // urlの設定 * propsで渡ってきたIDを初期URLにセット
+    // urlの設定
     const baseUrl = `/api/admin/news/${props.match.params.id}/edit`;
+    // paramsの適用範囲を決めるscope名を定義
+    const model = 'NEWS';
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
+    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model)
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm({
         'title': '',
@@ -27,10 +39,10 @@ function NewsEdit(props) {
     });
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-    // file送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm} = useObjectForm(formData, setFormData, dispatch);
     // 便利関数の呼び出し
     const {isJson} = useHelper();
+    // file送信用にフォームのラッパー関数呼び出し
+    const {handleSendObjectForm} = useObjectForm(formData, setFormData, createData);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // API接続の返却値を変数に格納
@@ -38,6 +50,8 @@ function NewsEdit(props) {
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const tags = data.tags? data.tags: null;
+    // menuの状態管理
+    const openAdminMenu = useRecoilValue(menuAdminState);
 
     useEffect(() => {
         // 非同期で通信されるので初回読み込み時にnewsが入ってこない場合があるので条件分岐してあげる
@@ -51,11 +65,7 @@ function NewsEdit(props) {
             // editorStateをdraft.jsにセット
             setEditorState(editorState);
         }
-        if(data.update === true) {
-            // 処理が完了した時点でリダイレクトの処理
-            history.push('/admin/news');
-        }
-    },[data]);
+    },[]);
 
     const onEditorStateChange = (editorState) => {
         // 現在のeditorStateからcontentStateを取得 
@@ -71,105 +81,159 @@ function NewsEdit(props) {
         setEditorState(editorState);
     };
 
-    // 描画のみを担当
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <div style={{'width': '50%', 'margin': '0 auto'}}>
-                <h1>ニュース編集</h1>
-                <form onSubmit={ e => {
-                    e.preventDefault();
-                    handleSendObjectForm(`/api/admin/news/${props.match.params.id}`);
-                }}>
-                    <div>
-                        <label>
-                            <span style={{'marginRight': '20px'}}>タイトル</span>
-                            <input type='text' name='title' onBlur={handleFormData} defaultValue={formData.title} placeholder='タイトル名'/>
-                        </label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.title}</p> }
-                    </div>
-                    
-                    <div>
-                        <div>本文</div>
-                        <div style={{ 'border': '1px solid #858585', 'background': '#fff'}}>
-                            <Editor
-                                editorState={editorState}
-                                toolbarClassName="toolbarClassName"
-                                wrapperClassName="wrapperClassName"
-                                editorClassName="editorClassName"
-                                onEditorStateChange={onEditorStateChange}
-                            />
+        <main>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
+                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>ニュース編集</Heading>
+                        <div className={styles.form_area}>
+                            <form onSubmit={ e => {
+                                e.preventDefault();
+                                handleSendObjectForm(
+                                    `/api/admin/news/${props.match.params.id}`,
+                                    // history.push('/admin/news')
+                                );
+                            }}>
+                                <div className={[styles.flex, styles.mb_24, styles.flex_tb].join(' ')}>
+                                    <div className={[styles.blog_area, styles.flex_1].join(' ')}>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'title'}
+                                                onBlur={handleFormData}
+                                                value={formData.title}
+                                                label={'タイトル'}
+                                                error={errorMessage}
+                                                placeholder='タイトル名'
+                                                required={true}
+                                            />
+                                        </div>
+                                        <div className={styles.flex_1}>
+                                            <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')}>
+                                                <Text className={styles.mr_4}>本文</Text>
+                                                <Badge text='必須' />
+                                            </div>
+                                            <div className={styles.edit_area}>
+                                                <Editor
+                                                    editorState={editorState}
+                                                    toolbarClassName="toolbarClassName"
+                                                    wrapperClassName="wrapperClassName"
+                                                    editorClassName="editorClassName"
+                                                    onEditorStateChange={onEditorStateChange}
+                                                />
+                                            </div>
+                                            { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.body}</Text> }
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.sidebar_box}>
+                                        <div className={styles.sidebar_card}>
+                                            <div className={styles.title_box}>
+                                                <Text size='l'>公開設定</Text>
+                                            </div>
+                                            <div className={styles.pa_16}>
+                                                <FormSelectbox
+                                                    name='is_published'
+                                                    value={formData.is_published}
+                                                    onChange={handleFormData}
+                                                    label={'公開設定'}
+                                                    error={errorMessage}
+                                                    required={true}
+                                                >
+                                                    <option value={0}>非公開</option>
+                                                    <option value={1}>公開</option>
+                                                </FormSelectbox>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.sidebar_card}>
+                                            <div className={styles.title_box}>
+                                                <Text size='l'>サムネイル設定</Text>
+                                            </div>
+                                            <div className={styles.pa_16}>
+                                                <label>
+                                                    <img src={formData.thumbnail} alt="news image" className={styles.insert_img} />
+                                                    <input name="thumbnail" type="file" accept="image/*" onChange={ e => handleFormFile(e)} className={styles.hidden} />
+                                                </label>
+                                                { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.file}</Text> }
+                                                { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.thumbnail}</Text> }
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.sidebar_card}>
+                                            <div className={styles.title_box}>
+                                                <Text size='l'>カテゴリ設定</Text>
+                                            </div>
+                                            <div className={styles.pa_16}>
+                                                <div className={styles.mb_16}>
+                                                    <FormSelectbox
+                                                        name='brand_id'
+                                                        value={formData.brand_id}
+                                                        onChange={handleFormData}
+                                                        label={'ブランド'}
+                                                        error={errorMessage}
+                                                        required={true}
+                                                    >
+                                                        <option value={''}>未設定</option>
+                                                        { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
+                                                    </FormSelectbox>
+                                                </div>
+                                                <div>
+                                                    <FormSelectbox
+                                                        name='category_id'
+                                                        value={formData.category_id}
+                                                        onChange={handleFormData}
+                                                        label={'性別カテゴリ'}
+                                                        error={errorMessage}
+                                                        required={true}
+                                                    >
+                                                        <option value={''}>未設定</option>
+                                                        { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
+                                                    </FormSelectbox>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.sidebar_card}>
+                                            <div className={styles.title_box}>
+                                                <Text size='l'>タグの設定</Text>
+                                            </div>
+                                            <div className={styles.pa_16}>
+                                                <div className={styles.scroll_area}>
+                                                {   tags &&
+                                                    tags.map((tag) =>
+                                                    <div key={tag.id} className={[styles.block, styles.mb_4].join(' ')}>
+                                                        <CheckboxTag
+                                                            name='tags_id' 
+                                                            value={tag.id} 
+                                                            onChange={handleFormCheckbox} 
+                                                            checked={formData.tags_id.includes(tag.id)} 
+                                                            label={tag.tag_name}
+                                                        />
+                                                    </div>
+                                                    )
+                                                }
+                                                </div>
+                                                { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.tags_id}</Text> }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
+                                    <LinkBtn to={`/admin/news`} size='l' className={[styles.mr_12, styles.w_100].join(' ')} >一覧に戻る</LinkBtn>
+                                    <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
+                                </div>
+                            </form>
                         </div>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.body}</p> }
                     </div>
-
-                    <div>
-                        <span>サムネイル</span>
-                        <label className="insert_image">
-                            <img src={formData.thumbnail} alt="news image" style={{'width' : '100px', 'height' : '100px'}} />
-                            <input name="thumbnail" type="file" accept="image/*" onChange={ e => handleFormFile(e)} style={{'display': 'none'}} />
-                        </label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.file}</p> }
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.thumbnail}</p> }
-                    </div>
-
-                    <div>
-                        <label>
-                            <span style={{'marginRight': '20px'}}>ブランド</span>
-                            <select name='brand_id' value={formData.brand_id} onChange={handleFormData}>
-                                <option value={''}>ブランドカテゴリを選択</option>
-                                { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
-                            </select>
-                        </label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.brand_id}</p> }
-                    </div>
-
-                    <div>
-                        <label>
-                            <span style={{'marginRight': '20px'}}>性別</span>
-                            <select name='category_id' value={formData.category_id} onChange={handleFormData}>
-                                <option value={''}>性別カテゴリを選択</option>
-                                { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
-                            </select>
-                        </label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.category_id}</p> }
-                    </div>
-
-                    <div>
-                        <div style={{'display':'flex'}}>
-                            <span style={{'marginRight': '20px'}}>タグ</span>
-                            <div style={{'width': '200px', 'overflowY': 'scroll', 'height': '45px', 'border': '1px solid #000'}}>
-                                {   tags &&
-                                    tags.map((tag) =>
-                                        <label key={tag.id} style={{'display':'block'}}>
-                                            <input type='checkbox' name='tags_id' onChange={handleFormCheckbox} value={tag.id} checked={formData.tags_id.includes(tag.id)} />
-                                            {tag.tag_name}
-                                        </label>
-                                    )
-                                }
-                            </div>
-                        </div>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.tags_id}</p> }
-                    </div>
-
-                    <div>
-                        <label>公開設定
-                            <select name='is_published' value={formData.is_published} onChange={handleFormData}>
-                                <option value={0}>非公開</option>
-                                <option value={1}>公開</option>
-                            </select>
-                        </label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.is_published}</p> }
-                    </div>
-
-                    <button><Link to={`/admin/news`}>一覧に戻る</Link></button>
-                    <button type="submit">編集</button>
-                </form>
-            </div>
-        )
+                )
+            }
+            </Suspense>
+        </main>
     );
 }
 

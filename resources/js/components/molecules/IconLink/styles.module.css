@@ -1,0 +1,28 @@
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Icon style override */
+.detail_icon {
+  width: 16px;
+  height: 16px;
+}
+
+.add_icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+
+.button_style {
+  border: 1px solid #0D3F67;
+  background: #0D3F67;
+  padding: 2px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  box-sizing: border-box;
+  line-height: 1;
+  width: 145px;
+}

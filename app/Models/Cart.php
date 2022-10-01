@@ -3,16 +3,8 @@
 namespace App\Models;
 
 use App\Traits\AccessorPriceTrait;
-use App\Traits\FilterSizeScopeTrait;
-use App\Traits\FilterBrandScopeTrait;
-use App\Traits\FilterColorScopeTrait;
-use App\Traits\OrderByPriceScopeTrait;
-use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
-use App\Traits\OrderByItemNameScopeTrait;
-use App\Traits\OrderByCreatedAtScopeTrait;
-use App\Traits\OrderByUpdatedAtScopeTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -21,14 +13,6 @@ class Cart extends Model
     use HasFactory; // laravel8 factory関数使用する為
     // use SoftDeletes; // 論理削除
     use AccessorPriceTrait;
-    use OrderByCreatedAtScopeTrait;
-    use OrderByUpdatedAtScopeTrait;
-    use OrderByItemNameScopeTrait;
-    use OrderByPriceScopeTrait;
-    use FilterKeywordScopeTrait;
-    use FilterBrandScopeTrait;
-    use FilterColorScopeTrait;
-    use FilterSizeScopeTrait;
     use CustomPaginateScopeTrait;
 
     /** シリアライズ */

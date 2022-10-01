@@ -1,0 +1,21 @@
+.textarea {
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #666;
+  color: #666;
+  padding: 4px;
+  box-sizing: border-box;
+}
+.textarea::placeholder {
+  color: #a2a2a2;
+}
+.textarea:hover,.textarea:focus-visible, .textarea:focus, .textarea:active  {
+  outline:0 
+}
+.textarea:hover {
+  border: 1px solid #25bfc652;
+}
+.textarea:focus, .input:active {
+  border: 1px solid #257dc6f2;
+}

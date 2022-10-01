@@ -1,35 +1,84 @@
-import React, {useState} from 'react';
-import useAuth from "../../../hooks/useAuth";
+import { CircularProgress } from '@material-ui/core';
+import React, { Suspense } from 'react';
+import useAuth2 from "../../../hooks/useAuth2";
+import useForm from '../../../hooks/useForm';
+import { authUserState } from '../../../store/authState';
+import { useSetRecoilState } from 'recoil';
+import Text from '../../../atoms/Text/Text';
+import Heading from '../../../atoms/Heading/Heading';
+import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import Button from '../../../atoms/Button/Button';
+import styles from '../styles.module.css';
+import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 
 function UserLogin() {
-
-    // Auth名の設定
-    const auth = 'user'
-    // 入力値のステート管理
-    const [email, setEmail] = useState('uno.tsubasa@example.net');
-    const [password, setPassword] = useState('abc12345');
+    // グローバルステートの呼び出し
+    const setIsUserLogin = useSetRecoilState(authUserState);
+    // フォーム項目の初期値をuseStateで管理
+    const [formData, {handleFormData}] = useForm({
+        'email': 'tsato@example.net	', 
+        'password': 'abc12345', 
+    });
     // Auth hooksの呼び出し
-    const {errorMessage, handleLogin} = useAuth(auth);
+    const {errorMessage, handleLogin} = useAuth2('/api/user/auth', 'user');
 
     return (
-        <div style={{'width': '50%', 'margin': '40px auto 60px'}}>
-            <h1>一般ログイン</h1>
-            { errorMessage && errorMessage.httpRequestError && <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p> }
-            <form onSubmit={ e => {
-                e.preventDefault();
-                handleLogin({email: email, password: password});
-            }}>
-                <label htmlFor='email'>メールアドレス</label>
-                <div>
-                    <input id="email" type='email' name='email' onBlur={ e => setEmail(e.target.value) } defaultValue={email} placeholder='test@example.com' />
+        <main className={styles.mt_40}>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+                { errorMessage && errorMessage.httpRequestError && <Text role='error'>{errorMessage.httpRequestError}</Text> }
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
+                    ログイン
+                </Heading>
+                <div className={styles.login_area}>
+                    <form onSubmit={ e => {
+                        e.preventDefault();
+                        handleLogin({
+                            url: `/api/user/login`, 
+                            form: formData,
+                            callback: () => setIsUserLogin(true)
+                        });
+                    }}>
+                        <div className={styles.mb_16}>
+                            <FormInputText
+                                name={'email'}
+                                type='email'
+                                onBlur={handleFormData}
+                                value={formData.email}
+                                label={'メールアドレス'}
+                                error={errorMessage}
+                                placeholder='080-1234-5678'
+                            />
+                        </div>
+                        <div className={styles.mb_24}>
+                            <FormInputText
+                                name={'password'}
+                                type='password'
+                                onBlur={handleFormData}
+                                value={formData.password}
+                                label={'パスワード'}
+                                error={errorMessage}
+                                placeholder='半角英数字8文字以上'
+                            />
+                        </div>
+                        <Button size='l' color='primary' type="submit" className={styles.mb_8}>ログイン</Button>
+                        {/* TODO: 機能を実装する */}
+                        {/* TODO: errorの表示おかしい */}
+                        <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
+                            メールアドレスまたはパスワードをお忘れの方
+                        </Text>
+                    </form>
+                    <div>
+                        <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
+                            初めてご利用の方
+                        </Heading>
+                        <Text size='s' className={styles.mb_24}>
+                            初めてご利用のお客様は、こちらから会員登録を行ってください。
+                        </Text>
+                        <LinkBtn size='l' color='accent' to={`/users/create`} className={styles.mb_8} >新規会員登録</LinkBtn>
+                    </div>
                 </div>
-                <label htmlFor='password'>パスワード</label>
-                <div>
-                    <input id="password" type='password' name='password' onBlur={ e => setPassword(e.target.value) } defaultValue={password} placeholder='半角英数字8文字以上' />
-                </div>
-                <button type="submit">ログイン</button>
-            </form>
-        </div>
+            </Suspense>
+        </main>
     );
 }
 

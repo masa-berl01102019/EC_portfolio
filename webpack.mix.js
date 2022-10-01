@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+require('laravel-mix-react-css-modules');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,4 +12,10 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js').react();
+ mix.react('resources/js/app.js', 'public/js')
+ .reactCSSModules()
+ .webpackConfig({
+     output: {
+         chunkFilename: 'chunk.[name].js',
+     }
+ });

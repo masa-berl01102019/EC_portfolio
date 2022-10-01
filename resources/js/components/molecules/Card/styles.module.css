@@ -1,0 +1,129 @@
+/* カード外枠 */
+
+.bookmark_card {
+  /* padding: 8px; */
+  width: 100%;
+  max-width: 320px;
+  height: 120px;
+}
+.cart_card {
+  width: 100%;
+}
+.quantity_input {
+  width: 50px;
+}
+.delete_btn {
+  width: auto !important;
+}
+.cart_input_area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ordered_item_card {
+  width: 100%;
+  max-width: 320px;
+  height: 144px;
+}
+.info_card {
+  padding: 8px 0;
+  border-top: 1px solid #D4D4D4;
+  border-bottom: 1px solid #D4D4D4;
+}
+.notification_card {
+  padding: 8px 0px 8px 8px;
+  border-top: 1px solid #D4D4D4;
+  border-bottom: 1px solid #D4D4D4;
+}
+
+/* リンクスタイル */
+
+.link_fill {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 画像スタイル */
+
+.info_img {
+  width: 100%;
+  height: 100%;
+}
+
+.bookmark_img {
+  width: 100px;
+}
+
+.ordered_item_img {
+  width: 120px;
+}
+
+.top_item_img {
+  width: 100%;
+}
+
+.icon {
+  width: 35px;
+  height: 35px;
+  align-self: center;
+}
+
+/* 配置 */
+
+.flex {
+  display: flex;
+}
+.img_contents {
+  flex-basis: 29%;
+  max-width: 132px;
+  max-height: 132px;
+}
+.text_contents {
+  flex-basis: 71%;
+  flex-grow: 1;
+}
+.bookmark_text_contents {
+  width: calc(100% - 108px);
+  margin-left: 8px;
+}
+.ordered_item_text_contents {
+  width: calc(100% - 128px);
+  margin-left: 8px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+.mb_4 {
+  margin-bottom: 4px;
+}
+.mb_8 {
+  margin-bottom: 8px;
+}
+.mb_16 {
+  margin-bottom: 16px;
+}
+.mr_4 {
+  margin-right: 4px;
+}
+.mr_8 {
+  margin-right: 8px;
+}
+
+/* 文字スタイル */
+
+.font_bold {
+  font-weight: 600;
+}
+
+.card_text {
+  overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+
+
+
+
+

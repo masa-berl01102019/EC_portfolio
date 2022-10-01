@@ -88,6 +88,10 @@ class UserController extends Controller
     {
         // ユーザーの論理削除
         $user->delete();
+        // // ユーザーのログアウト
+        // Auth::guard('user')->logout();
+        // // セッションIDの再発行
+        // $request->session()->regenerate();
         // レスポンスを返却
         return response()->json(['delete' => true, 'message' => '会員の削除を完了しました'], 200);
     }

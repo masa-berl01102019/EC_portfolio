@@ -1,0 +1,44 @@
+.radio {
+  cursor: pointer;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  display: block;
+}
+.radio::before,
+.radio::after {
+  content: "";
+  display: block;
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.radio::before {
+  background-color: #fff;
+  border: 1px solid #666;
+  height: 20px;
+  width: 20px;
+  box-sizing: border-box;
+}
+.radio::after {
+  background: #0d3f67;
+  opacity: 0;
+  height: 12px;
+  width: 12px;
+  z-index: 1;
+}
+.radio:checked::after {
+  opacity: 1;
+}
+.radio:checked::before {
+  border: 1px solid #0d3f67 !important;
+}
+.radio:hover::before {
+  border: 1px solid #25bfc652 !important;
+}
+.radio:hover::before,.radio:focus-visible::before, .radio:focus::before, .radio:active::before  {
+  outline: 0;
+}

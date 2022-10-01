@@ -1,10 +1,19 @@
-import React, {useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import React, {Suspense, useEffect, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
-import useFetchApiData from "../../../hooks/useFetchApiData";
 import useCreateParams from "../../../hooks/useCreateParams";
-import { useParamsContext } from '../../../context/ParamsContext';
+import { useRecoilState } from 'recoil';
+import { paramState } from '../../../store/paramState';
+import useFetchApiData2 from '../../../hooks/useFetchApiData2';
+import {useCreateUrl} from "../../../hooks/useCreateUrl";
+import Text from '../../../atoms/Text/Text';
+import InfoCard from '../../../molecules/Card/InfoCard';
+import PaginationList from '../../../atoms/PaginationList/PaginationList';
+import Heading from '../../../atoms/Heading/Heading';
+import NewsFilterModal from '../../../organisms/user/modal/NewsFilterModal';
+import NewsSortModal from '../../../organisms/user/modal/NewsSortModal';
+import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
+import SortBtn from '../../../molecules/IconBtn/SortBtn';
+import styles from '../styles.module.css';
 
 function NewsIndexPage() {
     // urlの設定
@@ -12,134 +21,88 @@ function NewsIndexPage() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'NEWS';
     // URLパラメータ変更のフックの呼び出し
-    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilter, handleFilterCheckbox, handleFilterDateRange, handleCurrentPage, handlePerPage, handleSort}] = useCreateParams();
-    // useContext呼び出し
-    const {params, setParams, scope, setScope} = useParamsContext();
+    const {handleCurrentPage} = useCreateParams(model);
+    // グローバルステート呼び出し
+    const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
+    const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const news = data.data ? data.data: null;
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const tags = data.tags? data.tags: null;
 
+    const [popup, setPopup] = useState('');
+
     useEffect(() => {
         // paramsのデフォルト値と適用範囲を設定
-        if(scope === null || scope !== model) { // 全てのページにおいての初回読み込みなので初期値を代入
-            console.log('NEWSにてparamsの初期値をセットしてscopeを変更');
+        if(params.scope === null) {
+            console.log('NEWSにてparamsの初期値をセット');
             setParams({
-                ...params,
-                sort: { 'posted_at' : '', 'modified_at' : '' },
-                filter: { 'keyword' : '', 'tag' : [], 'brand' : [], 'gender_category' : [], 'dateRange': {} },
+                paginate: {},
+                sort: { 'posted_at' : '' },
+                filter: { 'search' : '', 'tag' : [], 'brand' : [], 'gender_category' : '' },
+                scope: model
             });
-            setScope(model);
         }
-    },[data]);
+    },[]);
 
-    // 描画のみを担当
+    
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <>
-                <h1>ニュース一覧</h1>
-
-                {   Object.keys(params.filter).length > 0 && scope === model &&
-                    <div className={'filter'}>
-                        <h3>フィルター機能</h3>
-                        <div>
-                            <span>キーワード検索</span>
-                            <input type='text' name='keyword' onBlur={handleFilter} defaultValue={params.filter.keyword} placeholder={'タイトルを検索'}/>
-                        </div>
-                        <div>
-                            <span style={{'marginRight': '20px'}}>ブランド</span>
-                            {   brands &&
-                                brands.map((brand) =>
-                                    <label key={brand.id} ><input type='checkbox' name='brand' onChange={handleFilterCheckbox} value={brand.id} checked={params.filter.brand.includes(brand.id)} />{brand.brand_name}</label>
-                                )
-                            }
-                        </div>
-                        <div>
-                            <span style={{'marginRight': '20px'}}>カテゴリ</span>
-                            {   gender_categories &&
-                                gender_categories.map((gender_category) =>
-                                    <label key={gender_category.id} ><input type='checkbox' name='gender_category' onChange={handleFilterCheckbox} value={gender_category.id} checked={params.filter.gender_category.includes(gender_category.id)} />{gender_category.category_name}</label>
-                                )
-                            }
-                        </div>
-                        <div style={{'display':'flex'}}>
-                            <span style={{'marginRight': '20px'}}>タグ</span>
-                            <div style={{'width': '200px', 'overflowY': 'scroll', 'height': '45px', 'border': '1px solid #000'}}>
-                                {   tags &&
-                                    tags.map((tag) =>
-                                        <label key={tag.id} style={{'display':'block'}}><input type='checkbox' name='tag' onChange={handleFilterCheckbox} value={tag.id} checked={params.filter.tag.includes(tag.id)} />{tag.tag_name}</label>
-                                    )
-                                }
-                            </div>
-                        </div>
-                        <div>
-                            <span>期間指定</span>
-                            <select name='field' ref={dateRangeField} value={Object.keys(params.filter.dateRange)[0]} onChange={handleFilterDateRange}>
-                                <option value={'clear'}>フィールド選択</option>
-                                <option value={'posted_at'}>投稿日</option>
-                                <option value={'modified_at'}>更新日</option>
-                            </select>
-                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
-                            <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
-                        </div>
-                    </div>
-                }
-                {   Object.keys(params.sort).length > 0 && scope === model &&
-                    <div className={'sort'}>
-                        <h3>ソート機能</h3>
-                        <label>投稿日
-                            <select name='posted_at' value={params.sort.posted_at} onChange={handleSort}>
-                                <option value={''}>未選択</option>
-                                <option value={'desc'}>降順</option>
-                                <option value={'asc'}>昇順</option>
-                            </select>
-                        </label>
-                        <label>更新日
-                            <select name='modified_at' value={params.sort.modified_at} onChange={handleSort}>
-                                <option value={''}>未選択</option>
-                                <option value={'desc'}>降順</option>
-                                <option value={'asc'}>昇順</option>
-                            </select>
-                        </label>
-                    </div>
-                }
-                {   news && !errorMessage &&
-                    news.map((item) =>
-                        <Link to={`/news/${item.id}`} key={item.id}>
-                            <div style={{'display': 'flex'}}>
-                                <img src={item.thumbnail} alt="" style={{ 'width':'120px', 'height': '80px', 'display': 'block' }}/>
-                                <div>
-                                    <p>{item.title}</p>
-                                    <p>{item.brand_name}</p>
-                                    <p>{item.modified_at ? item.modified_at : item.posted_at}</p>
-                                </div>
-                            </div>
-                        </Link>
-                    )
-                }
-                {   data.meta &&
+        <main className={styles.mt_40}>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
                     <>
-                        <label>行数<input type='number' onBlur={handlePerPage} defaultValue={data.meta.per_page} style={{'width': '40px'}} /></label>
-                        <div>検索結果{data.meta.total}</div>
-                        <div>現在のページ{data.meta.current_page}</div>
-                        <Pagination
-                            activePage={data.meta.current_page}
-                            itemsCountPerPage={data.meta.per_page}
-                            totalItemsCount={data.meta.total}
-                            pageRangeDisplayed={data.meta.page_range_displayed}
-                            onChange={handleCurrentPage}
-                        />
+                        {   popup == '1' && 
+                            <NewsFilterModal
+                                brands={brands}
+                                gender_categories={gender_categories}
+                                tags={tags}
+                                onClick={() => setPopup('')}
+                                model={model}
+                            />
+                        }
+                        {   popup == '2' && 
+                            <NewsSortModal
+                                onClick={() => setPopup('')}
+                                model={model}
+                            />
+                        }
+
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>ニュース一覧</Heading>
+
+                        <div className={styles.form_contents_area}> 
+                            <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
+                                <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
+                                <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
+                            </div>
+                            {   news &&
+                                <div className={styles.mb_24}> 
+                                    {                        
+                                        news.map((item) =>
+                                            <InfoCard
+                                                key={item.id}
+                                                src={item.thumbnail}
+                                                to={`/news/${item.id}`}
+                                                title={item.title}
+                                                brand_name={item.brand_name}
+                                                posted_at={item.posted_at}
+                                                modified_at={item.modified_at}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            }
+                            <PaginationList meta={data.meta} onChange={handleCurrentPage} />
+                        </div>
                     </>
-                }
-            </>
-        )
+                )
+            }
+            </Suspense>
+        </main>
     );
 }
 

@@ -17,7 +17,10 @@ class ErrorBoundary extends React.Component {
 
     static getDerivedStateFromError(error) {
         // 次のレンダリングでフォールバック UI が表示されるように状態を更新
-        return { hasError: true };
+        return { 
+            hasError: true,
+            error
+        };
     }
 
     componentDidCatch(error, errorInfo) {
@@ -28,19 +31,24 @@ class ErrorBoundary extends React.Component {
     render() {
         // エラー時の表示
         if (this.state.hasError) {
-            return(
-                // 本番用のエラーメッセージ
-                // <div style={{'color': 'red', 'textAlign': 'center'}}>アプリケーションエラーにより表示できません。時間を置いて、再度更新してください。</div>
-
-                // 開発環境用のメッセージ
-                <div style={{'width': '300px', 'margin': '0 auto'}}>
-                    <h3>JavaScriptの致命的エラー</h3>
-                    <p style={{'margin': '0'}}>{this.state.error?.message}</p>
-                    <pre style={{'fontFamily': 'monospace'}}>
-                    {this.state.errorInfo?.componentStack}
-                    </pre>
-                </div>
-            );
+            // fallbackが設定されてるかで表示を切り替え
+            if (this.props.fallback) {
+                return this.props.fallback;
+            } else {
+                return(
+                    // 本番用のエラーメッセージ
+                    // <div style={{'color': 'red', 'textAlign': 'center'}}>アプリケーションエラーにより表示できません。時間を置いて、再度更新してください。</div>
+    
+                    // 開発環境用のメッセージ
+                    <div style={{'width': '300px', 'margin': '0 auto'}}>
+                        <h3>JavaScriptの致命的エラー</h3>
+                        <p style={{'margin': '0'}}>{this.state.error?.message}</p>
+                        <pre style={{'fontFamily': 'monospace'}}>
+                        {this.state.errorInfo?.componentStack}
+                        </pre>
+                    </div>
+                );
+            }
         }
         // エラーがない時は子（括った内部のコンポーネント）を表示
         return this.props.children;

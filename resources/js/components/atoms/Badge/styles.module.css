@@ -1,0 +1,23 @@
+.require_badge {
+  height: 16px;
+  font-weight: 400;
+  font-size: 12px;
+  text-align: center;
+  color: #FFF;
+  background: #FC125D;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  display: inline-block;
+}
+
+.number_badge {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background: #49A3D8;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 18px;
+  color: #FFF;
+  padding: 3.5px;
+}
