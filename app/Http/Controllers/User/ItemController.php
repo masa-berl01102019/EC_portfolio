@@ -163,6 +163,15 @@ class ItemController extends Controller
         return ItemResource::collection($this->recommend_flag ? $items : Item::getPublished()->with(['brand', 'genderCategory', 'topImage'])->filterCategory($request)->customPaginate($request));
     }
 
+    public function new(Request $request)
+    {
+        // 新着商品
+        $new_items = Item::itemNew()->customPaginate($request);
+
+        // レスポンスを返却
+        return ItemResource::collection($new_items);
+    }
+
     public function option()
     {
         // レスポンスを返却

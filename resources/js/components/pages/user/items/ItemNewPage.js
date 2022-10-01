@@ -11,11 +11,11 @@ import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 
-function ItemRankPage() {
+function ItemNewPage() {
     // urlの設定
-    const baseUrl = `/api/user/items/rank`;
+    const baseUrl = `/api/user/items/new`;
     // paramsの適用範囲を決めるscope名を定義
-    const model = 'RANK';
+    const model = 'NEW';
     // URLパラメータ変更のフックの呼び出し
     const {handleCurrentPage} = useCreateParams(model);
     // グローバルステート呼び出し
@@ -29,7 +29,7 @@ function ItemRankPage() {
     useEffect(() => {
         // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('RANKにてparamsの初期値をセット');
+            console.log('RECOMMENDにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'price' : '', 'posted_at' : '' },
@@ -48,7 +48,7 @@ function ItemRankPage() {
                     <Text role='error'>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>ランキング一覧</Heading>
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>新着一覧</Heading>
                         <div className={styles.main_contents_area}>
                             {   items &&
                                 <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
@@ -77,4 +77,4 @@ function ItemRankPage() {
     );
 }
 
-export default ItemRankPage;
+export default ItemNewPage;

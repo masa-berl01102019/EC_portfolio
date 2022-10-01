@@ -24,6 +24,11 @@
   background: #C6604A;
   border: 1px solid #C6604A;
 }
+.link {
+  color: #49A3D8;
+  background: #fff;
+  border: 1px solid #49A3D8;
+}
 .s {
   font-size: 12px;
   width: 92px;

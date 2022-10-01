@@ -80,8 +80,8 @@ class HomeController extends Controller
         $ranked_items = Item::itemRanking()->filterCategory($request)->limit(4)->get();
 
         // 新着商品
-        $new_items = Item::getPublished()->with(['brand', 'genderCategory', 'images'])
-            ->filterCategory($request)->orderBy('posted_at', 'desc')->limit(4)->get();
+        $new_items = Item::itemNew()->filterCategory($request)->limit(4)->get();
+
         // ブログ
         $blogs = Blog::getPublished()->with(['admin', 'brand', 'tags', 'items'])
             ->filterGenderCategory($request)->limit(3)->get();

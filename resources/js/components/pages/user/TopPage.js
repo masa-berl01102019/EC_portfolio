@@ -15,6 +15,7 @@ import RadioBoxTab from '../../atoms/RadioboxTab/RadioBoxTab';
 import Image from '../../atoms/Image/Image';
 import Text from '../../atoms/Text/Text';
 import styles from './styles.module.css';
+import LinkBtn from '../../atoms/LinkButton/LinkBtn';
 
 
 function TopPage() {
@@ -44,14 +45,13 @@ function TopPage() {
             console.log('HOMEにてparamsの初期値をセット');
             setParams({
                 paginate: {},
-                sort: { 'last_name_kana' : '', 'birthday' : '', 'created_at' : '', 'updated_at' : ''},
-                filter: { 'search' : '', 'gender_category' : ''},
+                sort: {},
+                filter: {'gender_category' : ''},
                 scope: model
             });
         }
     },[]);
 
-    // TODO: 全てをみるボタンを作成する
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
@@ -110,7 +110,7 @@ function TopPage() {
                             <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>新着一覧</Heading>
                             {
                                 items &&
-                                <div className={styles.card_area}> 
+                                <div className={styles.search_item_area}> 
                                     {                        
                                         items.map((item) =>
                                             <TopItemCard 
@@ -126,11 +126,12 @@ function TopPage() {
                                     }
                                 </div>
                             }
+                            <LinkBtn to={'/items/new'} color='link' className={styles.view_all_btn}>すべてをみる</LinkBtn>
             
                             <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>おすすめ一覧</Heading>
                             {
                                 recommend_items && 
-                                <div className={styles.card_area}> 
+                                <div className={styles.search_item_area}> 
                                     {                        
                                         recommend_items.map((item) =>
                                             <TopItemCard 
@@ -146,11 +147,12 @@ function TopPage() {
                                     }
                                 </div>
                             }
+                            <LinkBtn to={'/items/recommend'} color='link' className={styles.view_all_btn}>すべてをみる</LinkBtn>
             
                             <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>ランキング一覧</Heading>
                             {
                                 ranked_items &&
-                                <div className={styles.card_area}>
+                                <div className={styles.search_item_area}>
                                 {                        
                                     ranked_items.map((item) =>
                                         <TopItemCard 
@@ -166,6 +168,7 @@ function TopPage() {
                                 }
                                 </div>
                             }
+                            <LinkBtn to={'/items/rank'} color='link' className={styles.view_all_btn}>すべてをみる</LinkBtn>
 
                             <div className={styles.blog_news_wrap}>
                                 <div className={styles.news_wrap}>

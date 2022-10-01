@@ -51,7 +51,7 @@ function ItemRecommendPage() {
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>おすすめ一覧</Heading>
                         <div className={styles.main_contents_area}>
                             {   items &&
-                                <div className={styles.search_item_area}>
+                                <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
                                     {                        
                                         items.map((item) =>
                                             <TopItemCard 

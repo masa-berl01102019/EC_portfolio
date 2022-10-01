@@ -1,26 +1,14 @@
 import React, {memo} from 'react';
 import { Link } from 'react-router-dom';
 import styles from './styles.module.css';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { authUserState } from '../../../store/authState';
-import { paramState } from '../../../store/paramState';
 import Text from '../../../atoms/Text/Text'
 
 const GlobalMenu = ({authName, handleLogout}) => {
 
-    const model = 'ITEM';
-    // グローバルステート呼び出し
-    const params = useRecoilValue(paramState(model));
     // login状態のステータスを取得
     const [isUserLogin, setIsUserLogin] = useRecoilState(authUserState);
-
-    const state = {
-        ...params,
-        paginate: {},
-        sort: { 'price' : '', 'posted_at' : 'desc' },
-        filter: { 'search' : '',  'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '', 'main_category' : '', 'sub_category' : '' },
-        scope: model
-    };
 
     return (
         <nav className={styles.nav_bar}>
@@ -65,9 +53,7 @@ const GlobalMenu = ({authName, handleLogout}) => {
 
                 <li className={styles.mb_16}>
                     <Text role='title' className={[styles.memu_title, styles.mb_8].join(' ')}>コンテンツ</Text>
-                    <Link to={{pathname: "/items", state: state}} style={{'marginBottom': '8px', 'display': 'block'}}>
-                        <Text className={styles.menu_text}>新着商品</Text>
-                    </Link>
+                    <Link to="/items/new" style={{'marginBottom': '8px', 'display': 'block'}}><Text className={styles.menu_text}>新着商品</Text></Link>
                     <Link to="/items/recommend" style={{'marginBottom': '8px', 'display': 'block'}} ><Text className={styles.menu_text}>おすすめ商品</Text></Link>
                     <Link to="/items/rank" style={{'marginBottom': '8px', 'display': 'block'}} ><Text className={styles.menu_text}>ランキング</Text></Link>
                     <Link to="/news"  style={{'marginBottom': '8px', 'display': 'block'}}><Text className={styles.menu_text}>ニュース</Text></Link>

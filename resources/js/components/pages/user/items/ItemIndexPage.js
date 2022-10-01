@@ -2,7 +2,6 @@ import React, {Suspense, useEffect, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import useCreateParams from "../../../hooks/useCreateParams";
-import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { paramState } from '../../../store/paramState';
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
@@ -25,8 +24,6 @@ function ItemIndexPage() {
     const {handleCurrentPage} = useCreateParams(model);
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // 新着順でLinkを通して渡ってくる場合
-    const {state} = useLocation();
     // APIと接続して返り値を取得
     const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
@@ -52,9 +49,6 @@ function ItemIndexPage() {
                 scope: model
             });
         } 
-        if(state) {
-            setParams(state);
-        }
     },[]);
 
     
@@ -93,7 +87,7 @@ function ItemIndexPage() {
                                 <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
                             </div>
                             {   items &&
-                                <div className={styles.search_item_area}>
+                                <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
                                     {                        
                                         items.map((item) =>
                                             <TopItemCard 

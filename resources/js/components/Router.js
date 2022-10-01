@@ -20,6 +20,7 @@ const ItemIndexPage = lazy(() => import( "./pages/user/items/ItemIndexPage" ));
 const ItemShowPage = lazy(() => import( "./pages/user/items/ItemShowPage" ));
 const ItemRankPage = lazy(() => import( "./pages/user/items/ItemRankPage" ));
 const ItemRecommendPage = lazy(() => import( "./pages/user/items/ItemRecommendPage" ));
+const ItemNewPage = lazy(() => import( "./pages/user/items/ItemNewPage" ));
 const BlogIndexPage = lazy(() => import( "./pages/user/blogs/BlogIndexPage" ));
 const BlogShowPage = lazy(() => import( "./pages/user/blogs/BlogShowPage" ));
 const NewsIndexPage = lazy(() => import( "./pages/user/news/NewsIndexPage" ));
@@ -114,6 +115,7 @@ function Router() {
                         <Route path="/items" exact component={ItemIndexPage} />
                         <Route path="/items/rank" exact component={ItemRankPage} />
                         <Route path="/items/recommend" exact component={ItemRecommendPage} />
+                        <Route path="/items/new" exact component={ItemNewPage} />
                         <Route path="/items/:id" exact component={ItemShowPage} />
                         <Route path="/blogs" exact component={BlogIndexPage} />
                         <Route path="/blogs/:id" exact component={BlogShowPage} />
