@@ -17,7 +17,6 @@ const DateRangeFilter = ({children, params, model}) => {
       <div>
           <div className={styles.mb}>
             <Pulldown name={'target_span'} value={params.target_span} onChange={ e => {
-              // 期間指定のクリア * TODO: 別途ボタン設けるか要検討
               if( params.target_span !== '' && e.target.value == '') {
                 handleFilterDateClear();
               } else {

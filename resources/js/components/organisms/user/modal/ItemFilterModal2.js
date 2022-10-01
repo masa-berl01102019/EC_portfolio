@@ -114,7 +114,6 @@ const ItemFilterModal2 = ({
                     <Text className={styles.mb_8}>カテゴリ</Text>
                     {   gender_categories && main_categories && sub_categories && 
                         <div className={styles.flex}>
-                            {/* TODO: clearボタンをつける */}
                             <div className={styles.mb_8}>
                                 <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilterCategory} defaultOption={'性別カテゴリを選択'}> 
                                     {   gender_categories.map((category) => 
@@ -247,7 +246,6 @@ const ItemFilterModal2 = ({
                   <div className={styles.mb_16}>
                     <Text className={styles.mb_8}>価格</Text>
                     <Pulldown name='price' value={params.sort.price} onChange={handleSort}>
-                        <option value={''}>未設定</option>
                         <option value={'desc'}>降順</option>
                         <option value={'asc'}>昇順</option>
                     </Pulldown>
@@ -256,7 +254,6 @@ const ItemFilterModal2 = ({
                   <div className={styles.mb_16}>
                     <Text className={styles.mb_8}>投稿日</Text>
                     <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort}>
-                        <option value={''}>未設定</option>
                         <option value={'desc'}>降順</option>
                         <option value={'asc'}>昇順</option>
                     </Pulldown>

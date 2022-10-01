@@ -24,7 +24,6 @@ const OrderSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>支払方法</Text>
             <Pulldown name='payment_method' value={params.filter.payment_method} onChange={handleFilter} > 
-                <option value={''}>未設定</option>
                 <option value={'0'}>クレジットカード</option>
                 <option value={'1'}>代引き</option>
             </Pulldown>
@@ -32,7 +31,6 @@ const OrderSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>入金状況</Text>
             <Pulldown name='is_paid' value={params.filter.is_paid} onChange={handleFilter} > 
-                <option value={''}>未設定</option>
                 <option value={'0'}>未入金</option>
                 <option value={'1'}>入金済</option>
             </Pulldown>
@@ -40,14 +38,12 @@ const OrderSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>出荷状況</Text>
             <Pulldown name='is_shipped' value={params.filter.is_shipped} onChange={handleFilter} >
-                <option value={''}>未設定</option>
                 <option value={'0'}>未配送</option>
                 <option value={'1'}>配送済</option>
             </Pulldown>
           </div>
           <div className={styles.mb_32}>
               <DateRangeFilter params={params.filter} model={model}>
-                <option value={''}>フィールド選択</option>
                 <option value={'created_at'}>購入日</option>
                 <option value={'delivery_date'}>配達希望日</option>
                 <option value={'updated_at'}>ステータス更新日</option>
@@ -59,7 +55,6 @@ const OrderSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>合計金額</Text>
               <Pulldown name='total_amount' value={params.sort.total_amount} onChange={handleSort} >
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -67,7 +62,6 @@ const OrderSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>購入日</Text>
               <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort} > 
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -75,7 +69,6 @@ const OrderSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>配達希望日</Text>
               <Pulldown name='delivery_date' value={params.sort.delivery_date} onChange={handleSort} >
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -83,7 +76,6 @@ const OrderSidebar = ({model, onClick}) => {
           <div>
               <Text className={styles.mb_8}>ステータス更新日</Text>
               <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort} >
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>

@@ -86,7 +86,6 @@ const ItemFilterModal = ({
             <Text className={styles.mb_8}>カテゴリ</Text>
             {   gender_categories && main_categories && sub_categories && 
                 <div className={styles.flex}>
-                    {/* TODO: clearボタンをつける */}
                     <div className={styles.mb_8}>
                         <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilterCategory} defaultOption={'性別カテゴリを選択'}> 
                             {   gender_categories.map((category) => 

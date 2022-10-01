@@ -65,7 +65,6 @@ const ContactSidebar = ({model, onClick}) => {
 
           <div className={styles.mb_32}>
               <DateRangeFilter params={params.filter} model={model}>
-                    <option value={''}>フィールド選択</option>
                     <option value={'created_at'}>お問い合わせ日</option>
                     <option value={'updated_at'}>対応日</option>
               </DateRangeFilter>
@@ -76,7 +75,6 @@ const ContactSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>氏名(カナ)</Text>
               <Pulldown name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -84,7 +82,6 @@ const ContactSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>お問い合わせ日</Text>
               <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -92,7 +89,6 @@ const ContactSidebar = ({model, onClick}) => {
           <div>
               <Text className={styles.mb_8}>対応日</Text>
               <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
