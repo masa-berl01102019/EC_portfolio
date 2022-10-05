@@ -1,17 +1,17 @@
 import React, {Suspense, useEffect} from 'react';
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
 import Heading from '../../../atoms/Heading/Heading';
-import FormSelectbox from '../../../molecules/FormSelectbox/FormSelectbox';
+import FormSelectbox from '../../../molecules/Form/FormSelectbox';
 import Button from '../../../atoms/Button/Button';
 import Text from '../../../atoms/Text/Text';
-import InputTextarea from '../../../atoms/InputTextarea/InputTextarea';
 import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { menuAdminState } from '../../../store/menuState';
 import { useRecoilValue } from 'recoil';
+import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 
 // TODO: メール機能の実装する
 
@@ -48,7 +48,7 @@ function ContactEdit(props) {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>お問い合わせ編集</Heading>
@@ -74,37 +74,32 @@ function ContactEdit(props) {
                                 <Heading tag={'h2'} tag_style={'h3'} className={styles.contents_header}>お問い合わせ内容</Heading>
                                 <Text className={styles.contents_body}>{contact.body}</Text>
 
-                                <div className={styles.mb_16}>
-                                    <div className={styles.mb_8}>
-                                        <label htmlFor='mixture_ratio'><Text>備考記入欄</Text></label>
-                                    </div>
-                                    <InputTextarea
-                                        name={'memo'} 
-                                        value={formData.memo} 
-                                        onBlur={handleFormData} 
-                                        placeholder={'本文を入力'}
-                                        style={{'minHeight' : '148px'}}
-                                    />
-                                    { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.description}</Text> }
-                                </div>
+                                <FormInputTextarea
+                                    name={'memo'} 
+                                    value={formData.memo} 
+                                    onBlur={handleFormData} 
+                                    placeholder={'本文を入力'}
+                                    label={'備考記入欄'}
+                                    error={errorMessage}
+                                    className={styles.mb_16}
+                                    style={{'minHeight' : '148px'}}
+                                />
 
-                                <div className={styles.mb_40}>
-                                    <FormSelectbox
-                                        name='response_status'
-                                        value={formData.response_status}
-                                        onChange={handleFormData}
-                                        label={'対応状況'}
-                                        error={errorMessage}
-                                        required={true}
-                                    >
-                                        <option value={0}>未対応</option>
-                                        <option value={1}>対応中</option>
-                                        <option value={2}>対応済</option>
-                                    </FormSelectbox>
-                                </div>
+                                <FormSelectbox
+                                    name='response_status'
+                                    value={formData.response_status}
+                                    onChange={handleFormData}
+                                    label={'対応状況'}
+                                    error={errorMessage}
+                                    className={styles.mb_40}
+                                >
+                                    <option value={0}>未対応</option>
+                                    <option value={1}>対応中</option>
+                                    <option value={2}>対応済</option>
+                                </FormSelectbox>
                                 
-                                <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                    <LinkBtn to={`/admin/contacts`} size='l' className={[styles.mr_12, styles.w_100].join(' ')} >一覧に戻る</LinkBtn>
+                                <div className={[styles.flex, styles.justify_center].join(' ')}>
+                                    <LinkBtn to={`/admin/contacts`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
                                     <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
                                 </div>
                             </form>

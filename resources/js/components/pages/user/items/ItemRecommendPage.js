@@ -45,7 +45,7 @@ function ItemRecommendPage() {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <>
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>おすすめ一覧</Heading>

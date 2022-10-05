@@ -49,7 +49,7 @@ function CartIndexPage() {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <>
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>注文情報入力</Heading>
@@ -82,6 +82,7 @@ function CartIndexPage() {
                                         quantity={cart.quantity}
                                         update_method={e => updateData({ form: {quantity: `${e.target.value}`}, url:`/api/user/carts/${cart.id}` })}
                                         delete_method={() => deleteData({ url:`/api/user/carts/${cart.id}`})}
+                                        error={errorMessage}
                                     />
                                 )
                             }

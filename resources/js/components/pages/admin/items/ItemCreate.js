@@ -1,24 +1,24 @@
 import React, {Suspense} from 'react';
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
 import useObjectForm from "../../../hooks/useObjectForm";
 import Heading from '../../../atoms/Heading/Heading';
 import Button from '../../../atoms/Button/Button';
-import FormSelectbox from '../../../molecules/FormSelectbox/FormSelectbox';
+import FormSelectbox from '../../../molecules/Form/FormSelectbox';
 import Badge from '../../../atoms/Badge/Badge';
-import InputTextarea from '../../../atoms/InputTextarea/InputTextarea';
 import ItemSkuTable from '../../../organisms/admin/Table/ItemSkuTable';
 import ItemMeasurementTable from '../../../organisms/admin/Table/ItemMeasurementTable';
 import ItemImageTable from '../../../organisms/admin/Table/ItemImageTable';
 import CheckboxTag from '../../../atoms/CheckboxTag/CheckboxTag';
 import Text from '../../../atoms/Text/Text';
-import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import FormInputText from '../../../molecules/Form/FormInputText';
 import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
+import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 
 function ItemCreate() {
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
@@ -61,13 +61,12 @@ function ItemCreate() {
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
 
-    
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>商品新規登録</Heading>
@@ -105,52 +104,44 @@ function ItemCreate() {
                                     </div>
                                     <div className={[styles.flex, styles.flex_tb].join(' ')}>
                                         <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb].join(' ')}>
-                                            <div className={styles.mb_16}>
-                                                <FormInputText
-                                                    name={'product_number'}
-                                                    onBlur={handleFormData}
-                                                    value={formData.product_number}
-                                                    label={'品番'}
-                                                    error={errorMessage}
-                                                    placeholder='AS1003200'
-                                                    required={true}
-                                                />
-                                            </div>
-                                            <div className={styles.mb_16}>
-                                                <FormInputText
-                                                    name={'item_name'}
-                                                    onBlur={handleFormData}
-                                                    value={formData.item_name}
-                                                    label={'商品名'}
-                                                    error={errorMessage}
-                                                    placeholder='プリーツスカート'
-                                                    required={true}
-                                                />
-                                            </div>
-                                            <div className={styles.mb_16}>
-                                                <FormInputText
-                                                    name={'price'}
-                                                    type={'number'}
-                                                    onBlur={handleFormData}
-                                                    value={formData.price}
-                                                    label={'価格'}
-                                                    error={errorMessage}
-                                                    placeholder='3400'
-                                                    required={true}
-                                                />
-                                            </div>
-                                            <div className={styles.mb_16}>
-                                                <FormInputText
-                                                    name={'cost'}
-                                                    type={'number'}
-                                                    onBlur={handleFormData}
-                                                    value={formData.cost}
-                                                    label={'原価'}
-                                                    error={errorMessage}
-                                                    placeholder='1200'
-                                                    required={true}
-                                                />
-                                            </div>
+                                            <FormInputText
+                                                name={'product_number'}
+                                                onBlur={handleFormData}
+                                                value={formData.product_number}
+                                                label={'品番'}
+                                                error={errorMessage}
+                                                placeholder='AS1003200'
+                                                className={styles.mb_16}
+                                            />
+                                            <FormInputText
+                                                name={'item_name'}
+                                                onBlur={handleFormData}
+                                                value={formData.item_name}
+                                                label={'商品名'}
+                                                error={errorMessage}
+                                                placeholder='プリーツスカート'
+                                                className={styles.mb_16}
+                                            />
+                                            <FormInputText
+                                                name={'price'}
+                                                type={'number'}
+                                                onBlur={handleFormData}
+                                                value={formData.price}
+                                                label={'価格'}
+                                                error={errorMessage}
+                                                placeholder='3400'
+                                                className={styles.mb_16}
+                                            />
+                                            <FormInputText
+                                                name={'cost'}
+                                                type={'number'}
+                                                onBlur={handleFormData}
+                                                value={formData.cost}
+                                                label={'原価'}
+                                                error={errorMessage}
+                                                placeholder='1200'
+                                                className={styles.mb_16}
+                                            />
                                             <div className={styles.cost_rate}>
                                                 <Text>原価率</Text>
                                                 <Text>
@@ -159,47 +150,35 @@ function ItemCreate() {
                                                     }%
                                                 </Text>
                                             </div>
-                                            <div>
-                                                <FormInputText
-                                                    name={'made_in'}
-                                                    onBlur={handleFormData}
-                                                    value={formData.made_in}
-                                                    label={'生産国'}
-                                                    error={errorMessage}
-                                                    placeholder='中国'
-                                                    required={true}
-                                                />
-                                            </div>
+                                            <FormInputText
+                                                name={'made_in'}
+                                                onBlur={handleFormData}
+                                                value={formData.made_in}
+                                                label={'生産国'}
+                                                error={errorMessage}
+                                                placeholder='中国'
+                                            />
                                         </div>
                                         <div className={styles.flex_basis_50}>
-                                            <div className={styles.mb_16}>
-                                                <div className={[styles.flex, styles.mb_8].join(' ')}>
-                                                    <label htmlFor='mixture_ratio'><Text>混用率</Text></label>
-                                                    <Badge text={'必須'} className={styles.ml_4}/>
-                                                </div>
-                                                <InputTextarea
-                                                    name={'mixture_ratio'} 
-                                                    value={formData.mixture_ratio} 
-                                                    onBlur={handleFormData} 
-                                                    placeholder={'綿100%'}
-                                                    style={{'minHeight' : '148px'}}
-                                                />
-                                                { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.mixture_ratio}</Text> }
-                                            </div>
-                                            <div>
-                                                <div className={[styles.flex, styles.mb_8].join(' ')}>
-                                                    <label htmlFor='mixture_ratio'><Text>商品説明</Text></label>
-                                                    <Badge text={'必須'} className={styles.ml_4}/>
-                                                </div>
-                                                <InputTextarea
-                                                    name={'description'} 
-                                                    value={formData.description} 
-                                                    onBlur={handleFormData} 
-                                                    placeholder={'商品説明を入力'}
-                                                    style={{'minHeight' : '148px'}}
-                                                />
-                                                { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.description}</Text> }
-                                            </div>
+                                            <FormInputTextarea
+                                                name={'mixture_ratio'} 
+                                                value={formData.mixture_ratio} 
+                                                onBlur={handleFormData} 
+                                                placeholder={'綿100%'}
+                                                label={'混用率'}
+                                                error={errorMessage}
+                                                className={styles.mb_16}
+                                                style={{'minHeight' : '148px'}}
+                                            />
+                                            <FormInputTextarea
+                                                name={'description'} 
+                                                value={formData.description} 
+                                                onBlur={handleFormData} 
+                                                placeholder={'商品説明を入力'}
+                                                label={'商品説明'}
+                                                error={errorMessage}
+                                                style={{'minHeight' : '148px'}}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -211,60 +190,53 @@ function ItemCreate() {
                                             <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>カテゴリ</Heading>
                                             <div className={styles.heading_border}></div>
                                         </div>
-                                        <div className={styles.mb_16}>
-                                            <FormSelectbox
-                                                name='brand_id'
-                                                value={formData.brand_id}
-                                                onChange={handleFormData}
-                                                label={'ブランド'}
-                                                error={errorMessage}
-                                                required={true}
-                                            >
-                                                <option value={''}>未設定</option>
-                                                { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
-                                            </FormSelectbox>
-                                        </div>
-                                        <div className={styles.mb_16}>
-                                            <FormSelectbox
-                                                name='gender_category'
-                                                value={formData.gender_category}
-                                                onChange={handleFormCategory}
-                                                label={'性別'}
-                                                error={errorMessage}
-                                                required={true}
-                                            >
-                                                <option value={''}>未設定</option>
-                                                { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
-                                            </FormSelectbox>
-                                        </div>
-                                        <div className={styles.mb_16}>
-                                            <FormSelectbox
-                                                name='main_category'
-                                                value={formData.main_category}
-                                                onChange={handleFormCategory}
-                                                label={'メイン'}
-                                                error={errorMessage}
-                                                required={true}
-                                            >
-                                                {   main_categories && main_categories.filter((category) => Number(formData.gender_category) === category.parent_id).map((category) => (
-                                                    <option key={category.id} value={category.id}>{category.category_name}</option>
-                                                ))}
-                                            </FormSelectbox>
-                                        </div>
-                                        <div className={styles.mb_16}>
-                                            <FormSelectbox
-                                                name='sub_category'
-                                                value={formData.sub_category}
-                                                onChange={handleFormCategory}
-                                                label={'サブ'}
-                                                error={errorMessage}
-                                                required={true}
-                                            >
-                                                {   sub_categories && sub_categories.filter((category) => Number(formData.main_category) === category.parent_id).map((category) => (
-                                                    <option key={category.id} value={category.id}>{category.category_name}</option>
-                                                ))}
-                                            </FormSelectbox>
-                                        </div>
+                                        <FormSelectbox
+                                            name='brand_id'
+                                            value={formData.brand_id}
+                                            onChange={handleFormData}
+                                            label={'ブランド'}
+                                            error={errorMessage}
+                                            className={styles.mb_16}
+                                        >
+                                            <option value={''}>未設定</option>
+                                            { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
+                                        </FormSelectbox>
+                                        <FormSelectbox
+                                            name='gender_category'
+                                            value={formData.gender_category}
+                                            onChange={handleFormCategory}
+                                            label={'性別'}
+                                            error={errorMessage}
+                                            className={styles.mb_16}
+                                        >
+                                            <option value={''}>未設定</option>
+                                            { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
+                                        </FormSelectbox>
+                                        <FormSelectbox
+                                            name='main_category'
+                                            value={formData.main_category}
+                                            onChange={handleFormCategory}
+                                            label={'メイン'}
+                                            error={errorMessage}
+                                            className={styles.mb_16}
+                                        >
+                                            <option value={''}>未設定</option>
+                                            { main_categories && main_categories.filter((category) => Number(formData.gender_category) === category.parent_id).map((category) => (
+                                                <option key={category.id} value={category.id}>{category.category_name}</option>
+                                            ))}
+                                        </FormSelectbox>
+                                        <FormSelectbox
+                                            name='sub_category'
+                                            value={formData.sub_category}
+                                            onChange={handleFormCategory}
+                                            label={'サブ'}
+                                            error={errorMessage}
+                                        >
+                                            <option value={''}>未設定</option>
+                                            {   sub_categories && sub_categories.filter((category) => Number(formData.main_category) === category.parent_id).map((category) => (
+                                                <option key={category.id} value={category.id}>{category.category_name}</option>
+                                            ))}
+                                        </FormSelectbox>
                                     </div>
                                     <div className={styles.flex_basis_50}>
                                         <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
@@ -383,22 +355,20 @@ function ItemCreate() {
                                     </Button>
                                 </div>
 
-                                <div className={styles.mb_40}>
-                                    <FormSelectbox
-                                        name='is_published'
-                                        value={formData.is_published}
-                                        onChange={handleFormData}
-                                        label={'公開設定'}
-                                        error={errorMessage}
-                                        required={true}
-                                    >
-                                        <option value={0}>非公開</option>
-                                        <option value={1}>公開</option>
-                                    </FormSelectbox>
-                                </div>
+                                <FormSelectbox
+                                    name='is_published'
+                                    value={formData.is_published}
+                                    onChange={handleFormData}
+                                    label={'公開設定'}
+                                    error={errorMessage}
+                                    className={styles.mb_40}
+                                >
+                                    <option value={0}>非公開</option>
+                                    <option value={1}>公開</option>
+                                </FormSelectbox>
 
-                                <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                    <LinkBtn to={`/admin/items`} size='l' className={[styles.mr_12, styles.w_100].join(' ')} >一覧に戻る</LinkBtn>
+                                <div className={[styles.flex, styles.justify_center].join(' ')}>
+                                    <LinkBtn to={`/admin/items`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
                                     <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>新規登録</Button>
                                 </div>
                             </form>

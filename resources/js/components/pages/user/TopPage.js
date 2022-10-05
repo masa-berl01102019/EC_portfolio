@@ -57,7 +57,7 @@ function TopPage() {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <div>
                         <div className={styles.flex}>

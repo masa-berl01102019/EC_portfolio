@@ -7,7 +7,7 @@ import { menuAdminState } from '../../../store/menuState';
 import useAuth2 from "../../../hooks/useAuth2";
 import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
-import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 
@@ -27,10 +27,12 @@ function AdminLogin() {
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
+
+                { errorMessage && errorMessage.httpRequestError && 
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text> 
+                }
+
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-
-                    { errorMessage && errorMessage.httpRequestError && <Text role='error'>{errorMessage.httpRequestError}</Text> }
-
                     <div className={styles.form_area}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
                             管理者ログイン
@@ -43,28 +45,26 @@ function AdminLogin() {
                                 callback: () => setIsAdminLogin(true)
                             });
                         }}>
-                            <div className={styles.mb_16}>
-                                <FormInputText
-                                    name={'email'}
-                                    type='email'
-                                    onBlur={handleFormData}
-                                    value={formData.email}
-                                    label={'メールアドレス'}
-                                    error={errorMessage}
-                                    placeholder='080-1234-5678'
-                                />
-                            </div>
-                            <div className={styles.mb_24}>
-                                <FormInputText
-                                    name={'password'}
-                                    type='password'
-                                    onBlur={handleFormData}
-                                    value={formData.password}
-                                    label={'パスワード'}
-                                    error={errorMessage}
-                                    placeholder='半角英数字8文字以上'
-                                />
-                            </div>
+                            <FormInputText
+                                name={'email'}
+                                type='email'
+                                onBlur={handleFormData}
+                                value={formData.email}
+                                label={'メールアドレス'}
+                                error={errorMessage}
+                                placeholder='080-1234-5678'
+                                className={styles.mb_16}
+                            />
+                            <FormInputText
+                                name={'password'}
+                                type='password'
+                                onBlur={handleFormData}
+                                value={formData.password}
+                                label={'パスワード'}
+                                error={errorMessage}
+                                placeholder='半角英数字8文字以上'
+                                className={styles.mb_24}
+                            />
                             <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>ログイン</Button>
                         </form>
                     </div>

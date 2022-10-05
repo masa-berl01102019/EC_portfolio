@@ -7,6 +7,13 @@
   max-width: 1024px;
 }
 
+.http_error {
+  margin-top: 32px;
+  text-align: center;
+  background: #f44336;
+  color: #fff;
+  padding: 8px 0;
+}
 .main_contents_area {
   width: calc(300 / 320 * 100%);
   margin: 0 auto 60px
@@ -61,6 +68,13 @@
   text-align: center;
   display: block;
   color: #666
+}
+/* USER EDIT / CREATE */
+.delivery_address_check {
+  width: 206px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 

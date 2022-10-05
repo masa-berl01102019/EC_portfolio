@@ -3,7 +3,7 @@ import {Link, useHistory} from "react-router-dom";
 import {CircularProgress} from "@material-ui/core";
 import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import useForm from "../../../hooks/useForm";
-import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import FormInputText from '../../../molecules/Form/FormInputText';
 import Badge from '../../../atoms/Badge/Badge';
 import Button from '../../../atoms/Button/Button';
 import Heading from '../../../atoms/Heading/Heading';
@@ -41,7 +41,7 @@ function AdminCreate() {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>管理者新規登録</Heading>
@@ -54,100 +54,76 @@ function AdminCreate() {
                                     callback: () => history.push('/admin/admins')
                                 });
                             }}>
-                                <div className={styles.mb_16}>
-                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
-                                        <Text className={styles.mr_4}>氏名</Text>
-                                        <Badge text='必須' />
-                                    </div>
-                                    <div className={styles.flex}>
-                                        <div className={[styles.flex_basis_50, styles.mr_24].join(' ')}>
-                                            <FormInputText
-                                                name={'last_name'}
-                                                onBlur={handleFormData}
-                                                value={formData.last_name}
-                                                error={errorMessage}
-                                                placeholder='山田'
-                                                style={{'width' : '100%'}}
-                                            />
-                                        </div>
-                                        <div className={styles.flex_basis_50}>
-                                            <FormInputText
-                                                name={'first_name'}
-                                                onBlur={handleFormData}
-                                                value={formData.first_name}
-                                                error={errorMessage}
-                                                placeholder='太郎'
-                                                style={{'width' : '100%'}}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={styles.mb_16}>
-                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
-                                        <Text className={styles.mr_4}>氏名(カナ)</Text>
-                                        <Badge text='必須' />
-                                    </div>
-                                    <div className={styles.flex}>
-                                        <div className={[styles.flex_basis_50, styles.mr_24].join(' ')}>
-                                            <FormInputText 
-                                                name={'last_name_kana'} 
-                                                onBlur={handleFormData} 
-                                                value={formData.last_name_kana} 
-                                                error={errorMessage} 
-                                                placeholder='ヤマダ'
-                                                style={{'width' : '100%'}}
-                                            />
-                                        </div>
-                                        <div className={styles.flex_basis_50}>
-                                            <FormInputText
-                                                name={'first_name_kana'}
-                                                onBlur={handleFormData}
-                                                value={formData.first_name_kana}
-                                                error={errorMessage}
-                                                placeholder='タロウ'
-                                                style={{'width' : '100%'}}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={styles.mb_16}>
+                                <Text className={styles.mb_8}>氏名</Text>
+                                <div className={[styles.flex, styles.mb_16].join(' ')}>
                                     <FormInputText
-                                        name={'tel'}
-                                        type='tel'
+                                        name={'last_name'}
                                         onBlur={handleFormData}
-                                        value={formData.tel}
-                                        label={'電話番号'}
+                                        value={formData.last_name}
                                         error={errorMessage}
-                                        placeholder='080-1234-5678'
-                                        required={true}
+                                        placeholder='山田'
+                                        className={[styles.mr_24, styles.flex_basis_50].join(' ')}
+                                    />
+                                    <FormInputText
+                                        name={'first_name'}
+                                        onBlur={handleFormData}
+                                        value={formData.first_name}
+                                        error={errorMessage}
+                                        placeholder='太郎'
+                                        className={styles.flex_basis_50}
                                     />
                                 </div>
-                                <div className={styles.mb_16}>
+                                <Text className={styles.mb_8}>氏名(カナ)</Text>
+                                <div className={[styles.flex, styles.mb_16].join(' ')}>
+                                    <FormInputText 
+                                        name={'last_name_kana'} 
+                                        onBlur={handleFormData} 
+                                        value={formData.last_name_kana} 
+                                        error={errorMessage} 
+                                        placeholder='ヤマダ'
+                                        className={[styles.mr_24, styles.flex_basis_50].join(' ')}
+                                    />
                                     <FormInputText
-                                        name={'email'}
-                                        type={'email'}
+                                        name={'first_name_kana'}
                                         onBlur={handleFormData}
-                                        value={formData.email}
-                                        label={'メールアドレス'}
+                                        value={formData.first_name_kana}
                                         error={errorMessage}
-                                        placeholder='test@example.com'
-                                        required={true}
+                                        placeholder='タロウ'
+                                        className={styles.flex_basis_50}
                                     />
                                 </div>
-                                <div className={styles.mb_40}>
-                                    <FormInputText
-                                        name={'password'}
-                                        type={'password'}
-                                        onBlur={handleFormData}
-                                        value={formData.password}
-                                        label={'パスワード'}
-                                        error={errorMessage}
-                                        placeholder='半角英数字8文字以上'
-                                        required={true}
-                                    />
-                                </div>
-                                <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                    <LinkBtn to={`/admin/admins`} size='l' className={[styles.mr_12, styles.w_100].join(' ')} >一覧に戻る</LinkBtn>
+                                <FormInputText
+                                    name={'tel'}
+                                    type='tel'
+                                    onBlur={handleFormData}
+                                    value={formData.tel}
+                                    label={'電話番号'}
+                                    error={errorMessage}
+                                    placeholder='080-1234-5678'
+                                    className={styles.mb_16}
+                                />
+                                <FormInputText
+                                    name={'email'}
+                                    type={'email'}
+                                    onBlur={handleFormData}
+                                    value={formData.email}
+                                    label={'メールアドレス'}
+                                    error={errorMessage}
+                                    placeholder='test@example.com'
+                                    className={styles.mb_16}
+                                />
+                                <FormInputText
+                                    name={'password'}
+                                    type={'password'}
+                                    onBlur={handleFormData}
+                                    value={formData.password}
+                                    label={'パスワード'}
+                                    error={errorMessage}
+                                    placeholder='半角英数字8文字以上'
+                                    className={styles.mb_40}
+                                />
+                                <div className={[styles.flex, styles.justify_center].join(' ')}>
+                                    <LinkBtn to={`/admin/admins`} size='l' className={styles.mr_12} style={{'width': '100%'}}>一覧に戻る</LinkBtn>
                                     <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>新規登録</Button>
                                 </div>
                             </form>

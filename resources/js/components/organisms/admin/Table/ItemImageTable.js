@@ -5,6 +5,7 @@ import {TableBodyCell as Td} from '../../../atoms/TableBodyCell/TableBodyCell';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
+import InputImage from '../../../atoms/InputImage/InputImage';
 
 
 const ItemImageTable = ({images, colors, skus, className = '', deleteMethod, handleFormMethod}) => {
@@ -30,17 +31,12 @@ const ItemImageTable = ({images, colors, skus, className = '', deleteMethod, han
                     </Td>
                     <Td>{list.id}</Td>
                     <Td>
-                        { list.image ? (
-                            <label className="insert_image">
-                                <img src={list.image} alt="item image" style={{'width' : '50px', 'height' : '50px'}} />
-                                <input name="image" type="file" accept="image/*" onChange={ e => handleFormMethod('images', index, e)} style={{'display': 'none'}} />
-                            </label>
-                        ) : (
-                            <label  className="insert_image">
-                                <img src={'/img/no_image.png'} alt="no image" style={{'width' : '50px', 'height' : '50px'}} />
-                                <input name="image" type="file" accept="image/*" onChange={ e => handleFormMethod('images', index, e)} style={{'display': 'none'}} />
-                            </label>
-                        )}
+                      <InputImage
+                          src={list.image ? list.image : '/img/no_image.png'}
+                          name="image"
+                          onChange={ e => handleFormMethod('images', index, e)}
+                          style={{'width' : '50px', 'height' : '50px'}}
+                        />
                     </Td>
                     <Td>
                       <Selectbox name='image_category' value={list.image_category} onChange={ e => handleFormMethod('images', index, e) } className={styles.table_row_form}>

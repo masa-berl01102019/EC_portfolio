@@ -23,7 +23,7 @@ const useSetErrorMsg = (initialValue) => {
             }
         } else {
             // オブジェクトに格納
-            arrayErrors.httpRequestError = `${error.response.data.errMessage}`;
+            arrayErrors.httpRequestError = `${error.response.data.message}`;
         }
         // エラーメッセージをセット
         setErrorMessage({...arrayErrors});

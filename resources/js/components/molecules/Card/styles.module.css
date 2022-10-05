@@ -94,6 +94,9 @@
   flex-flow: column;
   justify-content: space-between;
 }
+.mt_8 {
+  margin-top: 8px;
+}
 .mb_4 {
   margin-bottom: 4px;
 }

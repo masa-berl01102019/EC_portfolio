@@ -15,6 +15,8 @@ import CartBtn from '../../../molecules/IconBtn/CartBtn';
 import styles from '../styles.module.css';
 import BookmarkPopup from '../../../molecules/Popup/BookmarkPopup';
 import CartPopup from '../../../molecules/Popup/CartPopup';
+import { authUserState } from '../../../store/authState';
+import { useRecoilValue } from 'recoil';
 
 function ItemShowPage(props) {
     // urlの設定
@@ -29,13 +31,18 @@ function ItemShowPage(props) {
     const item = data.item;
     const sizes = data.sizes? data.sizes: null;
     const related_items = data.related_items? data.related_items: null;
-
+    // login状態のステータスを取得
+    const isUserLogin = useRecoilValue(authUserState);
+    // 商品詳細のタブ管理
     const [tab, setTab] = useState('1');
+    // お気に入り・カートのポップアップの状態管理
     const [popup, setPopup] = useState('');
- 
+    // 選択された画僧のソース管理
+    const [pickedPicture, setPickedPicture] = useState(item.top_image);
 
     useEffect(() => {
         if(item) {
+            // TODO: cookie追加の関数は外に切り出す
             if(cookies.item_info) {
                 // cookieからIDの配列を取得
                 const cookie_id_arr = cookies.item_info;
@@ -95,7 +102,7 @@ function ItemShowPage(props) {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <>
                         {   popup == '1' && 
@@ -116,12 +123,10 @@ function ItemShowPage(props) {
                             />
                         }
 
-
                         <div className={styles.main_contents_area}>
                             <div className={styles.item_detail_area}>
-                                {/* TODO: thumbnailタッチすると画像が切り替わるようにする */}
                                 <div className={styles.item_img_area}>
-                                    <Image src={item.top_image} alt="商品画像" className={styles.item_top_img}/>
+                                    <Image src={pickedPicture} alt="商品画像" className={styles.item_top_img}/>
                                     <div className={styles.item_thumbnail_area}>
                                         {   item.images &&
                                             item.images.map((list, index) =>
@@ -130,6 +135,7 @@ function ItemShowPage(props) {
                                                     src={list.image ? list.image : '/img/no_image.png'} 
                                                     alt="商品画像" 
                                                     style={{'width' : '16%'}}
+                                                    onClick={() => {setPickedPicture(list.image)}}
                                                 />
                                             )
                                         }
@@ -142,10 +148,18 @@ function ItemShowPage(props) {
                                         <Text size='l'>{item.included_tax_price_text} (税込)</Text>
                                     </div>
                                     <div className={styles.show_item_btn_area}>
-                                        {/* TODO: ログインしてなくてもカート登録出来てしまう */}
-                                        <CartBtn size='l' onClick={() => setPopup('1')} className={styles.mb_16}>カートに入れる</CartBtn>
-                                        <BookmarkBtn size='l' onClick={() => setPopup('2')} >お気に入りに登録する</BookmarkBtn>
+                                        <CartBtn size='l' onClick={() => setPopup('1')} className={styles.mb_16} disabled={!isUserLogin}>
+                                            カートに入れる
+                                        </CartBtn>
+                                        <BookmarkBtn size='l' onClick={() => setPopup('2')} disabled={!isUserLogin}>
+                                            お気に入りに登録する
+                                        </BookmarkBtn>
                                     </div>
+                                    {!isUserLogin && 
+                                        <Text role='error' className={styles.mb_24}>
+                                            会員様はお気に入り機能とカート機能がご利用可能です。
+                                        </Text>
+                                    }
                                     <div className={[styles.flex, styles.mb_32].join(' ')}>
                                         <RadioBoxTab
                                             name='switch_tab' 
@@ -243,7 +257,6 @@ function ItemShowPage(props) {
                                                         item_name={item.item_name}
                                                         price={item.included_tax_price_text}
                                                         className={styles.item_card}
-                                                        // style={{'width' : '29%', 'marginBottom' : '16px'}}
                                                     />
                                                 )
                                             }

@@ -1,21 +1,19 @@
 import React, {Suspense, useEffect} from 'react';
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
-import DatePicker from '../../../atoms/DatePicker/DatePicker';
-import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import Heading from '../../../atoms/Heading/Heading';
-import FormSelectbox from '../../../molecules/FormSelectbox/FormSelectbox';
+import FormSelectbox from '../../../molecules/Form/FormSelectbox';
 import Text from '../../../atoms/Text/Text';
-import InputTextarea from '../../../atoms/InputTextarea/InputTextarea';
-import Badge from '../../../atoms/Badge/Badge';
 import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
-
+import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
+import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 
 function NotificationEdit(props) {
     // urlの設定
@@ -52,7 +50,7 @@ function NotificationEdit(props) {
             <Suspense fallback={<CircularProgress disableShrink />}>
             {
                 errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
                 ) : (
                     <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
                         <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>お知らせ編集</Heading>
@@ -65,58 +63,50 @@ function NotificationEdit(props) {
                                     callback: () => history.push('/admin/notifications') 
                                 });
                             }}>
-                                <div className={styles.mb_16}>
-                                    <FormInputText
-                                        name={'title'}
-                                        onBlur={handleFormData}
-                                        value={formData.title}
-                                        label={'タイトル'}
-                                        error={errorMessage}
-                                        placeholder='タイトル名'
-                                        required={true}
-                                    />
-                                </div>
-                                <div className={styles.mb_16}>
-                                    <div className={[styles.flex, styles.mb_8].join(' ')} >
-                                        <Text className={styles.mr_4}>本文</Text>
-                                        <Badge text='必須' />
-                                    </div>
-                                    {/* TODO: error時にフォームを赤くする */}
-                                    <InputTextarea
-                                        name={'body'} 
-                                        value={formData.body}
-                                        onBlur={handleFormData} 
-                                        placeholder={'本文を入力'}
-                                        style={{'minHeight' : '250px'}}
-                                    />
-                                    { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.body}</Text> }
-                                </div>
+                                <FormInputText
+                                    name={'title'}
+                                    onBlur={handleFormData}
+                                    value={formData.title}
+                                    label={'タイトル'}
+                                    error={errorMessage}
+                                    placeholder='タイトル名'
+                                    className={styles.mb_16}
+                                />
+                                <FormInputTextarea
+                                    name={'body'} 
+                                    value={formData.body}
+                                    onBlur={handleFormData} 
+                                    placeholder={'本文を入力'}
+                                    label={'本文'}
+                                    error={errorMessage}
+                                    className={styles.mb_16}
+                                    style={{'minHeight' : '250px'}}
+                                />
+
                                 <div className={[styles.flex, styles.mb_40, styles.flex_sp].join(' ')}>
-                                    <div className={[styles.flex_grow, styles.mr_24, styles.mb_16_sp].join(' ')}>
-                                        <FormSelectbox
-                                            name='is_published'
-                                            value={formData.is_published}
-                                            onChange={handleFormData}
-                                            label={'公開設定'}
-                                            error={errorMessage}
-                                            required={true}
-                                        >
-                                            <option value={0}>非公開</option>
-                                            <option value={1}>公開</option>
-                                        </FormSelectbox>
-                                    </div>
-                                    <div>
-                                        <div className={styles.mb_10}>
-                                            <label htmlFor='expired_at'><Text>掲載終了日</Text></label>
-                                        </div>
-                                        <div>
-                                            <DatePicker name={'expired_at'} value={formData.expired_at} onChange={handleFormDate} />
-                                            { errorMessage && <Text role='error' size='s'>{errorMessage.expired_at}</Text> }
-                                        </div>
-                                    </div>
+                                    <FormSelectbox
+                                        name='is_published'
+                                        value={formData.is_published}
+                                        onChange={handleFormData}
+                                        label={'公開設定'}
+                                        error={errorMessage}
+                                        className={[styles.flex_grow, styles.mr_24, styles.mb_16_sp].join(' ')}
+                                    >
+                                        <option value={0}>非公開</option>
+                                        <option value={1}>公開</option>
+                                    </FormSelectbox>
+                                    <FormDatePicker
+                                        name={'expired_at'} 
+                                        value={formData.expired_at} 
+                                        onChange={handleFormDate} 
+                                        label={'掲載終了日'} 
+                                        className={styles.mb_10} 
+                                        error={errorMessage}
+                                    />
                                 </div>
-                                <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                    <LinkBtn to={`/admin/notifications`} size='l' className={[styles.mr_12, styles.w_100].join(' ')} >一覧に戻る</LinkBtn>
+                                
+                                <div className={[styles.flex, styles.justify_center].join(' ')}>
+                                    <LinkBtn to={`/admin/notifications`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
                                     <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
                                 </div>
                             </form>

@@ -20,6 +20,7 @@ const CartCard = ({
     update_method, 
     delete_method, 
     className = '',
+    error,
     ...props
   }) => {
 
@@ -51,6 +52,7 @@ const CartCard = ({
           <Text>小計 ￥{Number(price * quantity).toLocaleString()} (税込)</Text>
           <DeleteBtn size='s' onClick={delete_method} className={styles.delete_btn}>削除</DeleteBtn>
       </div>
+      { error && <Text size='s' role='error' className={styles.mt_8} >{error['quantity']}</Text> }
     </div>
   );
 
