@@ -17,6 +17,8 @@ import BookmarkPopup from '../../../molecules/Popup/BookmarkPopup';
 import CartPopup from '../../../molecules/Popup/CartPopup';
 import { authUserState } from '../../../store/authState';
 import { useRecoilValue } from 'recoil';
+import useItemCookies from '../../../hooks/useItemCookies';
+import useItemWebStorage from '../../../hooks/useItemWebStorage';
 
 function ItemShowPage(props) {
     // urlの設定
@@ -27,6 +29,8 @@ function ItemShowPage(props) {
     const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
     // cookieを管理
     const [cookies, setCookie] = useCookies();
+    const {handleViewItemCookie} = useItemCookies(cookies, setCookie);
+    const {handleViewItemWebStorage} = useItemWebStorage();
     // API接続の返却値を変数に格納
     const item = data.item;
     const sizes = data.sizes? data.sizes: null;
@@ -42,57 +46,8 @@ function ItemShowPage(props) {
 
     useEffect(() => {
         if(item) {
-            // TODO: cookie追加の関数は外に切り出す
-            if(cookies.item_info) {
-                // cookieからIDの配列を取得
-                const cookie_id_arr = cookies.item_info;
-                // cookieに保存されてる商品IDと渡ってきたIDが一致しなければ
-                if(!cookie_id_arr.includes(item.id)) {
-                    // 配列の先頭に追加
-                    cookies.item_info.unshift(item.id);
-                    // cookieに保存
-                    setCookie('item_info', JSON.stringify(cookies.item_info), { maxAge : 60 * 60 * 24 } );
-                }
-
-                // オブジェクトの生成
-                const storage_info = {
-                    'id' : item.id,
-                    'brand_name' : item.brand_name,
-                    'item_name' : item.item_name,
-                    'included_tax_price_text' : item.included_tax_price_text,
-                    'top_image' : item.top_image,
-                    'url' : window.location.href,
-                };
-                // decodeして変数に格納 * cookieが消えてもlocalStrageは残り続けてしまうので更新時にcookieと同期
-                const storage_arr = JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookie_id_arr.includes(list.id));
-                // IDを配列で取得));
-                const storage_id_arr = storage_arr.map(list => list.id);
-                // localStorageに保存されてる商品IDと渡ってきたIDが一致しなければ
-                if(!storage_id_arr.includes(item.id)) {
-                    // 配列の先頭に追加
-                    storage_arr.unshift(storage_info);
-                    // local storageに保存
-                    localStorage.setItem('viewed_items', JSON.stringify(storage_arr));
-                }
-            } else {
-                // 配列の初期化
-                const cookie_arr = [];
-                const storage_arr = [];
-                // local storageに保存
-                const storage_info = {
-                    'id' : item.id,
-                    'brand_name' : item.brand_name,
-                    'item_name' : item.item_name,
-                    'included_tax_price_text' : item.included_tax_price_text,
-                    'top_image' : item.top_image,
-                    'url' : window.location.href,
-                };
-                storage_arr.push(storage_info);
-                localStorage.setItem('viewed_items', JSON.stringify(storage_arr));
-                // 商品IDのみcookieに追加して保存
-                cookie_arr.push(item.id);
-                setCookie('item_info', JSON.stringify(cookie_arr), { maxAge : 60 * 60 * 24 } );
-            }
+            handleViewItemCookie(item.id);
+            handleViewItemWebStorage(item, cookies.item_info); 
         }
     },[baseUrl]);
 
