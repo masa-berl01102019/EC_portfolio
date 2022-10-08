@@ -1,6 +1,6 @@
 import React, {Suspense} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from '../../../hooks/useFetchApiData2';
+import useFetchApiData from '../../../hooks/useFetchApiData';
 import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
@@ -12,7 +12,7 @@ function NotificationIndexPage() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'NOTIFICATION';
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage} = useFetchApiData(baseUrl, model);
     // APIから取得したデータを変数に格納
     const notifications = data.data? data.data: null;
 

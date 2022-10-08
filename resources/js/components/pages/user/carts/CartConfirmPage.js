@@ -1,7 +1,7 @@
 import React, {Suspense, useEffect} from 'react';
 import {useLocation, useHistory} from 'react-router-dom';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CardElement, useStripe, useElements} from '@stripe/react-stripe-js';
 import styles from '../styles.module.css';
 import Text from '../../../atoms/Text/Text';
@@ -19,7 +19,7 @@ function CartConfirmPage() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'CART';
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // APIから取得したデータを変数に格納
     const user = data.user? data.user: null;
     // 入力値を取得

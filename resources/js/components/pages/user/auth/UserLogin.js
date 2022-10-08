@@ -1,6 +1,6 @@
 import { CircularProgress } from '@material-ui/core';
 import React, { Suspense } from 'react';
-import useAuth2 from "../../../hooks/useAuth2";
+import useAuth from "../../../hooks/useAuth";
 import useForm from '../../../hooks/useForm';
 import { authUserState } from '../../../store/authState';
 import { useSetRecoilState } from 'recoil';
@@ -20,7 +20,7 @@ function UserLogin() {
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
-    const {errorMessage, handleLogin} = useAuth2('/api/user/auth', 'user');
+    const {errorMessage, handleLogin} = useAuth('/api/user/auth', 'user');
 
     return (
         <main className={styles.mt_40}>

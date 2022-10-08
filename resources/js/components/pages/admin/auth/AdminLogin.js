@@ -4,7 +4,7 @@ import useForm from '../../../hooks/useForm';
 import { authAdminState } from '../../../store/authState';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
-import useAuth2 from "../../../hooks/useAuth2";
+import useAuth from "../../../hooks/useAuth";
 import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
@@ -20,7 +20,7 @@ function AdminLogin() {
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
-    const {errorMessage, handleLogin} = useAuth2('/api/admin/auth', 'admin');
+    const {errorMessage, handleLogin} = useAuth('/api/admin/auth', 'admin');
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
 

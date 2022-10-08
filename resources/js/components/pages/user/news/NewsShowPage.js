@@ -2,7 +2,7 @@ import React, {Suspense, useEffect, useState} from 'react';
 import {EditorState, convertFromRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import {stateFromHTML} from 'draft-js-import-html';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useHelper from "../../../hooks/useHelper";
 import Text from '../../../atoms/Text/Text';
@@ -16,7 +16,7 @@ function NewsShowPage(props) {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'NEWS';
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage} = useFetchApiData(baseUrl, model);
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     // 便利関数の呼び出し

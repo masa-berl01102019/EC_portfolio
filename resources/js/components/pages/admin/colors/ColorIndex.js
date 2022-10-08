@@ -1,6 +1,6 @@
 import React, {Suspense, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import useForm from "../../../hooks/useForm";
 import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
@@ -15,7 +15,7 @@ function ColorIndex() {
     // modelの設定
     const model = 'COLOR';
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
     // APIから取得したデータを変数に格納
     const colors = data.colors? data.colors: null;
     // 新規登録用フォーム項目の初期値をuseStateで管理

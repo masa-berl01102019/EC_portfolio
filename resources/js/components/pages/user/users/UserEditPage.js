@@ -1,9 +1,8 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {Link, useHistory} from "react-router-dom";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
-import useToggle from "../../../hooks/useToggle";
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import Heading from '../../../atoms/Heading/Heading';
@@ -22,9 +21,9 @@ function UserEditPage() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'USER';
     // APIと接続して返り値を取得
-    const {data, errorMessage, updateData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
-    const [toggle, {handleToggle}] = useToggle(false);
+    const [open, setOpen] = useState(false);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
         'id': null,
@@ -61,7 +60,7 @@ function UserEditPage() {
             // フォームのデフォルト値を設定するためにsetUserInfoで値をセット
             setFormData({...user});
         }
-    },[]);
+    },[user]);
 
     return (
         <main className={styles.mt_40}>
@@ -81,7 +80,6 @@ function UserEditPage() {
                                     form: formData,
                                     url: `/api/user/users/${formData.id}`,
                                     callback: () => history.push('/')
-                                    // TODO: 名前変更した際にヘッダーの名前が変わってない点を修正 Router.jsを再呼び出しする必要あり
                                 });
                             }}>
                                 <Text className={styles.mb_8}>氏名</Text>
@@ -227,10 +225,10 @@ function UserEditPage() {
                                     className={styles.mb_16}
                                 />
                                 <label className={styles.delivery_address_check}>
-                                    <InputCheckbox onChange={handleToggle} checked={toggle} />
+                                    <InputCheckbox onChange={() => { setOpen(!open)}} checked={open} />
                                     <Text className={styles.ml_8}>配送先に別の住所を指定する</Text>
                                 </label>
-                                <div className={toggle? styles.block : styles.hidden}>
+                                <div className={open? styles.block : styles.hidden}>
                                     <FormInputText
                                         name={'delivery_post_code'}
                                         type={'number'}
@@ -337,7 +335,7 @@ function UserEditPage() {
                                 </div>
 
                                 <Link 
-                                    to={{pathname: '/users/delete', state: formData.id}} 
+                                    to={'/users/delete'} 
                                     className={styles.delete_link}
                                 >
                                     退会手続きはこちら

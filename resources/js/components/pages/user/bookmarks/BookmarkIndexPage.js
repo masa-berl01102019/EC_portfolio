@@ -1,6 +1,6 @@
 import React, {Suspense, useEffect, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import useCreateParams from "../../../hooks/useCreateParams";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import { useRecoilState } from 'recoil';
@@ -25,7 +25,7 @@ function BookmarkIndexPage() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData, deleteData} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage, createData, deleteData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const bookmarks = data.data? data.data: null;
     const sizes = data.sizes? data.sizes: null;

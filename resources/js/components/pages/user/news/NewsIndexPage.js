@@ -3,7 +3,7 @@ import {CircularProgress} from '@material-ui/core';
 import useCreateParams from "../../../hooks/useCreateParams";
 import { useRecoilState } from 'recoil';
 import { paramState } from '../../../store/paramState';
-import useFetchApiData2 from '../../../hooks/useFetchApiData2';
+import useFetchApiData from '../../../hooks/useFetchApiData';
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import Text from '../../../atoms/Text/Text';
 import InfoCard from '../../../molecules/Card/InfoCard';
@@ -25,7 +25,7 @@ function NewsIndexPage() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const news = data.data ? data.data: null;
     const brands = data.brands? data.brands: null;

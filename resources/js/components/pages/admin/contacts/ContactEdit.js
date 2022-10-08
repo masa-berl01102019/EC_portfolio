@@ -1,6 +1,6 @@
 import React, {Suspense, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
 import Heading from '../../../atoms/Heading/Heading';
@@ -21,7 +21,7 @@ function ContactEdit(props) {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'CONTACT';
     // APIと接続して返り値を取得
-    const {data, errorMessage, updateData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {setFormData, handleFormData}] = useForm({
         'response_status': 0, // 0: 未対応 1: 対応中 2: 対応済

@@ -1,6 +1,6 @@
 import React, {Suspense, useEffect} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import useCreateParams from "../../../hooks/useCreateParams";
 import { useRecoilState } from 'recoil';
 import { paramState } from '../../../store/paramState';
@@ -21,7 +21,7 @@ function ItemRecommendPage() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const items = data.data? data.data: null;
 

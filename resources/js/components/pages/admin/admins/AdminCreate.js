@@ -1,7 +1,7 @@
 import React, {Suspense} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import {CircularProgress} from "@material-ui/core";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import useForm from "../../../hooks/useForm";
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Badge from '../../../atoms/Badge/Badge';
@@ -19,7 +19,7 @@ function AdminCreate() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'ADMIN';
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
         'last_name': null,

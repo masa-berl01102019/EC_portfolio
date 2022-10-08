@@ -9,7 +9,7 @@ const useSetErrorMsg = (initialValue) => {
 
     // API接続時のサーバー側で発生したエラーをハンドリングする関数
     const handleApiErrorMessage = (error) => {
-        console.log('handleErrorMessage');
+        console.log('handleErrorMessage', error.response.data.message);
         // エラーを格納する配列の初期化
         let arrayErrors = {};
         // 422 バリデーションエラー時は複数エラーメッセージが返ってくるので条件分岐

@@ -22,14 +22,14 @@ const queryClient = new QueryClient({
             refetchOnmount: true, // if true, refetch on mount if the data is stale.
             refetchOnReconnect: true, // if true, refetch on reconnect if the data is stale.
             retry: false, // if true, failed queries will retry infinitely.
-            staleTime: 1*60*1000, // the time in milliseconds after data is considered stale. Defaults to 0
+            // cacheTime: 5,
+            // staleTime: 1*60*1000, // the time in milliseconds after data is considered stale. Defaults to 0
             suspense: true
         }
     }
 });
 
 function App() {
-    // console.log('App is called');
     return (
         <ErrorBoundary>
             <RecoilRoot>

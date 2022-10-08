@@ -1,9 +1,8 @@
-import React, {Suspense} from 'react';
+import React, {Suspense, useState} from 'react';
 import {useHistory} from "react-router-dom";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
-import useToggle from "../../../hooks/useToggle";
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
@@ -22,9 +21,9 @@ function UserCreate() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'USER';
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
-    const [toggle, {handleToggle}] = useToggle(false);
+    const [open, setOpen] = useState(false);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, handleFormDate}] = useForm({
         'last_name': null,
@@ -216,10 +215,10 @@ function UserCreate() {
                                     className={styles.mb_16}
                                 />
                                 <label className={styles.delivery_address_check}>
-                                    <InputCheckbox onChange={handleToggle} checked={toggle} />
+                                    <InputCheckbox onChange={() => { setOpen(!open)}} checked={open} />
                                     <Text className={styles.ml_8}>配送先に別の住所を指定する</Text>
                                 </label>
-                                <div className={toggle? styles.block : styles.hidden}>
+                                <div className={open? styles.block : styles.hidden}>
                                     <FormInputText
                                         name={'delivery_post_code'}
                                         type={'number'}

@@ -1,7 +1,7 @@
 import React, {Suspense, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../hooks/useFetchApiData2";
+import useFetchApiData from "../../hooks/useFetchApiData";
 import useCreateParams from "../../hooks/useCreateParams";
 import { useCookies } from 'react-cookie';
 import { useRecoilState } from 'recoil';
@@ -28,7 +28,7 @@ function TopPage() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // cookieを管理
     const [cookies, setCookie] = useCookies();
     // APIから取得したデータを変数に格納

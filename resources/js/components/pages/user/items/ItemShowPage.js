@@ -1,6 +1,6 @@
 import React, {Suspense, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import { useCookies } from 'react-cookie';
 import Text from '../../../atoms/Text/Text';
@@ -26,7 +26,7 @@ function ItemShowPage(props) {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'ITEM';
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // cookieを管理
     const [cookies, setCookie] = useCookies();
     const {handleViewItemCookie} = useItemCookies(cookies, setCookie);
@@ -42,10 +42,11 @@ function ItemShowPage(props) {
     // お気に入り・カートのポップアップの状態管理
     const [popup, setPopup] = useState('');
     // 選択された画僧のソース管理
-    const [pickedPicture, setPickedPicture] = useState(item.top_image);
+    const [pickedPicture, setPickedPicture] = useState('');
 
     useEffect(() => {
         if(item) {
+            setPickedPicture(item.top_image);
             handleViewItemCookie(item.id);
             handleViewItemWebStorage(item, cookies.item_info); 
         }

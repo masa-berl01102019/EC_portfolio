@@ -1,6 +1,5 @@
 import React, {Suspense} from 'react';
-import {Link, useLocation, useHistory} from "react-router-dom";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useAuth from "../../../hooks/useAuth";
 import Button from '../../../atoms/Button/Button';
@@ -8,6 +7,8 @@ import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import { useSetRecoilState } from 'recoil';
+import { authUserState } from '../../../store/authState';
 
 function UserDeletePage() {
     // urlの設定
@@ -15,13 +16,11 @@ function UserDeletePage() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'USER';
     // APIと接続して返り値を取得
-    const {data, errorMessage, deleteData} = useFetchApiData2(baseUrl, model);
-    // 退会用のIDを取得
-    const {state} = useLocation();
+    const {data, errorMessage, deleteData} = useFetchApiData(baseUrl, model);
     // Auth hooksの呼び出し
-    const {handleLogout} = useAuth('user');
-    // リダイレクト用の関数呼び出し
-    const history = useHistory();
+    const {handleLogout} = useAuth('/api/user/auth', 'user');
+    // loginのステートをfalseにしてrouterを呼び出しリダイレクト掛ける
+    const setIsUserLogin = useSetRecoilState(authUserState);
 
     return (
         <main className={styles.mt_40}>
@@ -54,12 +53,11 @@ function UserDeletePage() {
                                     onClick={() => {
                                         let answer = confirm(`本当に退会しますか？`);
                                         if(answer) {
-                                            // 削除処理 TODO: 削除した後にログアウトの処理等でエラーが出るとこ修正
                                             deleteData({
-                                                url:`/api/user/users/${state}`,
+                                                url:`/api/user/users/${data.user.id}`,
                                                 callback: () => {
                                                     handleLogout();
-                                                    history.push('/');
+                                                    setIsUserLogin(false);
                                                 }
                                             });
                                         } 

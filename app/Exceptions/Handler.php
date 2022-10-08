@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         } else if ($exception instanceof AuthenticationException) {
             // 認証エラー
-            return response()->json(['errCode' => 'Unauthorized', 'message' => $exception->getMessage()], 401);
+            return response()->json(['errCode' => 'Unauthorized', 'message' => '認証エラーが発生しました'], 401);
         } else if ($exception instanceof ValidationException) {
             // バリデーションエラー
             return response()->json(new ErrorResource($exception), 422);

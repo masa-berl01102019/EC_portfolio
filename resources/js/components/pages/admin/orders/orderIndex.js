@@ -1,6 +1,6 @@
 import React, {useEffect, useState, Suspense} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import Pagination from '../../../molecules/Pagination/Pagination';
 import Heading from '../../../atoms/Heading/Heading';
@@ -21,7 +21,7 @@ const OrderIndex = () => {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage, deleteData, getCSVData} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const orders = data.data? data.data: null;
     // 検索タブのステータス

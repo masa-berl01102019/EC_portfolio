@@ -2,7 +2,7 @@ import React, {Suspense, useState} from 'react';
 import {EditorState, convertToRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import {useHistory} from "react-router-dom";
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
 import useObjectForm from "../../../hooks/useObjectForm";
@@ -24,7 +24,7 @@ function BlogCreate() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'BLOG';
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {setFormData, handleFormData, handleFormCheckbox, handleFormFile}] = useForm({
         'title': '',

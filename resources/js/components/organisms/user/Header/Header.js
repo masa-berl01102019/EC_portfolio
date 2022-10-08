@@ -1,4 +1,4 @@
-import React, {useState, memo} from 'react';
+import React, {useState, Suspense, memo} from 'react';
 import {Link} from 'react-router-dom';
 import Icon from '../../../atoms/Icon/Icon';
 import styles from './styles.module.css'
@@ -8,7 +8,7 @@ import GlobalMenu from '../GlobalMenu/GlobalMenu';
 import ItemFilterModal2 from '../modal/ItemFilterModal2';
 
 
-export const Header = ({authName, handleLogout, ...props}) => {
+export const Header = ({...props}) => {
 
     const [openMenu, setOpenMenu] = useState(false);
     const [openModal, setOpenModal] = useState(false);
@@ -31,10 +31,18 @@ export const Header = ({authName, handleLogout, ...props}) => {
             </header>
             {   openMenu && 
                 <Mask onClick={() => setOpenMenu(false)}>
-                    <GlobalMenu authName={authName} handleLogout={handleLogout} />
+                    <Suspense>
+                        <GlobalMenu />
+                    </Suspense>
                 </Mask>
             }
-            {  openModal && <ItemFilterModal2 onClick={() => setOpenModal(false)} /> }
+            {  openModal && 
+                <Mask>
+                    <Suspense>
+                        <ItemFilterModal2 onClick={() => setOpenModal(false)} /> 
+                    </Suspense>
+                </Mask>
+            }
         </>
     );
 };
