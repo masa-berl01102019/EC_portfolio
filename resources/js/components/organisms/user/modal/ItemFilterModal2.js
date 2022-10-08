@@ -246,7 +246,7 @@ const ItemFilterModal2 = ({
                   </Pulldown>
                 </div>
 
-                <div className={styles.mb_16}>
+                <div className={styles.mb_32}>
                   <Text className={styles.mb_8}>投稿日</Text>
                   <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort}>
                       <option value={'desc'}>降順</option>

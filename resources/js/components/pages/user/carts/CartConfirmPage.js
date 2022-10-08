@@ -9,7 +9,6 @@ import Heading from '../../../atoms/Heading/Heading';
 import Button from '../../../atoms/Button/Button';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 
-// TODO: stripeのエラー時のエラーメッセージをどうするか？
 // TODO: 価格不一致等のエラーメッセージをどうするか？
 // TODO: カード入力の郵便番号ないバージョンにする
 

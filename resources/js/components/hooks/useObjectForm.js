@@ -104,7 +104,6 @@ const useObjectForm = (formData, setFormData, dispatch) => {
       recode[name] = imageUrl; // 配列のindex番目のオブジェクトの特定カラムを更新 *画像プレビューのセット用
       recode['file'] = file; // fileというカラム名を追加してfileオブジェクトを格納
     } else {
-      // TODO 値が勝手にキャストされる点をどうするか検討
       // e.target.valueで渡って来るとき数値も文字列でキャストされた状態で渡って来る
       // 現時点では更新する値は数値のみなので数値にキャストしてる
       recode[name] = e.target.value !== '' ? Number(e.target.value): ''; // 配列のindex番目のオブジェクトの特定カラムを更新

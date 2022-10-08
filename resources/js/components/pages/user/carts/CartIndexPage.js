@@ -111,6 +111,7 @@ function CartIndexPage() {
                                                     value={formData.delivery_date} 
                                                     onChange={handleFormDate}
                                                     style={{'width': '170px'}}
+                                                    openTo="date"
                                                 />
                                             </label>
                                         </div>

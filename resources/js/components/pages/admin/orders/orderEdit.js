@@ -78,11 +78,6 @@ function OrderEdit(props) {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* TODO: datepicker日付単位で選択出来るようにする */}
-                                {/* openTo="date" // カレンダーアイコンクリック時に年->月->日の順に選択出来るように設定
-                                views={["date"]} */}
-                                
                                 <div className={[styles.flex, styles.flex_sp].join(' ')}>
                                     <FormDatePicker
                                         name={'delivery_date'} 
@@ -91,6 +86,7 @@ function OrderEdit(props) {
                                         label={'配達希望日'} 
                                         className={[styles.mr_24, styles.mb_16].join(' ')}
                                         error={errorMessage}
+                                        openTo="date"
                                     />
                                     <FormSelectbox
                                         name='delivery_time'

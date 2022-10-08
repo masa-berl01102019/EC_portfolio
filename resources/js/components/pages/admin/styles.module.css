@@ -92,6 +92,10 @@
   border-bottom: 1px solid #666;
 }
 
+/* Login */
+.login_max_content {
+  max-width: 520px;
+}
 
 
 /* contact  edit */

@@ -102,6 +102,7 @@ function NotificationEdit(props) {
                                         label={'掲載終了日'} 
                                         className={styles.mb_10} 
                                         error={errorMessage}
+                                        openTo="date"
                                     />
                                 </div>
                                 
