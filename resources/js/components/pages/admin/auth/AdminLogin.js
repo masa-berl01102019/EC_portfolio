@@ -33,7 +33,7 @@ function AdminLogin() {
                 }
 
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
-                    <div className={styles.form_area} style={{'marginTop' : '180px'}}>
+                    <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
                             管理者ログイン
                         </Heading>
