@@ -13,8 +13,6 @@ import { menuAdminState } from '../../../store/menuState';
 import { useRecoilValue } from 'recoil';
 import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 
-// TODO: メール機能の実装する
-
 function ContactEdit(props) {
     // urlの設定
     const baseUrl = `/api/admin/contacts/${props.match.params.id}/edit`;
