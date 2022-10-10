@@ -8,9 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\admin\UserEditRequest;
-use App\Http\Requests\admin\UserRegisterRequest;
+use App\Http\Requests\user\UserEditRequest;
+use App\Http\Requests\user\UserRegisterRequest;
 
+// TODO: ユーザーの新規登録時にはメールアドレス認証を必須にする
 class UserController extends Controller
 {
     // 該当のカラム以外を扱わないようにホワイトリスト作成
