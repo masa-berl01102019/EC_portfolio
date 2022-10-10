@@ -29,15 +29,15 @@ class AdminEditRequest extends FormRequest
         return [
             'last_name' => 'required|string|max:25',
             'first_name' => 'required|string|max:25',
-            'last_name_kana' => ['required','string','max:25', new Kana],
-            'first_name_kana' => ['required','string','max:25', new Kana],
-            'tel' => ['required','string', new JapanesePhoneNumber, 'max:15'],
+            'last_name_kana' => ['required', 'string', 'max:25', new Kana],
+            'first_name_kana' => ['required', 'string', 'max:25', new Kana],
+            'tel' => ['required', 'string', new JapanesePhoneNumber, 'max:15'],
             'email' => [
                 'required',
                 'string',
                 'email:strict,dns,spoof',
                 'max:100',
-                Rule::unique('users')->ignore($this->id), // 該当ID以外でユニークを適用
+                Rule::unique('admins')->ignore($this->id), // 該当ID以外でユニークを適用
             ], // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
         ];
     }
