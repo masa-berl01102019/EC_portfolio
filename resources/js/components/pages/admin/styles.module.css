@@ -190,6 +190,9 @@
 .scroll_x {
   overflow-x: scroll;
 }
+.text_underline {
+  text-decoration: underline;
+}
 .text_center {
   text-align:  center;
 }

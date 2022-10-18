@@ -13,7 +13,6 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 
-// TODO: パスワードはメールアドレスの認証なしに変更出来ない使用にするので後で実装する
 
 function UserEditPage() {
     // urlの設定

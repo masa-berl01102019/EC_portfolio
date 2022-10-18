@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\Admin;
@@ -12,7 +13,7 @@ class AdminFactory extends Factory
 
     public function definition()
     {
-        
+
         // ユーザー登録日
         $created_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
         // ユーザー性別
@@ -20,14 +21,13 @@ class AdminFactory extends Factory
 
         return [
             'last_name' => $this->faker->lastName,
-            'first_name' => $gender === 0 || $gender === 2? $this->faker->firstNameMale: $this->faker->firstNameFemale,
+            'first_name' => $gender === 0 || $gender === 2 ? $this->faker->firstNameMale : $this->faker->firstNameFemale,
             'last_name_kana' => $this->faker->lastKanaName,
-            'first_name_kana' => $gender === 0 || $gender === 2? $this->faker->firstKanaNameMale: $this->faker->firstKanaNameFemale,
+            'first_name_kana' => $gender === 0 || $gender === 2 ? $this->faker->firstKanaNameMale : $this->faker->firstKanaNameFemale,
             'tel' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('abc12345'),
-    //        'email_verified_at' => now(), メールアドレス認証してからログインする方式にするか検討中
-            'remember_token' => Str::random(10),
+            'email_verified_at' => now(), // TODO: メールアドレス認証してからログインする方式にする
             'created_at' => $created_at,
             'updated_at' => $this->faker->dateTimeBetween($startDate = $created_at, $endDate = 'now', $timezone = null),
         ];

@@ -34,12 +34,16 @@ const CartErrorPage = lazy(() => import( "./pages/user/carts/CartErrorPage" ));
 const BookmarkIndexPage = lazy(() => import( "./pages/user/bookmarks/BookmarkIndexPage" ));
 const OrderIndexPage = lazy(() => import( "./pages/user/orders/OrderIndexPage" ));
 const UserLogin = lazy(() => import( "./pages/user/auth/UserLogin" ));
+const UserResetPassword = lazy(() => import( "./pages/user/auth/UserResetPassword" ));
+const UserChangePassword = lazy(() => import( "./pages/user/auth/UserChangePassword" ));
 const UserCreatePage = lazy(() => import( "./pages/user/users/UserCreatePage" ));
 const ContactCreatePage = lazy(() => import( "./pages/user/contacts/ContactCreatePage" ));
 const UserEditPage = lazy(() => import( "./pages/user/users/UserEditPage" ));
 const UserDeletePage = lazy(() => import( "./pages/user/users/UserDeletePage" ));
 // admin用 各ページコンポーネント
 const AdminLogin = lazy(() => import( "./pages/admin/auth/AdminLogin" ));
+const AdminResetPassword = lazy(() => import( "./pages/admin/auth/AdminResetPassword" ));
+const AdminChangePassword = lazy(() => import( "./pages/admin/auth/AdminChangePassword" ));
 const Dashboard = lazy(() => import( './pages/admin/dashboard/Dashboard' ));
 const UserIndex = lazy(() => import( './pages/admin/users/UserIndex' ));
 const UserEdit = lazy(() => import( "./pages/admin/users/UserEdit" ));
@@ -125,6 +129,8 @@ function Router() {
                             <Route path="/histories" exact component={HistoryPage} />
                             <Route path="/users/create" exact component={UserCreatePage} />
                             <Route path="/contacts" exact component={ContactCreatePage} />
+                            <Route path="/user/reset_password" exact component={UserResetPassword} />
+                            <Route path="/user/change_password/:uuid" exact component={UserChangePassword} />
                             <UserLoginRoute path="/user/login" exact component={UserLogin} prevUrl={prevUrl} />
                             <UserPrivateRoute path="/users/edit" exact component={UserEditPage} />
                             <UserPrivateRoute path="/users/delete" exact component={UserDeletePage} />
@@ -135,6 +141,8 @@ function Router() {
                             <UserPrivateRoute path="/bookmarks" exact component={BookmarkIndexPage} />
                             <UserPrivateRoute path="/orders" exact component={OrderIndexPage} />
                             {/* ADMIN ROUTING */}
+                            <Route path="/admin/reset_password" exact component={AdminResetPassword} />
+                            <Route path="/admin/change_password/:uuid" exact component={AdminChangePassword} />
                             <AdminLoginRoute path="/admin/login" exact component={AdminLogin} prevUrl={prevUrl} />
                             <AdminPrivateRoute path="/admin/Dashboard" exact component={Dashboard} />
                             <AdminPrivateRoute path="/admin/users" exact component={UserIndex} />

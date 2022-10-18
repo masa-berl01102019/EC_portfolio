@@ -10,13 +10,14 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import {Link} from "react-router-dom";
 
 function AdminLogin() {
     // グローバルステートの呼び出し
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'msakamoto@example.net', 
+        'email': 'akemi89@example.org', 
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
@@ -66,6 +67,11 @@ function AdminLogin() {
                                 className={styles.mb_24}
                             />
                             <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>ログイン</Button>
+                            <Link to={'/admin/reset_password'}>
+                                <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
+                                    パスワードをお忘れの方
+                                </Text>
+                            </Link>
                         </form>
                     </div>
                 </div>

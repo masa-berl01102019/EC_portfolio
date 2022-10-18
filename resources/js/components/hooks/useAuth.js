@@ -62,8 +62,46 @@ const useAuth = (url, auth) => {
             onError: (err) => handleApiErrorMessage(err),
         }
     );
+    // send ResetPasswordEmail method
+    const {mutate: handleResetPasswordEmail} = useMutation(
+        async ({url, form, headers}) => {
+            setErrorMessage(null);
+            await initialCSRF();
+            console.log('パスワード再設定メール送信', url, form, headers);
+            return await axios({ method: 'post', url: url, data: form, headers: headers });
+        },
+        { 
+            onSuccess: (res, obj) => {
+                console.log('success', res.data)
+                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                const {callback} = obj;
+                callback !== undefined && callback();
+                queryClient.invalidateQueries(auth);
+            },
+            onError: (err) => handleApiErrorMessage(err),
+        }
+    );
+    // change Password method
+    const {mutate: handleChangePassword} = useMutation(
+        async ({url, form, headers}) => {
+            setErrorMessage(null);
+            await initialCSRF();
+            console.log('パスワード変更処理が呼ばれた', url, form, headers);
+            return await axios({ method: 'post', url: url, data: form, headers: headers });
+        },
+        { 
+            onSuccess: (res, obj) => {
+                console.log('success', res.data)
+                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                const {callback} = obj;
+                callback !== undefined && callback();
+                queryClient.invalidateQueries(auth);
+            },
+            onError: (err) => handleApiErrorMessage(err),
+        }
+    );
 
-    return {data, errorMessage, handleLogin, handleLogout};
+    return {data, errorMessage, handleLogin, handleLogout, handleResetPasswordEmail, handleChangePassword};
 };
 
 export default useAuth;

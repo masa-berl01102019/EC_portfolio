@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
@@ -38,7 +39,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         // ユーザーがログインしてるかチェック
-        if(Auth::guard('user')->check()) {
+        if (Auth::guard('user')->check()) {
             // ユーザーのログアウト
             Auth::guard('user')->logout();
             // セッションIDの再発行
@@ -49,6 +50,4 @@ class AuthController extends Controller
         // 認証失敗時にFALSEを返却
         return response()->json(['success' => false, 'message' => 'ログアウトに失敗しました'], 401);
     }
-
-
 }

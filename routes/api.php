@@ -12,13 +12,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// TODO 実行ログ用のmiddleware作成
+// TODO: 実行ログ用のmiddleware作成
 
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
     Route::post('/login', 'AuthController@login')->name('login');
     Route::post('/logout', 'AuthController@logout')->name('logout');
     Route::get('/auth', 'AuthController@auth')->name('auth');
+
+    // パスワード変更
+    Route::post('/resetPasswords/send', 'ResetPasswordController@send')->name('resetPasswords.send');
+    Route::post('/resetPasswords/change', 'ResetPasswordController@change')->name('resetPasswords.change');
 
     // ログイン認証後
     Route::middleware('auth:sanctum')->group(function () {
@@ -128,6 +132,10 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function () {
     Route::post('/login', 'AuthController@login')->name('login');
     Route::post('/logout', 'AuthController@logout')->name('logout');
     Route::get('/auth', 'AuthController@auth')->name('auth');
+
+    // パスワード変更
+    Route::post('/resetPasswords/send', 'ResetPasswordController@send')->name('resetPasswords.send');
+    Route::post('/resetPasswords/change', 'ResetPasswordController@change')->name('resetPasswords.change');
 
     // TOP画面
     Route::get('/home', 'HomeController@index')->name('home.index');

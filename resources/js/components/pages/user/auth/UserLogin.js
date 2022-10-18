@@ -9,6 +9,7 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import {Link} from "react-router-dom";
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 
 function UserLogin() {
@@ -16,7 +17,7 @@ function UserLogin() {
     const setIsUserLogin = useSetRecoilState(authUserState);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'tsato@example.net	', 
+        'email': 'tsubasa.ito@example.org', 
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
@@ -61,10 +62,11 @@ function UserLogin() {
                             className={styles.mb_24}
                         />
                         <Button size='l' color='primary' type="submit" className={styles.mb_8}>ログイン</Button>
-                        {/* TODO: 機能を実装する */}
-                        <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
-                            メールアドレスまたはパスワードをお忘れの方
-                        </Text>
+                        <Link to={'/user/reset_password'}>
+                            <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
+                                パスワードをお忘れの方
+                            </Text>
+                        </Link>
                     </form>
                     <div>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
