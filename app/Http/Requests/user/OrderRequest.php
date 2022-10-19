@@ -30,7 +30,7 @@ class OrderRequest extends FormRequest
             'id' => 'required|string',
             'total_amount' => 'required|integer|min:0',
             'payment_method' => 'required|integer|min:0|max:1',
-            'delivery_date' => 'required|date|after:tomorrow',
+            'delivery_date' => 'required|date|after:today',
             'delivery_time' => 'required|string|max:30'
         ];
     }

@@ -24,7 +24,7 @@ use App\Http\Resources\OrderDetailResource;
 class OrderController extends Controller
 {
     // 該当のカラム以外を扱わないようにホワイトリスト作成
-    private $form_items = [ 'id', 'total_amount', 'payment_method', 'delivery_date', 'delivery_time' ];
+    private $form_items = ['id', 'total_amount', 'payment_method', 'delivery_date', 'delivery_time'];
 
     public function __construct()
     {
@@ -45,11 +45,11 @@ class OrderController extends Controller
             ->whereHas('sku.item', function ($query) {
                 // 商品は公開のステータスに絞り込み
                 return $query->where('is_published', config('define.is_published_r.open'));
-            });
+            })->orderBy('created_at', 'desc');
 
         // ページネーション
         $orders = $search_order->customPaginate($request);
-       
+
         // レスポンスを返却
         return (OrderDetailResource::collection($orders));
     }
@@ -65,18 +65,18 @@ class OrderController extends Controller
             ->join('items', function ($join) {
                 $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
             })
-            ->select('carts.id','carts.quantity','carts.sku_id','skus.item_id','skus.size_id','skus.color_id','items.item_name','items.product_number','items.price')
+            ->select('carts.id', 'carts.quantity', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.product_number', 'items.price')
             ->get();
 
         // 商品と点数と価格のみを抜き出し配列を生成
-        $price_arr = array_column($cart_items->toArray(),'price');
-        $quantity_arr = array_column($cart_items->toArray(),'quantity');
+        $price_arr = array_column($cart_items->toArray(), 'price');
+        $quantity_arr = array_column($cart_items->toArray(), 'quantity');
 
         // 商品の購入数と価格をそれぞれ掛ける
-        $sub_total_arr = array_map(fn($price, $quantity): int => intval($price * $quantity), $price_arr, $quantity_arr);
-        
+        $sub_total_arr = array_map(fn ($price, $quantity): int => intval($price * $quantity), $price_arr, $quantity_arr);
+
         // 商品の各価格から消費税を算出して商品を掛ける * intval は小数点以下切り捨てかつ整数型に変換
-        $tax_arr = array_map(fn($price, $quantity): int => intval($price * Tax::getTaxRate() * $quantity), $price_arr, $quantity_arr);
+        $tax_arr = array_map(fn ($price, $quantity): int => intval($price * Tax::getTaxRate() * $quantity), $price_arr, $quantity_arr);
 
         // 小計を算出
         $sub_total = intval(array_sum($sub_total_arr));
@@ -86,10 +86,10 @@ class OrderController extends Controller
 
         // 購入総額を算出
         $total_amount = $sub_total + $tax_amount;
-        
+
         // 決済時に商品の価格が変更されたもしくは不正に変更された
-        if($data['total_amount'] != $total_amount) {
-            return response()->json(['create' => false, 'message' => '商品の価格が一致しません'], 400);
+        if ($data['total_amount'] != $total_amount) {
+            return response()->json(['create' => false, 'message' => '商品の価格が一致しません'], 404);
         }
 
         // ストライプ手数料(3.6%)を算出 * ストライプの手数料は小数点以下を四捨五入しなければいけないのでround()をかませる
@@ -113,7 +113,7 @@ class OrderController extends Controller
             ]);
 
             // 商品の数だけfor文まわす
-            for($i = 0; $i < count($cart_items); $i++) {
+            for ($i = 0; $i < count($cart_items); $i++) {
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'sku_id' => $cart_items[$i]['sku_id'],
@@ -142,10 +142,7 @@ class OrderController extends Controller
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['create' => false, 'message' => '決済に失敗しました'], 200);
+            return response()->json(['create' => false, 'message' => '決済に失敗しました'], 500);
         }
-
-
     }
-
 }
