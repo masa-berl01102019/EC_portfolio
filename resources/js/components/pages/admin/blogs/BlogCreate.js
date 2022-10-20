@@ -79,7 +79,7 @@ function BlogCreate() {
                                 e.preventDefault();
                                 handleSendObjectForm(
                                     '/api/admin/blogs',
-                                    // history.push('/admin/blogs')
+                                    () => history.push('/admin/blogs')
                                 );
                             }}>
                                 <div className={[styles.flex, styles.mb_24, styles.flex_tb].join(' ')}>

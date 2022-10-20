@@ -20,8 +20,6 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import InputImage from '../../../atoms/InputImage/InputImage';
 
-// TODO: news / blog エラー時にエラーメッセージが表示されずに遷移してしまってる
-
 function NewsEdit(props) {
     // urlの設定
     const baseUrl = `/api/admin/news/${props.match.params.id}/edit`;
@@ -97,7 +95,7 @@ function NewsEdit(props) {
                                 e.preventDefault();
                                 handleSendObjectForm(
                                     `/api/admin/news/${props.match.params.id}`,
-                                    // history.push('/admin/news')
+                                    () => history.push('/admin/news')
                                 );
                             }}>
                                 <div className={[styles.flex, styles.mb_24, styles.flex_tb].join(' ')}>

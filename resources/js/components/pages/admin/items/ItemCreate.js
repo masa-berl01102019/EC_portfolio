@@ -92,7 +92,7 @@ function ItemCreate() {
                                 } else {
                                     handleSendObjectForm(
                                         '/api/admin/items',
-                                        // history.push('/admin/items')
+                                        () => history.push('/admin/items')
                                     );
                                 }
                             }}>

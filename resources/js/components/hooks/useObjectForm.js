@@ -42,7 +42,7 @@ const useObjectForm = (formData, setFormData, dispatch) => {
         form: params, 
         url: sendUrl, 
         headers: {'content-type': 'multipart/form-data'}, 
-        callback: () => callback 
+        callback: callback 
     });
   }
 

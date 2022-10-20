@@ -76,7 +76,7 @@ function NewsCreate() {
                                 e.preventDefault();
                                 handleSendObjectForm(
                                     '/api/admin/news',
-                                    // history.push('/admin/news')
+                                    () => history.push('/admin/news')
                                 );
                             }}>
                                 <div className={[styles.flex, styles.mb_24, styles.flex_tb].join(' ')}>
