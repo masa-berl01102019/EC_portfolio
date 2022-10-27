@@ -8,6 +8,7 @@ import styles from '../styles.module.css';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
+import useNotify from '../../../context/NotifyContext';
 
 function ColorIndex() {
     // urlの設定
@@ -26,6 +27,17 @@ function ColorIndex() {
     const [editColor, setEditColor] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+
+    // notifyContextの呼び出し
+    const confirm = useNotify();
+
+    const handleConfirmDelete = async (id) => {
+        const result = await confirm({
+            body : `選択カラーを本当に削除しますか？`,
+            confirmBtnLabel : '削除'
+        });
+        result && deleteData({ url:`/api/admin/colors/${id}` });
+    }
 
     
     return (
@@ -62,12 +74,7 @@ function ColorIndex() {
                                                     url:`/api/admin/colors/${color.id}`
                                                 })
                                             }
-                                            deleteMethod={() => { 
-                                                let answer = confirm(`選択カラーを本当に削除しますか？`);
-                                                answer && deleteData({
-                                                    url:`/api/admin/colors/${color.id}`
-                                                });
-                                            }}
+                                            deleteMethod={() => handleConfirmDelete(color.id)}
                                         />
                                     ) : (
                                         <div className={styles.master_editable_text} onClick={() => {

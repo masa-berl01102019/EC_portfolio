@@ -8,8 +8,7 @@ import styles from '../styles.module.css';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
-
-// TODO: alert用のpopup作る
+import useNotify from '../../../context/NotifyContext'
 
 function TagIndex() {
     // urlの設定
@@ -28,6 +27,20 @@ function TagIndex() {
     const [editTag, setEditTag] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    // notifyContextの呼び出し
+    const confirm = useNotify();
+
+    const handleNotifyDelete = async (id) => {
+        // useNotifyにはpromiseを返却する関数なので返却値を受け取って処理を進める為にasyncでawaitを設定する
+        const result = await confirm({
+            body : '選択したタグを本当に削除してもよろしいですか?',
+            confirmBtnLabel : '削除'
+        });
+        // resolveのfunctionで論理値が渡ってくるのそれを受け取って以下の処理をする
+        if(result) {
+            deleteData({ url: `/api/admin/tags/${id}`});
+        }
+    }
 
     return (
         <main>
@@ -64,12 +77,7 @@ function TagIndex() {
                                                         form: {tag_name: `${editTag}`}
                                                     })
                                                 }
-                                                deleteMethod={() => { 
-                                                    let answer = confirm(`選択タグを本当に削除しますか？`);
-                                                    answer && deleteData({
-                                                        url: `/api/admin/tags/${tag.id}`
-                                                    });
-                                                }}
+                                                deleteMethod={() => handleNotifyDelete(tag.id)}
                                             />
                                         ) : (
                                             <div className={styles.master_editable_text}onClick={() => {

@@ -7,6 +7,7 @@ import styles from '../styles.module.css';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
+import useNotify from '../../../context/NotifyContext';
 
 function BrandIndex() {
     // urlの設定
@@ -25,6 +26,17 @@ function BrandIndex() {
     const [editBrand, setEditBrand] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+
+    // notifyContextの呼び出し
+    const confirm = useNotify();
+
+    const handleConfirmDelete = async (id) => {
+        const result = await confirm({
+            body : `選択ブランドを本当に削除しますか？`,
+            confirmBtnLabel : '削除'
+        });
+        result && deleteData({ url:`/api/admin/brands/${id}` });
+    }
 
     return (
         <main>
@@ -60,12 +72,7 @@ function BrandIndex() {
                                                     url:`/api/admin/brands/${brand.id}`
                                                 })
                                             }
-                                            deleteMethod={() => { 
-                                                let answer = confirm(`選択ブランドを本当に削除しますか？`);
-                                                answer && deleteData({
-                                                    url:`/api/admin/brands/${brand.id}`
-                                                });
-                                            }}
+                                            deleteMethod={() => handleConfirmDelete(brand.id)}
                                         />
                                     ) : (
                                         <div className={styles.master_editable_text} onClick={() => {

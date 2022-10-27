@@ -7,6 +7,7 @@ import { CookiesProvider } from 'react-cookie';
 import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { NotifyProvider } from './context/NotifyContext';
 
 
 // React Query will consider cached data as stale. Stale queries are re-fetched automatically in the background when:
@@ -35,10 +36,12 @@ function App() {
             <RecoilRoot>
                 <CookiesProvider>
                     <StripeProvider>
-                        <QueryClientProvider client={queryClient}>
-                            <Router />
-                            <ReactQueryDevtools initialIsOpen={false} />
-                        </QueryClientProvider>
+                        <NotifyProvider>
+                            <QueryClientProvider client={queryClient}>
+                                <Router />
+                                <ReactQueryDevtools initialIsOpen={false} />
+                            </QueryClientProvider>
+                        </NotifyProvider>
                     </StripeProvider>
                 </CookiesProvider>
             </RecoilRoot>

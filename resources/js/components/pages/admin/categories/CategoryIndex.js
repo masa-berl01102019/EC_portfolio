@@ -9,6 +9,7 @@ import Icon from '../../../atoms/Icon/Icon';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
+import useNotify from '../../../context/NotifyContext';
 
 function CategoryIndex() {
     // urlの設定
@@ -27,6 +28,17 @@ function CategoryIndex() {
     const [editCategory, setEditCategory] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+
+    // notifyContextの呼び出し
+    const confirm = useNotify();
+
+    const handleConfirmDelete = async (id) => {
+        const result = await confirm({
+            body : `選択カテゴリーを本当に削除しますか？`,
+            confirmBtnLabel : '削除'
+        });
+        result && deleteData({url:`/api/admin/categories/${id}`});
+    }
 
     return (
         <main>
@@ -56,10 +68,7 @@ function CategoryIndex() {
                                                     url:`/api/admin/categories/${category.id}`
                                                 })
                                             }
-                                            deleteMethod={() => { 
-                                                let answer = confirm(`選択カテゴリーを本当に削除しますか？`);
-                                                answer && deleteData({url:`/api/admin/categories/${category.id}`});
-                                            }}
+                                            deleteMethod={() => handleConfirmDelete(category.id)}
                                             className={styles.mb_8}
                                         />
                                     ) : (
@@ -84,10 +93,7 @@ function CategoryIndex() {
                                                                 url:`/api/admin/categories/${child.id}`
                                                             })
                                                         }
-                                                        deleteMethod={() => { 
-                                                            let answer = confirm(`選択カテゴリーを本当に削除しますか？`);
-                                                            answer && deleteData({url:`/api/admin/categories/${child.id}`});
-                                                        }}
+                                                        deleteMethod={() => handleConfirmDelete(child.id)}
                                                         className={styles.mb_8}
                                                     />
                                                 ) : (
@@ -119,10 +125,7 @@ function CategoryIndex() {
                                                                         url:`/api/admin/categories/${grand_child.id}`
                                                                     })
                                                                 }
-                                                                deleteMethod={() => { 
-                                                                    let answer = confirm(`選択カテゴリーを本当に削除しますか？`);
-                                                                    answer && deleteData({url:`/api/admin/categories/${grand_child.id}`});
-                                                                }}
+                                                                deleteMethod={() => handleConfirmDelete(grand_child.id)}
                                                                 className={styles.mb_8}
                                                             />
                                                         ) : (

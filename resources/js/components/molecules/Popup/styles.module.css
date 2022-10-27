@@ -50,3 +50,39 @@
   display: block;
   margin: 24px auto 0;
 }
+/* notify popup 用*/
+.notify_container {
+  background: #fff;
+  width: calc(280 / 320 * 100%);
+  max-height: 360px;
+  max-width: 360px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 24px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.notify_title {
+  color: #000;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.alert_img {
+  margin: 0 auto 16px;
+  display: block;
+}
+.notify_body {
+  margin-bottom: 16px;
+  text-align: center;
+  line-height: 1.5;
+}
+.close_alert_btn {
+  display: block;
+  margin: 0 auto;
+}
+.btn_area {
+  display: flex;
+  justify-content: space-around;
+}

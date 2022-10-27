@@ -6,9 +6,13 @@ import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputText from '../../../atoms/InputText/InputText';
+import useNotify from '../../../context/NotifyContext';
 
 
 const ItemMeasurementTable = ({measurements, sizes, skus, className = '', deleteMethod, handleFormMethod}) => {
+
+  // notifyContextの呼び出し
+  const alert = useNotify();
 
   return (
     <>
@@ -38,16 +42,24 @@ const ItemMeasurementTable = ({measurements, sizes, skus, className = '', delete
             measurements.map((list, index) =>
                 <Row key={index}>
                   <Td>
-                    <Button onClick={() => deleteMethod('measurements', index, list.id) } style={{'maxWidth': '50px'}}>削除</Button>
+                    <Button 
+                      onClick={() => {
+                        if(measurements.length > 1) {
+                          deleteMethod('measurements', index, list.id)
+                        } else {
+                          alert({
+                            body : '全ての行は削除出来ません。',
+                            type: 'alert'
+                          });
+                        }
+                      }} 
+                      style={{'maxWidth': '50px'}}
+                    >
+                      削除
+                    </Button>
                   </Td>
                   <Td>
-                    <Selectbox name='size_id' value={list.size_id} onChange={ e => {
-                        if(measurements.map(item => item['size_id']).includes(Number(e.target.value))) {
-                            alert('選択されたサイズは既に使用されております。');
-                        } else {
-                            handleFormMethod('measurements', index, e) 
-                        }
-                    }} className={styles.table_row_form}>
+                    <Selectbox name='size_id' value={list.size_id} onChange={ e => { handleFormMethod('measurements', index, e) }} className={styles.table_row_form}>
                         {/* フォーム追加以外未設定の表示を制限 */}
                         {   list.size_id == '' && <option value={''}>未設定</option>}
                         {   sizes && sizes.filter((size) => skus.map(item => item.size_id).includes(size.id)).map((size) => (

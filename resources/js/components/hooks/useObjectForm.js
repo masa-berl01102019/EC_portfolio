@@ -73,24 +73,19 @@ const useObjectForm = (formData, setFormData, dispatch) => {
   const handleDeleteObjectForm = (table_name, index, id) => {
     console.log('handleDeleteObjectForm');
     if(formData[table_name].length > 1) {
-        let answer = confirm(`選択項目を削除しますか？`);
-        if(answer) {
-            // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
-            if(id) {
-                // 削除のリクエスト送信
-                dispatch({type:'DELETE', url:`/api/admin/items/${table_name}/${id}`});
-            } else {
-                // 配列からindex番目のオブジェクトを1個削除
-                formData[table_name].splice(index,1);
-                // ステートを更新して再描画走らせる
-                setFormData({
-                    ...formData
-                });
-            }
+        // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
+        if(id) {
+            // 削除のリクエスト送信
+            dispatch({type:'DELETE', url:`/api/admin/items/${table_name}/${id}`});
+        } else {
+            // 配列からindex番目のオブジェクトを1個削除
+            formData[table_name].splice(index,1);
+            // ステートを更新して再描画走らせる
+            setFormData({
+                ...formData
+            });
         }
-    } else {
-        alert('全ての行は削除出来ません。');
-    }
+    } 
   }
 
   // オブジェクトFormのカラムの値の更新

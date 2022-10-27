@@ -27,7 +27,7 @@ class AdminFactory extends Factory
             'tel' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('abc12345'),
-            'email_verified_at' => now(), // TODO: メールアドレス認証してからログインする方式にする
+            'email_verified_at' => now(),
             'created_at' => $created_at,
             'updated_at' => $this->faker->dateTimeBetween($startDate = $created_at, $endDate = 'now', $timezone = null),
         ];

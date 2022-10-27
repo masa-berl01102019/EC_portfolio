@@ -18,6 +18,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
+import useNotify from '../../../context/NotifyContext';
 
 // TODO フロント側でのバリデーション設定
 // TODO フォーム部品に関しての関数をリファクタリング時にhooksに切り出す
@@ -65,6 +66,8 @@ function ItemEdit(props) {
     const tags = data.tags? data.tags: null;
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    // notifyContextの呼び出し
+    const alert = useNotify();
 
     useEffect(() => {
         // 非同期で通信されるので初回読み込み時にitemが入ってこない場合があるので条件分岐してあげる
@@ -99,11 +102,11 @@ function ItemEdit(props) {
                                 const setObj = new Set(arr);
         
                                 if(setObj.size != arr.length) { // もと配列とsetオブジェクトが要素の数が一致してなければ組合せに重複がある
-                                    alert('SKUセクションで選択されてるカラーとサイズの組み合わせに重複が存在しております。');
+                                    alert({body: 'SKUセクションで選択されてるカラーとサイズの組み合わせに重複が存在しております。', type: 'alert'});
                                 } else if(formData.skus.map(item => item['size_id']).filter(el => !formData.measurements.map(item => item['size_id']).includes(el) ).length > 0) { // SKUのカラーと画像の関連カラーが一致してるか確認
-                                    alert('SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。');
+                                    alert({body: 'SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。', type: 'alert'});
                                 }else if(formData.skus.map(item => item['color_id']).filter(el => !formData.images.map(item => item['color_id']).includes(el) ).length > 0) { // SKUのサイズと寸法のサイズが一致してるか確認
-                                    alert('SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。');
+                                    alert({body: 'SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。', type: 'alert'});
                                 } else {
                                     handleSendObjectForm(`/api/admin/items/${props.match.params.id}`);
                                 }

@@ -6,9 +6,13 @@ import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputText from '../../../atoms/InputText/InputText';
+import useNotify from '../../../context/NotifyContext';
 
 
 const ItemSkuTable = ({skus, colors, sizes, className = '', deleteMethod, handleFormMethod}) => {
+
+  // notifyContextの呼び出し
+  const alert = useNotify();
 
   return (
     <>
@@ -27,7 +31,21 @@ const ItemSkuTable = ({skus, colors, sizes, className = '', deleteMethod, handle
             skus.map((list, index) =>
               <Row key={index}>
                     <Td>
-                        <Button onClick={() => deleteMethod('skus', index, list.id) } style={{'maxWidth': '50px'}}>削除</Button>
+                        <Button 
+                          onClick={() => {
+                            if(skus.length > 1) {
+                              deleteMethod('skus', index, list.id)
+                            } else {
+                              alert({
+                                body : '全ての行は削除出来ません。',
+                                type: 'alert'
+                              });
+                            }
+                          }} 
+                          style={{'maxWidth': '50px'}}
+                        >
+                          削除
+                        </Button>
                     </Td>
                     <Td>{list.id}</Td>
                     <Td>

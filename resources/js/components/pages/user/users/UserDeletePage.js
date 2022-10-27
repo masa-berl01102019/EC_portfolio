@@ -9,6 +9,7 @@ import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useSetRecoilState } from 'recoil';
 import { authUserState } from '../../../store/authState';
+import useNotify from '../../../context/NotifyContext';
 
 function UserDeletePage() {
     // urlの設定
@@ -21,6 +22,23 @@ function UserDeletePage() {
     const {handleLogout} = useAuth('/api/user/auth', 'user');
     // loginのステートをfalseにしてrouterを呼び出しリダイレクト掛ける
     const setIsUserLogin = useSetRecoilState(authUserState);
+
+    // notifyContextの呼び出し
+    const confirm = useNotify();
+
+    const handleConfirmDelete = async (id) => {
+        const result = await confirm({
+            body : `本当に退会しますか？`,
+            confirmBtnLabel : 'はい'
+        });
+        result && deleteData({
+            url:`/api/user/users/${id}`,
+            callback: () => {
+                handleLogout();
+                setIsUserLogin(false);
+            }
+        });
+    }
 
     return (
         <main className={styles.mt_40}>
@@ -50,18 +68,7 @@ function UserDeletePage() {
                                 <Button 
                                     size='l'
                                     color='primary'
-                                    onClick={() => {
-                                        let answer = confirm(`本当に退会しますか？`);
-                                        if(answer) {
-                                            deleteData({
-                                                url:`/api/user/users/${data.user.id}`,
-                                                callback: () => {
-                                                    handleLogout();
-                                                    setIsUserLogin(false);
-                                                }
-                                            });
-                                        } 
-                                    }}
+                                    onClick={() => handleConfirmDelete(data.user.id)}
                                     className={[styles.mb_16, styles.btn_max].join(' ')}
                                 >
                                     退会する
