@@ -5,7 +5,6 @@ import useForm from '../../../hooks/useForm';
 import { authAdminState } from '../../../store/authState';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
-import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
@@ -26,11 +25,6 @@ function AdminResetPassword() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-
-                { errorMessage && errorMessage.httpRequestError && 
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text> 
-                }
-
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
                     <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>

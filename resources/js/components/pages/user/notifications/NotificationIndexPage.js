@@ -2,7 +2,6 @@ import React, {Suspense} from 'react';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData from '../../../hooks/useFetchApiData';
 import Heading from '../../../atoms/Heading/Heading';
-import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 import NotificationList from '../../../molecules/NotificationList/NotificationList';
 
@@ -19,26 +18,17 @@ function NotificationIndexPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>お知らせ一覧</Heading>
-
-                        <div className={styles.main_contents_area}>
-                            {   notifications &&
-                                notifications.map((notification) =>
-                                    <NotificationList
-                                        key={notification.id}
-                                        notification={notification}
-                                    />
-                                )
-                            }
-                        </div>
-                    </>
-                )
-            }
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>お知らせ一覧</Heading>
+                <div className={styles.main_contents_area}>
+                    {   notifications &&
+                        notifications.map((notification) =>
+                            <NotificationList
+                                key={notification.id}
+                                notification={notification}
+                            />
+                        )
+                    }
+                </div>
             </Suspense>
         </main>
     );

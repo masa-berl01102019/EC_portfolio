@@ -7,13 +7,6 @@
   max-width: 1024px;
 }
 
-.http_error {
-  margin-top: 32px;
-  text-align: center;
-  background: #f44336;
-  color: #fff;
-  padding: 8px 0;
-}
 .main_contents_area {
   width: calc(300 / 320 * 100%);
   margin: 0 auto 60px

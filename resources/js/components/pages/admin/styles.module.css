@@ -3,13 +3,6 @@
   width : 90%;
   margin: 86px auto 72px;
 }
-.http_error {
-  margin-top: 86px;
-  text-align: center;
-  background: #f44336;
-  color: #fff;
-  padding: 8px 0;
-}
 .container_open_menu {
   width: calc(100% - 244px);
   margin: 86px 0 72px;

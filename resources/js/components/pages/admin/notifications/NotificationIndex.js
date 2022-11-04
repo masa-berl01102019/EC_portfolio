@@ -8,7 +8,6 @@ import { paramState } from '../../../store/paramState';
 import Heading from '../../../atoms/Heading/Heading';
 import FilterSortBtn from '../../../molecules/IconBtn/FilterSortBtn';
 import NotificationTable from '../../../organisms/admin/Table/NotificationTable';
-import Text from '../../../atoms/Text/Text';
 import NotificationSidebar from '../../../organisms/admin/SideBar/NotificationSideBar';
 import CreateLink from '../../../molecules/IconLink/CreateLink';
 import styles from '../styles.module.css';
@@ -47,31 +46,25 @@ function NotificationIndex() {
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.flex].join(' ') : [styles.container, styles.flex].join(' ') }>
-                        { open && <NotificationSidebar model={model} onClick={() => setOpen(false)} /> }
-                        <div className={open ? [styles.open_sidebar, styles.flex_1].join(' ') : styles.flex_1}>
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.flex].join(' ') : [styles.container, styles.flex].join(' ') }>
+                    { open && <NotificationSidebar model={model} onClick={() => setOpen(false)} /> }
+                    <div className={open ? [styles.open_sidebar, styles.flex_1].join(' ') : styles.flex_1}>
 
-                            <div className={styles.index_title}>
-                                <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                    お知らせ一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
-                                </Heading>
-                                <div className={[styles.flex, styles.btn_area].join(' ')}>
-                                    <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
-                                    <CreateLink to="/admin/notifications/create">新規登録</CreateLink>
-                                </div>
+                        <div className={styles.index_title}>
+                            <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
+                                お知らせ一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                            </Heading>
+                            <div className={[styles.flex, styles.btn_area].join(' ')}>
+                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
+                                <CreateLink to="/admin/notifications/create">新規登録</CreateLink>
                             </div>
-
-                            <NotificationTable notifications={notifications} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />
-                            
-                            <Pagination meta={data.meta} model={model} />
                         </div>
+
+                        <NotificationTable notifications={notifications} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />
+                        
+                        <Pagination meta={data.meta} model={model} />
                     </div>
-                ) 
-            }
+                </div>
             </Suspense>
         </main>
     );

@@ -8,7 +8,6 @@ import { paramState } from '../../../store/paramState';
 import Heading from '../../../atoms/Heading/Heading';
 import FilterSortBtn from '../../../molecules/IconBtn/FilterSortBtn';
 import ContactTable from '../../../organisms/admin/Table/ContactTable';
-import Text from '../../../atoms/Text/Text';
 import ContactSidebar from '../../../organisms/admin/SideBar/ContactSidebar';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
@@ -46,28 +45,22 @@ function ContactIndex() {
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.flex].join(' ') : [styles.container, styles.flex].join(' ') }>
-                        {   open && <ContactSidebar model={model} onClick={() => setOpen(false)} /> }
-                        <div className={open ? [styles.open_sidebar, styles.flex_1].join(' ') : styles.flex_1}>
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.flex].join(' ') : [styles.container, styles.flex].join(' ') }>
+                    {   open && <ContactSidebar model={model} onClick={() => setOpen(false)} /> }
+                    <div className={open ? [styles.open_sidebar, styles.flex_1].join(' ') : styles.flex_1}>
 
-                            <div className={styles.index_title}>
-                                <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                    お問い合わせ一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
-                                </Heading>
-                                <FilterSortBtn onClick={() => setOpen(!open)}>詳細検索</FilterSortBtn>
-                            </div>
-
-                            <ContactTable contacts={contacts} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />
-                            
-                            <Pagination meta={data.meta} model={model} />
+                        <div className={styles.index_title}>
+                            <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
+                                お問い合わせ一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                            </Heading>
+                            <FilterSortBtn onClick={() => setOpen(!open)}>詳細検索</FilterSortBtn>
                         </div>
+
+                        <ContactTable contacts={contacts} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />
+                        
+                        <Pagination meta={data.meta} model={model} />
                     </div>
-                )
-            }
+                </div>
             </Suspense>
         </main>
     );

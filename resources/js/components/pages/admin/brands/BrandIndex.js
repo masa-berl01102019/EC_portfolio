@@ -8,6 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
 import useNotify from '../../../context/NotifyContext';
+import Text from '../../../atoms/Text/Text';
 
 function BrandIndex() {
     // urlの設定
@@ -41,52 +42,46 @@ function BrandIndex() {
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>ブランドマスタ</Heading>
-                        { errorMessage && <Text role='error' size='s'>{errorMessage.brand_name}</Text> }
-                        <div className={styles.form_area}>
-                            <FormWithBtn
-                                name='brand_name'
-                                value={formData.brand_name}
-                                onChange={handleFormData}
-                                placeholder='ブランド名'
-                                createMethod={() => createData({ form: formData, url:'/api/admin/brands' }) }
-                                className={styles.mb_24}
-                            />
-                            <div className={styles.master_form_area}>
-                            { brands && brands.map((brand) =>
-                                <div key={brand.id} className={styles.master_text_area}>
-                                    { brand.id === editableForm ? (
-                                        <FormWithBtn
-                                            name='brand_name'
-                                            value={brand.brand_name}
-                                            onChange={e => setEditBrand(e.target.value)}
-                                            placeholder='ブランド名'
-                                            updateMethod={() => 
-                                                updateData({
-                                                    form: {brand_name: `${editBrand}`},
-                                                    url:`/api/admin/brands/${brand.id}`
-                                                })
-                                            }
-                                            deleteMethod={() => handleConfirmDelete(brand.id)}
-                                        />
-                                    ) : (
-                                        <div className={styles.master_editable_text} onClick={() => {
-                                            setEditBrand(brand.brand_name);
-                                            setEeditableForm(brand.id);
-                                        }}>{brand.brand_name}</div>
-                                    )}
-                                </div>
-                            )}
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>ブランドマスタ</Heading>
+                    { errorMessage && <Text role='error' size='s'>{errorMessage.brand_name}</Text> }
+                    <div className={styles.form_area}>
+                        <FormWithBtn
+                            name='brand_name'
+                            value={formData.brand_name}
+                            onChange={handleFormData}
+                            placeholder='ブランド名'
+                            createMethod={() => createData({ form: formData, url:'/api/admin/brands' }) }
+                            className={styles.mb_24}
+                        />
+                        <div className={styles.master_form_area}>
+                        { brands && brands.map((brand) =>
+                            <div key={brand.id} className={styles.master_text_area}>
+                                { brand.id === editableForm ? (
+                                    <FormWithBtn
+                                        name='brand_name'
+                                        value={brand.brand_name}
+                                        onChange={e => setEditBrand(e.target.value)}
+                                        placeholder='ブランド名'
+                                        updateMethod={() => 
+                                            updateData({
+                                                form: {brand_name: `${editBrand}`},
+                                                url:`/api/admin/brands/${brand.id}`
+                                            })
+                                        }
+                                        deleteMethod={() => handleConfirmDelete(brand.id)}
+                                    />
+                                ) : (
+                                    <div className={styles.master_editable_text} onClick={() => {
+                                        setEditBrand(brand.brand_name);
+                                        setEeditableForm(brand.id);
+                                    }}>{brand.brand_name}</div>
+                                )}
                             </div>
+                        )}
                         </div>
                     </div>
-                )
-            }
+                </div>
             </Suspense>
         </main>
     );

@@ -2,11 +2,16 @@ import {useQuery, useMutation, useQueryClient} from 'react-query';
 import axios from 'axios';
 import useSetErrorMsg from "./useSetErrorMsg";
 import {useDownloadCsv, getFileName} from "./useDownloadCsv";
+import useToastify from '../context/ToastifyContext';
 
 
 const useFetchApiData = (url, model) => {
+    // checking whether api request is for admin  
+    const isAdmin = url.startsWith('/api/admin/');
     // error handling
     const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
+    // messageを表示する
+    const toast = useToastify();
     // Appのreact-queryのプロバイダーで渡したqueryClientを取得 * keyを指定してデータを再取得 / キャッシュを取得 / キャッシュを更新 等を行える
     const queryClient = useQueryClient();
     // get data
@@ -14,7 +19,6 @@ const useFetchApiData = (url, model) => {
       [model, url],
       async () => {
         setErrorMessage(null);
-        // console.log(url);
         return await axios({ method: 'get', url: url });
       },
       { 
@@ -32,6 +36,8 @@ const useFetchApiData = (url, model) => {
       },
       { 
         onSuccess: (res, obj) => {
+          // 成功メッセージを表示
+          isAdmin && toast({message: res.data.message});
           // 成功後のアクションをcallback関数として引数で受け取りあれば実行
           const {callback} = obj;
           callback !== undefined && callback();
@@ -50,6 +56,8 @@ const useFetchApiData = (url, model) => {
       },
       { 
         onSuccess: (res, obj) => {
+          // 成功メッセージを表示
+          isAdmin && toast({message: res.data.message});
           // 成功後のアクションをcallback関数として引数で受け取りあれば実行
           const {callback} = obj;
           callback !== undefined && callback();
@@ -68,6 +76,8 @@ const useFetchApiData = (url, model) => {
       },
       { 
         onSuccess: (res, obj) => {
+          // 成功メッセージを表示
+          isAdmin && toast({message: res.data.message});
           // 成功後のアクションをcallback関数として引数で受け取りあれば実行
           const {callback} = obj;
           callback !== undefined && callback();

@@ -8,6 +8,7 @@ import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NotifyProvider } from './context/NotifyContext';
+import { ToastifyProvider } from './context/ToastifyContext';
 
 
 // React Query will consider cached data as stale. Stale queries are re-fetched automatically in the background when:
@@ -37,10 +38,12 @@ function App() {
                 <CookiesProvider>
                     <StripeProvider>
                         <NotifyProvider>
-                            <QueryClientProvider client={queryClient}>
-                                <Router />
-                                <ReactQueryDevtools initialIsOpen={false} />
-                            </QueryClientProvider>
+                            <ToastifyProvider>
+                                <QueryClientProvider client={queryClient}>
+                                    <Router />
+                                    <ReactQueryDevtools initialIsOpen={false} />
+                                </QueryClientProvider>
+                            </ToastifyProvider>
                         </NotifyProvider>
                     </StripeProvider>
                 </CookiesProvider>

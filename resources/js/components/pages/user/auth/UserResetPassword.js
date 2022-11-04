@@ -4,7 +4,6 @@ import useAuth from "../../../hooks/useAuth";
 import useForm from '../../../hooks/useForm';
 import { authUserState } from '../../../store/authState';
 import { useSetRecoilState } from 'recoil';
-import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
@@ -23,9 +22,6 @@ function UserResetPassword() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                { errorMessage && errorMessage.httpRequestError && 
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text> 
-                }
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
                     パスワードリセット
                 </Heading>

@@ -17,7 +17,7 @@ function UserLogin() {
     const setIsUserLogin = useSetRecoilState(authUserState);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'tsubasa.ito@example.org', 
+        'email': 'hkobayashi@example.net', 
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
@@ -26,9 +26,6 @@ function UserLogin() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                { errorMessage && errorMessage.httpRequestError && 
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text> 
-                }
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
                     ログイン
                 </Heading>

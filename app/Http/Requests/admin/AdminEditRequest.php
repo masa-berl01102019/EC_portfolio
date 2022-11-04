@@ -37,7 +37,7 @@ class AdminEditRequest extends FormRequest
                 'string',
                 'email:strict,dns,spoof',
                 'max:100',
-                Rule::unique('admins')->ignore($this->id), // 該当ID以外でユニークを適用
+                Rule::unique('admins')->ignore($this->admin->id), // 該当ID以外でユニークを適用
             ], // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
         ];
     }

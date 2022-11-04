@@ -43,42 +43,34 @@ function UserDeletePage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                            退会の手続き
-                        </Heading>
-                        <div className={styles.form_contents_area}>
-                            <Text className={[styles.paragraph, styles.mb_16].join(' ')}>
-                                退会手続きは取り消すことが出来ません。<br/>
-                                下記の注意事項をご確認の上、<br/>
-                                「退会する」ボタンを押してください。
-                            </Text>
-                            <Text role='error' className={[styles.paragraph, styles.mb_8].join(' ')}>
-                                退会後は登録内容の確認はできなくなります。
-                            </Text>
-                            <Text role='error'  className={[styles.paragraph, styles.mb_32].join(' ')}>
-                                既にご注文いただきました商品は、<br/>
-                                退会後も発送を行わせていただきます。
-                            </Text>
-                            <div className={[styles.flex, styles.flex_column, styles.align_center].join(' ')}>
-                                <Button 
-                                    size='l'
-                                    color='primary'
-                                    onClick={() => handleConfirmDelete(data.user.id)}
-                                    className={[styles.mb_16, styles.btn_max].join(' ')}
-                                >
-                                    退会する
-                                </Button>
-                                <LinkBtn size='l' to={`/`} className={styles.btn_max}>退会しない</LinkBtn>
-                            </div>
-                        </div>
-                    </>
-                )
-            }
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
+                    退会の手続き
+                </Heading>
+                <div className={styles.form_contents_area}>
+                    <Text className={[styles.paragraph, styles.mb_16].join(' ')}>
+                        退会手続きは取り消すことが出来ません。<br/>
+                        下記の注意事項をご確認の上、<br/>
+                        「退会する」ボタンを押してください。
+                    </Text>
+                    <Text role='error' className={[styles.paragraph, styles.mb_8].join(' ')}>
+                        退会後は登録内容の確認はできなくなります。
+                    </Text>
+                    <Text role='error'  className={[styles.paragraph, styles.mb_32].join(' ')}>
+                        既にご注文いただきました商品は、<br/>
+                        退会後も発送を行わせていただきます。
+                    </Text>
+                    <div className={[styles.flex, styles.flex_column, styles.align_center].join(' ')}>
+                        <Button 
+                            size='l'
+                            color='primary'
+                            onClick={() => handleConfirmDelete(data.user.id)}
+                            className={[styles.mb_16, styles.btn_max].join(' ')}
+                        >
+                            退会する
+                        </Button>
+                        <LinkBtn size='l' to={`/`} className={styles.btn_max}>退会しない</LinkBtn>
+                    </div>
+                </div>
             </Suspense>
         </main>
     );

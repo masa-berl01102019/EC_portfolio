@@ -40,37 +40,29 @@ function NewsShowPage(props) {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <>
-                        {   news &&
-                            <div className={styles.blog_news_contents_area}>
-                                <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
-                                    {news.title}
-                                </Heading>
-                                <Text size='s' className={styles.mb_8}>
-                                    {news.modified_at ? news.modified_at : news.posted_at}
-                                </Text>
-                                <Image src={news.thumbnail} alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
-                                <Editor
-                                    editorState={editorState}
-                                    readOnly={true}
-                                    toolbar={{
-                                        options: [],
-                                        inline: {
-                                        options: [],
-                                        },
-                                        list: {
-                                        options: [],
-                                        }
-                                    }}
-                                />
-                            </div>
-                        }
-                    </>
-                )
+            {   news &&
+                <div className={styles.blog_news_contents_area}>
+                    <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
+                        {news.title}
+                    </Heading>
+                    <Text size='s' className={styles.mb_8}>
+                        {news.modified_at ? news.modified_at : news.posted_at}
+                    </Text>
+                    <Image src={news.thumbnail} alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
+                    <Editor
+                        editorState={editorState}
+                        readOnly={true}
+                        toolbar={{
+                            options: [],
+                            inline: {
+                            options: [],
+                            },
+                            list: {
+                            options: [],
+                            }
+                        }}
+                    />
+                </div>
             }
             </Suspense>
         </main>

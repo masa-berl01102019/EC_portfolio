@@ -42,51 +42,45 @@ function SizeIndex() {
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>サイズマスタ</Heading>
-                        { errorMessage && <Text role='error' size='s'>{errorMessage.size_name}</Text> }
-                        <div className={styles.form_area}>
-                            <FormWithBtn
-                                name='size_name'
-                                value={formData.size_name}
-                                onChange={handleFormData}
-                                placeholder='サイズ名'
-                                createMethod={() => createData({ form: formData,  url:'/api/admin/sizes'}) }
-                                className={styles.mb_24}
-                            />
-                            <div className={styles.master_form_area}>
-                            {   sizes &&
-                                sizes.map((size) =>
-                                    <div key={size.id} className={styles.master_text_area}>
-                                        { size.id === editableForm ? (
-                                            <FormWithBtn
-                                                name='size_name'
-                                                value={size.size_name}
-                                                onChange={e => setEditSize(e.target.value)}
-                                                placeholder='サイズ名'
-                                                updateMethod={() => 
-                                                    updateData({form: {size_name: `${editSize}`}, url:`/api/admin/sizes/${size.id}`}) 
-                                                }
-                                                deleteMethod={() => handleConfirmDelete(size.id)}
-                                            />
-                                        ) : (
-                                            <div className={styles.master_editable_text} onClick={() => {
-                                                setEditSize(size.size_name);
-                                                setEeditableForm(size.id);
-                                            }}>{size.size_name}</div>
-                                        )}
-                                    </div>
-                                )
-                            }
-                            </div>
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>サイズマスタ</Heading>
+                    { errorMessage && <Text role='error' size='s'>{errorMessage.size_name}</Text> }
+                    <div className={styles.form_area}>
+                        <FormWithBtn
+                            name='size_name'
+                            value={formData.size_name}
+                            onChange={handleFormData}
+                            placeholder='サイズ名'
+                            createMethod={() => createData({ form: formData,  url:'/api/admin/sizes'}) }
+                            className={styles.mb_24}
+                        />
+                        <div className={styles.master_form_area}>
+                        {   sizes &&
+                            sizes.map((size) =>
+                                <div key={size.id} className={styles.master_text_area}>
+                                    { size.id === editableForm ? (
+                                        <FormWithBtn
+                                            name='size_name'
+                                            value={size.size_name}
+                                            onChange={e => setEditSize(e.target.value)}
+                                            placeholder='サイズ名'
+                                            updateMethod={() => 
+                                                updateData({form: {size_name: `${editSize}`}, url:`/api/admin/sizes/${size.id}`}) 
+                                            }
+                                            deleteMethod={() => handleConfirmDelete(size.id)}
+                                        />
+                                    ) : (
+                                        <div className={styles.master_editable_text} onClick={() => {
+                                            setEditSize(size.size_name);
+                                            setEeditableForm(size.id);
+                                        }}>{size.size_name}</div>
+                                    )}
+                                </div>
+                            )
+                        }
                         </div>
                     </div>
-                )
-            }
+                </div>
             </Suspense>
         </main>
     );

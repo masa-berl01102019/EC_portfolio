@@ -8,7 +8,6 @@ import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import TopItemCard from '../../../molecules/Card/TopItemCard';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
 import Heading from '../../../atoms/Heading/Heading';
-import Text from '../../../atoms/Text/Text';
 import ItemFilterModal from '../../../organisms/user/modal/ItemFilterModal';
 import ItemSortModal from '../../../organisms/user/modal/ItemSortModal';
 import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
@@ -55,59 +54,53 @@ function ItemIndexPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div>
-                        {   popup == '1' && 
-                            <ItemFilterModal
-                                brands={brands}
-                                gender_categories={gender_categories}
-                                main_categories={main_categories}
-                                sub_categories={sub_categories}
-                                sizes={sizes}
-                                colors={colors}
-                                tags={tags}
-                                onClick={() => setPopup('')}
-                                model={model}
-                            />
-                        }
-                        {   popup == '2' && 
-                            <ItemSortModal
-                                onClick={() => setPopup('')}
-                                model={model}
-                            />
-                        }
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>商品一覧</Heading>
+                <div>
+                    {   popup == '1' && 
+                        <ItemFilterModal
+                            brands={brands}
+                            gender_categories={gender_categories}
+                            main_categories={main_categories}
+                            sub_categories={sub_categories}
+                            sizes={sizes}
+                            colors={colors}
+                            tags={tags}
+                            onClick={() => setPopup('')}
+                            model={model}
+                        />
+                    }
+                    {   popup == '2' && 
+                        <ItemSortModal
+                            onClick={() => setPopup('')}
+                            model={model}
+                        />
+                    }
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>商品一覧</Heading>
 
-                        <div className={styles.main_contents_area}>
-                            <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                                <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
-                                <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
-                            </div>
-                            {   items &&
-                                <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
-                                    {                        
-                                        items.map((item) =>
-                                            <TopItemCard 
-                                                key={item.id}
-                                                src={item.top_image}
-                                                to={`/items/${item.id}`}
-                                                brand_name={item.brand_name}
-                                                item_name={item.item_name}
-                                                price={item.included_tax_price_text}
-                                                className={styles.item_card}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            }
-                            <PaginationList meta={data.meta} onChange={handleCurrentPage} />
+                    <div className={styles.main_contents_area}>
+                        <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
+                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
+                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
                         </div>
+                        {   items &&
+                            <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
+                                {                        
+                                    items.map((item) =>
+                                        <TopItemCard 
+                                            key={item.id}
+                                            src={item.top_image}
+                                            to={`/items/${item.id}`}
+                                            brand_name={item.brand_name}
+                                            item_name={item.item_name}
+                                            price={item.included_tax_price_text}
+                                            className={styles.item_card}
+                                        />
+                                    )
+                                }
+                            </div>
+                        }
+                        <PaginationList meta={data.meta} onChange={handleCurrentPage} />
                     </div>
-                )
-            }
+                </div>
             </Suspense>
         </main>
     );

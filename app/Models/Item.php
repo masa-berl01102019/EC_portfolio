@@ -107,6 +107,15 @@ class Item extends Model
     }
 
     /** static method */
+    public static function itemNew()
+    {
+        // 当日から2か月前を新着商品と定義
+        $begin = Carbon::today()->subMonth(2);
+
+        return Self::getPublished()->with(['brand', 'categories', 'topImage'])
+            ->where('posted_at', '>=', $begin)
+            ->orderBy('posted_at', 'desc');
+    }
 
     public static function itemRanking()
     {
@@ -183,14 +192,34 @@ class Item extends Model
         return $collection;
     }
 
-    public static function itemNew()
+    public static function getRecommendItems($order_recodes, $watched_item_arr, $request)
     {
-        // 当日から1か月前を新着商品と定義
-        $begin = Carbon::today()->subMonth();
+        $similar_users = [];
+        foreach ($order_recodes as $user_id_key => $order_arr) {
+            // count the number which is common between user-watched-item and users-ordered-item
+            $count = count(array_intersect($watched_item_arr, $order_arr));
+            //  store user ID as key and the number counted as value in Array if there is common between them more than one 
+            if ($count) $similar_users[$user_id_key] = $count;
+        }
+        // sort ID in the order of user with high similarity
+        arsort($similar_users);
+        // put user ID out from Array
+        $similar_users = array_keys($similar_users);
+        $recommend_item_arr = [];
+        // merge item ID into Array in the order of sorted user ID
+        foreach ($similar_users as $user_id) {
+            $recommend_item_arr = array_merge($recommend_item_arr, $order_recodes[$user_id]);
+        }
+        // delete duplicated item ID
+        $recommend_item_arr = array_unique($recommend_item_arr);
+        $recommend_items = [];
+        // get item in the order of item ID sorted 
+        foreach ($recommend_item_arr as $item_id) {
+            $item = Self::where('id', $item_id)->with(['brand', 'genderCategory', 'topImage'])->filterCategory($request)->first();
+            if (!empty($item)) $recommend_items[] = $item;
+        }
 
-        return Self::getPublished()->with(['brand', 'categories', 'topImage'])
-            ->where('posted_at', '>=', $begin)
-            ->orderBy('posted_at', 'desc');
+        return collect($recommend_items);
     }
 
     /** リレーション */

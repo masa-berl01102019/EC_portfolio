@@ -8,7 +8,6 @@ import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import TopItemCard from '../../../molecules/Card/TopItemCard';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
 import Heading from '../../../atoms/Heading/Heading';
-import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 
 function ItemRecommendPage() {
@@ -43,35 +42,27 @@ function ItemRecommendPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>おすすめ一覧</Heading>
-                        <div className={styles.main_contents_area}>
-                            {   items &&
-                                <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
-                                    {                        
-                                        items.map((item) =>
-                                            <TopItemCard 
-                                                key={item.id}
-                                                src={item.top_image}
-                                                to={`/items/${item.id}`}
-                                                brand_name={item.brand_name}
-                                                item_name={item.item_name}
-                                                price={item.included_tax_price_text}
-                                                className={styles.item_card}
-                                            />
-                                        )
-                                    }
-                                </div>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>おすすめ一覧</Heading>
+                <div className={styles.main_contents_area}>
+                    {   items &&
+                        <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
+                            {                        
+                                items.map((item) =>
+                                    <TopItemCard 
+                                        key={item.id}
+                                        src={item.top_image}
+                                        to={`/items/${item.id}`}
+                                        brand_name={item.brand_name}
+                                        item_name={item.item_name}
+                                        price={item.included_tax_price_text}
+                                        className={styles.item_card}
+                                    />
+                                )
                             }
-                            <PaginationList meta={data.meta} onChange={handleCurrentPage} />
                         </div>
-                    </>
-                )
-            }
+                    }
+                    <PaginationList meta={data.meta} onChange={handleCurrentPage} />
+                </div>
             </Suspense>
         </main>
     );

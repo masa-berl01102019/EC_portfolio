@@ -40,38 +40,32 @@ function BlogShowPage(props) {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text className={styles.http_error}>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div>
-                    {   blog &&
-                        <div className={styles.blog_news_contents_area}>
-                            <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
-                                {blog.title}
-                            </Heading>
-                            <Text size='s' className={styles.mb_8}>
-                                {blog.modified_at ? blog.modified_at : blog.posted_at}
-                            </Text>
-                            <Image src={blog.thumbnail} alt="ブログ画像" style={{'width' : '100%', 'marginBottom': '8px'}} />
-                            <Editor
-                                editorState={editorState}
-                                readOnly={true}
-                                toolbar={{
-                                    options: [],
-                                    inline: {
-                                    options: [],
-                                    },
-                                    list: {
-                                    options: [],
-                                    }
-                                }}
-                            />
-                        </div>
-                    }
+                <div>
+                {   blog &&
+                    <div className={styles.blog_news_contents_area}>
+                        <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
+                            {blog.title}
+                        </Heading>
+                        <Text size='s' className={styles.mb_8}>
+                            {blog.modified_at ? blog.modified_at : blog.posted_at}
+                        </Text>
+                        <Image src={blog.thumbnail} alt="ブログ画像" style={{'width' : '100%', 'marginBottom': '8px'}} />
+                        <Editor
+                            editorState={editorState}
+                            readOnly={true}
+                            toolbar={{
+                                options: [],
+                                inline: {
+                                options: [],
+                                },
+                                list: {
+                                options: [],
+                                }
+                            }}
+                        />
                     </div>
-                )
-            }
+                }
+                </div>
             </Suspense>
         </main>
     );
