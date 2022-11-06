@@ -16,7 +16,6 @@ import Image from '../../atoms/Image/Image';
 import styles from './styles.module.css';
 import LinkBtn from '../../atoms/LinkButton/LinkBtn';
 
-// TODO: 商品画像はホバー時に少し拡大表示する
 
 function TopPage() {
     // urlの設定
