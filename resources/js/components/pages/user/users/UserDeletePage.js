@@ -62,7 +62,7 @@ function UserDeletePage() {
                     <div className={[styles.flex, styles.flex_column, styles.align_center].join(' ')}>
                         <Button 
                             size='l'
-                            color='primary'
+                            color='accent'
                             onClick={() => handleConfirmDelete(data.user.id)}
                             className={[styles.mb_16, styles.btn_max].join(' ')}
                         >

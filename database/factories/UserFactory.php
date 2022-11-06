@@ -44,7 +44,7 @@ class UserFactory extends Factory
             'password' => Hash::make('abc12345'),
             'is_received' => $this->faker->numberBetween($min = 0, $max = 1),
             'email_verified_at' => now(),
-            // TODO: メールアドレス認証してからログインする方式にする場合
+            // メールアドレス認証してからログインする方式にする場合
             // 数量限定の商品等がある想定の場合、メールアドレス・電話番号の認証を要件に追加して容易に作れないようにする等の対策が必要
             'created_at' => $created_at,
             'updated_at' => $this->faker->dateTimeBetween($startDate = $created_at, $endDate = 'now', $timezone = null),

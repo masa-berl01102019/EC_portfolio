@@ -38,7 +38,9 @@ const UserResetPassword = lazy(() => import( "./pages/user/auth/UserResetPasswor
 const UserChangePassword = lazy(() => import( "./pages/user/auth/UserChangePassword" ));
 const UserCreatePage = lazy(() => import( "./pages/user/users/UserCreatePage" ));
 const ContactCreatePage = lazy(() => import( "./pages/user/contacts/ContactCreatePage" ));
+const ContactCompletePage = lazy(() => import( "./pages/user/contacts/ContactCompletePage" ));
 const UserEditPage = lazy(() => import( "./pages/user/users/UserEditPage" ));
+const UserEditCompletePage = lazy(() => import( "./pages/user/users/UserEditCompletePage" ));
 const UserDeletePage = lazy(() => import( "./pages/user/users/UserDeletePage" ));
 // admin用 各ページコンポーネント
 const AdminLogin = lazy(() => import( "./pages/admin/auth/AdminLogin" ));
@@ -129,10 +131,12 @@ function Router() {
                             <Route path="/histories" exact component={HistoryPage} />
                             <Route path="/users/create" exact component={UserCreatePage} />
                             <Route path="/contacts" exact component={ContactCreatePage} />
+                            <Route path="/contacts/complete" exact component={ContactCompletePage} />
                             <Route path="/user/reset_password" exact component={UserResetPassword} />
                             <Route path="/user/change_password/:uuid" exact component={UserChangePassword} />
                             <UserLoginRoute path="/user/login" exact component={UserLogin} prevUrl={prevUrl} />
                             <UserPrivateRoute path="/users/edit" exact component={UserEditPage} />
+                            <UserPrivateRoute path="/users/edit/complete" exact component={UserEditCompletePage} />
                             <UserPrivateRoute path="/users/delete" exact component={UserDeletePage} />
                             <UserPrivateRoute path="/carts" exact component={CartIndexPage} />
                             <UserPrivateRoute path="/carts/confirm" exact component={CartConfirmPage} />

@@ -16,9 +16,12 @@ function CartCompletePage() {
                 <Text role='title'>注文完了</Text>
             </div>
             <div className={styles.form_contents_area}>
-                <Text className={[styles.mb_4, styles.text_center].join(' ')}>商品の決済が完了致しました</Text>
-                <Text className={[styles.mb_4, styles.text_center].join(' ')}>注文明細はご登録されている</Text>
-                <Text className={[styles.mb_32, styles.text_center].join(' ')}>メールアドレスにお送り致します。</Text>
+                <Text className={[styles.mb_32, styles.paragraph].join(' ')}>
+                    当社のサービスをご利用頂き、誠に有難う御座います。<br/>
+                    ご注文を承りましたことをお知らせ致します。<br/>
+                    ご注文頂いた明細はご登録されている<br/>
+                    メールアドレスにご連絡させて頂いております。
+                </Text>
                 <LinkBtn size='l' to={'/'} className={[styles.btn_max, styles.mr_auto, styles.ml_auto].join(' ')}>TOPページに戻る</LinkBtn>
             </div>
         </main>

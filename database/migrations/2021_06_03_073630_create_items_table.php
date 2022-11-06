@@ -22,12 +22,12 @@ class CreateItemsTable extends Migration
             $table->string('item_name', 100);
             $table->string('product_number', 50);
             $table->unsignedInteger('price');
-            // TODO: 価格テーブルを分けて複数付けられる形(割引も含めて)か割引テーブルを作ってそれを設定する形にするか要検討
+            // 価格テーブルを分けて複数付けられる形(割引も含めて)か割引テーブルを作ってそれを設定する形にするか要検討
             $table->unsignedInteger('cost');
             $table->text('description');
             $table->string('mixture_ratio', 255);
             $table->string('made_in', 80);
-            $table->boolean('is_published'); // 0: 未公開　1: 公開
+            $table->boolean('is_published'); // 0: 未公開 1: 公開
             $table->dateTime('posted_at')->nullable();
             $table->dateTime('modified_at')->nullable();
             $table->softDeletes(); // 論理削除

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import {useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
@@ -10,8 +10,8 @@ import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import LoadingPopup from '../../../molecules/Popup/LoadingPopup';
 
-// TODO: お問い合わせ完了画面を作る
 
 function ContactCreatePage() {
     // urlの設定
@@ -33,20 +33,24 @@ function ContactCreatePage() {
     });
     // リダイレクト用の関数呼び出し
     const history = useHistory();
+    // ローディングステータスの状態管理
+    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
+                { isLoading && !errorMessage && <LoadingPopup isOpen={isLoading}>お問い合わせ中</LoadingPopup> }
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
                     お問い合わせ
                 </Heading>
                 <div className={styles.form_contents_area}>
                     <form onSubmit={ e => {
                         e.preventDefault();
+                        setIsLoading(true);
                         createData({
                             form: formData,
                             url:'/api/user/contacts',
-                            callback: () => history.push('/')
+                            callback: () => history.push('/contacts/complete')
                         });
                     }}>
                         <Text className={styles.mb_8}>氏名</Text>

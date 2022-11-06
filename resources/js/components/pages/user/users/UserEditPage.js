@@ -13,7 +13,6 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 
-// TODO: 会員編集完了画面を作る
 
 function UserEditPage() {
     // urlの設定
@@ -74,7 +73,7 @@ function UserEditPage() {
                         updateData({
                             form: formData,
                             url: `/api/user/users/${formData.id}`,
-                            callback: () => history.push('/')
+                            callback: () => history.push('/users/edit/complete')
                         });
                     }}>
                         <Text className={styles.mb_8}>氏名</Text>

@@ -70,7 +70,7 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     }
   }
  
-  // オブジェクトFormの削除 // TODO: アイテム以外でも使う場合はURLを引数で受け取るような形で修正必要
+  // オブジェクトFormの削除 ＊アイテム以外でも使う場合はURLを引数で受け取るような形で修正必要
   const handleDeleteObjectForm = (table_name, index, id) => {
     console.log('handleDeleteObjectForm');
     if(formData[table_name].length > 1) {
