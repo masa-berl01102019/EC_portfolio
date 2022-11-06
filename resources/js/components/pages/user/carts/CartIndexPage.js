@@ -31,6 +31,8 @@ function CartIndexPage() {
     const user = data.user? data.user: null;
     // 合計金額の計算
     const amount = carts.length > 0 ? carts.map(item => item.included_tax_price * item.quantity).reduce((prev,next) => prev + next) : 0;
+    // 在庫状況を管理
+    const stock = carts.map(item => item.stock);
 
     useEffect(() => {
         // 合計金額をセット
@@ -74,6 +76,7 @@ function CartIndexPage() {
                                 color_name={cart.color_name}
                                 size_name={cart.size_name}
                                 stock_status={cart.stock_status}
+                                stock={cart.stock}
                                 quantity={cart.quantity}
                                 update_method={e => updateData({ form: {quantity: `${e.target.value}`}, url:`/api/user/carts/${cart.id}` })}
                                 delete_method={() => deleteData({ url:`/api/user/carts/${cart.id}`})}
@@ -82,7 +85,14 @@ function CartIndexPage() {
                         )
                     }
                     </div>
-                    {   carts.length > 0 && 
+                    { stock.includes(0) && 
+                        <Text size='l' role='error' className={[styles.paragraph, styles.mb_32].join(' ')}>
+                            在庫なしの商品が含まれております。<br/>
+                            決済をご希望の際には在庫なしの商品を<br/>
+                            カートから削除して下さい。
+                        </Text>
+                    }
+                    {   carts.length > 0 && !stock.includes(0) &&
                         <>
                             <fieldset className={styles.field_area}>
                                 <legend className={[styles.flex, styles.align_center, styles.prl_8].join(' ')}>
@@ -162,7 +172,7 @@ function CartIndexPage() {
                                 </legend>
                                 <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                                     <Text>商品合計(税込)</Text>
-                                    <Text>￥{formData.total_amount}</Text>
+                                    <Text>￥{Number(formData.total_amount).toLocaleString()}</Text>
                                 </div>
                                 <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                                     <Text>送料</Text>
@@ -170,17 +180,17 @@ function CartIndexPage() {
                                 </div>
                                 <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                                     <Text>手数料</Text>
-                                    <Text>￥{formData.payment_method == 1 ? 330 : 0}</Text>
+                                    <Text>￥{Number(formData.payment_method == 1 ? 330 : 0).toLocaleString()}</Text>
                                 </div>
                                 <div className={[styles.flex, styles.justify_between].join(' ')}>
                                     <Text>合計金額(税込)</Text>
-                                    <Text>￥{formData.payment_method == 1 ? formData.total_amount + 330 : formData.total_amount}</Text>
+                                    <Text>￥{Number(formData.payment_method == 1 ? formData.total_amount + 330 : formData.total_amount).toLocaleString()}</Text>
                                 </div>
                             </fieldset>
                         </>
                     }
                     <div className={styles.cart_btn_area}>
-                        {   carts.length > 0 && 
+                        {   carts.length > 0 && !stock.includes(0) &&
                             <LinkBtn size='l' color='primary' to={{pathname: '/carts/confirm', state: formData}} className={styles.mb_16} style={{'width' : '100%'}}>
                                 決済内容確認に進む
                             </LinkBtn>

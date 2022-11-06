@@ -49,9 +49,9 @@ const CartModal = ({
                                     callback: () => setTimeout(closeMethod, 1000)
                                 });
                             }}
-                            disabled={item.cart_items.includes(sku_item.id)}
+                            disabled={item.cart_items.includes(sku_item.id) || sku_item.quantity < 1}
                         >
-                            カート追加
+                          {item.cart_items.includes(sku_item.id) ? 'カート登録済' : 'カートに追加'}
                         </CartBtn>
                     </li>
                   )}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use Throwable;
+use App\Models\Sku;
 use App\Models\Tax;
 use App\Models\Cart;
 use App\Models\Size;
@@ -58,8 +59,15 @@ class OrderController extends Controller
                 ->join('items', function ($join) {
                     $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
                 })
-                ->select('carts.id', 'carts.quantity', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.product_number', 'items.price')
+                ->select('carts.id', 'carts.quantity', 'skus.quantity as stock', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.product_number', 'items.price')
                 ->get();
+
+            // checking stock
+            foreach ($cart_items as $items) {
+                if ($items->stock < $items->quantity) {
+                    return response()->json(['status' => 9, 'message' => '商品の注文数が在庫数を超えております'], 400);
+                }
+            }
             // put price and quantity of items out from collection
             $price_arr = array_column($cart_items->toArray(), 'price');
             $quantity_arr = array_column($cart_items->toArray(), 'quantity');
@@ -108,6 +116,10 @@ class OrderController extends Controller
                     'order_quantity' => $cart_items[$i]['quantity']
                 ]);
                 Cart::find($cart_items[$i]['id'])->delete();
+                $sku = Sku::find($cart_items[$i]['sku_id']);
+                $sku->fill([
+                    'quantity' => (int)$cart_items[$i]['stock'] - (int)$cart_items[$i]['quantity']
+                ])->save();
             }
 
             Mail::to(Auth::guard('user')->user()->email)->send(new UserOrderMail($order));

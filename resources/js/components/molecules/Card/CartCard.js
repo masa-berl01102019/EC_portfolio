@@ -16,6 +16,7 @@ const CartCard = ({
     color_name, 
     size_name, 
     stock_status,
+    stock,
     quantity, 
     update_method, 
     delete_method, 
@@ -35,7 +36,8 @@ const CartCard = ({
               <Text className={[styles.mb_8, styles.card_text].join(' ')}>{brand_name}</Text>
               <Text className={[styles.mb_8, styles.card_text].join(' ')}>{item_name}</Text>
               <Text className={[styles.mb_8, styles.card_text].join(' ')}>{price_text} (税込)</Text>
-              <Text className={[styles.mb_4, styles.card_text].join(' ')}>{color_name} / {size_name}</Text>
+              <Text className={[styles.mb_8, styles.card_text].join(' ')}>{color_name} / {size_name}</Text>
+              <Text className={[styles.mb_4, styles.card_text].join(' ')}>在庫数: {stock}</Text>
           </div>
       </div>
       <div className={styles.cart_input_area}>

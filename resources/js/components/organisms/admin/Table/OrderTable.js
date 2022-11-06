@@ -32,7 +32,8 @@ const OrderTable = memo(({orders, className = '', deleteMethod, csvOutputMethod}
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
+        {/* API側の調整が必要な為 */}
+        {/* <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn> */}
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/orders/csv`, 

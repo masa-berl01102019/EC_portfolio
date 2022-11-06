@@ -81,19 +81,19 @@ function CartConfirmPage() {
                         </legend>
                         <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                             <Text>商品合計(税込)</Text>
-                            <Text>￥{state?.total_amount}</Text>
+                            <Text>￥{state ? Number(state.total_amount).toLocaleString() : null}</Text>
                         </div>
                         <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                             <Text>送料</Text>
-                            <Text>￥0</Text>
+                            <Text>￥{state ? Number(0).toLocaleString() : ''}</Text>
                         </div>
                         <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                             <Text>手数料</Text>
-                            <Text>￥{state?.payment_method == 1 ? 330 : 0}</Text>
+                            <Text>￥{state ? Number(state.payment_method == 1 ? 330 : 0).toLocaleString() : ''}</Text>
                         </div>
                         <div className={[styles.flex, styles.justify_between].join(' ')}>
                             <Text>合計金額(税込)</Text>
-                            <Text>￥{state?.payment_method == 1 ? state?.total_amount + 330 : state?.total_amount}</Text>
+                            <Text>￥{state ? Number(state.payment_method == 1 ? state.total_amount + 330 : state.total_amount).toLocaleString() : null}</Text>
                         </div>
                     </fieldset>
                     <fieldset className={styles.field_area}>

@@ -35,6 +35,9 @@
 .text_height {
   line-height: 30px;
 }
+.bookmark_btn_width {
+  width: 155px !important;
+}
 
 /* button override */
 .close_btn {

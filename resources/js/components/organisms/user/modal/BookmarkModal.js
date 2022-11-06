@@ -50,8 +50,9 @@ const BookmarkModal = ({
                             });
                           }}
                           disabled={item.bookmark_items.includes(sku_item.id)}
+                          className={styles.bookmark_btn_width}
                         >
-                            お気に入り追加
+                          {item.bookmark_items.includes(sku_item.id) ? 'お気に入り登録済' : 'お気に入り追加'}
                         </BookmarkBtn>
                     </li>
                   )}
