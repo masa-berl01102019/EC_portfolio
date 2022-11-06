@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect, useState} from 'react';
+import React, {Suspense, useState} from 'react';
 import {useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
@@ -25,44 +25,11 @@ function UserEdit(props) {
     // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
     const [open, setOpen] = useState(false);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
-        'last_name': null,
-        'first_name': null,
-        'last_name_kana': null,
-        'first_name_kana': null,
-        'gender': null, // 0:man 1:woman 2:others 3:no answer
-        'birthday': null,
-        'post_code': null,
-        'prefecture': null,
-        'municipality': null,
-        'street_name': null,
-        'street_number': null,
-        'building': null,
-        'delivery_post_code': null,
-        'delivery_prefecture': null,
-        'delivery_municipality': null,
-        'delivery_street_name': null,
-        'delivery_street_number': null,
-        'delivery_building': null,
-        'tel': null,
-        'email': null,
-        'password': null,
-        'is_received': null, // 0: 受取NG 1: 受取OK
-    });
+    const [formData, {handleFormData, handleFormDate}] = useForm(data.user);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // API接続の返却値を変数に格納
-    const user = data.user;
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
-    useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にuserが入ってこない場合があるので条件分岐してあげる
-        if(user) {
-            // フォームのデフォルト値を設定するためにsetUserInfoで値をセット
-            setFormData({...user});
-        }
-    },[]);
 
     
     return (

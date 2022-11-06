@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import {useHistory} from "react-router-dom";
 import {CircularProgress} from "@material-ui/core";
 import useFetchApiData from "../../../hooks/useFetchApiData";
@@ -20,27 +20,11 @@ function AdminEdit(props) {
     // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useForm({
-        'last_name': null,
-        'first_name': null,
-        'last_name_kana': null,
-        'first_name_kana': null,
-        'tel': null,
-        'email': null,
-        'password': null,
-    });
+    const [formData, {setFormData, handleFormData}] = useForm(data.admin);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
-    useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にadminが入ってこない場合があるので条件分岐してあげる
-        if(data.admin) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...data.admin});
-        }
-    },[]);
 
     
     return (

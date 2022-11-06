@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import {useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
@@ -21,24 +21,11 @@ function ContactEdit(props) {
     // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useForm({
-        'response_status': 0, // 0: 未対応 1: 対応中 2: 対応済
-        'memo': null
-    });
+    const [formData, {handleFormData}] = useForm(data.contact);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // API接続の返却値を変数に格納
-    const contact = data.contact;
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
-    useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にcontactが入ってこない場合があるので条件分岐してあげる
-        if(contact) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...contact});
-        }
-    },[]);
 
     
     return (
@@ -57,16 +44,16 @@ function ContactEdit(props) {
                         }}>
                             <Heading tag={'h2'} tag_style={'h3'} className={styles.contents_header}>お問い合わせ情報</Heading>
                             <div className={styles.contents_body}>
-                                <Text className={styles.mb_4}>氏名: {contact.full_name && contact.full_name_kana && (`${contact.full_name}(${contact.full_name_kana})`)}</Text>
-                                <Text className={styles.mb_4}>TEL: {contact.tel}</Text>
-                                <Text className={styles.mb_4}>Email: {contact.email}</Text>
-                                <Text>お問い合わせ日: {contact.created_at}</Text>
+                                <Text className={styles.mb_4}>氏名: {formData.full_name && formData.full_name_kana && (`${formData.full_name}(${formData.full_name_kana})`)}</Text>
+                                <Text className={styles.mb_4}>TEL: {formData.tel}</Text>
+                                <Text className={styles.mb_4}>Email: {formData.email}</Text>
+                                <Text>お問い合わせ日: {formData.created_at}</Text>
                             </div>
 
                             <Heading tag={'h2'} tag_style={'h3'} className={styles.contents_header}>タイトル</Heading>
-                            <Text className={styles.contents_body}>{contact.title}</Text>
+                            <Text className={styles.contents_body}>{formData.title}</Text>
                             <Heading tag={'h2'} tag_style={'h3'} className={styles.contents_header}>お問い合わせ内容</Heading>
-                            <Text className={styles.contents_body}>{contact.body}</Text>
+                            <Text className={styles.contents_body}>{formData.body}</Text>
 
                             <FormInputTextarea
                                 name={'memo'} 

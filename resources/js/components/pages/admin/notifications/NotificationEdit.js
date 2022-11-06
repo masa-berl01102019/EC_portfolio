@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import {useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
@@ -23,26 +23,11 @@ function NotificationEdit(props) {
     // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
-        'title': null,
-        'body': null,
-        'is_published': 0, // 0: 非公開 1: 公開中
-        'expired_at': null
-    });
+    const [formData, {handleFormData, handleFormDate}] = useForm(data.notification);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // API接続の返却値を変数に格納
-    const notification = data.notification;
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
-    useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にnotificationが入ってこない場合があるので条件分岐してあげる
-        if(notification) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...notification});
-        }
-    },[]);
 
     const confirm = useNotify();
 

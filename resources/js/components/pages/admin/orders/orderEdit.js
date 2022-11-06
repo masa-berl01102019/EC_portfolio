@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import {useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
@@ -22,28 +22,13 @@ function OrderEdit(props) {
     // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
-        'is_paid': '', 
-        'is_shipped': '',
-        'delivery_date': null,
-        'delivery_time': ''
-    });
-    // API接続の返却値を変数に格納
-    const order = data.order;
+    const [formData, {handleFormData, handleFormDate}] = useForm(data.order);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
 
-    useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にitemが入ってこない場合があるので条件分岐してあげる
-        if(order) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...order});
-        }
-    },[]);
 
-    
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
@@ -60,17 +45,17 @@ function OrderEdit(props) {
                         }}>
                             <div className={styles.mb_32}>
                                 <div className={[styles.scroll_x, styles.mb_16].join(' ')}>
-                                    <ItemOrderTable order={order} />
+                                    <ItemOrderTable order={formData} />
                                 </div>
                                 <div>
                                     <div className={[styles.amount, styles.mb_4].join(' ')}>
-                                        <Text>小計</Text> <Text>{order && order.sub_total_text}</Text>
+                                        <Text>小計</Text> <Text>{formData.sub_total_text}</Text>
                                     </div>
                                     <div className={[styles.amount, styles.mb_4].join(' ')}>
-                                        <Text>消費税合計</Text> <Text>{order && order.tax_amount_text}</Text>
+                                        <Text>消費税合計</Text> <Text>{formData.tax_amount_text}</Text>
                                     </div>
                                     <div className={[styles.amount, styles.amount_border].join(' ')}>
-                                        <Text>税込合計</Text> <Text>{order && order.total_amount_text}</Text>
+                                        <Text>税込合計</Text> <Text>{formData.total_amount_text}</Text>
                                     </div>
                                 </div>
                             </div>
