@@ -16,7 +16,7 @@ export const ToastifyPopup = ({
     return (
         <div className={[styles.toast_container, styles[type], className].join(' ')} {...props}>
           <Text size='xl' role='reverse' className={[styles.mr_8, styles.mt_4].join(' ')}>{message}</Text>
-          <Icon src='/img/trash_icon.svg' onClick={onClose}></Icon>
+          <Icon src='/img/close_circle_white.svg' onClick={onClose}></Icon>
         </div>
     );
   }

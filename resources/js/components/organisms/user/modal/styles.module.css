@@ -18,6 +18,24 @@
   border: 1px solid #E6E7E9;
 }
 
+/* bookmark / cart modal */
+.max_width {
+  max-width: 420px !important;
+}
+.img_area {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.stock_area {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.text_height {
+  line-height: 30px;
+}
+
 /* button override */
 .close_btn {
   display: block;
@@ -62,5 +80,3 @@
 .justify_center {
   justify-content: center;
 }
-
-

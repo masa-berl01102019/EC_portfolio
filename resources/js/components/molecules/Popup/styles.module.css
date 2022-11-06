@@ -1,54 +1,16 @@
+/* complete / loading popup */
 .content {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-/* override */
 .nowrap {
   white-space: nowrap;
 }
 .img {
   margin: 0 auto 16px;
   display: block;
-}
-
-.container {
-  background: #fff;
-  width: calc(300 / 320 * 100%);
-  max-height: 90%;
-  overflow-y: scroll;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 8px;
-  box-sizing: border-box;
-}
-.img_area {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.stock_area {
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.mb_24 {
-  margin-bottom: 24px;
-}
-.text_height {
-  line-height: 30px;
-}
-.mr_8 {
-  margin-right: 8px;
-}
-.close_btn {
-  display: block;
-  margin: 24px auto 0;
 }
 /* notify popup 用*/
 .notify_container {
@@ -78,13 +40,13 @@
   text-align: center;
   line-height: 1.5;
 }
-.close_alert_btn {
-  display: block;
-  margin: 0 auto;
-}
 .btn_area {
   display: flex;
   justify-content: space-around;
+}
+.close_alert_btn {
+  display: block;
+  margin: 0 auto;
 }
 /* toastfy */
 .toast_container {
@@ -97,12 +59,15 @@
   display: flex;
   align-items: center;
 }
-.mt_4 {
-  margin-top: 4px;
-}
 .success {
   background: #25bfc6d1;
 }
 .error {
   background: #c62525d1;
+}
+.mr_8 {
+  margin-right: 8px;
+}
+.mt_4 {
+  margin-top: 4px;
 }

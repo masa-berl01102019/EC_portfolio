@@ -13,12 +13,12 @@ import MeasurementTable from '../../../organisms/user/Table/MeasurementTable';
 import BookmarkBtn from '../../../molecules/IconBtn/BookmarkBtn';
 import CartBtn from '../../../molecules/IconBtn/CartBtn';
 import styles from '../styles.module.css';
-import BookmarkPopup from '../../../molecules/Popup/BookmarkPopup';
-import CartPopup from '../../../molecules/Popup/CartPopup';
 import { authUserState } from '../../../store/authState';
 import { useRecoilValue } from 'recoil';
 import useItemCookies from '../../../hooks/useItemCookies';
 import useItemWebStorage from '../../../hooks/useItemWebStorage';
+import CartModal from '../../../organisms/user/modal/CartModal';
+import BookmarkModal from '../../../organisms/user/modal/BookmarkModal';
 
 function ItemShowPage(props) {
     // urlの設定
@@ -52,14 +52,14 @@ function ItemShowPage(props) {
         }
     },[baseUrl]);
 
-    // TODO: カートとブックマークのpoupの最大幅の修正
     // TODO: オルガンボタンのホバー時の反応付ける
+    // TODO: 非公開の商品と削除済みの商品のURLを叩かれた際の挙動と表示に関して対応する
     
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 {   popup == '1' && 
-                    <CartPopup
+                    <CartModal
                         item={item} 
                         sizes={sizes} 
                         createData={createData} 
@@ -67,7 +67,7 @@ function ItemShowPage(props) {
                     />
                 }
                 {   popup == '2' && 
-                    <BookmarkPopup 
+                    <BookmarkModal 
                         item={item} 
                         sizes={sizes} 
                         createData={createData} 
