@@ -13,17 +13,14 @@ const NotificationList = ({
 
   return (
     <div className={styles.container} {...props}>
-        <div className={styles.title_area}>
+        <div className={styles.title_area} onClick={() => SetTab(!tab)}>
             <div>
                 <Text size='s' className={styles.mb_4}>
                     {notification.modified_at ? notification.modified_at : notification.posted_at}
                 </Text>
                 <Text>{notification.title}</Text>
             </div>
-            <Icon 
-                src={ tab ? '/img/remove_icon.svg' : '/img/add_icon.svg'}
-                onClick={() => SetTab(!tab)}
-            />
+            <Icon src={ tab ? '/img/remove_icon.svg' : '/img/add_icon.svg'}  />
         </div>
         {   tab && 
             <div className={styles.body_area}>

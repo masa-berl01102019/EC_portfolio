@@ -6,6 +6,7 @@
   color: #666;
   padding: 4px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 .textarea::placeholder {
   color: #a2a2a2;

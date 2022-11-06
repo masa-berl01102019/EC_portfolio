@@ -23,6 +23,8 @@ function BlogShowPage(props) {
     const {isJson} = useHelper();
     // API接続の返却値を変数に格納
     const blog = data.blog;
+
+    // TODO: 紐づいてる商品の情報表示
     
     useEffect(() => {
         // 非同期で通信されるので初回読み込み時にblogが入ってこない場合があるので条件分岐してあげる
