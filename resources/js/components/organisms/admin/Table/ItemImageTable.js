@@ -9,7 +9,7 @@ import InputImage from '../../../atoms/InputImage/InputImage';
 import useNotify from '../../../context/NotifyContext';
 
 
-const ItemImageTable = ({images, colors, skus, className = '', deleteMethod, handleFormMethod}) => {
+const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFormMethod}) => {
 
   // notifyContextの呼び出し
   const alert = useNotify();
@@ -20,7 +20,6 @@ const ItemImageTable = ({images, colors, skus, className = '', deleteMethod, han
         <thead>
           <Row>
             <Th>削除</Th>
-            <Th>画像ID</Th>
             <Th>画像</Th>
             <Th>画像種別</Th>
             <Th>関連カラー</Th>
@@ -47,7 +46,6 @@ const ItemImageTable = ({images, colors, skus, className = '', deleteMethod, han
                         削除
                       </Button>
                     </Td>
-                    <Td>{list.id}</Td>
                     <Td>
                       <InputImage
                           src={list.image ? list.image : '/img/no_image.png'}
@@ -68,7 +66,7 @@ const ItemImageTable = ({images, colors, skus, className = '', deleteMethod, han
                       <Selectbox name='color_id' value={list.color_id} onChange={ e => handleFormMethod('images', index, e) }  className={styles.table_row_form}>
                         {/* フォーム追加以外未設定の表示を制限 */}
                         { list.color_id == '' && <option value={''}>未設定</option>}
-                        { colors && colors.filter((color) => skus.map(item => item.color_id).includes(color.id)).map((color) => (
+                        { colors && colors.map((color) => (
                             <option key={color.id} value={color.id}>{color.color_name}</option>
                           ))
                         }

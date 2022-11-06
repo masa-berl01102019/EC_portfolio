@@ -1,4 +1,3 @@
-import React from 'react';
 import useHelper from "./useHelper";
 
  // オブジェクトを送信するラッパー関数
@@ -46,6 +45,8 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     });
   }
 
+ // 以下のメソッドは管理画面の商品の新規作成・編集でのみしか使われてない
+
   // オブジェクトFormの追加
   const handleInsertObjectForm = (table_name, exceptInitilizeColumns = []) => {
     console.log('handleInsertObjectForm');
@@ -69,14 +70,24 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     }
   }
  
-  // オブジェクトFormの削除
+  // オブジェクトFormの削除 // TODO: アイテム以外でも使う場合はURLを引数で受け取るような形で修正必要
   const handleDeleteObjectForm = (table_name, index, id) => {
     console.log('handleDeleteObjectForm');
     if(formData[table_name].length > 1) {
         // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
         if(id) {
             // 削除のリクエスト送信
-            dispatch({type:'DELETE', url:`/api/admin/items/${table_name}/${id}`});
+            dispatch({
+                url: `/api/admin/items/${table_name}/${id}`, 
+                callback: () => {
+                    // 配列からindex番目のオブジェクトを1個削除
+                    formData[table_name].splice(index,1);
+                    // ステートを更新して再描画走らせる
+                    setFormData({
+                        ...formData
+                    });
+                } 
+            });
         } else {
             // 配列からindex番目のオブジェクトを1個削除
             formData[table_name].splice(index,1);

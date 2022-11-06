@@ -95,8 +95,6 @@ class ItemResource extends JsonResource
                 'gender_category' => !$this->genderCategory->isEmpty() ? $this->genderCategory->first()->id : null,
                 'main_category' => !$this->mainCategory->isEmpty() ? $this->mainCategory->first()->id : null,
                 'sub_category' => !$this->subCategory->isEmpty() ? $this->subCategory->first()->id : null,
-                'sizes_id' => uniqueArray($this->skus->pluck('size_id')->toArray()),
-                'colors_id' => uniqueArray($this->skus->pluck('color_id')->toArray()),
                 'tags_id' => $this->tags->pluck('id'),
                 'images' => ImageResource::collection($this->images),
                 'measurements' => MeasurementResource::collection($this->measurements),

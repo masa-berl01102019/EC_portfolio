@@ -65,9 +65,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/items/{item}/edit', 'ItemController@edit')->name('items.edit');
         Route::post('/items/{item}', 'ItemController@update')->name('items.update')->where('item', '[0-9]+');; // ファイルはPOSTでしか受け取れない
         Route::delete('/items', 'ItemController@destroy')->name('items.destroy'); // 一括削除
-        Route::delete('/items/measurements/{measurement}', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
-        Route::delete('/items/skus/{sku}', 'ItemController@destroySku')->name('items.destroySku');
-        Route::delete('/items/images/{image}', 'ItemController@destroyImage')->name('items.destroyImage');
+        Route::post('/items/measurements/{measurement}', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
+        Route::post('/items/skus/{sku}', 'ItemController@destroySku')->name('items.destroySku');
+        Route::post('/items/images/{image}', 'ItemController@destroyImage')->name('items.destroyImage');
         Route::post('/items/csv', 'ItemController@csvExport')->name('items.csvExport'); // 一括CSV出力
 
         // ブログ情報のCRUD

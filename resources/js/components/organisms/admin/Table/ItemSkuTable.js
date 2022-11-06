@@ -20,7 +20,6 @@ const ItemSkuTable = ({skus, colors, sizes, className = '', deleteMethod, handle
         <thead>
           <Row>
             <Th>削除</Th>
-            <Th>SKU ID</Th>
             <Th>サイズ</Th>
             <Th>カラー</Th>
             <Th>在庫数</Th>
@@ -47,7 +46,6 @@ const ItemSkuTable = ({skus, colors, sizes, className = '', deleteMethod, handle
                           削除
                         </Button>
                     </Td>
-                    <Td>{list.id}</Td>
                     <Td>
                         <Selectbox name='size_id' value={list.size_id} onChange={ e => handleFormMethod('skus', index, e) } className={styles.table_row_form}>
                             {/* フォーム追加以外未設定の表示を制限 */}

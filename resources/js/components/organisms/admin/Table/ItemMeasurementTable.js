@@ -9,7 +9,7 @@ import InputText from '../../../atoms/InputText/InputText';
 import useNotify from '../../../context/NotifyContext';
 
 
-const ItemMeasurementTable = ({measurements, sizes, skus, className = '', deleteMethod, handleFormMethod}) => {
+const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod, handleFormMethod}) => {
 
   // notifyContextの呼び出し
   const alert = useNotify();
@@ -62,10 +62,10 @@ const ItemMeasurementTable = ({measurements, sizes, skus, className = '', delete
                     <Selectbox name='size_id' value={list.size_id} onChange={ e => { handleFormMethod('measurements', index, e) }} className={styles.table_row_form}>
                         {/* フォーム追加以外未設定の表示を制限 */}
                         {   list.size_id == '' && <option value={''}>未設定</option>}
-                        {   sizes && sizes.filter((size) => skus.map(item => item.size_id).includes(size.id)).map((size) => (
+                        {   sizes && sizes.map((size) => (
                                 <option key={size.id} value={size.id}>{size.size_name}</option>
                             ))
-                        }
+                        } 
                     </Selectbox>
                   </Td>
                   <Td>

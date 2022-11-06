@@ -4,7 +4,6 @@ const useHelper = () => {
 
   // JSON判定用の関数
   const isJson = (data) => {
-    console.log('isJson');
     try {
         JSON.parse(data);
     } catch (error) {
@@ -15,14 +14,19 @@ const useHelper = () => {
 
   // objecy判定用の関数
   const isObject = (val) => {
-      console.log('isObject');
       if( val !== null && typeof(val) === 'object' && val.constructor === Object ) {
           return true;
       }
       return false;
   }
 
-  return {isJson, isObject};
+  // checking whether there is duplicate value
+  const isDuplicated  = (arr) => {
+    const new_arr = new Set(arr);
+    return new_arr.size != arr.length;
+  }
+
+  return {isJson, isObject, isDuplicated};
 }
 
 export default useHelper;

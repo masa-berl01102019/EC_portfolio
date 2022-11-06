@@ -20,6 +20,7 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import useNotify from '../../../context/NotifyContext';
+import useHelper from '../../../hooks/useHelper';
 
 function ItemCreate() {
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
@@ -64,37 +65,53 @@ function ItemCreate() {
     // notifyContextの呼び出し
     const alert = useNotify();
 
+    const {isDuplicated} = useHelper();
+
+    const handleFormSubmit = () => {
+        // 二次元配列から比較したい値を配列で抜き出す
+        const skus_size = formData.skus.map(item => item.size_id);
+        const skus_color = formData.skus.map(item => item.color_id);
+        const measurements_size = formData.measurements.map(item => item.size_id);
+        const images_color = formData.images.map(item => item.color_id);
+        const arr = formData.skus.map(item => {
+            // 比較したい組合せのサイズとカラーのプロパティを分割代入
+            const {size_id, color_id} = item;
+            // 文字列化して配列を生成
+            return JSON.stringify({size:size_id, color:color_id});
+        });
+
+        if(isDuplicated(arr)) {
+            alert({body: 'SKUセクションで選択されてるカラーとサイズの組み合わせの一部が重複しております。', type: 'alert'});
+            return false;
+        }
+
+        if(isDuplicated(measurements_size)) {
+            alert({body: '寸法セクションで選択されてるサイズが重複がしております。', type: 'alert'});
+            return false;
+        }
+        
+        if(skus_size.filter(el => !measurements_size.includes(el) ).length > 0 || measurements_size.filter(el => !skus_size.includes(el) ).length > 0) {
+            alert({body: 'SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。', type: 'alert'});
+            return false;
+        }
+
+        if(skus_color.filter(el => !images_color.includes(el)).length > 0 || images_color.filter(el => !skus_color.includes(el)).length > 0) {
+            alert({body: 'SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。', type: 'alert'});
+            return false;
+        } 
+
+        handleSendObjectForm(
+            '/api/admin/items',
+            () => history.push('/admin/items')
+        );
+    }
+
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
                     <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>商品新規登録</Heading>
                     <div className={styles.form_area}>
-                        <form onSubmit={ e => {
-                            e.preventDefault();
-                            // SKUの二次元配列をmapで展開
-                            const arr = formData.skus.map(item => {
-                                // 比較したい組合せのサイズとカラーのプロパティを分割代入
-                                const {size_id, color_id} = item;
-                                // 取得した組合せをjson形式→文字列化して配列を生成
-                                return JSON.stringify({size:size_id, color:color_id});
-                            });
-                            // 生成した配列をSetオブジェクトに変換する * Setオブジェクトは重複した値を格納出来ない
-                            const setObj = new Set(arr);
-    
-                            if(setObj.size != arr.length) { // もと配列とsetオブジェクトが要素の数が一致してなければ組合せに重複がある
-                                alert({body: 'SKUセクションで選択されてるカラーとサイズの組み合わせに重複が存在しております。', type: 'alert'});
-                            } else if(formData.skus.map(item => item['size_id']).filter(el => !formData.measurements.map(item => item['size_id']).includes(el) ).length > 0) { // SKUのカラーと画像の関連カラーが一致してるか確認
-                                alert({body: 'SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。', type: 'alert'});
-                            }else if(formData.skus.map(item => item['color_id']).filter(el => !formData.images.map(item => item['color_id']).includes(el) ).length > 0) { // SKUのサイズと寸法のサイズが一致してるか確認
-                                alert({body: 'SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。', type: 'alert'});
-                            } else {
-                                handleSendObjectForm(
-                                    '/api/admin/items',
-                                    () => history.push('/admin/items')
-                                );
-                            }
-                        }}>
                             <div className={styles.mb_32}>
                                 <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                     <Badge text={'1'} type={'number'} className={styles.mr_8}/>
@@ -305,7 +322,6 @@ function ItemCreate() {
                                         <ItemImageTable
                                             images={formData.images}
                                             colors={colors}
-                                            skus={formData.skus}
                                             deleteMethod={handleDeleteObjectForm}
                                             handleFormMethod={handleChangeObjectForm}
                                         />
@@ -335,7 +351,6 @@ function ItemCreate() {
                                         <ItemMeasurementTable 
                                             measurements={formData.measurements}
                                             sizes={sizes}
-                                            skus={formData.skus}
                                             deleteMethod={handleDeleteObjectForm}
                                             handleFormMethod={handleChangeObjectForm}
                                         />
@@ -368,9 +383,8 @@ function ItemCreate() {
 
                             <div className={[styles.flex, styles.justify_center].join(' ')}>
                                 <LinkBtn to={`/admin/items`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>新規登録</Button>
+                                <Button size='l' color='primary' onClick={handleFormSubmit} className={[styles.ml_12, styles.w_100].join(' ')}>新規登録</Button>
                             </div>
-                        </form>
                     </div>
                 </div>
             </Suspense>
