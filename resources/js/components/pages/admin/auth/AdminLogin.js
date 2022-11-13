@@ -17,7 +17,7 @@ function AdminLogin() {
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'shuhei.nishinosono@example.com', 
+        'email': 'pnishinosono@example.org', 
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し

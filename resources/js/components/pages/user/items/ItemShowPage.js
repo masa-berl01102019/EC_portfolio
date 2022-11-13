@@ -51,8 +51,6 @@ function ItemShowPage(props) {
             handleViewItemWebStorage(item, cookies.item_info); 
         }
     },[baseUrl]);
-
-    // TODO: 非公開の商品と削除済みの商品のURLを叩かれた際の挙動と表示に関して対応する
     
     return (
         <main className={styles.mt_40}>

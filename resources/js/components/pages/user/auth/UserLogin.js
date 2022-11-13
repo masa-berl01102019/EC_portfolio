@@ -17,7 +17,7 @@ function UserLogin() {
     const setIsUserLogin = useSetRecoilState(authUserState);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'hkobayashi@example.net', 
+        'email': 'wwakamatsu@example.com', 
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
