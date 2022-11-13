@@ -34,7 +34,7 @@ class BookmarkController extends Controller
             $search_bookmark = $search_bookmark->where('user_id', Auth::guard('user')->user()->id)
                 ->join('skus', 'bookmarks.sku_id', '=', 'skus.id')
                 ->join('items', function ($join) {
-                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
+                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'))->where('items.deleted_at', null);
                 })
                 ->join('brands', 'items.brand_id', '=', 'brands.id')
                 ->select('bookmarks.id', 'bookmarks.updated_at', 'bookmarks.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.price', 'items.brand_id', 'brands.brand_name');

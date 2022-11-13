@@ -56,6 +56,8 @@ function OrderIndexPage() {
                                     created_at={order.created_at}
                                     stock_status={order.stock_status}
                                     cart_status={order.cart_status}
+                                    is_published={order.is_published}
+                                    delete_status={order.delete_status}
                                     create_method={() => createData({ form: {sku_id: `${order.sku_id}`}, url:`/api/user/carts` })}
                                 />
                             )

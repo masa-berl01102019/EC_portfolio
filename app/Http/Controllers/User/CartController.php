@@ -30,7 +30,7 @@ class CartController extends Controller
             $search_cart = $search_cart->where('user_id', Auth::guard('user')->user()->id)
                 ->join('skus', 'carts.sku_id', '=', 'skus.id')
                 ->join('items', function ($join) {
-                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
+                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'))->where('items.deleted_at', null);
                 })
                 ->join('brands', 'items.brand_id', '=', 'brands.id')
                 ->select('carts.id', 'carts.quantity', 'carts.updated_at', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.price', 'items.brand_id', 'brands.brand_name')

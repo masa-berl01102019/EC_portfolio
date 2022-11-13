@@ -28,9 +28,8 @@ const CartCard = ({
   return (
     <div {...props} className={[styles.mb_16, styles.cart_card, className].join(' ')}>
       <div className={styles.flex}>
-          <Link to={to}>
+          <Link to={to} className={stock_status === 0 ? styles.sold_out : ''}>
               <Image src={src} alt="商品画像" className={styles.bookmark_img} />
-              { stock_status === 0 && <Text role='error'>在庫なし</Text>}
           </Link>
           <div className={styles.bookmark_text_contents}>
               <Text className={[styles.mb_8, styles.card_text].join(' ')}>{brand_name}</Text>

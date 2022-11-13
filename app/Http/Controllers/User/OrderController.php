@@ -34,13 +34,11 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $orders = OrderDetail::with(['order', 'sku.item'])
+            $orders = OrderDetail::with(['order'])
                 ->whereHas('order', function ($query) {
                     return $query->where('user_id', Auth::guard('user')->user()->id);
                 })
-                ->whereHas('sku.item', function ($query) {
-                    return $query->where('is_published', config('define.is_published_r.open'));
-                })->orderBy('created_at', 'desc')->customPaginate($request);
+                ->orderBy('created_at', 'desc')->customPaginate($request);
             return (OrderDetailResource::collection($orders));
         } catch (Throwable $e) {
             Log::error($e->getMessage());

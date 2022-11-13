@@ -70,6 +70,9 @@ class ItemController extends Controller
             $item = Item::where('id', $item)->getPublished()
                 ->with(['skus', 'genderCategory', 'mainCategory', 'subCategory', 'tags', 'images', 'measurements', 'publishedBlogs'])
                 ->first();
+            if (empty($item)) {
+                return response()->json(['status' => 9, 'message' => 'お探しの商品が見つかりませんでした。非公開または削除された可能性があります。'], 400);
+            }
             $related_items = Item::getRelatedItems($item->id);
             return (new ItemResource($item))->additional([
                 'sizes' => SizeResource::collection(Size::orderBy('size_name', 'desc')->get()),
