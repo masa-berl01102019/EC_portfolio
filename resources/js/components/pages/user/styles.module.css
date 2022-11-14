@@ -124,7 +124,9 @@
   margin-bottom: 24px;
 }
 
-
+.hide_toolbar { 
+  display: none !important; 
+}
 
 /* other */
 .time_zome_field {

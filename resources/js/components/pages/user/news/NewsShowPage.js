@@ -48,7 +48,7 @@ function NewsShowPage(props) {
                     <Text size='s' className={styles.mb_8}>
                         {news.modified_at ? news.modified_at : news.posted_at}
                     </Text>
-                    <Image src={news.thumbnail} alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
+                    <Image src={news.thumbnail} type='blog_news' alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
                     <Editor
                         editorState={editorState}
                         readOnly={true}
@@ -61,6 +61,7 @@ function NewsShowPage(props) {
                             options: [],
                             }
                         }}
+                        toolbarClassName={styles.hide_toolbar}
                     />
                 </div>
             }

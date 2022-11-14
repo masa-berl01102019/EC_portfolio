@@ -34,7 +34,8 @@ class ItemResource extends JsonResource
             $request->routeIs('user.items.index') ||
             $request->routeIs('user.items.rank') ||
             $request->routeIs('user.items.recommend') ||
-            $request->routeIs('user.items.new')
+            $request->routeIs('user.items.new') ||
+            $request->routeIs('user.blogs.show')
         ) {
             return [
                 'id' => $this->id,

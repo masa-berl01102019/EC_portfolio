@@ -88,7 +88,7 @@ const NewsTable = memo(({news, className = '', deleteMethod, csvOutputMethod}) =
                 <Td>{item.id}</Td>
                 <Td><EditLink to={`/admin/news/${item.id}/edit`}>編集</EditLink></Td>
                 <Td>{item.is_published_text}</Td>
-                <Td><Image src={item.thumbnail} type='info_list' width='40px'/></Td>
+                <Td><Image src={item.thumbnail} type='blog_news' width='60px'/></Td>
                 <Td>{item.title}</Td>
                 <Td>{item.brand_name}</Td>
                 <Td>{item.gender_category_text}</Td>

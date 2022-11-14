@@ -89,7 +89,7 @@ const BlogTable = memo(({blogs, className = '', deleteMethod, csvOutputMethod}) 
                 <Td>{blog.id}</Td>
                 <Td><EditLink to={`/admin/blogs/${blog.id}/edit`}>編集</EditLink></Td>
                 <Td>{blog.is_published_text}</Td>
-                <Td><Image src={blog.thumbnail} type='info_list' width='40px' /></Td>
+                <Td><Image src={blog.thumbnail} type='blog_news' width='60px' /></Td>
                 <Td>{blog.title}</Td>
                 <Td>{blog.brand_name}</Td>
                 <Td>{blog.gender_category_text}</Td>

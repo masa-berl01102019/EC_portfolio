@@ -60,13 +60,14 @@ class Blog extends Model
 
     /** スコープ */
 
-    public function scopeFilterItem($query, $request) {
+    public function scopeFilterItem($query, $request)
+    {
         $filter = $request->input('f_item');
         $flag = $filter !== null ? true : false;
-        $query->when($flag, function($query) use($filter) {
-            $query->whereHas('items', function ($query) use($filter) {
+        $query->when($flag, function ($query) use ($filter) {
+            $query->whereHas('items', function ($query) use ($filter) {
                 // カンマ区切りで配列に変換
-                $receiver_arr = explode(',',$filter);
+                $receiver_arr = explode(',', $filter);
                 // 配列内に該当する項目を絞り込み検索
                 return $query->whereIn('items.id', $receiver_arr);
             });
@@ -75,23 +76,36 @@ class Blog extends Model
 
     /** リレーション */
 
-    public function brand() {
+    public function brand()
+    {
         return $this->belongsTo('App\Models\Brand');
     }
 
-    public function admin() {
+    public function admin()
+    {
         return $this->belongsTo('App\Models\Admin');
     }
 
-    public function tags() {
+    public function tags()
+    {
         return $this->belongsToMany('App\Models\Tag');
     }
 
-    public function items() {
+    public function items()
+    {
         return $this->belongsToMany('App\Models\Item');
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo('App\Models\Category');
+    }
+
+    /** 条件付きリレーション * withでリレーション組んで静的に呼び出せる */
+
+    public function publishedItems()
+    {
+        // 紐づく商品の内、公開ステータスが公開の商品のみを取得
+        return $this->belongsToMany('App\Models\Item')->getPublished();
     }
 }

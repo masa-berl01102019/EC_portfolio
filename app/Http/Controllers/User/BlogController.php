@@ -34,7 +34,7 @@ class BlogController extends Controller
             return (BlogResource::collection($blogs))->additional([
                 'brands' => BrandResource::collection(Brand::all()),
                 'gender_categories' => Category::genderCategories()->get(),
-                'items' => Item::select('id', 'product_number')->orderBy('product_number')->get(),
+                'items' => Item::getPublished()->select('id', 'product_number')->orderBy('product_number')->get(),
                 'tags' => TagResource::collection(Tag::all())
             ]);
         } catch (Throwable $e) {
