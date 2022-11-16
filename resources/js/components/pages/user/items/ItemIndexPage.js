@@ -44,7 +44,7 @@ function ItemIndexPage() {
             setParams({
                 paginate: {},
                 sort: { 'price' : '', 'posted_at' : '' },
-                filter: { 'search' : '',  'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '', 'main_category' : '', 'sub_category' : '' },
+                filter: { 'search' : '',  'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '', 'main_category' : '', 'sub_category' : '', 'price_from' : '', 'price_to' : '', 'stock_status': '' },
                 scope: model
             });
         } 

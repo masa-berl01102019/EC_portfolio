@@ -14,7 +14,7 @@ import useFetchApiData from "../../../hooks/useFetchApiData";
 import { paramState } from '../../../store/paramState';
 
 
-const ItemFilterModal2 = ({
+const ItemSearchModal = ({
       onClick
     }) => {
 
@@ -44,7 +44,7 @@ const ItemFilterModal2 = ({
           setParams({
               paginate: {},
               sort: { 'price' : '', 'posted_at' : '' },
-              filter: { 'search' : '',  'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '', 'main_category' : '', 'sub_category' : '' },
+              filter: { 'search' : '',  'tag' : [], 'color' : [], 'size' : [], 'brand' : [], 'gender_category' : '', 'main_category' : '', 'sub_category' : '', 'price_from' : '', 'price_to' : '', 'stock_status': '' },
               scope: model
           });
       }
@@ -67,7 +67,7 @@ const ItemFilterModal2 = ({
                       name='search' 
                       onBlur={handleFilter} 
                       value={params.filter.search} 
-                      placeholder={'商品名を検索'}
+                      placeholder={'商品名もしくは品番で検索'}
                       className={styles.w_100}
                   />
                 </div>
@@ -203,7 +203,7 @@ const ItemFilterModal2 = ({
                   }
                 </div>
 
-                <div className={styles.mb_32}>
+                <div className={styles.mb_16}>
                   <Text className={styles.mb_8}>関連タグ</Text>
                   <CheckboxTab tabName='タグを追加'>
                     <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
@@ -234,6 +234,39 @@ const ItemFilterModal2 = ({
                       }
                     </div>
                   }
+                </div>
+
+                <div className={styles.mb_16}>
+                  <label htmlFor='price_from'>
+                    <Text className={styles.mb_8}>価格帯</Text>
+                  </label>
+                  <div className={[styles.flex_row, styles.align_center].join(' ')}>
+                    <InputText 
+                        type='number' 
+                        name='price_from' 
+                        onBlur={handleFilter} 
+                        value={params.filter.price_from} 
+                        placeholder={'価格下限を設定'}
+                        className={styles.w_100}
+                    />
+                    <Text className={styles.ma}>~</Text>
+                    <InputText 
+                        type='number' 
+                        name='price_to' 
+                        onBlur={handleFilter} 
+                        value={params.filter.price_to} 
+                        placeholder={'価格上限を設定'}
+                        className={styles.w_100}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.mb_32}>
+                  <Text className={styles.mb_8}>在庫の有無</Text>
+                  <Pulldown name='stock_status' value={params.filter.stock_status} onChange={handleFilter}>
+                      <option value={'0'}>すべて</option>
+                      <option value={'1'}>在庫あり</option>
+                  </Pulldown>
                 </div>
 
                 <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>並び替え設定</Text>
@@ -267,4 +300,4 @@ const ItemFilterModal2 = ({
     );
 };
 
-export default ItemFilterModal2;
+export default ItemSearchModal;

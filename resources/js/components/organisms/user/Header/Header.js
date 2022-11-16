@@ -5,7 +5,7 @@ import styles from './styles.module.css'
 import Text from '../../../atoms/Text/Text';
 import Mask from '../../../atoms/Mask/Mask';
 import GlobalMenu from '../GlobalMenu/GlobalMenu';
-import ItemFilterModal2 from '../modal/ItemFilterModal2';
+import ItemSearchModal from '../modal/ItemSearchModal';
 
 
 export const Header = ({...props}) => {
@@ -39,7 +39,7 @@ export const Header = ({...props}) => {
             {  openModal && 
                 <Mask>
                     <Suspense>
-                        <ItemFilterModal2 onClick={() => setOpenModal(false)} /> 
+                        <ItemSearchModal onClick={() => setOpenModal(false)} /> 
                     </Suspense>
                 </Mask>
             }

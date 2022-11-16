@@ -39,13 +39,16 @@ class ItemController extends Controller
     {
         try {
             $search_item = Item::with(['skus.color', 'skus.size', 'brand', 'genderCategory', 'mainCategory', 'subCategory', 'tags', 'admin']);
-            $search_item->filterKeyword($request, ['item_name']);
+            $search_item->filterKeyword($request, ['item_name', 'product_number']);
             $search_item->filterIsPublished($request);
             $search_item->filterBrand($request);
             $search_item->filterColor($request);
             $search_item->filterSize($request);
             $search_item->filterCategory($request);
             $search_item->filterTag($request);
+            $search_item->filterPriceFrom($request, 'exclude');
+            $search_item->filterPriceTo($request, 'exclude');
+            $search_item->filterStock($request);
             $search_item->filterDateRange($request);
             // product_number > item_name > price > cost > posted_at > modified_at
             $search_item->orderByProductNumber($request);

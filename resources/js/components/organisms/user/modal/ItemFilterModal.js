@@ -44,7 +44,7 @@ const ItemFilterModal = ({
                 name='search' 
                 onBlur={handleFilter} 
                 value={params.filter.search} 
-                placeholder={'商品名を検索'}
+                placeholder={'商品名もしくは品番で検索'}
                 className={styles.w_100}
             />
           </div>
@@ -211,6 +211,39 @@ const ItemFilterModal = ({
                 }
               </div>
             }
+          </div>
+
+          <div className={styles.mb_16}>
+            <label htmlFor='price_from'>
+              <Text className={styles.mb_8}>価格帯</Text>
+            </label>
+            <div className={[styles.flex_row, styles.align_center].join(' ')}>
+              <InputText 
+                  type='number' 
+                  name='price_from' 
+                  onBlur={handleFilter} 
+                  value={params.filter.price_from} 
+                  placeholder={'価格下限を設定'}
+                  className={styles.w_100}
+              />
+              <Text className={styles.ma}>~</Text>
+              <InputText 
+                  type='number' 
+                  name='price_to' 
+                  onBlur={handleFilter} 
+                  value={params.filter.price_to} 
+                  placeholder={'価格上限を設定'}
+                  className={styles.w_100}
+              />
+            </div>
+          </div>
+
+          <div className={styles.mb_16}>
+            <Text className={styles.mb_8}>在庫の有無</Text>
+            <Pulldown name='stock_status' value={params.filter.stock_status} onChange={handleFilter}>
+                <option value={'0'}>すべて</option>
+                <option value={'1'}>在庫あり</option>
+            </Pulldown>
           </div>
 
           <Button className={styles.close_btn} onClick={onClick}>閉じる</Button>

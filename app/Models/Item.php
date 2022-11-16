@@ -90,6 +90,42 @@ class Item extends Model
         });
     }
 
+    public function scopeFilterPriceFrom($query, $request, $tax = 'include')
+    {
+        $from = $request->input('f_price_from');
+        $from_excluding_tax = $tax === 'include' ? (int)$from - intval($from * Tax::getTaxRate()) : (int)$from;
+        $flag = !empty($from_excluding_tax) ? true : false;
+
+        $query->when($flag, function ($query) use ($from_excluding_tax) {
+            return $query->where('price', '>=', $from_excluding_tax);
+        });
+    }
+
+    public function scopeFilterPriceTo($query, $request, $tax = 'include')
+    {
+        $to = $request->input('f_price_to');
+        $to_excluding_tax = $tax === 'include' ? (int)$to - intval($to * Tax::getTaxRate()) : (int)$to;
+        $flag = !empty($to_excluding_tax) ? true : false;
+
+        $query->when($flag, function ($query) use ($to_excluding_tax) {
+            return $query->where('price', '<=', $to_excluding_tax);
+        });
+    }
+
+    public function scopeFilterStock($query, $request)
+    {
+        $stock_status = $request->input('f_stock_status');
+
+        $flag = $stock_status === '1' ? true : false;
+
+        $query->when($flag, function ($query) {
+            $skus = Sku::where('quantity', '>', 0)->groupBy('item_id')->pluck('id')->toArray();
+            $query->whereHas('skus', function ($query) use ($skus) {
+                return $query->whereIn('skus.id', $skus);
+            });
+        });
+    }
+
     public function scopeOrderByProductNumber($query, $request)
     {
         $sort = $request->input('product_number');
