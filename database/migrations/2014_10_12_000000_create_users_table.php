@@ -17,8 +17,8 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('last_name', 25);
             $table->string('first_name', 25);
-            $table->string('last_name_kana', 25);
-            $table->string('first_name_kana', 25);
+            $table->string('last_name_kana', 25)->nullable();
+            $table->string('first_name_kana', 25)->nullable();
             $table->unsignedTinyInteger('gender'); // 0~255 0:man 1:woman 2:others 3:no answer
             $table->date('birthday');
             $table->string('post_code', 10);

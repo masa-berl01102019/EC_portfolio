@@ -8,9 +8,10 @@ import Button from '../../../atoms/Button/Button';
 import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
+import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
-import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import useValidation from '../../../hooks/useValidation';
 
 function AdminEdit(props) {
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
@@ -20,7 +21,9 @@ function AdminEdit(props) {
     // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useForm(data.admin);
+    const [formData, {handleFormData}] = useForm(data.admin);
+    // フロント用バリデーション
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'admin_edit');
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // menuの状態管理
@@ -35,27 +38,35 @@ function AdminEdit(props) {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
-                            updateData({
-                                form: formData, 
-                                url: `/api/admin/admins/${props.match.params.id}`,
-                                callback: () => history.push('/admin/admins')
-                            });
+                            if(validation.fails()) {
+                                setValid(true);
+                            } else {
+                                updateData({
+                                    form: formData, 
+                                    url: `/api/admin/admins/${props.match.params.id}`,
+                                    callback: () => history.push('/admin/admins')
+                                });
+                            }
                         }}>
                             <Text className={styles.mb_8}>氏名</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText
                                     name={'last_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.last_name}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='山田'
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
                                     name={'first_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.first_name}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='太郎'
                                     className={styles.flex_basis_50}
                                 />
@@ -64,17 +75,21 @@ function AdminEdit(props) {
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText 
                                     name={'last_name_kana'} 
-                                    onBlur={handleFormData} 
+                                    onChange={handleFormData} 
                                     value={formData.last_name_kana} 
-                                    error={errorMessage} 
+                                    error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='ヤマダ'
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
                                     name={'first_name_kana'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.first_name_kana}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='タロウ'
                                     className={styles.flex_basis_50}
                                 />
@@ -82,20 +97,24 @@ function AdminEdit(props) {
                             <FormInputText
                                 name={'tel'}
                                 type='tel'
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.tel}
                                 label={'電話番号'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='080-1234-5678'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'email'}
                                 type={'email'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.email}
                                 label={'メールアドレス'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='test@example.com'
                                 className={styles.mb_40}
                             />

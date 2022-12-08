@@ -38,7 +38,7 @@ function UserChangePassword(props) {
                         <FormInputText
                             name={'password'}
                             type={'password'}
-                            onBlur={handleFormData}
+                            onChange={handleFormData}
                             value={formData.password}
                             label={'パスワード'}
                             error={errorMessage}

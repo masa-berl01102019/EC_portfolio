@@ -17,8 +17,8 @@ class CreateAdminsTable extends Migration
             $table->increments('id');
             $table->string('last_name', 25);
             $table->string('first_name', 25);
-            $table->string('last_name_kana', 25);
-            $table->string('first_name_kana', 25);
+            $table->string('last_name_kana', 25)->nullable();
+            $table->string('first_name_kana', 25)->nullable();
             $table->string('tel', 15);
             $table->string('email', 100)->unique();
             $table->string('password', 100);

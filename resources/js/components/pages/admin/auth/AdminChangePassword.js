@@ -5,7 +5,6 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import useAuth from "../../../hooks/useAuth";
 import useForm from '../../../hooks/useForm';
-import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
@@ -44,7 +43,7 @@ function AdminChangePassword(props) {
                             <FormInputText
                                 name={'password'}
                                 type={'password'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.password}
                                 label={'パスワード'}
                                 error={errorMessage}

@@ -159,8 +159,8 @@ class ItemFactory extends Factory
 
             // 商品カテゴリIDを取得
             $genre = $response_data[$i]['parentGenreCategories'][1]['id']; // 性別カテゴリ
-            $item1 = $response_data[$i]['parentGenreCategories'][2]['id']; // 大カテゴリ
-            $item2 = $response_data[$i]['genreCategory']['id'];            // 小カテゴリ
+            $item1 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['parentGenreCategories'][2]['id'] : null; // 大カテゴリ
+            $item2 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['genreCategory']['id'] : null;            // 小カテゴリ
 
             $categoryId1 = $genre == 2494 ? 2 : 1;
             $categoryId2 = null;

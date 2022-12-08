@@ -11,6 +11,7 @@ import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import LoadingPopup from '../../../molecules/Popup/LoadingPopup';
+import useValidation from '../../../hooks/useValidation';
 
 
 function ContactCreatePage() {
@@ -21,7 +22,7 @@ function ContactCreatePage() {
     // APIと接続して返り値を取得
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useForm({
+    const [formData, {handleFormData}] = useForm({
         'last_name': null, 
         'first_name': null, 
         'last_name_kana': null, 
@@ -31,6 +32,8 @@ function ContactCreatePage() {
         'title': null, 
         'body': null, 
     });
+    // フロント用バリデーション
+    const {valid, setValid, validation} = useValidation(formData, 'user', 'contact_request');
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // ローディングステータスの状態管理
@@ -46,28 +49,36 @@ function ContactCreatePage() {
                 <div className={styles.form_contents_area}>
                     <form onSubmit={ e => {
                         e.preventDefault();
-                        setIsLoading(true);
-                        createData({
-                            form: formData,
-                            url:'/api/user/contacts',
-                            callback: () => history.push('/contacts/complete')
-                        });
+                        if(validation.fails()) {
+                            setValid(true);
+                        } else {
+                            setIsLoading(true);
+                            createData({
+                                form: formData,
+                                url:'/api/user/contacts',
+                                callback: () => history.push('/contacts/complete')
+                            });
+                        }
                     }}>
                         <Text className={styles.mb_8}>氏名</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText
                                 name={'last_name'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.last_name}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='山田'
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
                                 name={'first_name'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.first_name}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='太郎'
                                 className={styles.flex_basis_50}
                             />
@@ -76,17 +87,21 @@ function ContactCreatePage() {
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText 
                                 name={'last_name_kana'} 
-                                onBlur={handleFormData} 
+                                onChange={handleFormData} 
                                 value={formData.last_name_kana} 
-                                error={errorMessage} 
+                                error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='ヤマダ'
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
                                 name={'first_name_kana'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.first_name_kana}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='タロウ'
                                 className={styles.flex_basis_50}
                             />
@@ -94,39 +109,47 @@ function ContactCreatePage() {
                         <FormInputText
                             name={'tel'}
                             type='tel'
-                            onBlur={handleFormData}
+                            onChange={handleFormData}
                             value={formData.tel}
                             label={'電話番号'}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder='080-1234-5678'
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'email'}
                             type={'email'}
-                            onBlur={handleFormData}
+                            onChange={handleFormData}
                             value={formData.email}
                             label={'メールアドレス'}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder='test@example.com'
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'title'}
-                            onBlur={handleFormData}
+                            onChange={handleFormData}
                             value={formData.title}
                             label={'タイトル'}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder='タイトルを入力'
                             className={styles.mb_16}
                         />
                         <FormInputTextarea
                             name={'body'} 
                             value={formData.body}
-                            onBlur={handleFormData} 
+                            onChange={handleFormData} 
                             placeholder={'本文を入力'}
                             label={'本文'}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             className={styles.mb_40}
                             style={{'minHeight' : '250px'}}
                         />

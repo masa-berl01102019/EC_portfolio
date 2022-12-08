@@ -1,7 +1,6 @@
 import React, {Suspense, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData from "../../../hooks/useFetchApiData";
-import useForm from "../../../hooks/useForm";
 import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
@@ -20,25 +19,20 @@ function CategoryIndex() {
     const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
     // APIから取得したデータを変数に格納
     const categories = data.categories? data.categories: null;
-    // 新規登録用フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData}] = useForm({'category_name': '', 'parent_id': ''});
     // 選択されたカテゴリーのIDをuseStateで管理
     const [editableForm, setEeditableForm] = useState(null);
-    // 編集用の入力値をuseStateで管理
-    const [editCategory, setEditCategory] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
     // notifyContextの呼び出し
     const confirm = useNotify();
 
-    const handleConfirmDelete = async (id) => {
+    const handleConfirmDelete = async () => {
         const result = await confirm({
             body : `選択カテゴリーを本当に削除しますか？`,
             confirmBtnLabel : '削除'
         });
-        result && deleteData({url:`/api/admin/categories/${id}`});
-    }
+        result && deleteData({url:`/api/admin/categories/${editableForm}`});
+    } 
 
     return (
         <main>
@@ -55,23 +49,17 @@ function CategoryIndex() {
                                 { category.id === editableForm ? (
                                     <FormWithBtn
                                         name='category_name'
-                                        value={category.category_name}
-                                        onChange={e => setEditCategory(e.target.value)}
-                                        placeholder='カテゴリー名'
-                                        updateMethod={() => 
-                                            updateData({
-                                                form: {category_name: `${editCategory}`},
-                                                url:`/api/admin/categories/${category.id}`
-                                            })
-                                        }
-                                        deleteMethod={() => handleConfirmDelete(category.id)}
+                                        placeholder='ジェンダーカテゴリー名'
+                                        formInitialValue={{'category_name': category.category_name}}
+                                        validateScope={'admin'}
+                                        validateConfigKey={'category_request'}
+                                        requestUrl={`/api/admin/categories/${editableForm}`}
+                                        updateMethod={updateData}
+                                        deleteMethod={handleConfirmDelete}
                                         className={styles.mb_8}
                                     />
                                 ) : (
-                                    <div className={[styles.category_text, styles.text_gender].join(' ')} onClick={() => {
-                                        setEditCategory(category.category_name);
-                                        setEeditableForm(category.id);
-                                    }}>{category.category_name}</div>
+                                    <div className={[styles.category_text, styles.text_gender].join(' ')} onClick={() => setEeditableForm(category.id)}>{category.category_name}</div>
                                 )}
                                 <ul>
                                     {/* main category */}
@@ -80,16 +68,13 @@ function CategoryIndex() {
                                             { child.id === editableForm ? (
                                                 <FormWithBtn
                                                     name='category_name'
-                                                    value={child.category_name}
-                                                    onChange={e => setEditCategory(e.target.value)}
-                                                    placeholder='カテゴリー名'
-                                                    updateMethod={() => 
-                                                        updateData({
-                                                            form: {category_name: `${editCategory}`},
-                                                            url:`/api/admin/categories/${child.id}`
-                                                        })
-                                                    }
-                                                    deleteMethod={() => handleConfirmDelete(child.id)}
+                                                    placeholder='メインカテゴリー名'
+                                                    formInitialValue={{'category_name': child.category_name}}
+                                                    validateScope={'admin'}
+                                                    validateConfigKey={'category_request'}
+                                                    requestUrl={`/api/admin/categories/${editableForm}`}
+                                                    updateMethod={updateData}
+                                                    deleteMethod={handleConfirmDelete}
                                                     className={styles.mb_8}
                                                 />
                                             ) : (
@@ -98,10 +83,7 @@ function CategoryIndex() {
                                                     <label htmlFor={`tab_${child.id}`} className={styles.inline_flex}>
                                                         <Icon src='/img/arrow_right_icon.svg' className={styles.pulldown_img} />
                                                     </label>
-                                                    <div className={[styles.category_text, styles.text_main].join(' ')} onClick={() => {
-                                                        setEditCategory(child.category_name);
-                                                        setEeditableForm(child.id);
-                                                    }}>{child.category_name}</div>
+                                                    <div className={[styles.category_text, styles.text_main].join(' ')} onClick={() => setEeditableForm(child.id)}>{child.category_name}</div>
                                                 </>
                                             )
                                             }
@@ -112,25 +94,19 @@ function CategoryIndex() {
                                                     { grand_child.id === editableForm ? (
                                                         <FormWithBtn
                                                             name='category_name'
-                                                            value={grand_child.category_name}
-                                                            onChange={e => setEditCategory(e.target.value)}
-                                                            placeholder='カテゴリー名'
-                                                            updateMethod={() => 
-                                                                updateData({
-                                                                    form: {category_name: `${editCategory}`},
-                                                                    url:`/api/admin/categories/${grand_child.id}`
-                                                                })
-                                                            }
-                                                            deleteMethod={() => handleConfirmDelete(grand_child.id)}
+                                                            placeholder='サブカテゴリー名'
+                                                            formInitialValue={{'category_name': grand_child.category_name}}
+                                                            validateScope={'admin'}
+                                                            validateConfigKey={'category_request'}
+                                                            requestUrl={`/api/admin/categories/${editableForm}`}
+                                                            updateMethod={updateData}
+                                                            deleteMethod={handleConfirmDelete}
                                                             className={styles.mb_8}
                                                         />
                                                     ) : (
                                                             <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')}>
                                                                 <Icon src='/img/pull_down_icon.svg' className={styles.mr_8} />
-                                                                <div className={[styles.category_text, styles.text_sub].join(' ')} onClick={() => {
-                                                                    setEditCategory(grand_child.category_name);
-                                                                    setEeditableForm(grand_child.id);
-                                                                }}>{grand_child.category_name}</div>
+                                                                <div className={[styles.category_text, styles.text_sub].join(' ')} onClick={() => setEeditableForm(grand_child.id)}>{grand_child.category_name}</div>
                                                             </div>
                                                     )}
                                                     </li>
@@ -138,14 +114,12 @@ function CategoryIndex() {
                                                 <li className={[styles.flex, styles.pl_64, styles.mb_8].join(' ')}>
                                                     <FormWithBtn
                                                         name='category_name'
-                                                        onChange={handleFormData}
                                                         placeholder='サブカテゴリー名'
-                                                        createMethod={() => 
-                                                            createData({
-                                                                form: {category_name: `${formData.category_name}`, parent_id: `${child.id}`},
-                                                                url:'/api/admin/categories'
-                                                            }) 
-                                                        }
+                                                        formInitialValue={{'category_name': '', 'parent_id': child.id}}
+                                                        validateScope={'admin'}
+                                                        validateConfigKey={'category_request'}
+                                                        requestUrl={'/api/admin/categories'}
+                                                        createMethod={createData}
                                                     />
                                                 </li>
                                             </ul>
@@ -154,14 +128,12 @@ function CategoryIndex() {
                                     <li className={[styles.flex, styles.mb_8, styles.pl_32].join(' ')}>
                                         <FormWithBtn
                                             name='category_name'
-                                            onChange={handleFormData}
                                             placeholder='メインカテゴリー名'
-                                            createMethod={() => 
-                                                createData({
-                                                    form: {category_name: `${formData.category_name}`, parent_id: `${category.id}`},
-                                                    url:'/api/admin/categories'
-                                                }) 
-                                            }
+                                            formInitialValue={{'category_name': '', 'parent_id': category.id}}
+                                            validateScope={'admin'}
+                                            validateConfigKey={'category_request'}
+                                            requestUrl={'/api/admin/categories'}
+                                            createMethod={createData}
                                         />
                                     </li>
                                 </ul>

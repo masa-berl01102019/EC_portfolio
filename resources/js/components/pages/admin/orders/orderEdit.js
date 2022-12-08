@@ -13,6 +13,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
+import useValidation from '../../../hooks/useValidation';
 
 function OrderEdit(props) {
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
@@ -27,7 +28,8 @@ function OrderEdit(props) {
     const history = useHistory();
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
+    // フロント用バリデーション
+    const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'order_edit');
 
     return (
         <main>
@@ -37,6 +39,10 @@ function OrderEdit(props) {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
+                            if(validation.fails()) {
+                                setValid(true);
+                                return false;
+                            }
                             updateData({
                                 form: formData, 
                                 url: `/api/admin/orders/${props.match.params.id}`,
@@ -67,6 +73,8 @@ function OrderEdit(props) {
                                     label={'配達希望日'} 
                                     className={[styles.mr_24, styles.mb_16].join(' ')}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     openTo="date"
                                 />
                                 <FormSelectbox
@@ -75,6 +83,8 @@ function OrderEdit(props) {
                                     onChange={handleFormData}
                                     label={'配達希望時間帯'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={[styles.flex_grow, styles.mb_16].join(' ')}
                                 >
                                     <option value={''}>未設定</option>
@@ -92,6 +102,8 @@ function OrderEdit(props) {
                                     onChange={handleFormData}
                                     label={'入金状況'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={[styles.flex_basis_50, styles.mr_24, styles.mb_16].join(' ')}
                                 >
                                     <option value={0}>未入金</option>
@@ -103,6 +115,8 @@ function OrderEdit(props) {
                                     onChange={handleFormData}
                                     label={'出荷状況'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={[styles.flex_basis_50, styles.mb_16].join(' ')}
                                 >
                                     <option value={0}>未配送</option>

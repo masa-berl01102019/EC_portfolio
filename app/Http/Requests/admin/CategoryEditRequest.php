@@ -31,7 +31,7 @@ class CategoryEditRequest extends FormRequest
     public function attributes()
     {
         return [
-            'category_name' => 'カテゴリー',
+            'category_name' => 'カテゴリー名',
         ];
     }
 }

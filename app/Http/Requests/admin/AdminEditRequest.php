@@ -29,8 +29,8 @@ class AdminEditRequest extends FormRequest
         return [
             'last_name' => 'required|string|max:25',
             'first_name' => 'required|string|max:25',
-            'last_name_kana' => ['required', 'string', 'max:25', new Kana],
-            'first_name_kana' => ['required', 'string', 'max:25', new Kana],
+            'last_name_kana' => ['nullable', 'string', 'max:25', new Kana],
+            'first_name_kana' => ['nullable', 'string', 'max:25', new Kana],
             'tel' => ['required', 'string', new JapanesePhoneNumber, 'max:15'],
             'email' => [
                 'required',

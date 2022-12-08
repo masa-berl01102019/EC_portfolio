@@ -41,7 +41,7 @@ function AdminResetPassword() {
                             <FormInputText
                                 name={'email'}
                                 type='email'
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.email}
                                 label={'メールアドレス'}
                                 error={errorMessage}

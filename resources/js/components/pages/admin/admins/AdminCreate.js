@@ -11,6 +11,7 @@ import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
+import useValidation from '../../../hooks/useValidation';
 
 function AdminCreate() {
     // urlの設定
@@ -33,7 +34,8 @@ function AdminCreate() {
     const history = useHistory();
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
+    // フロント用バリデーション
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'admin_create');
 
     return (
         <main>
@@ -43,27 +45,35 @@ function AdminCreate() {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
-                            createData({ 
-                                form: formData, 
-                                url:'/api/admin/admins',
-                                callback: () => history.push('/admin/admins')
-                            });
+                            if(validation.fails()) {
+                                setValid(true);
+                            } else {
+                                createData({ 
+                                    form: formData, 
+                                    url:'/api/admin/admins',
+                                    callback: () => history.push('/admin/admins')
+                                });
+                            }
                         }}>
                             <Text className={styles.mb_8}>氏名</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText
                                     name={'last_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.last_name}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='山田'
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
                                     name={'first_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.first_name}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='太郎'
                                     className={styles.flex_basis_50}
                                 />
@@ -72,17 +82,21 @@ function AdminCreate() {
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText 
                                     name={'last_name_kana'} 
-                                    onBlur={handleFormData} 
-                                    value={formData.last_name_kana} 
-                                    error={errorMessage} 
+                                    onChange={handleFormData} 
+                                    value={formData.last_name_kana}
+                                    error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='ヤマダ'
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
                                     name={'first_name_kana'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.first_name_kana}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='タロウ'
                                     className={styles.flex_basis_50}
                                 />
@@ -90,30 +104,36 @@ function AdminCreate() {
                             <FormInputText
                                 name={'tel'}
                                 type='tel'
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.tel}
                                 label={'電話番号'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='080-1234-5678'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'email'}
                                 type={'email'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.email}
                                 label={'メールアドレス'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='test@example.com'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'password'}
                                 type={'password'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.password}
                                 label={'パスワード'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='半角英数字8文字以上'
                                 className={styles.mb_40}
                             />
