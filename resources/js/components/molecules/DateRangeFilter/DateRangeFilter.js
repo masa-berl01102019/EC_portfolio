@@ -4,16 +4,17 @@ import Pulldown from '../../atoms/Pullldown/Pulldown';
 import Text from '../../atoms/Text/Text';
 import useCreateParams from '../../hooks/useCreateParams';
 import styles from './styles.module.css';
+import useI18next from '../../context/I18nextContext';
 
 
 const DateRangeFilter = ({children, params, model}) => {
 
-  // URLパラメータ変更のフックの呼び出し
-  const  {handleFilter, handleFilterDate, handleFilterDateClear} = useCreateParams(model);
+  const {handleFilter, handleFilterDate, handleFilterDateClear} = useCreateParams(model);
+  const i18next = useI18next();
 
   return (
     <>
-      <Text className={styles.mb}>期間指定</Text>
+      <Text className={styles.mb}>{i18next.t('admin.specified-period')}</Text>
       <div>
           <div className={styles.mb}>
             <Pulldown name={'target_span'} value={params.target_span} onChange={ e => {
@@ -22,7 +23,7 @@ const DateRangeFilter = ({children, params, model}) => {
               } else {
                 handleFilter(e);
               }
-            }}>
+            }} defaultOption={i18next.t('admin.not-set')}>
               {children}
             </Pulldown>
           </div>

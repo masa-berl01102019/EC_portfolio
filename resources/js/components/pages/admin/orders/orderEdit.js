@@ -14,28 +14,24 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useValidation from '../../../hooks/useValidation';
+import useI18next from '../../../context/I18nextContext';
 
 function OrderEdit(props) {
-    // urlの設定 * propsで渡ってきたIDを初期URLにセット
+
     const baseUrl = `/api/admin/orders/${props.match.params.id}/edit`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'ORDER';
-    // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, handleFormDate}] = useForm(data.order);
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-    // フロント用バリデーション
     const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'order_edit');
+    const i18next = useI18next();
 
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>受注明細</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.order.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -55,13 +51,13 @@ function OrderEdit(props) {
                                 </div>
                                 <div>
                                     <div className={[styles.amount, styles.mb_4].join(' ')}>
-                                        <Text>小計</Text> <Text>{formData.sub_total_text}</Text>
+                                        <Text>{i18next.t('admin.order.subtotal-amount')}</Text> <Text>{formData.sub_total_text}</Text>
                                     </div>
                                     <div className={[styles.amount, styles.mb_4].join(' ')}>
-                                        <Text>消費税合計</Text> <Text>{formData.tax_amount_text}</Text>
+                                        <Text>{i18next.t('admin.order.tax-amount')}</Text> <Text>{formData.tax_amount_text}</Text>
                                     </div>
                                     <div className={[styles.amount, styles.amount_border].join(' ')}>
-                                        <Text>税込合計</Text> <Text>{formData.total_amount_text}</Text>
+                                        <Text>{i18next.t('admin.order.total-amount')}</Text> <Text>{formData.total_amount_text}</Text>
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +66,7 @@ function OrderEdit(props) {
                                     name={'delivery_date'} 
                                     value={formData.delivery_date} 
                                     onChange={handleFormDate} 
-                                    label={'配達希望日'} 
+                                    label={i18next.t('admin.order.preferred-delivery-day')}
                                     className={[styles.mr_24, styles.mb_16].join(' ')}
                                     error={errorMessage}
                                     validation={validation}
@@ -81,13 +77,13 @@ function OrderEdit(props) {
                                     name='delivery_time'
                                     value={formData.delivery_time}
                                     onChange={handleFormData}
-                                    label={'配達希望時間帯'}
+                                    label={i18next.t('admin.order.preferred-delivery-time')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={[styles.flex_grow, styles.mb_16].join(' ')}
                                 >
-                                    <option value={''}>未設定</option>
+                                    <option value={''}>{i18next.t('admin.not-set')}</option>
                                     <option value={'8:00 - 12:00'}>8:00 - 12:00</option>
                                     <option value={'14:00 - 16:00'}>14:00 - 16:00</option>
                                     <option value={'16:00 - 18:00'}>16:00 - 18:00</option>
@@ -100,33 +96,33 @@ function OrderEdit(props) {
                                     name='is_paid'
                                     value={formData.is_paid}
                                     onChange={handleFormData}
-                                    label={'入金状況'}
+                                    label={i18next.t('admin.order.payment-status')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={[styles.flex_basis_50, styles.mr_24, styles.mb_16].join(' ')}
                                 >
-                                    <option value={0}>未入金</option>
-                                    <option value={1}>入金済</option>
+                                    <option value={0}>{i18next.t('admin.order.not-paid')}</option>
+                                    <option value={1}>{i18next.t('admin.order.paid')}</option>
                                 </FormSelectbox>
                                 <FormSelectbox
                                     name='is_shipped'
                                     value={formData.is_shipped}
                                     onChange={handleFormData}
-                                    label={'出荷状況'}
+                                    label={i18next.t('admin.order.delivery-status')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={[styles.flex_basis_50, styles.mb_16].join(' ')}
                                 >
-                                    <option value={0}>未配送</option>
-                                    <option value={1}>配送済</option>
+                                    <option value={0}>{i18next.t('admin.order.not-delivered')}</option>
+                                    <option value={1}>{i18next.t('admin.order.delivered')}</option>
                                 </FormSelectbox>
                             </div>
 
                             <div className={[styles.flex, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/orders`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
+                                <LinkBtn to={`/admin/orders`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
                             </div>
                         </form>
                     </div>

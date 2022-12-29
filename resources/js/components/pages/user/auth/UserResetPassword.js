@@ -8,22 +8,22 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function UserResetPassword() {
-    // グローバルステートの呼び出し
+
     const setIsUserLogin = useSetRecoilState(authUserState);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
         'email': 'taichi06@example.org'
     });
-    // Auth hooksの呼び出し
     const {errorMessage, handleResetPasswordEmail } = useAuth('/api/user/auth', 'user');
+    const i18next = useI18next();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    パスワードリセット
+                    {i18next.t('user.auth.reset-password')}
                 </Heading>
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
@@ -39,13 +39,13 @@ function UserResetPassword() {
                             type='email'
                             onChange={handleFormData}
                             value={formData.email}
-                            label={'メールアドレス'}
+                            label={i18next.t('user.auth.email')}
                             error={errorMessage}
-                            placeholder='080-1234-5678'
+                            placeholder={i18next.t('user.auth.email-ex')}
                             className={styles.mb_16}
                         />
                         <Button size='l' color='primary' type="submit" className={styles.mb_8}>
-                            メールを送信
+                            {i18next.t('user.auth.send-btn')}
                         </Button>
                     </form>
                 </div>

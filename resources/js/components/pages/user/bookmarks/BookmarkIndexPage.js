@@ -13,30 +13,21 @@ import BookmarkSortModal from '../../../organisms/user/modal/BookmarkSortModal';
 import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
 import SortBtn from '../../../molecules/IconBtn/SortBtn';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function BookmarkIndexPage() {
-    // urlの設定
+
     const baseUrl = `/api/user/bookmarks`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'BOOKMARK';
-    // URLパラメータ変更のフックの呼び出し
     const {handleCurrentPage} = useCreateParams(model);
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData, deleteData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const bookmarks = data.data? data.data: null;
-    const sizes = data.sizes? data.sizes: null;
-    const colors = data.colors? data.colors: null;
-    const brands = data.brands? data.brands: null;
-    
+    const {data:bookmarks, sizes, colors, brands} = data;
     const [popup, setPopup] = useState('');
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('BOOKMARKにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'price' : '', 'item_name' : '', 'updated_at' : '' },
@@ -68,11 +59,11 @@ function BookmarkIndexPage() {
                     }
                     <div className={styles.main_contents_area}>
 
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>お気に入り一覧</Heading>
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.bookmark.index-title')}</Heading>
 
                         <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
-                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
+                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>{i18next.t('user.filter')}</FilterBtn>
+                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>{i18next.t('user.sort')}</SortBtn>
                         </div>
 
                         {   bookmarks &&

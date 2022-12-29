@@ -11,23 +11,23 @@ import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import {Link} from "react-router-dom";
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import useI18next from '../../../context/I18nextContext';
 
 function UserLogin() {
-    // グローバルステートの呼び出し
+
     const setIsUserLogin = useSetRecoilState(authUserState);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'nanami72@example.org', 
+        'email': 'enagisa@example.org', 
         'password': 'abc12345', 
     });
-    // Auth hooksの呼び出し
     const {errorMessage, handleLogin} = useAuth('/api/user/auth', 'user');
+    const i18next = useI18next();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    ログイン
+                    {i18next.t('user.auth.login')}
                 </Heading>
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
@@ -43,9 +43,9 @@ function UserLogin() {
                             type='email'
                             onChange={handleFormData}
                             value={formData.email}
-                            label={'メールアドレス'}
+                            label={i18next.t('user.auth.email')}
                             error={errorMessage}
-                            placeholder='080-1234-5678'
+                            placeholder={i18next.t('user.auth.email-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -53,26 +53,26 @@ function UserLogin() {
                             type='password'
                             onChange={handleFormData}
                             value={formData.password}
-                            label={'パスワード'}
+                            label={i18next.t('user.auth.password')}
                             error={errorMessage}
-                            placeholder='半角英数字8文字以上'
+                            placeholder={i18next.t('user.auth.password-ex')}
                             className={styles.mb_24}
                         />
-                        <Button size='l' color='primary' type="submit" className={styles.mb_8}>ログイン</Button>
+                        <Button size='l' color='primary' type="submit" className={styles.mb_8}>{i18next.t('user.auth.login')}</Button>
                         <Link to={'/user/reset_password'}>
                             <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
-                                パスワードをお忘れの方
+                                {i18next.t('user.auth.reset-link')}
                             </Text>
                         </Link>
                     </form>
                     <div>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
-                            初めてご利用の方
+                            {i18next.t('user.auth.register-user-guide1')}
                         </Heading>
                         <Text size='s' className={styles.mb_24}>
-                            初めてご利用のお客様は、こちらから会員登録を行ってください。
+                            {i18next.t('user.auth.register-user-guide2')}
                         </Text>
-                        <LinkBtn size='l' color='accent' to={`/users/create`} className={styles.mb_8} >新規会員登録</LinkBtn>
+                        <LinkBtn size='l' color='accent' to={`/users/create`} className={styles.mb_8}>{i18next.t('user.auth.register-user')}</LinkBtn>
                     </div>
                 </div>
             </Suspense>

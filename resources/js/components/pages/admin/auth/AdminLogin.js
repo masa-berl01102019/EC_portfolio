@@ -11,19 +11,18 @@ import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import {Link} from "react-router-dom";
+import useI18next from '../../../context/I18nextContext';
 
 function AdminLogin() {
-    // グローバルステートの呼び出し
+
     const setIsAdminLogin = useSetRecoilState(authAdminState);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'qnagisa@example.com', 
+        'email': 'akato@example.com', 
         'password': 'abc12345', 
     });
-    // Auth hooksの呼び出し
     const {errorMessage, handleLogin} = useAuth('/api/admin/auth', 'admin');
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     return (
         <main>
@@ -31,7 +30,7 @@ function AdminLogin() {
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
                     <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
-                            管理者ログイン
+                            {i18next.t('admin.auth.admin-login')}
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -46,9 +45,9 @@ function AdminLogin() {
                                 type='email'
                                 onChange={handleFormData}
                                 value={formData.email}
-                                label={'メールアドレス'}
+                                label={i18next.t('admin.auth.email')}
                                 error={errorMessage}
-                                placeholder='080-1234-5678'
+                                placeholder={i18next.t('admin.auth.email-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
@@ -56,15 +55,15 @@ function AdminLogin() {
                                 type='password'
                                 onChange={handleFormData}
                                 value={formData.password}
-                                label={'パスワード'}
+                                label={i18next.t('admin.auth.password')}
                                 error={errorMessage}
-                                placeholder='半角英数字8文字以上'
+                                placeholder={i18next.t('admin.auth.password-ex')}
                                 className={styles.mb_24}
                             />
-                            <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>ログイン</Button>
+                            <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>{i18next.t('admin.auth.login')}</Button>
                             <Link to={'/admin/reset_password'}>
                                 <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
-                                    パスワードをお忘れの方
+                                    {i18next.t('admin.auth.reset-link')}
                                 </Text>
                             </Link>
                         </form>

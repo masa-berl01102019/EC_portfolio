@@ -5,6 +5,7 @@ import Mask from '../../atoms/Mask/Mask';
 import Image from '../../atoms/Image/Image';
 import Button from '../../atoms/Button/Button'
 import Heading from '../../atoms/Heading/Heading';
+import useI18next from '../../context/I18nextContext';
 
 export const NotifyPopup = ({
     title = '',
@@ -13,10 +14,12 @@ export const NotifyPopup = ({
     type = 'confirm',
     onClose,
     onConfirm,
-    confirmBtnLabel = 'はい',
+    confirmBtnLabel,
     className = '',
     ...props
   }) => {
+
+  const i18next = useI18next();
 
   if(isOpen) {
     return (
@@ -27,10 +30,10 @@ export const NotifyPopup = ({
           <Text size='xl' className={styles.notify_body}>{body}</Text>
           <div className={styles.btn_area}>
              { type == 'alert' ? (
-                  <Button onClick={onClose} className={styles.close_alert_btn}>閉じる</Button>
+                  <Button onClick={onClose} className={styles.close_alert_btn}>{i18next.t('admin.close-btn')}</Button>
              ) : (
                 <>
-                  <Button onClick={onClose}>キャンセル</Button>
+                  <Button onClick={onClose}>{i18next.t('admin.cancel-btn')}</Button>
                   <Button color='accent' onClick={onConfirm}>{confirmBtnLabel}</Button>
                 </>
              )}

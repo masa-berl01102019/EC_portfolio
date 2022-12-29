@@ -11,25 +11,27 @@
   margin-bottom: 24px;
 }
 .footer_menu_area {
-  margin-bottom: 32px;
-}
-.text_center {
-  text-align: center;
+  margin-bottom: 24px;
 }
 .social_icon {
   width: 34px;
   height: 34px;
 }
+.copy_right {
+  border-top: 1px solid #fff;
+  padding-top: 16px;
+  text-align: center;
+}
 @media screen and (min-width : 768px) {
   .footer {
     text-align: center;
-    padding: 24px;
+    padding: 24px 32px 16px;
   }
   .footer_menu_area {
     display: flex;
     justify-content: space-evenly;
     width: 720px;
-    margin: 0 auto 32px;
+    margin: 0 auto 24px;
   }
   .mb_16 {
     margin-bottom: 8px;

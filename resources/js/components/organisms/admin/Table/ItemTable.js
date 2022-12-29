@@ -9,22 +9,20 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
 const ItemTable = memo(({items, className = '', deleteMethod, csvOutputMethod}) => {
 
-  // テーブルのデータに対しての操作の関心を分ける
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
-
   const [checkItemAll, setCheckItemAll] = useState(false);
-
-  // notifyContextの呼び出し
   const confirm = useNotify();
+  const i18next = useI18next();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : `選択項目${checklist.length}件を削除しますか？`,
-          confirmBtnLabel : '削除'
+          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : i18next.t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/items`, form:checklist, callback: () => setChecklist([])});
   }
@@ -32,13 +30,13 @@ const ItemTable = memo(({items, className = '', deleteMethod, csvOutputMethod}) 
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/items/csv`, 
             form:checklist 
           }); 
-        }}>CSV出力</DownloadCsvBtn>
+        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -67,25 +65,25 @@ const ItemTable = memo(({items, className = '', deleteMethod, csvOutputMethod}) 
                   />
                 )}
               </Th>
-              <Th>ID</Th>
-              <Th>編集</Th>
-              <Th>公開状況</Th>
-              <Th>品番</Th>
-              <Th>商品名</Th>
-              <Th>価格</Th>
-              <Th>原価</Th>
-              <Th>カラー展開</Th>
-              <Th>サイズ展開</Th>
-              <Th>生産国</Th>
-              <Th>混用率</Th>
-              <Th>ブランドカテゴリ</Th>
-              <Th>性別カテゴリ</Th>
-              <Th>メインカテゴリ</Th>
-              <Th>サブカテゴリ</Th>
-              <Th>タグ</Th>
-              <Th>最終更新者</Th>
-              <Th>投稿日</Th>
-              <Th>更新日</Th>
+              <Th>{i18next.t('admin.id')}</Th>
+              <Th>{i18next.t('admin.edit-link')}</Th>
+              <Th>{i18next.t('admin.published-status')}</Th>
+              <Th>{i18next.t('admin.item.product-number')}</Th>
+              <Th>{i18next.t('admin.item.item-name')}</Th>
+              <Th>{i18next.t('admin.item.price')}</Th>
+              <Th>{i18next.t('admin.item.cost')}</Th>
+              <Th>{i18next.t('admin.item.color-variation')}</Th>
+              <Th>{i18next.t('admin.item.size-variation')}</Th>
+              <Th>{i18next.t('admin.item.made-in')}</Th>
+              <Th>{i18next.t('admin.item.mixture-ratio')}</Th>
+              <Th>{i18next.t('admin.item.brand-category')}</Th>
+              <Th>{i18next.t('admin.item.gender-category')}</Th>
+              <Th>{i18next.t('admin.item.main-category')}</Th>
+              <Th>{i18next.t('admin.item.sub-category')}</Th>
+              <Th>{i18next.t('admin.item.related-tag')}</Th>
+              <Th>{i18next.t('admin.last-updated-by')}</Th>
+              <Th>{i18next.t('admin.posted-date')}</Th>
+              <Th>{i18next.t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -93,7 +91,7 @@ const ItemTable = memo(({items, className = '', deleteMethod, csvOutputMethod}) 
               <Row key={item.id} className={checklist.includes(item.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={item.id} checked={checklist.includes(item.id)} className={styles.table_check}/></Td>
                 <Td>{item.id}</Td>
-                <Td><EditLink to={`/admin/items/${item.id}/edit`}>編集</EditLink></Td>
+                <Td><EditLink to={`/admin/items/${item.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
                 <Td>{item.is_published_text}</Td>
                 <Td>{item.product_number}</Td>
                 <Td>{item.item_name}</Td>

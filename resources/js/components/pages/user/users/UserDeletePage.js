@@ -10,26 +10,22 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useSetRecoilState } from 'recoil';
 import { authUserState } from '../../../store/authState';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 function UserDeletePage() {
-    // urlの設定
-    const baseUrl = `/api/user/users/edit`;
-    // paramsの適用範囲を決めるscope名を定義
-    const model = 'USER';
-    // APIと接続して返り値を取得
-    const {data, errorMessage, deleteData} = useFetchApiData(baseUrl, model);
-    // Auth hooksの呼び出し
-    const {handleLogout} = useAuth('/api/user/auth', 'user');
-    // loginのステートをfalseにしてrouterを呼び出しリダイレクト掛ける
-    const setIsUserLogin = useSetRecoilState(authUserState);
 
-    // notifyContextの呼び出し
+    const baseUrl = `/api/user/users/edit`;
+    const model = 'USER';
+    const {data, errorMessage, deleteData} = useFetchApiData(baseUrl, model);
+    const {handleLogout} = useAuth('/api/user/auth', 'user');
+    const setIsUserLogin = useSetRecoilState(authUserState);
     const confirm = useNotify();
+    const i18next = useI18next();
 
     const handleConfirmDelete = async (id) => {
         const result = await confirm({
-            body : `本当に退会しますか？`,
-            confirmBtnLabel : 'はい'
+            body : i18next.t('user.user.delete.confirm'),
+            confirmBtnLabel : i18next.t('user.yes-btn')
         });
         result && deleteData({
             url:`/api/user/users/${id}`,
@@ -44,20 +40,20 @@ function UserDeletePage() {
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    退会の手続き
+                    {i18next.t('user.user.delete.title')}
                 </Heading>
                 <div className={styles.form_contents_area}>
                     <Text className={[styles.paragraph, styles.mb_16].join(' ')}>
-                        退会手続きは取り消すことが出来ません。<br/>
-                        下記の注意事項をご確認の上、<br/>
-                        「退会する」ボタンを押してください。
+                        {i18next.t('user.user.delete.p1')}<br/>
+                        {i18next.t('user.user.delete.p2')}<br/>
+                        {i18next.t('user.user.delete.p3')}
                     </Text>
                     <Text role='error' className={[styles.paragraph, styles.mb_8].join(' ')}>
-                        退会後は登録内容の確認はできなくなります。
+                        {i18next.t('user.user.delete.p4')}
                     </Text>
                     <Text role='error'  className={[styles.paragraph, styles.mb_32].join(' ')}>
-                        既にご注文いただきました商品は、<br/>
-                        退会後も発送を行わせていただきます。
+                        {i18next.t('user.user.delete.p5')}<br/>
+                        {i18next.t('user.user.delete.p6')}
                     </Text>
                     <div className={[styles.flex, styles.flex_column, styles.align_center].join(' ')}>
                         <Button 
@@ -66,9 +62,9 @@ function UserDeletePage() {
                             onClick={() => handleConfirmDelete(data.user.id)}
                             className={[styles.mb_16, styles.btn_max].join(' ')}
                         >
-                            退会する
+                            {i18next.t('user.user.delete.btn')}
                         </Button>
-                        <LinkBtn size='l' to={`/`} className={styles.btn_max}>退会しない</LinkBtn>
+                        <LinkBtn size='l' to={`/`} className={styles.btn_max}>{i18next.t('user.cancel-btn')}</LinkBtn>
                     </div>
                 </div>
             </Suspense>

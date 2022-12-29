@@ -8,27 +8,23 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 function SizeIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/sizes`;
-    // modelの設定
     const model = 'SIZE';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
-    // APIから取得したデータを変数に格納
     const sizes = data.sizes? data.sizes: null;
-    // 選択されたサイズのIDをuseStateで管理
     const [editableForm, setEeditableForm] = useState(null);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-    // notifyContextの呼び出し
     const confirm = useNotify();
+    const i18next = useI18next();
 
     const handleConfirmDelete = async () => {
         const result = await confirm({
-            body : `選択サイズを本当に削除しますか？`,
-            confirmBtnLabel : '削除'
+            body : i18next.t('admin.size.confirm-msg'),
+            confirmBtnLabel : i18next.t('admin.delete-btn')
         });
         result && deleteData({ url:`/api/admin/sizes/${editableForm}` });
     }
@@ -37,12 +33,12 @@ function SizeIndex() {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>サイズマスタ</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.size.index-title')}</Heading>
                     { errorMessage && <Text role='error' size='s'>{errorMessage.size_name}</Text> }
                     <div className={styles.form_area}>
                         <FormWithBtn
                             name='size_name'
-                            placeholder='サイズ名'
+                            placeholder={i18next.t('admin.size.size-ex')}
                             formInitialValue={{'size_name': ''}}
                             validateScope={'admin'}
                             validateConfigKey={'size_request'}
@@ -57,7 +53,7 @@ function SizeIndex() {
                                     { size.id === editableForm ? (
                                         <FormWithBtn
                                             name='size_name'
-                                            placeholder='サイズ名'
+                                            placeholder={i18next.t('admin.size.size-ex')}
                                             formInitialValue={{'size_name': size.size_name}}
                                             validateScope={'admin'}
                                             validateConfigKey={'size_request'}

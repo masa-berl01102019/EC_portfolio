@@ -15,7 +15,7 @@ use App\Http\Requests\User\ContactRequest;
 
 class ContactController extends Controller
 {
-    private $form_items = ['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'title', 'body'];
+    private $form_items = ['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'subject', 'message'];
 
     public function store(ContactRequest $request)
     {
@@ -30,8 +30,8 @@ class ContactController extends Controller
                 'first_name_kana' => $data['first_name_kana'],
                 'tel' => $data['tel'],
                 'email' => $data['email'],
-                'title' => $data['title'],
-                'body' => $data['body'],
+                'subject' => $data['subject'],
+                'message' => $data['message'],
             ]);
             Mail::to($contact->email)->send(new UserContactMail($contact));
             Mail::to(config('define.admin_email.to.support'))->send(new AdminContactMail($contact));

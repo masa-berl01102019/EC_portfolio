@@ -11,27 +11,21 @@ import ContactTable from '../../../organisms/admin/Table/ContactTable';
 import ContactSidebar from '../../../organisms/admin/SideBar/ContactSidebar';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
+import useI18next from '../../../context/I18nextContext';
 
 function ContactIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/contacts`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'CONTACT';
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
     const contacts = data.data? data.data: null;
-    // 検索タブのステータス
     const [open, setOpen] = useState(false);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('CONTACTにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'last_name_kana' : '', 'created_at' : '', 'updated_at' : '' },
@@ -51,9 +45,9 @@ function ContactIndex() {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                お問い合わせ一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                                {i18next.t('admin.contact.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
                             </Heading>
-                            <FilterSortBtn onClick={() => setOpen(!open)}>詳細検索</FilterSortBtn>
+                            <FilterSortBtn onClick={() => setOpen(!open)}>{i18next.t('admin.detail-search')}</FilterSortBtn>
                         </div>
 
                         <ContactTable contacts={contacts} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />

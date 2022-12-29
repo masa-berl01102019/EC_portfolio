@@ -11,7 +11,7 @@
 　{{ $contact->email }}
 
 【お問い合わせタイトル】
-　{{ $contact->title }}
+　{{ $contact->subject }}
 
 【お問い合わせ内容】
-　{{ $contact->body }}
+　{{ $contact->message }}

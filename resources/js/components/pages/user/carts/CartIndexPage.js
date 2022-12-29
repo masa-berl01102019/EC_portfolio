@@ -13,35 +13,27 @@ import InputRadio from '../../../atoms/InputRadio/InputRadio';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import useValidation from '../../../hooks/useValidation';
 import Button from '../../../atoms/Button/Button';
+import useI18next from '../../../context/I18nextContext';
 
 function CartIndexPage() {
-    // urlの設定
+
     const baseUrl = `/api/user/carts`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'CART';
-    // APIと接続して返り値を取得
     const {data, errorMessage, updateData, deleteData} = useFetchApiData(baseUrl, model);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {setFormData, handleFormData, handleFormDate}] = useForm({
         'total_amount': 0,
         'payment_method': 0, // 0: クレジットカード 1: 代引き * 第一フェーズでの支払い方法はクレジットカードのみ
         'delivery_date': null,
         'delivery_time': ''
     });
-    // フロント用バリデーション
     const {valid, setValid, validation} = useValidation(formData, 'user', 'order_request');
-    // APIから取得したデータを変数に格納
-    const carts = data.data? data.data: null;
-    const user = data.user? data.user: null;
-    // 合計金額の計算
+    const {data:carts, user} = data;
     const amount = carts.length > 0 ? carts.map(item => item.included_tax_price * item.quantity).reduce((prev,next) => prev + next) : 0;
-    // 在庫状況を管理
     const stock = carts.map(item => item.stock);
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
+    const i18next = useI18next();
 
     useEffect(() => {
-        // 合計金額をセット
         if(carts.length > 0) {
             setFormData({
                 ...formData,
@@ -53,13 +45,13 @@ function CartIndexPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>注文情報入力</Heading>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.cart.index.title')}</Heading>
                 <div className={[styles.flex, styles.justify_center, styles.mb_32].join(' ')}>
-                    <Text role='title'>注文情報入力</Text>
+                    <Text role='title'>{i18next.t('user.cart.progress-input')}</Text>
                     <Text className={[styles.mrl_8, styles.disable].join(' ')}>▶</Text>
-                    <Text className={styles.disable}>注文内容確認</Text>
+                    <Text className={styles.disable}>{i18next.t('user.cart.progress-confirm')}</Text>
                     <Text className={[styles.mrl_8, styles.disable].join(' ')}>▶</Text>
-                    <Text className={styles.disable}>注文完了</Text>
+                    <Text className={styles.disable}>{i18next.t('user.cart.progress-complete')}</Text>
                 </div>
                 <div className={styles.form_contents_area}>
                     {   valid && validation.fails() && 
@@ -87,8 +79,8 @@ function CartIndexPage() {
                         </div>
                     }
                     <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                        <Text role='title' className={styles.bold}>ショッピングカート</Text>
-                        <Text role='title' className={styles.bold}>{carts ? carts.length+'点' : '0点'}</Text>
+                        <Text role='title' className={styles.bold}>{i18next.t('user.cart.shopping-cart')}</Text>
+                        <Text role='title' className={styles.bold}>{i18next.t('user.cart.list-num', {count: carts.length})}</Text>
                     </div>
                     <div className={styles.mb_32}>
                     {   carts &&
@@ -115,18 +107,18 @@ function CartIndexPage() {
                     </div>
                     { stock.includes(0) && 
                         <Text size='l' role='error' className={[styles.paragraph, styles.mb_32].join(' ')}>
-                            在庫なしの商品が含まれております。<br/>
-                            決済をご希望の際には在庫なしの商品を<br/>
-                            カートから削除して下さい。
+                            {i18next.t('user.cart.index.error1')}<br/>
+                            {i18next.t('user.cart.index.error2')}<br/>
+                            {i18next.t('user.cart.index.error3')}
                         </Text>
                     }
                     {   carts.length > 0 && !stock.includes(0) &&
                         <>
                             <fieldset className={styles.field_area}>
                                 <legend className={[styles.flex, styles.align_center, styles.prl_8].join(' ')}>
-                                    <Text role='title' className={[styles.bold, styles.mr_4].join(' ')}>お届け先</Text>
+                                    <Text role='title' className={[styles.bold, styles.mr_4].join(' ')}>{i18next.t('user.cart.delivery-place')}</Text>
                                     <Text>(　</Text>
-                                    <Link to={`/users/edit`}>編集</Link>
+                                    <Link to={`/users/edit`}>{i18next.t('user.edit-link')}</Link>
                                     <Text>　)</Text>
                                 </legend>
                                 <Text className={styles.mb_8}>{user.delivery_post_code_text ? user.delivery_post_code_text : user.post_code_text}</Text>
@@ -135,10 +127,10 @@ function CartIndexPage() {
                                 <Text>{user.full_name}</Text>
                             </fieldset>
                             <fieldset className={styles.field_area}>
-                                <legend><Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>配達日時</Text></legend>
+                                <legend><Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.delivery-date')}</Text></legend>
                                 <div className={styles.mb_8}>
                                     <label htmlFor='delivery_date' className={[styles.flex, styles.align_center].join(' ')}>
-                                        <Text className={styles.mr_8}>配達ご希望日</Text>
+                                        <Text className={styles.mr_8}>{i18next.t('user.cart.preferred-delivery-day')}</Text>
                                         <DatePicker 
                                             name={'delivery_date'} 
                                             value={formData.delivery_date} 
@@ -149,14 +141,14 @@ function CartIndexPage() {
                                     </label>
                                 </div>
                                 <label htmlFor='delivery_time' className={[styles.flex, styles.align_center].join(' ')}>
-                                    <Text className={styles.mr_8}>ご希望時間帯</Text>
+                                    <Text className={styles.mr_8}>{i18next.t('user.cart.preferred-delivery-time')}</Text>
                                     <Selectbox 
                                         name="delivery_time" 
                                         value={formData.delivery_time} 
                                         onChange={handleFormData} 
                                         className={styles.w_170p}
                                     >
-                                        <option value={''}>指定しない</option>
+                                        <option value={''}>{i18next.t('user.not-set')}</option>
                                         <option value={'8:00 - 12:00'}>8:00 - 12:00</option>
                                         <option value={'14:00 - 16:00'}>14:00 - 16:00</option>
                                         <option value={'16:00 - 18:00'}>16:00 - 18:00</option>
@@ -166,7 +158,7 @@ function CartIndexPage() {
                             </fieldset>
                             <fieldset className={styles.field_area}>
                                 <legend>
-                                    <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>支払い方法</Text>
+                                    <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.payment-method')}</Text>
                                 </legend>
                                 <label className={[styles.flex, styles.align_center].join(' ')}>
                                     <InputRadio 
@@ -175,7 +167,7 @@ function CartIndexPage() {
                                         value={0} 
                                         checked={formData.payment_method == 0}
                                     />
-                                    <Text className={styles.ml_8}>クレジットカード</Text>
+                                    <Text className={styles.ml_8}>{i18next.t('user.cart.payment-credit')}</Text>
                                 </label>
                                 {/* <label className={[styles.flex, styles.align_center].join(' ')}>
                                     <InputRadio 
@@ -196,22 +188,22 @@ function CartIndexPage() {
                             </fieldset>
                             <fieldset className={styles.field_area}>
                                 <legend>
-                                    <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>ご請求金額</Text>
+                                    <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.bill-amount')}</Text>
                                 </legend>
                                 <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                                    <Text>商品合計(税込)</Text>
+                                    <Text>{i18next.t('user.cart.subtotal-amount')}</Text>
                                     <Text>￥{Number(formData.total_amount).toLocaleString()}</Text>
                                 </div>
                                 <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                                    <Text>送料</Text>
+                                    <Text>{i18next.t('user.cart.postage')}</Text>
                                     <Text>￥0</Text>
                                 </div>
                                 <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                                    <Text>手数料</Text>
+                                    <Text>{i18next.t('user.cart.commission-fee')}</Text>
                                     <Text>￥{Number(formData.payment_method == 1 ? 330 : 0).toLocaleString()}</Text>
                                 </div>
                                 <div className={[styles.flex, styles.justify_between].join(' ')}>
-                                    <Text>合計金額(税込)</Text>
+                                    <Text>{i18next.t('user.cart.total-amount')}</Text>
                                     <Text>￥{Number(formData.payment_method == 1 ? formData.total_amount + 330 : formData.total_amount).toLocaleString()}</Text>
                                 </div>
                             </fieldset>
@@ -227,10 +219,10 @@ function CartIndexPage() {
                                     history.push('/carts/confirm', formData);
                                 }
                             }}>
-                                決済内容確認に進む
+                                {i18next.t('user.cart.index.go-btn')}
                             </Button>
                         }
-                        <LinkBtn size='l' to={'/'} style={{'width' : '100%'}}>ショッピングを続ける</LinkBtn>
+                        <LinkBtn size='l' to={'/'} style={{'width' : '100%'}}>{i18next.t('user.cart.index.back-btn')}</LinkBtn>
                     </div>
                 </div>
             </Suspense>

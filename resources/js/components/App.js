@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NotifyProvider } from './context/NotifyContext';
 import { ToastifyProvider } from './context/ToastifyContext';
+import { I18nextProvider } from './context/I18nextContext';
 
 
 // React Query will consider cached data as stale. Stale queries are re-fetched automatically in the background when:
@@ -34,20 +35,22 @@ const queryClient = new QueryClient({
 function App() {
     return (
         <ErrorBoundary>
-            <RecoilRoot>
-                <CookiesProvider>
-                    <StripeProvider>
-                        <NotifyProvider>
-                            <ToastifyProvider>
-                                <QueryClientProvider client={queryClient}>
-                                    <Router />
-                                    <ReactQueryDevtools initialIsOpen={false} />
-                                </QueryClientProvider>
-                            </ToastifyProvider>
-                        </NotifyProvider>
-                    </StripeProvider>
-                </CookiesProvider>
-            </RecoilRoot>
+            <I18nextProvider>
+                <RecoilRoot>
+                    <CookiesProvider>
+                        <StripeProvider>
+                            <NotifyProvider>
+                                <ToastifyProvider>
+                                    <QueryClientProvider client={queryClient}>
+                                        <Router />
+                                        <ReactQueryDevtools initialIsOpen={false} />
+                                    </QueryClientProvider>
+                                </ToastifyProvider>
+                            </NotifyProvider>
+                        </StripeProvider>
+                    </CookiesProvider>
+                </RecoilRoot>
+            </I18nextProvider>
         </ErrorBoundary>
     )
 }

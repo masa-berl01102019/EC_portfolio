@@ -8,32 +8,25 @@ import { paramState } from '../../../store/paramState';
 import Heading from '../../../atoms/Heading/Heading';
 import FilterSortBtn from '../../../molecules/IconBtn/FilterSortBtn';
 import AdminTable from '../../../organisms/admin/Table/AdminTable';
-import Text from '../../../atoms/Text/Text';
 import AdminSidebar from '../../../organisms/admin/SideBar/AdminSidebar';
 import CreateLink from '../../../molecules/IconLink/CreateLink';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
+import useI18next from '../../../context/I18nextContext';
 
 function AdminIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/admins`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'ADMIN';
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
     const admins = data.data? data.data: null;
-    // 検索タブのステータス
     const [open, setOpen] = useState(false);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('ADMINにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'last_name_kana' : '', 'created_at' : '', 'updated_at' : '' },
@@ -52,11 +45,11 @@ function AdminIndex() {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                管理者一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                                {i18next.t('admin.admin.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
                             </Heading>
                             <div className={[styles.flex, styles.btn_area].join(' ')}>
-                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
-                                <CreateLink to="/admin/admins/create">新規登録</CreateLink>
+                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{i18next.t('admin.detail-search')}</FilterSortBtn>
+                                <CreateLink to="/admin/admins/create">{i18next.t('admin.add-new')}</CreateLink>
                             </div>
                         </div>
 

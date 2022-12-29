@@ -3,29 +3,32 @@ import styles from './styles.module.css';
 import {TableHeadCell as Th} from '../../../atoms/TableHeadCell/TableHeadCell';
 import {TableBodyCell as Td} from '../../../atoms/TableBodyCell/TableBodyCell';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
+import useI18next from '../../../context/I18nextContext';
 
 const MeasurementTable = ({measurements, sizes, className = '', ...props}) => {
+
+  const i18next = useI18next();
 
   return (
     <div {...props}>
       <table className={[styles.table, className].join(' ')}>
         <thead>
           <Row>
-            <Th className={styles.th}>サイズ</Th>
-            <Th className={styles.th}>身幅</Th>
-            <Th className={styles.th}>肩幅</Th>
-            <Th className={styles.th}>裄丈</Th>
-            <Th className={styles.th}>袖丈</Th>
-            <Th className={styles.th}>着丈</Th>
-            <Th className={styles.th}>ウエスト</Th>
-            <Th className={styles.th}>ヒップ</Th>
-            <Th className={styles.th}>股上</Th>
-            <Th className={styles.th}>股下</Th>
-            <Th className={styles.th}>わたり</Th>
-            <Th className={styles.th}>パンツ総丈</Th>
-            <Th className={styles.th}>スカート丈</Th>
-            <Th className={styles.th}>裾幅</Th>
-            <Th className={styles.th}>重量</Th>
+            <Th className={styles.th}>{i18next.t('user.item.size')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.width')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.shoulder-width')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.raglan-sleeve-length')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.sleeve-length')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.length')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.waist')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.hip')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.rise')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.inseam')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.thigh-width')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.outseam')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.sk-length')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.hem-width')}</Th>
+            <Th className={styles.th}>{i18next.t('user.item.weight')}</Th>
           </Row>
         </thead>
         <tbody>

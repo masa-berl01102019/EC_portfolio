@@ -9,15 +9,14 @@ import GlobalMenu from '../GlobalMenu/GlobalMenu'
 import useAuth from '../../../hooks/useAuth';
 import { CircularProgress } from '@material-ui/core';
 import Text from '../../../atoms/Text/Text';
+import useI18next from '../../../context/I18nextContext';
 
 export const Header = ({...props}) => {
     
-    // login状態のステータスを取得
     const [isAdminLogin, setIsAdminLogin] = useRecoilState(authAdminState);
-    // メニューの状態を管理
     const [openAdminMenu, setOpenAdminMenu] = useRecoilState(menuAdminState);
-    // authの管理
     const {data, errorMessage, handleLogout} = useAuth(`/api/admin/auth`, 'admin');
+    const i18next = useI18next();
 
     return (
         <Suspense fallback={<CircularProgress disableShrink />} >
@@ -33,7 +32,7 @@ export const Header = ({...props}) => {
                                 </li>
                                 { !isAdminLogin ? (
                                     <Link to="/admin/login" className={[styles.text, styles.ml].join(' ')}>
-                                        <li>ログイン</li>
+                                        <li>{i18next.t('admin.header.login')}</li>
                                     </Link>
                                 ) : (
                                     <>
@@ -44,7 +43,7 @@ export const Header = ({...props}) => {
                                                 url: `/api/admin/logout`, 
                                                 callback: () => setIsAdminLogin(false) 
                                             })
-                                        }}  className={[styles.text, styles.ml].join(' ')}>ログアウト</li>
+                                        }}  className={[styles.text, styles.ml].join(' ')}>{i18next.t('admin.header.logout')}</li>
                                     </>
                                 )}
                             </ul>

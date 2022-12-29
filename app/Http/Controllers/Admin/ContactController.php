@@ -106,8 +106,8 @@ class ContactController extends Controller
                     $contact->tel,
                     $contact->email,
                     $contact->created_at,
-                    $contact->title,
-                    $contact->body,
+                    $contact->subject,
+                    $contact->message,
                     $contact->response_status_text,
                     $contact->admin ? $contact->admin->full_name . '(' . $contact->admin->full_name_kana . ')' : null,
                     $contact->memo ? $contact->memo : null,
@@ -115,7 +115,7 @@ class ContactController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '会員ID', '氏名', '氏名(カナ)', '電話番号', 'メールアドレス', 'お問い合わせ日', 'タイトル', 'お問い合わせ内容', '対応状況', '対応者', '備考欄', '対応日'];
+            $csv_header = ['No', 'ID', '会員ID', '氏名', '氏名(カナ)', '電話番号', 'メールアドレス', 'お問い合わせ日', '件名', '本文', '対応状況', '対応者', '備考欄', '対応日'];
             return csvExport($csv_body, $csv_header, 'お問い合わせ情報.csv');
         } catch (Throwable $e) {
             Log::error($e->getMessage());

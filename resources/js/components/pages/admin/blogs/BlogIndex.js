@@ -12,31 +12,21 @@ import BlogSidebar from '../../../organisms/admin/SideBar/BlogSidebar';
 import CreateLink from '../../../molecules/IconLink/CreateLink';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
+import useI18next from '../../../context/I18nextContext';
 
 function BlogIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/blogs`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'BLOG';
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const blogs = data.data? data.data: null;
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const tags = data.tags? data.tags: null;
-    const items = data.items? data.items: null;
-    // 検索タブのステータス
+    const {data:blogs, brands, gender_categories, tags, items} = data;
     const [open, setOpen] = useState(false);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('BLOGにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'posted_at' : '', 'modified_at' : '' },
@@ -65,11 +55,11 @@ function BlogIndex() {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                ブログ一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                                {i18next.t('admin.blog.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
                             </Heading>
                             <div className={[styles.flex, styles.btn_area].join(' ')}>
-                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
-                                <CreateLink to="/admin/blogs/create">新規登録</CreateLink>
+                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{i18next.t('admin.detail-search')}</FilterSortBtn>
+                                <CreateLink to="/admin/blogs/create">{i18next.t('admin.add-new')}</CreateLink>
                             </div>
                         </div>
                         

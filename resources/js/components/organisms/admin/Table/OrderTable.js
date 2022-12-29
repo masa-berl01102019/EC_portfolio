@@ -9,22 +9,20 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
 const OrderTable = memo(({orders, className = '', deleteMethod, csvOutputMethod}) => {
 
-  // テーブルのデータに対しての操作の関心を分ける
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
-
   const [checkItemAll, setCheckItemAll] = useState(false);
-
-  // notifyContextの呼び出し
   const confirm = useNotify();
+  const i18next = useI18next();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : `選択項目${checklist.length}件を削除しますか？`,
-          confirmBtnLabel : '削除'
+          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : i18next.t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/orders`, form:checklist, callback: () => setChecklist([])});
   }
@@ -33,13 +31,13 @@ const OrderTable = memo(({orders, className = '', deleteMethod, csvOutputMethod}
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
         {/* API側の調整が必要な為 */}
-        {/* <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn> */}
+        {/* <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn> */}
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/orders/csv`, 
             form:checklist 
           }); 
-        }}>CSV出力</DownloadCsvBtn>
+        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -68,21 +66,21 @@ const OrderTable = memo(({orders, className = '', deleteMethod, csvOutputMethod}
                   />
                 )}
               </Th>
-              <Th>ID</Th>
-              <Th>編集</Th>
-              <Th>購入日</Th>
-              <Th>購入金額</Th>
-              <Th>支払方法</Th>
-              <Th>希望配達日</Th>
-              <Th>希望配達時間帯</Th>
-              <Th>入金状況</Th>
-              <Th>出荷状況</Th>
-              <Th>購入者(カナ)</Th>
-              <Th>連絡先</Th>
-              <Th>メールアドレス</Th>
-              <Th>配送先 郵便番号</Th>
-              <Th>配送先 住所</Th>
-              <Th>ステータス更新日</Th>
+              <Th>{i18next.t('admin.id')}</Th>
+              <Th>{i18next.t('admin.edit-link')}</Th>
+              <Th>{i18next.t('admin.order.purchase-date')}</Th>
+              <Th>{i18next.t('admin.order.purchase-amount')}</Th>
+              <Th>{i18next.t('admin.order.payment-method')}</Th>
+              <Th>{i18next.t('admin.order.preferred-delivery-day')}</Th>
+              <Th>{i18next.t('admin.order.preferred-delivery-time')}</Th>
+              <Th>{i18next.t('admin.order.payment-status')}</Th>
+              <Th>{i18next.t('admin.order.delivery-status')}</Th>
+              <Th>{i18next.t('admin.order.name')}</Th>
+              <Th>{i18next.t('admin.order.tel')}</Th>
+              <Th>{i18next.t('admin.order.email')}</Th>
+              <Th>{i18next.t('admin.order.delivery-postcode')}</Th>
+              <Th>{i18next.t('admin.order.delivery-address')}</Th>
+              <Th>{i18next.t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -90,7 +88,7 @@ const OrderTable = memo(({orders, className = '', deleteMethod, csvOutputMethod}
               <Row key={order.id} className={checklist.includes(order.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={order.id} checked={checklist.includes(order.id)} className={styles.table_check}/></Td>
                 <Td>{order.id}</Td>
-                <Td><EditLink to={`/admin/orders/${order.id}/edit`}>編集</EditLink></Td>
+                <Td><EditLink to={`/admin/orders/${order.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
                 <Td>{order.created_at}</Td>
                 <Td>{order.total_amount_text}</Td>
                 <Td>{order.payment_method_text}</Td>

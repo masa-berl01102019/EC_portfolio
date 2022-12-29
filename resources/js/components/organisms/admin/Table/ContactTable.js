@@ -9,22 +9,20 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
 const ContactTable = memo(({contacts, className = '', deleteMethod, csvOutputMethod}) => {
 
-  // テーブルのデータに対しての操作の関心を分ける
-  const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
-
-  const [checkItemAll, setCheckItemAll] = useState(false);
-
-    // notifyContextの呼び出し
+    const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
+    const [checkItemAll, setCheckItemAll] = useState(false);
     const confirm = useNotify();
+    const i18next = useI18next();
 
     const handleConfirmDelete = async () => {
         const result = await confirm({
-            body : `選択項目${checklist.length}件を削除しますか？`,
-            confirmBtnLabel : '削除'
+            body : i18next.t('admin.delete-confirm', {count: checklist.length}),
+            confirmBtnLabel : i18next.t('admin.delete-btn')
         });
         result && deleteMethod({url:`/api/admin/contacts`, form:checklist, callback: () => setChecklist([])});
     }
@@ -32,13 +30,13 @@ const ContactTable = memo(({contacts, className = '', deleteMethod, csvOutputMet
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/contacts/csv`, 
             form:checklist 
           }); 
-        }}>CSV出力</DownloadCsvBtn>
+        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -67,20 +65,20 @@ const ContactTable = memo(({contacts, className = '', deleteMethod, csvOutputMet
                   />
                 )}
               </Th>
-              <Th>ID</Th>
-              <Th>編集</Th>
-              <Th>会員ID</Th>
-              <Th>氏名</Th>
-              <Th>氏名(カナ)</Th>
-              <Th>電話番号</Th>
-              <Th>メールアドレス</Th>
-              <Th>お問い合わせ日</Th>
-              <Th>タイトル</Th>
-              <Th>お問い合わせ内容</Th>
-              <Th>対応状況</Th>
-              <Th>対応者</Th>
-              <Th>備考欄</Th>
-              <Th>対応日</Th>
+              <Th>{i18next.t('admin.id')}</Th>
+              <Th>{i18next.t('admin.edit-link')}</Th>
+              <Th>{i18next.t('admin.contact.user-id')}</Th>
+              <Th>{i18next.t('admin.contact.name')}</Th>
+              <Th>{i18next.t('admin.contact.name-kana')}</Th>
+              <Th>{i18next.t('admin.contact.tel')}</Th>
+              <Th>{i18next.t('admin.contact.email')}</Th>
+              <Th>{i18next.t('admin.contact.contacted-date')}</Th>
+              <Th>{i18next.t('admin.contact.subject')}</Th>
+              <Th>{i18next.t('admin.contact.message')}</Th>
+              <Th>{i18next.t('admin.contact.response-status')}</Th>
+              <Th>{i18next.t('admin.contact.admin-name')}</Th>
+              <Th>{i18next.t('admin.contact.memo')}</Th>
+              <Th>{i18next.t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -88,15 +86,15 @@ const ContactTable = memo(({contacts, className = '', deleteMethod, csvOutputMet
               <Row key={contact.id} className={checklist.includes(contact.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={contact.id} checked={checklist.includes(contact.id)} className={styles.table_check}/></Td>
                 <Td>{contact.id}</Td>
-                <Td><EditLink to={`/admin/contacts/${contact.id}/edit`}>編集</EditLink></Td>
+                <Td><EditLink to={`/admin/contacts/${contact.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
                 <Td>{contact.user_id}</Td>
                 <Td>{contact.full_name}</Td>
                 <Td>{contact.full_name_kana}</Td>
                 <Td>{contact.tel}</Td>
                 <Td>{contact.email}</Td>
                 <Td>{contact.created_at}</Td>
-                <Td>{contact.title}</Td>
-                <Td>{contact.body}</Td>
+                <Td>{contact.subject}</Td>
+                <Td>{contact.message}</Td>
                 <Td>{contact.response_status_text}</Td>
                 <Td>{contact.admin_full_name && contact.admin_full_name_kana && (`${contact.admin_full_name}(${contact.admin_full_name_kana})`)}</Td>
                 <Td>{contact.memo}</Td>

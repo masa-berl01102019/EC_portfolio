@@ -17,11 +17,11 @@
   </p>
   <p style="width: 100%">
     【お問い合わせタイトル】<br>
-    {{ $contact->title }}<br>
+    {{ $contact->subject }}<br>
   </p>
   <p style="width: 100%">
     【お問い合わせ内容】<br>
-    {{ $contact->body }}<br>
+    {{ $contact->message }}<br>
   </p>
 </body>
 

@@ -7,34 +7,35 @@ import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputText from '../../../atoms/InputText/InputText';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
 const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod, handleFormMethod}) => {
 
-  // notifyContextの呼び出し
   const alert = useNotify();
+  const i18next = useI18next();
 
   return (
     <>
       <table className={[styles.table, className].join(' ')}>
         <thead>
           <Row>
-            <Th>削除</Th>
-            <Th>サイズ</Th>
-            <Th>身幅</Th>
-            <Th>肩幅</Th>
-            <Th>裄丈</Th>
-            <Th>袖丈</Th>
-            <Th>着丈</Th>
-            <Th>ウエスト</Th>
-            <Th>ヒップ</Th>
-            <Th>股上</Th>
-            <Th>股下</Th>
-            <Th>わたり</Th>
-            <Th>パンツ総丈</Th>
-            <Th>スカート丈</Th>
-            <Th>裾幅</Th>
-            <Th>重量</Th>
+            <Th>{i18next.t('admin.delete-btn')}</Th>
+            <Th>{i18next.t('admin.item.size')}</Th>
+            <Th>{i18next.t('admin.item.width')}</Th>
+            <Th>{i18next.t('admin.item.shoulder-width')}</Th>
+            <Th>{i18next.t('admin.item.raglan-sleeve-length')}</Th>
+            <Th>{i18next.t('admin.item.sleeve-length')}</Th>
+            <Th>{i18next.t('admin.item.length')}</Th>
+            <Th>{i18next.t('admin.item.waist')}</Th>
+            <Th>{i18next.t('admin.item.hip')}</Th>
+            <Th>{i18next.t('admin.item.rise')}</Th>
+            <Th>{i18next.t('admin.item.inseam')}</Th>
+            <Th>{i18next.t('admin.item.thigh-width')}</Th>
+            <Th>{i18next.t('admin.item.outseam')}</Th>
+            <Th>{i18next.t('admin.item.sk-length')}</Th>
+            <Th>{i18next.t('admin.item.hem-width')}</Th>
+            <Th>{i18next.t('admin.item.weight')}</Th>
           </Row>
         </thead>
         <tbody>
@@ -48,20 +49,20 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                           deleteMethod('measurements', index, list.id)
                         } else {
                           alert({
-                            body : '全ての行は削除出来ません。',
+                            body : i18next.t('admin.table-alert'),
                             type: 'alert'
                           });
                         }
                       }} 
-                      style={{'maxWidth': '50px'}}
+                      style={{'maxWidth': '65px'}}
                     >
-                      削除
+                      {i18next.t('admin.delete-btn')}
                     </Button>
                   </Td>
                   <Td>
                     <Selectbox name='size_id' value={list.size_id} onChange={ e => { handleFormMethod('measurements', index, e) }} className={styles.table_row_form}>
                         {/* フォーム追加以外未設定の表示を制限 */}
-                        {   list.size_id == '' && <option value={''}>未設定</option>}
+                        {   list.size_id == '' && <option value={''}>{i18next.t('admin.not-set')}</option>}
                         {   sizes && sizes.map((size) => (
                                 <option key={size.id} value={size.id}>{size.size_name}</option>
                             ))
@@ -74,7 +75,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='width'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.width} 
-                      placeholder='数値'
+                      placeholder='55'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -84,7 +85,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='shoulder_width'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.shoulder_width} 
-                      placeholder='数値'
+                      placeholder='50.5'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -94,7 +95,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='raglan_sleeve_length'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.raglan_sleeve_length} 
-                      placeholder='数値'
+                      placeholder='70'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -104,7 +105,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='sleeve_length'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.sleeve_length} 
-                      placeholder='数値'
+                      placeholder='57.5'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -114,17 +115,17 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='length'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.length} 
-                      placeholder='数値'
+                      placeholder='67'
                       className={styles.table_row_form2}
                     />
-                  </Td>
+                  </Td>    
                   <Td>
                     <InputText 
                       type='number'
                       name='waist'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.waist}
-                      placeholder='数値'
+                      placeholder='77'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -134,7 +135,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='hip'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.hip}
-                      placeholder='数値'
+                      placeholder='97'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -144,7 +145,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='rise'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.rise}
-                      placeholder='数値'
+                      placeholder='29'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -154,7 +155,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='inseam'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.inseam}
-                      placeholder='数値'
+                      placeholder='61'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -164,7 +165,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='thigh_width'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.thigh_width}
-                      placeholder='数値'
+                      placeholder='59'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -174,7 +175,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='outseam'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.outseam}
-                      placeholder='数値'
+                      placeholder='90'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -184,7 +185,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='sk_length'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.sk_length}
-                      placeholder='数値'
+                      placeholder='88'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -194,7 +195,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='hem_width'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.hem_width}
-                      placeholder='数値'
+                      placeholder='23'
                       className={styles.table_row_form2}
                     />
                   </Td>
@@ -204,7 +205,7 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                       name='weight'
                       onBlur={ e => handleFormMethod('measurements', index, e) }
                       value={list.weight}
-                      placeholder='数値'
+                      placeholder='150'
                       className={styles.table_row_form2}
                     />
                   </Td>

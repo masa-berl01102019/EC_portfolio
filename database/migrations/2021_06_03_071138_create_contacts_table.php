@@ -25,8 +25,8 @@ class CreateContactsTable extends Migration
             $table->string('first_name_kana', 25)->nullable();
             $table->string('tel', 15);
             $table->string('email', 100);
-            $table->string('title', 255);
-            $table->text('body');
+            $table->string('subject', 255);
+            $table->text('message');
             $table->unsignedTinyInteger('response_status')->default(0); // 0~255 0: 未対応 1: 対応中 2: 対応済
             $table->text('memo')->nullable();
             $table->timestamps(); // dateTime型の作成日時と更新日時を生成

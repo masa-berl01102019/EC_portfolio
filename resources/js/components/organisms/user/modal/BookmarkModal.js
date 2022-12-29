@@ -6,6 +6,7 @@ import Button from '../../../atoms/Button/Button';
 import BookmarkBtn from '../../../molecules/IconBtn/BookmarkBtn';
 import styles from './styles.module.css';
 import CompletePopup from '../../../molecules/Popup/CompletePopup';
+import useI18next from '../../../context/I18nextContext';
 
 const BookmarkModal = ({
     item,
@@ -16,6 +17,7 @@ const BookmarkModal = ({
   }) => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const i18next = useI18next();
 
     return (
       <Mask>
@@ -26,7 +28,7 @@ const BookmarkModal = ({
                 <div className={styles.img_area}>
                     <Image 
                         src={sku.img ? sku.img : '/img/no_image.png'} 
-                        alt="商品画像" 
+                        alt="item image" 
                         style={{'width' : '50px', 'marginRight': '8px'}} 
                     />
                     <Text>{sku.color_name}</Text>
@@ -38,7 +40,7 @@ const BookmarkModal = ({
                             { sizes.filter((size) => size.id == sku_item.size_id).map(el => (
                                 <Text tag='span' key={el.id} className={[styles.text_height, styles.mr_8].join(' ')}>{el.size_name}</Text>
                             ))}
-                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? '在庫有り': '在庫無し'}</Text>
+                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? i18next.t('user.in-stock') : i18next.t('user.sold-out')}</Text>
                         </span>
                         <BookmarkBtn 
                           onClick={() => {
@@ -52,17 +54,17 @@ const BookmarkModal = ({
                           disabled={item.bookmark_items.includes(sku_item.id)}
                           className={styles.bookmark_btn_width}
                         >
-                          {item.bookmark_items.includes(sku_item.id) ? 'お気に入り登録済' : 'お気に入り追加'}
+                          {item.bookmark_items.includes(sku_item.id) ? i18next.t('user.bookmark.registered') : i18next.t('user.bookmark.register')}
                         </BookmarkBtn>
                     </li>
                   )}
                 </ul>
               </div>
             )}
-            <Button className={styles.close_btn} onClick={closeMethod} >閉じる</Button>
+            <Button className={styles.close_btn} onClick={closeMethod} >{i18next.t('user.close-btn')}</Button>
           </div>
       ) : (
-        <CompletePopup isOpen={true}>お気に入りに追加しました</CompletePopup>
+        <CompletePopup isOpen={true}>{i18next.t('user.bookmark.done')}</CompletePopup>
       )}
       </Mask>
     );

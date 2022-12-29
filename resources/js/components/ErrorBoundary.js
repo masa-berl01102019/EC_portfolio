@@ -5,6 +5,7 @@ import Text from './atoms/Text/Text';
 // Reactのデフォルトではエラー発生時は全てのコンポーネントが強制的にアンマウントされるため画面が真っ白になる
 // Error Boundaryはコンポーネントでエラーが発生した場合にフォールバック(代替表示)を提供する仕組み
 // Error Boundaryはクラスコンポーネントとして実装される ＊現時点ではHooks未対応
+// TODO: Errorの全般のmessageをどうするか？要検討
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -40,13 +41,13 @@ class ErrorBoundary extends React.Component {
                 return(
                     <div style={{'width': '90%', 'margin': '90px auto', 'textAlign': 'center'}}>
                         <Heading tag='h1' tag_style='h1' style={{'marginBottom': '32px'}}>
-                            アプリケーションエラー
+                            Application error
                         </Heading>
-                        <Text size='l'style={{'marginBottom': '24px'}}>以下の原因が挙げられます</Text>
+                        <Text size='l'style={{'marginBottom': '24px'}}>There might be cause of below message.</Text>
                         <Text style={{'marginBottom': '24px'}}>
                             ・{(this.state.error?.response?.data?.message) ? this.state.error?.response?.data?.message : this.state.error?.message}
                         </Text>
-                        <Text size='l'>ブラウザの再読み込みを行ってください</Text>
+                        <Text size='l'>Please reload your browser again.</Text>
                     </div>
                 );
             }

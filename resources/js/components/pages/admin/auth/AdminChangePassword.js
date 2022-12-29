@@ -9,20 +9,18 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function AdminChangePassword(props) {
 
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
         'uuid': props.match.params.uuid,
         'password': null
     });
-    // Auth hooksの呼び出し
     const {errorMessage, handleChangePassword } = useAuth('/api/admin/auth', 'admin');
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     return (
         <main className={styles.mt_40}>
@@ -30,7 +28,7 @@ function AdminChangePassword(props) {
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
                     <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
-                            管理者パスワード変更
+                            {i18next.t('admin.auth.admin-change-password')}
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -45,13 +43,13 @@ function AdminChangePassword(props) {
                                 type={'password'}
                                 onChange={handleFormData}
                                 value={formData.password}
-                                label={'パスワード'}
+                                label={i18next.t('admin.auth.password')}
                                 error={errorMessage}
-                                placeholder='半角英数字8文字以上'
+                                placeholder={i18next.t('admin.auth.password-ex')}
                                 className={styles.mb_24}
                             />
                             <Button size='l' color='primary' type="submit" className={[styles.mb_24, styles.w_100].join(' ')}>
-                                パスワード変更
+                                {i18next.t('admin.auth.change-btn')}
                             </Button>
                         </form>
                     </div>

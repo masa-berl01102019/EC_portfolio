@@ -32,8 +32,8 @@ class ContactRequest extends FormRequest
             'first_name_kana' => ['nullable', 'string', 'max:25', new Kana],
             'tel' => ['required', 'string', new JapanesePhoneNumber, 'max:15'],
             'email' => 'required|email:strict,dns,spoof|max:100',
-            'title' => 'required|string|max:255',
-            'body' => 'required|string'
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string'
         ];
     }
 
@@ -46,8 +46,8 @@ class ContactRequest extends FormRequest
             'first_name_kana' => '名(カナ)',
             'tel' => '電話番号',
             'email' => 'メールアドレス',
-            'title' => 'タイトル',
-            'body' => '本文',
+            'subject' => '件名',
+            'message' => '本文',
         ];
     }
 }
