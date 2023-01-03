@@ -24,7 +24,7 @@ const GlobalMenu = () => {
                         <li className={styles.mb_16}>
                             <Link to="/">
                                 <Text role='title' style={{'fontWeight': 'bold'}}>
-                                    LARAVEL APP
+                                    EC APP
                                 </Text>
                             </Link>
                         </li>

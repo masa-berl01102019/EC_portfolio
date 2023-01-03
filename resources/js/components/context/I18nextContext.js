@@ -3,7 +3,6 @@ import i18next from 'i18next';
 import {initReactI18next} from 'react-i18next';
 import en from '../lang/en.json';
 import ja from '../lang/ja.json';
-import LanguagePopup from "../molecules/Popup/LanguagePopup";
 
 // contextの作成
 const I18nextContext = createContext();
@@ -34,7 +33,6 @@ export function I18nextProvider ({children}) {
     return (
         <I18nextContext.Provider value={i18next}>
             {children}
-            <LanguagePopup/>
         </I18nextContext.Provider>
     );
 

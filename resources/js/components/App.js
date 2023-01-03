@@ -35,8 +35,8 @@ const queryClient = new QueryClient({
 function App() {
     return (
         <ErrorBoundary>
-            <I18nextProvider>
-                <RecoilRoot>
+            <RecoilRoot>
+                <I18nextProvider>
                     <CookiesProvider>
                         <StripeProvider>
                             <NotifyProvider>
@@ -49,8 +49,8 @@ function App() {
                             </NotifyProvider>
                         </StripeProvider>
                     </CookiesProvider>
-                </RecoilRoot>
-            </I18nextProvider>
+                </I18nextProvider>
+            </RecoilRoot>
         </ErrorBoundary>
     )
 }

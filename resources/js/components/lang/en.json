@@ -694,7 +694,6 @@
     "reload" : "Please reload your browser again."
   },
   "common" : {
-    "set-lang": "Select language",
     "lang-en" : "English",
     "lang-ja" : "Japanese"
   },

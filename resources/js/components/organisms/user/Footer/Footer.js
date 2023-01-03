@@ -45,7 +45,7 @@ export const Footer = ({className, ...props}) => {
                 </li>
             </ul>
             <Text size='s' className={styles.copy_right}>
-                &copy; LARAVEL  DEV CO., LTD. ALL RIGHT RESERVED.
+                &copy; DEMO DEV CO., LTD. ALL RIGHT RESERVED.
             </Text>
         </footer>
     );
