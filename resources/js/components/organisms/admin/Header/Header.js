@@ -25,6 +25,7 @@ export const Header = ({...props}) => {
         setLang(e);
         i18next.changeLanguage(e);
         localStorage.setItem('lang', e);
+        setOpenPulldown(!openPulldown);
     }
 
     return (

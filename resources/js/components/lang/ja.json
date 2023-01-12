@@ -252,7 +252,7 @@
       "total-amount" : "合計金額",
       "purchase-amount" : "購入金額",
       "payment-method" : "支払方法",
-      "payment-credit" : "クレジット",
+      "payment-credit" : "クレジットカード",
       "payment-cache" : "代引き",
       "payment-status" : "入金状況",
       "not-paid" : "未入金",
@@ -314,7 +314,9 @@
       "size-ex" : "サイズ名",
       "confirm-msg" : "選択サイズを本当に削除しますか？"
     },
-    "delete-confirm" : "選択項目{{count}}件を削除しますか？",
+    "delete-confirm_one" : "選択項目{{count}}件を削除しますか？",
+    "delete-confirm_other" : "選択項目{{count}}件を削除しますか？",
+    "delete-confirm_zero" : "選択項目{{count}}件を削除しますか？",
     "back-btn" : "一覧に戻る",
     "register" : "登録する",
     "not-register" : "登録しない",
@@ -463,7 +465,9 @@
       "progress-confirm" : "決済情報入力",
       "progress-complete" : "注文完了",
       "shopping-cart" : "ショッピングカート",
-      "list-num" : "点",
+      "list-num_one" : "{{count}} 点",
+      "list-num_other" : "{{count}} 点",
+      "list-num_zero" : "{{count}} 点",
       "quantity" : "数量",
       "subtotal" : "小計",
       "tax-including" : "税込",
@@ -585,10 +589,9 @@
         "title" : "お問い合わせ完了",
         "p1" : "当社のサービスをご利用頂き、誠に有難う御座います。",
         "p2" : "お問い合わせを承りましたことをお知らせ致します。",
-        "p3" : "お問い合わせ頂いた内容につきましては、担当者より",
-        "p4" : "ご登録のメールアドレス宛てにご連絡致します。",
-        "p5" : "返信には数日かかる場合が御座います。",
-        "p6" : "予めご了承のほど、何卒宜しくお願い申し上げます。"
+        "p3" : "担当者よりお問い合わせ頂いた内容に返信致します。",
+        "p4" : "返信には数日かかる場合が御座います。",
+        "p5" : "予めご了承のほど、何卒宜しくお願い申し上げます。"
       }
     },
     "item" : {
@@ -784,7 +787,7 @@
         "category_id": "性別カテゴリー",
         "items_id.*": "関連品番",
         "tags_id.*": "関連タグ",
-        "is_published": "公開状況",
+        "is_published": "公開設定",
         "file": "サムネイル",
         "thumbnail": "サムネイル"
       },
@@ -794,7 +797,7 @@
         "brand_id": "ブランドカテゴリー",
         "category_id": "性別カテゴリー",
         "tags_id.*": "関連タグ",
-        "is_published": "公開状況",
+        "is_published": "公開設定",
         "file": "サムネイル",
         "thumbnail": "サムネイル"
       },
@@ -822,6 +825,10 @@
       },
       "size" : {
         "size_name": "サイズ名"
+      },
+      "auth" : {
+        "email" : "メールアドレス",
+        "password" : "パスワード"
       }
     },
     "user" : {
@@ -864,6 +871,10 @@
         "email": "メールアドレス",
         "password": "パスワード",
         "is_received": "DM登録"
+      },
+      "auth" : {
+        "email" : "メールアドレス",
+        "password" : "パスワード"
       }
     }
   }

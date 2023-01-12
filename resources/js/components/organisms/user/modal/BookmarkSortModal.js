@@ -26,7 +26,7 @@ const BookmarkSortModal = ({
 
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>{i18next.t('user.bookmark.item-name')}</Text>
-            <Pulldown name='item_name' value={params.sort.item_name} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+            <Pulldown name='item_name' value={params.sort.item_name} onChange={handleSort} defaultOption={i18next.t('user.not-set')}>
                 <option value={'desc'}>{i18next.t('user.desc-alpha')}</option>
                 <option value={'asc'}>{i18next.t('user.asc-alpha')}</option>
             </Pulldown>
@@ -34,7 +34,7 @@ const BookmarkSortModal = ({
 
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>{i18next.t('user.bookmark.price')}</Text>
-            <Pulldown name='price' value={params.sort.price} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+            <Pulldown name='price' value={params.sort.price} onChange={handleSort} defaultOption={i18next.t('user.not-set')}>
                 <option value={'desc'}>{i18next.t('user.desc-num')}</option>
                 <option value={'asc'}>{i18next.t('user.asc-num')}</option>
             </Pulldown>
@@ -42,7 +42,7 @@ const BookmarkSortModal = ({
 
           <div>
             <Text className={styles.mb_8}>{i18next.t('user.bookmark.register-date')}</Text>
-            <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+            <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort} defaultOption={i18next.t('user.not-set')}>
                 <option value={'desc'}>{i18next.t('user.desc-date')}</option>
                 <option value={'asc'}>{i18next.t('user.asc-date')}</option>
             </Pulldown>

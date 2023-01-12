@@ -12,7 +12,7 @@ import useNotify from '../../../context/NotifyContext';
 import useI18next from '../../../context/I18nextContext';
 
 
-const ItemTable = memo(({items, className = '', deleteMethod, csvOutputMethod}) => {
+const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
 
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
@@ -118,7 +118,7 @@ const ItemTable = memo(({items, className = '', deleteMethod, csvOutputMethod}) 
       {/* <p>* サイズ・カラーはSKUに登録されたものが一覧に表示されてます</p> */}
     </>
   );
-});
+};
 
 
 export default ItemTable;

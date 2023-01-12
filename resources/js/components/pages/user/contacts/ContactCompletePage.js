@@ -19,7 +19,6 @@ function ContactCompletePage() {
                     {i18next.t('user.contact.complete.p3')}<br/>
                     {i18next.t('user.contact.complete.p4')}<br/>
                     {i18next.t('user.contact.complete.p5')}<br/>
-                    {i18next.t('user.contact.complete.p6')}<br/>
                 </Text>
                 <LinkBtn size='l' to={'/'} className={[styles.btn_max, styles.mr_auto, styles.ml_auto].join(' ')}>{i18next.t('user.top-btn')}</LinkBtn>
             </div>

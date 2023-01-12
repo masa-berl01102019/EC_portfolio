@@ -12,7 +12,7 @@ import useNotify from '../../../context/NotifyContext';
 import useI18next from '../../../context/I18nextContext';
 
 
-const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) => {
+const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
 
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
@@ -109,7 +109,7 @@ const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) 
       </div>
     </>
   );
-});
+};
 
 
 export default UserTable;

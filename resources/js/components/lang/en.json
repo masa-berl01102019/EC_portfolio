@@ -83,7 +83,7 @@
       "gender" : "Gender",
       "gender-man" : "Male",
       "gender-woman" : "Female",
-      "gender-other" : "Other",
+      "gender-other" : "Others",
       "gender-no-reply" : "No answer"
     },
     "admin" : {
@@ -268,7 +268,7 @@
     "contact" : {
       "index-title" : "CONTACT LIST",
       "edit-title" : "CONTACT EDIT",
-      "user-id" : "user id",
+      "user-id" : "User ID",
       "name" : "Name",
       "name-kana" : "Name(kana)",
       "tel" : "Tel",
@@ -411,7 +411,7 @@
       "gender" : "Gender",
       "gender-man" : "Male",
       "gender-woman" : "Female",
-      "gender-other" : "Other",
+      "gender-other" : "Others",
       "gender-no-reply" : "No answer",
       "birthday" : "Birthday",
       "birthday-ex" : "ex) 1991/01/01",
@@ -495,7 +495,7 @@
       },
       "confirm" : {
         "title" : "PAYMENT",
-        "caution" : "※You have to input payment info again if you go back to order input page.",
+        "caution" : "※You have to input payment info again if you go back to cart page.",
         "error1" : "There is an error in the input content",
         "loading-msg" : "Sending payment data",
         "go-btn" : "Pay Now",
@@ -588,10 +588,9 @@
         "title" : "Complete contact",
         "p1" : "Thank you for using our service.",
         "p2" : "Notifies you that we have accepted your contact.",
-        "p3" : "We will answer you about your contact content ",
-        "p4" : "from support staff by email you registered.",
-        "p5" : "We are afraid that it might take a few days to reply your contact.",
-        "p6" : "We appreciate your understanding in advance."
+        "p3" : "We will reply to you about your contact content from our support staff.",
+        "p4" : "We are afraid that it might take a few days to reply your contact.",
+        "p5" : "We appreciate your understanding in advance."
       }
     },
     "item" : {
@@ -824,6 +823,10 @@
       },
       "size" : {
         "size_name": "size name"
+      },
+      "auth" : {
+        "email" : "Email",
+        "password" : "Password"
       }
     },
     "user" : {
@@ -866,6 +869,10 @@
         "email": "email",
         "password": "password",
         "is_received": "DM"
+      },
+      "auth" : {
+        "email" : "Email",
+        "password" : "Password"
       }
     }
   }

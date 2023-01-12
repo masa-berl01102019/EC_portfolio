@@ -109,7 +109,7 @@ function NewsCreate() {
                                 <div className={styles.sidebar_box}>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.published-status')}</Text>
+                                            <Text size='l'>{i18next.t('admin.set-published-status')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox

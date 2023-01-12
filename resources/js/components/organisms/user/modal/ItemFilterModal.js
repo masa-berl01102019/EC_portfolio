@@ -240,7 +240,7 @@ const ItemFilterModal = ({
 
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>{i18next.t('user.item.stock-status')}</Text>
-            <Pulldown name='stock_status' value={params.filter.stock_status} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}>
+            <Pulldown name='stock_status' value={params.filter.stock_status} onChange={handleFilter} defaultOption={i18next.t('user.not-set')}>
                 <option value={'0'}>{i18next.t('user.item.all')}</option>
                 <option value={'1'}>{i18next.t('user.item.stock-only')}</option>
             </Pulldown>

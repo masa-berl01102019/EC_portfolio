@@ -26,7 +26,7 @@ const NewsSortModal = ({
 
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>{i18next.t('user.posted-date')}</Text>
-            <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+            <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort} defaultOption={i18next.t('user.not-set')}>
                 <option value={'desc'}>{i18next.t('user.desc-date')}</option>
                 <option value={'asc'}>{i18next.t('user.asc-date')}</option>
             </Pulldown>
