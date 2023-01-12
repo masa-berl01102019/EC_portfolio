@@ -34,18 +34,4 @@ class NewsRegisterRequest extends FormRequest
             'thumbnail' => 'nullable|string|max:255'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'title' => 'タイトル',
-            'body' => '本文',
-            'brand_id' => 'ブランドカテゴリ',
-            'category_id' => '性別カテゴリ',
-            'tags_id.*' => 'タグ',
-            'is_published' => '公開設定',
-            'file' => 'サムネイル画像',
-            'thumbnail' => 'サムネイル画像'
-        ];
-    }
 }

@@ -18,7 +18,7 @@ export function I18nextProvider ({children}) {
     i18next
     .use(initReactI18next)
     .init({
-        lng: localStorage.getItem('lang') || 'ja',
+        lng: localStorage.getItem('lang') || 'en',
         debug: true,
         resources: {
             en: {

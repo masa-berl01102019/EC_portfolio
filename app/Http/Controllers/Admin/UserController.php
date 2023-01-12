@@ -42,7 +42,7 @@ class UserController extends Controller
             return UserResource::collection($users);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '会員の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.users.get_err')], 500);
         }
     }
 
@@ -76,11 +76,11 @@ class UserController extends Controller
                 'is_received' => $data['is_received'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '会員の登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.users.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '会員の登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.users.create_err')], 500);
         }
     }
 
@@ -90,7 +90,7 @@ class UserController extends Controller
             return new UserResource($user);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '会員の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.users.get_err')], 500);
         }
     }
 
@@ -101,11 +101,11 @@ class UserController extends Controller
             $data = $request->only($this->form_items);
             $user->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '会員の編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.users.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '会員の編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.users.update_err')], 500);
         }
     }
 
@@ -119,11 +119,11 @@ class UserController extends Controller
                 $user->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '会員の削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.users.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '会員の削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.users.delete_err')], 500);
         }
     }
 
@@ -154,11 +154,11 @@ class UserController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '氏名', '氏名（カナ）', '性別', '生年月日', '郵便番号', '住所', '配送先-郵便番号', '配送先-住所', '電話番号', 'メールアドレス', 'DM登録', '作成日時', '更新日時'];
-            return csvExport($csv_body, $csv_header, '会員情報.csv');
+            $csv_header = trans('api.admin.users.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.users.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '会員情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.users.csv_err')], 500);
         }
     }
 }

@@ -33,8 +33,8 @@ class AdminContactMail extends Mailable
     {
         return $this->view('mail.html.admin_contact_mail')
             ->text('mail.text.admin_contact_mail')
-            ->from(config('define.admin_email.from.address'), config('define.admin_email.from.name'))
-            ->subject("お問い合わせのお知らせ")
+            ->from(config('define.admin_email.from.address'), trans('mail.admin.from.name'))
+            ->subject(trans('mail.admin.contact.subject'))
             ->with([
                 'contact' => $this->contact,
             ]);

@@ -33,8 +33,8 @@ class AdminOrderMail extends Mailable
     {
         return $this->view('mail.html.admin_order_mail')
             ->text('mail.text.admin_order_mail')
-            ->from(config('define.admin_email.from.address'), config('define.admin_email.from.name'))
-            ->subject("受注・決済完了のお知らせ")
+            ->from(config('define.admin_email.from.address'), trans('mail.admin.from.name'))
+            ->subject(trans('mail.admin.order.subject'))
             ->with([
                 'order' => $this->order,
             ]);

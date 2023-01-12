@@ -35,8 +35,8 @@ class AdminResetPasswordMail extends Mailable
     {
         return $this->view('mail.html.admin_reset_password_mail')
             ->text('mail.text.admin_reset_password_mail')
-            ->from(config('define.admin_email.from.address'), config('define.admin_email.from.name'))
-            ->subject("パスワード再設定について")
+            ->from(config('define.admin_email.from.address'), trans('mail.admin.from.name'))
+            ->subject(trans('mail.admin.reset_password.subject'))
             ->with([
                 'password_reset' => $this->password_reset,
                 'admin_name' => $this->admin_name,

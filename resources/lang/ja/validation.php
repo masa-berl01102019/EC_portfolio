@@ -117,6 +117,10 @@ return [
     'unique'               => ':attribute は既に存在します',
     'uploaded'             => ':attribute アップロードに失敗しました',
     'url'                  => ':attribute は正しいURL書式のみ有効です',
+    // 独自ルール
+    'kana'                 => ':attribute はひらがなもしくはカタカナのみ有効です',
+    'japanese_post_code'   => ':attribute はハイフンなし7桁の数字のみ有効です',
+    'japanese_phone_number' => ':attribute は国内の電話番号のみ有効です',
 
     /*
     |--------------------------------------------------------------------------
@@ -135,9 +139,10 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
+        // USER ORDERS
+        'delivery_date' => [
+            'after' => 'ご希望配達日には、明日以降の日付を指定してください。',
+        ]
     ],
 
     /*
@@ -155,6 +160,173 @@ return [
       |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        // ADMIN ADMINS
+        'last_name' => '姓',
+        'first_name' => '名',
+        'last_name_kana' => '姓(カナ)',
+        'first_name_kana' => '名(カナ)',
+        'tel' => '電話番号',
+        'email' => 'メールアドレス',
+        'password' => 'パスワード',
+        // ADMIN BLOGS
+        'title' => 'タイトル',
+        'body' => '本文',
+        'brand_id' => 'ブランドカテゴリー',
+        'category_id' => '性別カテゴリー',
+        'items_id.*' => '関連品番',
+        'tags_id.*' => '関連タグ',
+        'is_published' => '公開設定',
+        'file' => 'サムネイル',
+        'thumbnail' => 'サムネイル',
+        // ADMIN BRANDS
+        'brand_name' => 'ブランド名',
+        // ADMIN CATEGORY
+        'category_name' => 'カテゴリー名',
+        'parent_id' => '親カテゴリーID',
+        // ADMIN COLORS
+        'color_name' => 'カラー名',
+        // ADMIN CONTACTS
+        'response_status' => '対応状況',
+        'memo' => '備考欄',
+        // ADMIN ITEMS
+        'product_number' => '品番',
+        'item_name' => '商品名',
+        'price' => '価格',
+        'cost' => '原価',
+        'made_in' => '生産国',
+        'mixture_ratio' => '混用率',
+        'description' => '商品説明',
+        // 'is_published' => '公開設定',
+        // 'brand_id' => 'ブランドカテゴリー',
+        'gender_category' => '性別カテゴリー',
+        'main_category' => 'メインカテゴリー',
+        'sub_category' => 'サブカテゴリー',
+        // 'tags_id.*' => '関連タグ',
+        'skus.*.id' => 'SKU ID',
+        'skus.*.item_id' => '商品ID',
+        'skus.*.size_id' => 'サイズ',
+        'skus.*.color_id' => 'カラー',
+        'skus.*.quantity' => '在庫数',
+        'images.*.id' => '画像ID',
+        'images.*.item_id' => '商品ID',
+        'images.*.color_id' => '関連カラー',
+        'images.*.image' => '画像',
+        'images.*.image_category' => '画像種別',
+        'images.*.file' => '画像ファイル',
+        'measurements.*.id' => '寸法ID',
+        'measurements.*.size_id' => 'サイズ',
+        'measurements.*.width' => '身幅',
+        'measurements.*.shoulder_width' => '肩幅',
+        'measurements.*.raglan_sleeve_length' => '裄丈',
+        'measurements.*.sleeve_length' => '袖丈',
+        'measurements.*.length' => '着丈',
+        'measurements.*.waist' => 'ウエスト',
+        'measurements.*.hip' => 'ヒップ',
+        'measurements.*.rise' => '股上',
+        'measurements.*.inseam' => '股下',
+        'measurements.*.thigh_width' => 'わたり',
+        'measurements.*.outseam' => 'パンツ総丈',
+        'measurements.*.sk_length' => 'スカート丈',
+        'measurements.*.hem_width' => '裾幅',
+        'measurements.*.weight' => '重量',
+        // ADMIN NEWS
+        // 'title' => 'タイトル',
+        // 'body' => '本文',
+        // 'brand_id' => 'ブランドカテゴリー',
+        // 'category_id' => '性別カテゴリー',
+        // 'tags_id.*' => '関連タグ',
+        // 'is_published' => '公開設定',
+        // 'file' => 'サムネイル',
+        // 'thumbnail' => 'サムネイル',
+        // ADMIN NOTIFICATIONS
+        // 'title' => 'タイトル',
+        // 'body' => '本文',
+        // 'is_published' => '公開設定',
+        'expired_at' => '掲載終了日',
+        // ADMIN ORDERS
+        'is_paid' => '入金状況',
+        'is_shipped' => '出荷状況',
+        'delivery_date' => '希望配達日',
+        'delivery_time' => '希望配達時間帯',
+        // ADMIN RESET_PASSWORDS
+        'uuid' => 'ユニークキー',
+        // 'password' => 'パスワード',
+        // 'email' => 'メールアドレス',
+        // ADMIN SIZES
+        'size_name' => 'サイズ名',
+        // ADMIN TAGS
+        'tag_name' => 'タグ名',
+        // ADMIN USERS
+        // 'last_name' => '姓',
+        // 'first_name' => '名',
+        // 'last_name_kana' => '姓(カナ)',
+        // 'first_name_kana' => '名(カナ)',
+        'gender' => '性別',
+        'birthday' => '生年月日',
+        'post_code' => '郵便番号',
+        'prefecture' => '都道府県',
+        'municipality' => '市区町村郡',
+        'street_name' => '町名',
+        'street_number' => '丁目番地',
+        'building' => '建物名',
+        'delivery_post_code' => '郵便番号',
+        'delivery_prefecture' => '都道府県',
+        'delivery_municipality' => '市区町村郡',
+        'delivery_street_name' => '町名',
+        'delivery_street_number' => '丁目番地',
+        'delivery_building' => '建物名',
+        // 'tel' => '電話番号',
+        // 'email' => 'メールアドレス',
+        // 'password' => 'パスワード',
+        'is_received' => 'DM登録',
+        // USER BOOKMARKS
+        'sku_id' => 'SKU ID',
+        // USER CARTS
+        'quantity' => '数量',
+        // 'sku_id' => 'SKU ID',
+        // USER CONTACTS
+        // 'last_name' => '姓',
+        // 'first_name' => '名',
+        // 'last_name_kana' => '姓(カナ)',
+        // 'first_name_kana' => '名(カナ)',
+        // 'tel' => '電話番号',
+        // 'email' => 'メールアドレス',
+        'subject' => '件名',
+        'message' => '本文',
+        // USER ORDERS
+        'payment_token' => '決済トークン',
+        'total_amount' => '請求合計',
+        'payment_method' => '支払い方法',
+        // 'delivery_date' => '希望配達日', // フロントでは配達日
+        // 'delivery_time' => '希望配達時間帯', // フロントでは配達時間帯
+        // USER RESET_PASSWORDS
+        // 'uuid' => 'ユニークキー',
+        // 'password' => 'パスワード',
+        // 'email' => 'メールアドレス',
+        // USER USERS
+        // 'last_name' => '姓',
+        // 'first_name' => '名',
+        // 'last_name_kana' => '姓(カナ)',
+        // 'first_name_kana' => '名(カナ)',
+        // 'gender' => '性別',
+        // 'birthday' => '生年月日',
+        // 'post_code' => '郵便番号',
+        // 'prefecture' => '都道府県',
+        // 'municipality' => '市区町村郡',
+        // 'street_name' => '町名',
+        // 'street_number' => '丁目番地',
+        // 'building' => '建物名',
+        // 'delivery_post_code' => '郵便番号',
+        // 'delivery_prefecture' => '都道府県',
+        // 'delivery_municipality' => '市区町村郡',
+        // 'delivery_street_name' => '町名',
+        // 'delivery_street_number' => '丁目番地',
+        // 'delivery_building' => '建物名',
+        // 'tel' => '電話番号',
+        // 'email' => 'メールアドレス',
+        // 'is_received' => 'DM登録',
+        // 'password' => 'パスワード'
+    ],
 
 ];

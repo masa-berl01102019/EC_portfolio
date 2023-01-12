@@ -29,12 +29,4 @@ class ChangePasswordRequest extends FormRequest
             'password' => 'required|string|alpha_num|min:8|max:100'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'uuid' => 'ユニークキー',
-            'password' => 'パスワード',
-        ];
-    }
 }

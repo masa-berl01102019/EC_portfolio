@@ -30,14 +30,4 @@ class OrderEditRequest extends FormRequest
             'delivery_time' => 'required|string|max:30'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'is_paid' => '入金状況',
-            'is_shipped' => '出荷状況',
-            'delivery_date' => '配達希望日',
-            'delivery_time' => '配達希望時間帯'
-        ];
-    }
 }

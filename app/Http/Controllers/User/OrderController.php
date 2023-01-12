@@ -24,7 +24,7 @@ use App\Http\Resources\OrderDetailResource;
 
 class OrderController extends Controller
 {
-    private $form_items = ['id', 'total_amount', 'payment_method', 'delivery_date', 'delivery_time'];
+    private $form_items = ['payment_token', 'total_amount', 'payment_method', 'delivery_date', 'delivery_time'];
 
     public function __construct()
     {
@@ -42,7 +42,7 @@ class OrderController extends Controller
             return (OrderDetailResource::collection($orders));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'カート商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.orders.get_err')], 500);
         }
     }
 
@@ -55,7 +55,7 @@ class OrderController extends Controller
             $cart_items = Cart::where('user_id', Auth::guard('user')->user()->id)
                 ->join('skus', 'carts.sku_id', '=', 'skus.id')
                 ->join('items', function ($join) {
-                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
+                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published.open'));
                 })
                 ->select('carts.id', 'carts.quantity', 'skus.quantity as stock', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.product_number', 'items.price')
                 ->get();
@@ -63,7 +63,7 @@ class OrderController extends Controller
             // checking stock
             foreach ($cart_items as $items) {
                 if ($items->stock < $items->quantity) {
-                    return response()->json(['status' => 9, 'message' => '商品の注文数が在庫数を超えております'], 400);
+                    return response()->json(['status' => 9, 'message' => trans('api.user.orders.create_err')], 400);
                 }
             }
             // put price and quantity of items out from collection
@@ -80,13 +80,13 @@ class OrderController extends Controller
             $total_amount = $sub_total + $tax_amount;
             // checking total amount
             if ($data['total_amount'] != $total_amount) {
-                return response()->json(['status' => 9, 'message' => '商品の価格が一致しません'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.user.orders.create_err2')], 400);
             }
             // caluculate stripe fee (3.6%) * stripe fee has to round after the decimal point
             $commission_fee = (int)round($total_amount * config('define.stripe_commision_fee'));
 
             // charge by stripe
-            User::find(Auth::guard('user')->user()->id)->charge($total_amount, $data['id']);
+            User::find(Auth::guard('user')->user()->id)->charge($total_amount, $data['payment_token']);
 
             $order = Order::create([
                 'user_id' => Auth::guard('user')->user()->id,
@@ -95,11 +95,11 @@ class OrderController extends Controller
                 'total_amount' => $total_amount,
                 'commission_fee' => $commission_fee,
                 'payment_method' => $data['payment_method'],
-                'payment_status' => config('define.payment_status_r.success'),
+                'payment_status' => config('define.payment_status.success'),
                 'delivery_date' => $data['delivery_date'],
                 'delivery_time' => $data['delivery_time'],
-                'is_paid' => config('define.is_paid_r.paid'),
-                'is_shipped' => config('define.is_shipped_r.not_shipped')
+                'is_paid' => config('define.is_paid.paid'),
+                'is_shipped' => config('define.is_shipped.not_shipped')
             ]);
 
             for ($i = 0; $i < count($cart_items); $i++) {
@@ -123,11 +123,11 @@ class OrderController extends Controller
             Mail::to(Auth::guard('user')->user()->email)->send(new UserOrderMail($order));
             Mail::to(config('define.admin_email.to.sales_report'))->send(new AdminOrderMail($order));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '決済を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.orders.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '決済に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.orders.create_err3')], 500);
         }
     }
 }

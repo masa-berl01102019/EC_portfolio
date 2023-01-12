@@ -34,8 +34,8 @@ class UserOrderMail extends Mailable
     {
         return $this->view('mail.html.user_order_mail')
             ->text('mail.text.user_order_mail')
-            ->from(config('define.user_email.from.address'), config('define.user_email.from.name'))
-            ->subject("ご注文・決済完了のお知らせ")
+            ->from(config('define.user_email.from.address'), trans('mail.user.from.name'))
+            ->subject(trans('mail.user.order.subject'))
             ->with([
                 'order' => $this->order,
             ]);

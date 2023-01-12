@@ -1,26 +1,26 @@
-{{ $user_name }} 様
-
-パスワード変更完了のお知らせ
-
-平素は、当社のサービスをご利用いただき、誠にありがとうございます。
-パスワード変更のリクエストを承りましたことをお知らせいたします。
+{{ __('mail.user.common.honorific', ['name' => $user_name]) }}
 
 
-この変更にお心当たりがない場合には、パスワードをリセットしてアカウントを保護してください。
-以下のリンクをクリックしてパスワードリセット出来ます。
+{{ __('mail.user.common.thanks_greeting') }}
 
-【パスワードリセットページ】
+{{ __('mail.user.change_password.p1') }}
+
+{{ __('mail.user.change_password.p2') }}
+
+{{ __('mail.user.change_password.p3') }}
+
+{{ __('mail.user.change_password.p4') }}
 　{{'http://homestead.test/user/reset_password'}}
 
 
-※このメールは自動送信です。
-返信いただいても回答できませんので、ご了承ください。
-なお、ご不明な点がございましたら、下記の運営会社までお問い合わせください。
+{{ __('mail.user.common.noreply_notice1') }}
+{{ __('mail.user.common.noreply_notice2') }}
+{{ __('mail.user.common.noreply_notice3') }}
 
 
-【お問い合わせ先】
-　運営会社　： XXXXカンパニー
-　住所　　　： 〒XXX-XXXX テスト県テスト市テスト町1-2-3 テストビルディング 1F
-　TEL 　　　： XX-XXXX-XXXX
-　E-MAIL　　： test@example.com
-　URL 　　　： http://homestead.test
+{{ __('mail.user.common.contact') }}
+　{{ __('mail.user.common.company') }} ： {{ __('mail.user.common.company_ex') }}
+　{{ __('mail.user.common.address') }} ： {{ __('mail.user.common.address_ex') }}
+　TEL ： XX-XXXX-XXXX
+　EMAIL ： test@example.com
+　URL ： http://homestead.test

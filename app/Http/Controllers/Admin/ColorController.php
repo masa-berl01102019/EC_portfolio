@@ -27,7 +27,7 @@ class ColorController extends Controller
             return response()->json(['colors' => ColorResource::collection(Color::all())]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'カラーマスタの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.colors.get_err')], 500);
         }
     }
 
@@ -40,11 +40,11 @@ class ColorController extends Controller
                 'color_name' => $data['color_name'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カラーマスタの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.colors.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カラーマスタの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.colors.create_err')], 500);
         }
     }
 
@@ -55,11 +55,11 @@ class ColorController extends Controller
             $data = $request->only($this->form_items);
             $color->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カラーマスタの編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.colors.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カラーマスタの編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.colors.update_err')], 500);
         }
     }
 
@@ -69,15 +69,15 @@ class ColorController extends Controller
         try {
             $related_items_arr = Item::whereIn('id', $color->skus->pluck('item_id'))->pluck('product_number')->toArray();
             if (!empty($related_items_arr)) {
-                return response()->json(['status' => 9, 'message' => '選択カラーが商品で使用されております'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.colors.delete_err2')], 400);
             }
             $color->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カラーマスタの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.colors.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カラーマスタの削除を失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.colors.delete_err')], 500);
         }
     }
 }

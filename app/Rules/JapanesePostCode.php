@@ -38,6 +38,6 @@ class JapanesePostCode implements Rule
      */
     public function message()
     {
-        return ':attributeはハイフンなし7桁の数字のみ有効です';
+        return trans('validation.japanese_post_code');
     }
 }

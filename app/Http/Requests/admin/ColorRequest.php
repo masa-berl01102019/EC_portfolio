@@ -27,11 +27,4 @@ class ColorRequest extends FormRequest
             'color_name' => 'required|string|max:30',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'color_name' => 'カラー名',
-        ];
-    }
 }

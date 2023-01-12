@@ -30,14 +30,4 @@ class NotificationRequest extends FormRequest
             'expired_at' => 'nullable|date',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'title' => 'タイトル',
-            'body' => '本文',
-            'is_published' => '公開設定',
-            'expired_at' => '掲載終了日',
-        ];
-    }
 }

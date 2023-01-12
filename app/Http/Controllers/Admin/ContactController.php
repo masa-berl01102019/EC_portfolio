@@ -37,7 +37,7 @@ class ContactController extends Controller
             return ContactResource::collection($contacts);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お問い合わせの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.get_err')], 500);
         }
     }
 
@@ -47,7 +47,7 @@ class ContactController extends Controller
             return new ContactResource($contact);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お問い合わせの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.get_err')], 500);
         }
     }
 
@@ -63,11 +63,11 @@ class ContactController extends Controller
                 'updated_at' => Carbon::now(),
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お問い合わせの編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.contacts.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お問い合わせの編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.update_err')], 500);
         }
     }
 
@@ -81,11 +81,11 @@ class ContactController extends Controller
                 $contact->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お問い合わせの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.contacts.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お問い合わせの削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.delete_err')], 500);
         }
     }
 
@@ -115,11 +115,11 @@ class ContactController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '会員ID', '氏名', '氏名(カナ)', '電話番号', 'メールアドレス', 'お問い合わせ日', '件名', '本文', '対応状況', '対応者', '備考欄', '対応日'];
-            return csvExport($csv_body, $csv_header, 'お問い合わせ情報.csv');
+            $csv_header = trans('api.admin.contacts.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.contacts.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お問い合わせ情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.csv_err')], 500);
         }
     }
 }

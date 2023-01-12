@@ -27,11 +27,4 @@ class TagRequest extends FormRequest
             'tag_name' => 'required|string|max:255',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'tag_name' => 'タグ名',
-        ];
-    }
 }

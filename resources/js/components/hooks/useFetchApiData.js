@@ -6,6 +6,7 @@ import useToastify from '../context/ToastifyContext';
 
 
 const useFetchApiData = (url, model) => {
+    const locale = {'X-Request-Locale': localStorage.getItem('lang') || 'en'};
     // checking whether api request is for admin  
     const isAdmin = url.startsWith('/api/admin/');
     // error handling
@@ -19,7 +20,7 @@ const useFetchApiData = (url, model) => {
       [model, url],
       async () => {
         setErrorMessage(null);
-        return await axios({ method: 'get', url: url });
+        return await axios({ method: 'get', url: url, headers: locale });
       },
       { 
         onSuccess: (res) => console.log(res.data),
@@ -31,8 +32,8 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form, headers} = obj;
-        console.log(url, form, headers);
-        return await axios({ method: 'post', url: url, data: form, headers: headers });
+        console.log(url, form, {...headers, ...locale});
+        return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
       },
       { 
         onSuccess: (res, obj) => {
@@ -51,8 +52,8 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form, headers} = obj;
-        console.log(url, form, headers);
-        return await axios({ method: 'put', url: url, data: form, headers: headers });
+        console.log(url, form, {...headers, ...locale});
+        return await axios({ method: 'put', url: url, data: form, headers: {...headers, ...locale} });
       },
       { 
         onSuccess: (res, obj) => {
@@ -71,8 +72,8 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form, headers} = obj;
-        console.log(url, form, headers);
-        return await axios({ method: 'delete', url: url, data: form, headers: headers });
+        console.log(url, form, {...headers, ...locale});
+        return await axios({ method: 'delete', url: url, data: form, headers: {...headers, ...locale} });
       },
       { 
         onSuccess: (res, obj) => {
@@ -91,8 +92,8 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form} = obj;
-        console.log(url, form);
-        return await axios({ method: 'post', url: url, data: form });
+        console.log(url, form, locale);
+        return await axios({ method: 'post', url: url, data: form, headers: locale });
       },
       { 
         onSuccess: (res) => {

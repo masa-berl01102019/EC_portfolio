@@ -23,7 +23,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $search_order = Order::where('payment_status', config('define.payment_status_r.success'))->with('user');
+            $search_order = Order::where('payment_status', config('define.payment_status.success'))->with('user');
             $search_order->filterDateRange($request);
             $search_order->filterPaymentMethod($request);
             $search_order->filterIsPaid($request);
@@ -37,18 +37,18 @@ class OrderController extends Controller
             return OrderResource::collection($orders);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '受注の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.get_err')], 500);
         }
     }
 
     public function edit($order)
     {
         try {
-            $order = Order::where('id', $order)->where('payment_status', config('define.payment_status_r.success'))->with('orderDetails')->first();
+            $order = Order::where('id', $order)->where('payment_status', config('define.payment_status.success'))->with('orderDetails')->first();
             return new OrderResource($order);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '受注の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.get_err')], 500);
         }
     }
 
@@ -64,11 +64,11 @@ class OrderController extends Controller
                 'delivery_time' => $data['delivery_time']
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '受注の編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.orders.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '受注の編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.update_err')], 500);
         }
     }
 
@@ -83,11 +83,11 @@ class OrderController extends Controller
                 $item->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '受注の削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.orders.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '受注の削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.delete_err')], 500);
         }
     }
 
@@ -95,7 +95,7 @@ class OrderController extends Controller
     {
         try {
             $id = $request->all();
-            $items = Order::where('payment_status', config('define.payment_status_r.success'))->whereIn('id', $id)->with('user')->cursor();
+            $items = Order::where('payment_status', config('define.payment_status.success'))->whereIn('id', $id)->with('user')->cursor();
             $csv_body = [];
             $num = 1;
             foreach ($items as $item) {
@@ -118,11 +118,11 @@ class OrderController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '購入日', '購入金額', '支払方法', '希望配達日', '希望配達時間帯', '入金状況', '出荷状況', '購入者(カナ)', '連絡先', 'メールアドレス', '配送先 郵便番号', '配送先 住所', 'ステータス更新日'];
-            return csvExport($csv_body, $csv_header, '受注情報.csv');
+            $csv_header = trans('api.admin.orders.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.orders.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '受注情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.csv_err')], 500);
         }
     }
 }

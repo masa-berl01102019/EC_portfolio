@@ -116,6 +116,10 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
+    // Added rule
+    'kana'                 => 'The :attribute is valid only for hiragana or katakana.',
+    'japanese_post_code'   => 'The :attribute is valid only for 7 digit numbers without hyphen.',
+    'japanese_phone_number' => 'The :attribute is valid only for domestic phone numbers.',
 
     /*
     |--------------------------------------------------------------------------
@@ -129,9 +133,10 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
+        // USER ORDERS
+        'delivery_date' => [
+            'after' => 'Need to select preferred delivery date after tomorrow.',
+        ]
     ],
 
     /*
@@ -145,6 +150,173 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        // ADMIN ADMINS
+        'last_name' => 'last name',
+        'first_name' => 'first name',
+        'last_name_kana' => 'last name (kana)',
+        'first_name_kana' => 'first name (kana)',
+        'tel' => 'tel',
+        'email' => 'email',
+        'password' => 'password',
+        // ADMIN BLOGS
+        'title' => 'title',
+        'body' => 'body',
+        'brand_id' => 'brand category',
+        'category_id' => 'gender category',
+        'items_id.*' => 'related product number',
+        'tags_id.*' => 'related tag',
+        'is_published' => 'published status',
+        'file' => 'thumbnail',
+        'thumbnail' => 'thumbnail',
+        // ADMIN BRANDS
+        'brand_name' => 'brand name',
+        // ADMIN CATEGORY 
+        'category_name' => 'category name',
+        'parent_id' => 'parent category ID',
+        // ADMIN COLORS
+        'color_name' => 'color name',
+        // ADMIN CONTACTS
+        'response_status' => 'response status',
+        'memo' => 'memo',
+        // ADMIN ITEMS
+        'product_number' => 'product number',
+        'item_name' => 'product name',
+        'price' => 'price',
+        'cost' => 'cost',
+        'made_in' => 'country of origin',
+        'mixture_ratio' => 'mixture ratio',
+        'description' => 'description',
+        // 'is_published' => 'published status',
+        // 'brand_id' => 'brand Category',
+        'gender_category' => 'gender category',
+        'main_category' => 'main category',
+        'sub_category' => 'sub category',
+        // 'tags_id.*' => 'related tag',
+        'skus.*.id' => 'SKU ID',
+        'skus.*.item_id' => 'item ID',
+        'skus.*.size_id' => 'size',
+        'skus.*.color_id' => 'color',
+        'skus.*.quantity' => 'stock',
+        'images.*.id' => 'image ID',
+        'images.*.item_id' => 'item ID',
+        'images.*.color_id' => 'related color',
+        'images.*.image' => 'image',
+        'images.*.image_category' => 'image type',
+        'images.*.file' => 'image file',
+        'measurements.*.id' => 'measurement ID',
+        'measurements.*.size_id' => 'size',
+        'measurements.*.width' => 'width',
+        'measurements.*.shoulder_width' => 'shoulder width',
+        'measurements.*.raglan_sleeve_length' => 'raglan sleeve length',
+        'measurements.*.sleeve_length' => 'sleeve length',
+        'measurements.*.length' => 'length',
+        'measurements.*.waist' => 'waist',
+        'measurements.*.hip' => 'hip',
+        'measurements.*.rise' => 'rise',
+        'measurements.*.inseam' => 'inseam',
+        'measurements.*.thigh_width' => 'thigh width',
+        'measurements.*.outseam' => 'outseam',
+        'measurements.*.sk_length' => 'SK length',
+        'measurements.*.hem_width' => 'hem width',
+        'measurements.*.weight' => 'weight',
+        // ADMIN NEWS
+        // 'title' => 'title',
+        // 'body' => 'body',
+        // 'brand_id' => 'brand category',
+        // 'category_id' => 'gender category',
+        // 'tags_id.*' => 'related tag',
+        // 'is_published' => 'published status',
+        // 'file' => 'thumbnail',
+        // 'thumbnail' => 'thumbnail',
+        // ADMIN NOTIFICATIONS
+        // 'title' => 'title',
+        // 'body' => 'body',
+        // 'is_published' => 'published status',
+        'expired_at' => 'expired date',
+        // ADMIN ORDERS
+        'is_paid' => 'payment status',
+        'is_shipped' => 'delivery status',
+        'delivery_date' => 'preferred delivery day',
+        'delivery_time' => 'preferred delivery time',
+        // ADMIN RESET_PASSWORDS
+        'uuid' => 'unique key',
+        // 'password' => 'password',
+        // 'email' => 'email',
+        // ADMIN SIZES
+        'size_name' => 'size name',
+        // ADMIN TAGS
+        'tag_name' => 'tag name',
+        // ADMIN USERS
+        // 'last_name' => 'last name',
+        // 'first_name' => 'first name',
+        // 'last_name_kana' => 'last name (kana)',
+        // 'first_name_kana' => 'first name (kana)',
+        'gender' => 'gender',
+        'birthday' => 'birthday',
+        'post_code' => 'postcode',
+        'prefecture' => 'prefecture',
+        'municipality' => 'municipality',
+        'street_name' => 'street name',
+        'street_number' => 'street number',
+        'building' => 'building',
+        'delivery_post_code' => 'postcode',
+        'delivery_prefecture' => 'prefecture',
+        'delivery_municipality' => 'municipality',
+        'delivery_street_name' => 'street name',
+        'delivery_street_number' => 'street number',
+        'delivery_building' => 'building',
+        // 'tel' => 'tel',
+        // 'email' => 'email',
+        // 'password' => 'password',
+        'is_received' => 'DM',
+        // USER BOOKMARKS
+        'sku_id' => 'SKU ID',
+        // USER CARTS
+        'quantity' => 'quantity',
+        // 'sku_id' => 'SKU ID',
+        // USER CONTACTS
+        // 'last_name' => 'last name',
+        // 'first_name' => 'first name',
+        // 'last_name_kana' => 'last name (kana)',
+        // 'first_name_kana' => 'first name (kana)',
+        // 'tel' => 'tel',
+        // 'email' => 'email',
+        'subject' => 'subject',
+        'message' => 'message',
+        // USER ORDERS
+        'payment_token' => 'payment token',
+        'total_amount' => 'total amount',
+        'payment_method' => 'payment method',
+        // 'delivery_date' => 'preferred delivery day',
+        // 'delivery_time' => 'preferred delivery time',
+        // USER RESET_PASSWORDS
+        // 'uuid' => 'unique key',
+        // 'password' => 'password',
+        // 'email' => 'email',
+        // USER USERS
+        // 'last_name' => 'last name',
+        // 'first_name' => 'first name',
+        // 'last_name_kana' => 'last name (kana)',
+        // 'first_name_kana' => 'first name (kana)',
+        // 'gender' => 'gender',
+        // 'birthday' => 'birthday',
+        // 'post_code' => 'postcode',
+        // 'prefecture' => 'prefecture',
+        // 'municipality' => 'municipality',
+        // 'street_name' => 'street name',
+        // 'street_number' => 'street number',
+        // 'building' => 'building',
+        // 'delivery_post_code' => 'postcode',
+        // 'delivery_prefecture' => 'prefecture',
+        // 'delivery_municipality' => 'municipality',
+        // 'delivery_street_name' => 'street name',
+        // 'delivery_street_number' => 'street number',
+        // 'delivery_building' => 'building',
+        // 'tel' => 'tel',
+        // 'email' => 'email',
+        // 'is_received' => 'DM',
+        // 'password' => 'password'
+    ],
 
 ];

@@ -36,18 +36,4 @@ class ContactRequest extends FormRequest
             'message' => 'required|string'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'last_name' => '姓',
-            'first_name' => '名',
-            'last_name_kana' => '姓(カナ)',
-            'first_name_kana' => '名(カナ)',
-            'tel' => '電話番号',
-            'email' => 'メールアドレス',
-            'subject' => '件名',
-            'message' => '本文',
-        ];
-    }
 }

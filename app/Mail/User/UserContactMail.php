@@ -35,8 +35,8 @@ class UserContactMail extends Mailable
     {
         return $this->view('mail.html.user_contact_mail')
             ->text('mail.text.user_contact_mail')
-            ->from(config('define.user_email.from.address'), config('define.user_email.from.name'))
-            ->subject("お問い合わせ完了のお知らせ")
+            ->from(config('define.user_email.from.address'), trans('mail.user.from.name'))
+            ->subject(trans('mail.user.contact.subject'))
             ->with([
                 'contact' => $this->contact,
             ]);

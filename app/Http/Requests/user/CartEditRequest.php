@@ -27,11 +27,4 @@ class CartEditRequest extends FormRequest
             'quantity' => 'required|integer|min:1'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'quantity' => '数量'
-        ];
-    }
 }

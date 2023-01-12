@@ -52,32 +52,4 @@ class UserRegisterRequest extends FormRequest
             'is_received' => 'required|integer|min:0|max:1',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'last_name' => '姓',
-            'first_name' => '名',
-            'last_name_kana' => '姓(カナ)',
-            'first_name_kana' => '名(カナ)',
-            'gender' => '性別',
-            'birthday' => '生年月日',
-            'post_code' => '郵便番号',
-            'prefecture' => '都道府県',
-            'municipality' => '市区町村郡',
-            'street_name' => '町名',
-            'street_number' => '丁目番地',
-            'building' => '建物名',
-            'delivery_post_code' => '郵便番号(配送先)',
-            'delivery_prefecture' => '都道府県(配送先)',
-            'delivery_municipality' => '市区町村郡(配送先)',
-            'delivery_street_name' => '町名(配送先)',
-            'delivery_street_number' => '丁目番地(配送先)',
-            'delivery_building' => '建物名(配送先)',
-            'tel' => '電話番号',
-            'email' => 'メールアドレス',
-            'password' => 'パスワード',
-            'is_received' => 'DM登録',
-        ];
-    }
 }

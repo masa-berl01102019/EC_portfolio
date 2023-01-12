@@ -37,7 +37,7 @@ class NotificationController extends Controller
             return NotificationResource::collection($notifications);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お知らせの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.get_err')], 500);
         }
     }
 
@@ -52,14 +52,14 @@ class NotificationController extends Controller
                 'body' => $data['body'],
                 'is_published' => $data['is_published'],
                 'expired_at' => $data['expired_at'],
-                'posted_at' => $data['is_published'] == config('define.is_published_r.open') ? Carbon::now() : null
+                'posted_at' => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : null
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お知らせの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.notifications.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お知らせの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.create_err')], 500);
         }
     }
 
@@ -69,7 +69,7 @@ class NotificationController extends Controller
             return new NotificationResource($notification);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お知らせの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.get_err')], 500);
         }
     }
 
@@ -87,14 +87,14 @@ class NotificationController extends Controller
                 'body' => $data['body'],
                 'is_published' => $data['is_published'],
                 'expired_at' => $data['expired_at'],
-                $registered_date => $data['is_published'] == config('define.is_published_r.open') ? Carbon::now() : $date, // don't update published date if is_published status close
+                $registered_date => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : $date, // don't update published date if is_published status close
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お知らせの編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.notifications.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お知らせの編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.update_err')], 500);
         }
     }
 
@@ -108,11 +108,11 @@ class NotificationController extends Controller
                 $notification->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お知らせの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.notifications.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お知らせの削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.delete_err')], 500);
         }
     }
 
@@ -137,11 +137,11 @@ class NotificationController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '公開状況', 'タイトル', '本文', '最終更新者', '掲載終了日', '投稿日', '更新日'];
-            return csvExport($csv_body, $csv_header, 'お知らせ情報.csv');
+            $csv_header = trans('api.admin.notifications.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.notifications.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お知らせ情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.csv_err')], 500);
         }
     }
 }

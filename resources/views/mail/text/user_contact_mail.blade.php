@@ -1,30 +1,31 @@
-{{ $contact->full_name }} 様
+{{ __('mail.user.common.honorific', ['name' => $contact->full_name]) }}
 
-お問い合わせ完了のお知らせ
 
-平素は、当社のサービスをご利用いただき、誠にありがとうございます。
-下記の内容でお問い合わせを承りましたことをお知らせいたします。
+{{ __('mail.user.common.thanks_greeting') }}
 
-お問い合わせ日　{{ $contact->created_at->format('Y年m月d日') }}
+{{ __('mail.user.contact.p1') }}
 
-【お問い合わせタイトル】
+{{ __('mail.user.contact.created_at') }}
+　{{ $contact->created_at->format('Y-m-d') }}
+
+{{ __('mail.user.contact.subject2') }}
 　{{ $contact->subject }}
 
-【お問い合わせ内容】
+{{ __('mail.user.contact.message') }}
 　{{ $contact->message }}
 
-お問い合わせ頂いた内容につきましては後日、
-担当者よりご登録頂いたメールアドレス宛てに返信させて頂きます。
-返信にはお問い合わせ状況によって、数日かかる場合が御座います。
-予めご了承のほど、何卒宜しくお願い申し上げます。
+{{ __('mail.user.contact.notice1') }}
+{{ __('mail.user.contact.notice2') }}
+{{ __('mail.user.contact.notice3') }}
 
-※このメールは自動送信です。
-返信いただいても回答できませんので、ご了承ください。
-なお、ご不明な点がございましたら、下記の運営会社までお問い合わせください。
+{{ __('mail.user.common.noreply_notice1') }}
+{{ __('mail.user.common.noreply_notice2') }}
+{{ __('mail.user.common.noreply_notice3') }}
 
-【お問い合わせ先】
-　運営会社　： XXXXカンパニー
-　住所　　　： 〒XXX-XXXX テスト県テスト市テスト町1-2-3 テストビルディング 1F
-　TEL 　　　： XX-XXXX-XXXX
-　E-MAIL　　： test@example.com
-　URL 　　　： http://homestead.test
+
+{{ __('mail.user.common.contact') }}
+　{{ __('mail.user.common.company') }} ： {{ __('mail.user.common.company_ex') }}
+　{{ __('mail.user.common.address') }} ： {{ __('mail.user.common.address_ex') }}
+　TEL ： XX-XXXX-XXXX
+　EMAIL ： test@example.com
+　URL ： http://homestead.test

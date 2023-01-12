@@ -1,17 +1,19 @@
-お問い合わせサポート担当者 様
+{{ __('mail.admin.contact.support_team') }}
 
-お問い合わせのお知らせ
 
-{{ $contact->full_name }} 様より
-下記の内容でお問い合わせを承りましたことをお知らせいたします。
+{{ __('mail.admin.contact.p1') }}
 
-お問い合わせ日　{{ $contact->created_at->format('Y年m月d日') }}
+{{ __('mail.admin.contact.created_at') }}
+　{{ $contact->created_at->format('Y-m-d') }}
 
-【お客様メールアドレス】
+{{ __('mail.admin.contact.user_name') }}
+　{{ $contact->full_name }}
+
+{{ __('mail.admin.contact.email') }}
 　{{ $contact->email }}
 
-【お問い合わせタイトル】
+{{ __('mail.admin.contact.subject2') }}
 　{{ $contact->subject }}
 
-【お問い合わせ内容】
+{{ __('mail.admin.contact.message') }}
 　{{ $contact->message }}

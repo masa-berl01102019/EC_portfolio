@@ -38,7 +38,7 @@ function CartConfirmPage() {
         if(!error) {
             const { id } = paymentMethod;
             createData({
-                form: {...state, id}, 
+                form: {...state, payment_token: id}, 
                 url: '/api/user/orders', 
                 callback: () => history.push('/carts/complete')
             });
@@ -64,7 +64,7 @@ function CartConfirmPage() {
                     {   errorMessage && !errorMessage.httpRequestError &&
                         <div className={styles.mb_24}>
                             <Text role='error'>{i18next.t('user.cart.confirm.error1')}</Text> 
-                            { errorMessage.payment_method && <Text role='error' className={styles.mt_8}>・{errorMessage.payment_method}</Text> }
+                            { errorMessage.payment_token && <Text role='error' className={styles.mt_8}>・{errorMessage.payment_token}</Text> }
                             { errorMessage.total_amount && <Text role='error' className={styles.mt_8}>・{errorMessage.total_amount}</Text> }
                             { errorMessage.delivery_date && <Text role='error' className={styles.mt_8}>・{errorMessage.delivery_date}</Text> }
                             { errorMessage.delivery_time && <Text role='error' className={styles.mt_8}>・{errorMessage.delivery_time}</Text> }

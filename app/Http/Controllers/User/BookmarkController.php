@@ -34,7 +34,7 @@ class BookmarkController extends Controller
             $search_bookmark = $search_bookmark->where('user_id', Auth::guard('user')->user()->id)
                 ->join('skus', 'bookmarks.sku_id', '=', 'skus.id')
                 ->join('items', function ($join) {
-                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'))->where('items.deleted_at', null);
+                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published.open'))->where('items.deleted_at', null);
                 })
                 ->join('brands', 'items.brand_id', '=', 'brands.id')
                 ->select('bookmarks.id', 'bookmarks.updated_at', 'bookmarks.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.price', 'items.brand_id', 'brands.brand_name');
@@ -56,7 +56,7 @@ class BookmarkController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'お気に入り商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.bookmarks.get_err')], 500);
         }
     }
 
@@ -70,11 +70,11 @@ class BookmarkController extends Controller
                 'sku_id' => $data['sku_id']
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お気に入り商品の登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.bookmarks.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お気に入り商品の登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.bookmarks.create_err')], 500);
         }
     }
 
@@ -84,11 +84,11 @@ class BookmarkController extends Controller
         try {
             $bookmark->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お気に入り商品の削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.bookmarks.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お気に入り商品の削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.bookmarks.delete_err')], 500);
         }
     }
 }

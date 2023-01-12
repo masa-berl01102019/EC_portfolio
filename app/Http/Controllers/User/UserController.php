@@ -56,11 +56,11 @@ class UserController extends Controller
                 'is_received' => $data['is_received'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '会員情報の登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.users.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '会員情報の登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.users.create_err')], 500);
         }
     }
 
@@ -70,7 +70,7 @@ class UserController extends Controller
             return new UserResource(Auth::guard('user')->user());
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '会員情報の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.users.get_err')], 500);
         }
     }
 
@@ -81,11 +81,11 @@ class UserController extends Controller
             $data = $request->only($this->form_items);
             $user->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '会員情報の編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.users.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '会員情報の編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.users.update_err')], 500);
         }
     }
 
@@ -95,11 +95,11 @@ class UserController extends Controller
         try {
             $user->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '退会を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.users.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '退会に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.users.delete_err')], 500);
         }
     }
 }

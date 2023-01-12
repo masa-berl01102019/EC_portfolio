@@ -63,7 +63,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err')], 500);
         }
     }
 
@@ -74,7 +74,7 @@ class ItemController extends Controller
                 ->with(['skus', 'genderCategory', 'mainCategory', 'subCategory', 'tags', 'images', 'measurements', 'publishedBlogs'])
                 ->first();
             if (empty($item)) {
-                return response()->json(['status' => 9, 'message' => 'お探しの商品が見つかりませんでした。非公開または削除された可能性があります。'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err2')], 400);
             }
             $related_items = Item::getRelatedItems($item->id);
             return (new ItemResource($item))->additional([
@@ -83,7 +83,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err')], 500);
         }
     }
 
@@ -94,7 +94,7 @@ class ItemController extends Controller
             return ItemResource::collection($ranked_items);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品ランキングの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err3')], 500);
         }
     }
 
@@ -124,7 +124,7 @@ class ItemController extends Controller
             );
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'おすすめ商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err4')], 500);
         }
     }
 
@@ -135,7 +135,7 @@ class ItemController extends Controller
             return ItemResource::collection($new_items);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '新着商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err5')], 500);
         }
     }
 
@@ -153,7 +153,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'オプションの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err6')], 500);
         }
     }
 }

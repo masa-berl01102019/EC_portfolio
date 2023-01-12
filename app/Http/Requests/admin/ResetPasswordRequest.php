@@ -28,11 +28,4 @@ class ResetPasswordRequest extends FormRequest
             'email' => 'required|email:strict,dns,spoof|max:100'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'email' => 'メールアドレス'
-        ];
-    }
 }

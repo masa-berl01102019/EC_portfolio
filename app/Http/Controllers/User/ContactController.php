@@ -36,11 +36,11 @@ class ContactController extends Controller
             Mail::to($contact->email)->send(new UserContactMail($contact));
             Mail::to(config('define.admin_email.to.support'))->send(new AdminContactMail($contact));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お問い合わせの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.contacts.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お問い合わせの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.contacts.create_err')], 500);
         }
     }
 }
