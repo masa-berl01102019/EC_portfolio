@@ -8,14 +8,16 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useValidation from '../../../hooks/useValidation';
 import useI18next from '../../../context/I18nextContext';
 
 function UserResetPassword() {
 
     const setIsUserLogin = useSetRecoilState(authUserState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'taichi06@example.org'
+        'email': ''
     });
+    const {valid, setValid, validation} = useValidation(formData, 'user', 'reset_password_request');
     const {errorMessage, handleResetPasswordEmail } = useAuth('/api/user/auth', 'user');
     const i18next = useI18next();
 
@@ -28,6 +30,10 @@ function UserResetPassword() {
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
                         e.preventDefault();
+                        if(validation.fails()) {
+                            setValid(true);
+                            return false;
+                        }
                         handleResetPasswordEmail({
                             url: `/api/user/resetPasswords/send`, 
                             form: formData,
@@ -41,6 +47,8 @@ function UserResetPassword() {
                             value={formData.email}
                             label={i18next.t('user.auth.email')}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder={i18next.t('user.auth.email-ex')}
                             className={styles.mb_16}
                         />

@@ -11,15 +11,17 @@ import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import {Link} from "react-router-dom";
+import useValidation from '../../../hooks/useValidation';
 import useI18next from '../../../context/I18nextContext';
 
 function AdminLogin() {
 
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'akato@example.com', 
+        'email': 'jun61@example.org', 
         'password': 'abc12345', 
     });
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'login_request');
     const {errorMessage, handleLogin} = useAuth('/api/admin/auth', 'admin');
     const openAdminMenu = useRecoilValue(menuAdminState);
     const i18next = useI18next();
@@ -34,6 +36,10 @@ function AdminLogin() {
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
+                            if(validation.fails()) {
+                                setValid(true);
+                                return false;
+                            }
                             handleLogin({
                                 url: '/api/admin/login', 
                                 form: formData,
@@ -47,6 +53,8 @@ function AdminLogin() {
                                 value={formData.email}
                                 label={i18next.t('admin.auth.email')}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder={i18next.t('admin.auth.email-ex')}
                                 className={styles.mb_16}
                             />
@@ -57,6 +65,8 @@ function AdminLogin() {
                                 value={formData.password}
                                 label={i18next.t('admin.auth.password')}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder={i18next.t('admin.auth.password-ex')}
                                 className={styles.mb_24}
                             />

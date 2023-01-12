@@ -7,6 +7,7 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useValidation from '../../../hooks/useValidation';
 import useI18next from '../../../context/I18nextContext';
 
 function UserChangePassword(props) {
@@ -15,11 +16,10 @@ function UserChangePassword(props) {
         'uuid': props.match.params.uuid,
         'password': null
     });
+    const {valid, setValid, validation} = useValidation(formData, 'user', 'change_password_request');
     const {errorMessage, handleChangePassword } = useAuth('/api/user/auth', 'user');
     const history = useHistory();
     const i18next = useI18next();
-
-    // TODO: auth関係のformバリデーションの修正 admin / user 両方
 
     return (
         <main className={styles.mt_40}>
@@ -30,6 +30,10 @@ function UserChangePassword(props) {
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
                         e.preventDefault();
+                        if(validation.fails()) {
+                            setValid(true);
+                            return false;
+                        }
                         handleChangePassword({
                             url: `/api/user/resetPasswords/change`, 
                             form: formData,
@@ -43,6 +47,8 @@ function UserChangePassword(props) {
                             value={formData.password}
                             label={i18next.t('user.auth.password')}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder={i18next.t('user.auth.password-ex')}
                             className={styles.mb_16}
                         />

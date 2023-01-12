@@ -11,15 +11,17 @@ import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import {Link} from "react-router-dom";
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import useValidation from '../../../hooks/useValidation';
 import useI18next from '../../../context/I18nextContext';
 
 function UserLogin() {
 
     const setIsUserLogin = useSetRecoilState(authUserState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'enagisa@example.org', 
+        'email': 'kato.haruka@example.com', 
         'password': 'abc12345', 
     });
+    const {valid, setValid, validation} = useValidation(formData, 'user', 'login_request');
     const {errorMessage, handleLogin} = useAuth('/api/user/auth', 'user');
     const i18next = useI18next();
 
@@ -32,6 +34,10 @@ function UserLogin() {
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
                         e.preventDefault();
+                        if(validation.fails()) {
+                            setValid(true);
+                            return false;
+                        }
                         handleLogin({
                             url: `/api/user/login`, 
                             form: formData,
@@ -45,6 +51,8 @@ function UserLogin() {
                             value={formData.email}
                             label={i18next.t('user.auth.email')}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder={i18next.t('user.auth.email-ex')}
                             className={styles.mb_16}
                         />
@@ -55,6 +63,8 @@ function UserLogin() {
                             value={formData.password}
                             label={i18next.t('user.auth.password')}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             placeholder={i18next.t('user.auth.password-ex')}
                             className={styles.mb_24}
                         />
