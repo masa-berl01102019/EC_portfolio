@@ -79,7 +79,8 @@ class ItemController extends Controller
             $related_items = Item::getRelatedItems($item->id);
             return (new ItemResource($item))->additional([
                 'sizes' => SizeResource::collection(Size::orderBy('size_name', 'desc')->get()),
-                'related_items' => RelatedItemResource::collection($related_items)
+                'related_items' => RelatedItemResource::collection($related_items),
+                'related_tags' => TagResource::collection($item->tags)
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());

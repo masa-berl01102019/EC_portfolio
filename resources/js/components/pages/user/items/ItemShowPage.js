@@ -29,7 +29,7 @@ function ItemShowPage(props) {
     const [cookies, setCookie] = useCookies();
     const {handleViewItemCookie} = useItemCookies(cookies, setCookie);
     const {handleViewItemWebStorage} = useItemWebStorage();
-    const {item, sizes, related_items} = data;
+    const {item, sizes, related_items, related_tags} = data;
     const isUserLogin = useRecoilValue(authUserState);
     const [tab, setTab] = useState('1');
     const [popup, setPopup] = useState('');
@@ -44,7 +44,8 @@ function ItemShowPage(props) {
         }
     },[baseUrl]);
 
-    // TODO: タグを表示する
+    // TODO: designの調整(枠線や角丸等)
+    // TODO: sanctumをsessionベースからtokenベースに変更
     
     return (
         <main className={styles.mt_40}>
@@ -154,9 +155,13 @@ function ItemShowPage(props) {
                                             <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.made-in')} </Text>
                                             <Text className={styles.flex_1}>{item.made_in}</Text>
                                         </li>
-                                        <li className={styles.flex}>
+                                        <li className={[styles.flex, styles.mb_8].join(' ')}>
                                             <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.product-number')} </Text>
                                             <Text className={styles.flex_1}>{item.product_number}</Text>
+                                        </li>
+                                        <li className={styles.flex}>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.tag')}</Text>
+                                            <Text className={styles.flex_1}>{ related_tags.map(list => list.tag_name).join(' / ') }</Text>
                                         </li>
                                     </ul>
                                 </div>
