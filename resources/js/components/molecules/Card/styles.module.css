@@ -92,8 +92,8 @@
 }
 
 .img_contents {
-  flex-basis: 29%;
-  max-width: 132px;
+  flex-basis: 40%;
+  max-width: 158px;
   max-height: 132px;
   overflow: hidden;
 }

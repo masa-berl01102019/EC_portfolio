@@ -70,10 +70,10 @@ function TopPage() {
                     />
                 </div>
 
-                <Image src={'https://via.placeholder.com/640x480.png/003333?text=BLOG+et'} type='demo' className={styles.top_img} alt="TOP IMAGE" />
+                <Image src='/img/top_image.jpg' type='demo' className={styles.top_img} alt="TOP IMAGE" />
                 
                 {   notifications &&
-                    <div className={styles.mb_40}> 
+                    <div className={styles.mb_56}> 
                         {                        
                             notifications.map((notification) =>
                                 <NotificationList
@@ -161,7 +161,7 @@ function TopPage() {
                             </div>
                             {
                                 news &&
-                                <div className={styles.mb_40}> 
+                                <div className={styles.mb_56}> 
                                     {                        
                                         news.map((item) =>
                                             <InfoCard
@@ -185,7 +185,7 @@ function TopPage() {
                             </div>
                             {
                                 blogs &&
-                                <div className={styles.mb_40}>
+                                <div className={styles.mb_56}>
                                     {                        
                                         blogs.map((blog) =>
                                             <InfoCard

@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\News;
 use App\Models\Admin;
 use App\Models\Brand;
-use App\Models\News;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NewsFactory extends Factory
@@ -13,14 +14,48 @@ class NewsFactory extends Factory
 
     public function definition()
     {
+        // 配列の初期化
+        $arr = [];
+        // デモ画像を取得
+        $news_men_imges = Storage::allFiles('public/img/demo/news_men');
+        $news_women_imges = Storage::allFiles('public/img/demo/news_women');
+
+        foreach ($news_men_imges as $image) {
+            // ファイル名のみ抜き出し
+            $file_name = str_replace('public/img/demo/news_men/', '', $image);
+            // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
+            $db_reserve_path = '/storage/img/demo/news_men/' . $file_name;
+            // 配列に格納
+            $arr[] = $this->createDemo($db_reserve_path, 'men');
+        }
+
+        foreach ($news_women_imges as $image) {
+            // ファイル名のみ抜き出し
+            $file_name = str_replace('public/img/demo/news_women/', '', $image);
+            // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
+            $db_reserve_path = '/storage/img/demo/news_women/' . $file_name;
+            // 配列に格納
+            $arr[] = $this->createDemo($db_reserve_path, 'women');
+        }
+
+        return $arr;
+    }
+
+    /**
+     * デモデータを作る関数
+     * @param string $image URL
+     * @param string $gender men:1 / women:2
+     */
+    public function createDemo($image, $gender)
+    {
         // ランダムに管理者インスタンスを取得
         $admin = Admin::inRandomOrder()->first();
 
         // ランダムにブランドのインスタンスを取得
         $brand = Brand::inRandomOrder()->first();
 
-        // カテゴリID (1:メンズ 2:レディース) をランダムに一つ取り出し格納
-        $category_id = $this->faker->randomElement([1,2]);
+        // カテゴリID
+        $category_id = config('define.gender_category')[$gender];
 
         // 公開状況 * 80%の確率で公開
         $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開
@@ -36,11 +71,12 @@ class NewsFactory extends Factory
             'admin_id' => $admin->id,
             'category_id' => $category_id,
             'title' => $this->faker->text($maxNbChars = 20),
-            'body' => $this->faker->randomHtml(2, 3),
-            'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480, $category='NEWS', $randomize = true),
+            'body' => $this->faker->randomHtml(4, 4),
+            // 'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480, $category='NEWS', $randomize = true),
+            'thumbnail' => $image,
             'is_published' => $is_published,
-            'posted_at' => $is_published === 1? $posted_at: null,
-            'modified_at' => $is_published === 1? $modified_at: null,
+            'posted_at' => $is_published === 1 ? $posted_at : null,
+            'modified_at' => $is_published === 1 ? $modified_at : null,
         ];
     }
 }

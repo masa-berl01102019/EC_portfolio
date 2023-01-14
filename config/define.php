@@ -3,6 +3,7 @@
 return [
     // DB const 
     'is_published' => ['close' => 0, 'open' => 1],
+    'gender_category' => ['men' => 1, 'women' => 2],
     'image_category' => ['main' => 0, 'thumbnail' => 1],
     'payment_status' => ['faile' => 0, 'success' => 1],
     'is_paid' => ['not_paid' => 0, 'paid' => 1],

@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Blog;
@@ -18,7 +19,19 @@ class BlogsTableSeeder extends Seeder
 
         DB::table('blogs')->truncate(); // テーブルごと削除して再構築
 
-        Blog::factory(50)->create();
+        // make()でコレクションが返ってくるので配列に変換
+        $factory_blogs = Blog::factory()->count(1)->make()->toArray();
+
+        // シリアライズ時に追加されるカラム
+        $appends = ['full_name', 'full_name_kana', 'is_published_text', 'gender_category_text'];
+
+        // bulkでinsert時に邪魔なので削除
+        foreach ($appends as $value) {
+            //削除実行
+            unset($factory_blogs[0][$value]);
+        }
+
+        DB::table('blogs')->insert($factory_blogs[0]); // データの挿入
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }
