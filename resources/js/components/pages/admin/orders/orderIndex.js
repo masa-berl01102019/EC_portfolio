@@ -29,7 +29,7 @@ const OrderIndex = () => {
             setParams({
                 paginate: {},
                 sort: { 'total_amount' : '', 'created_at' : '', 'delivery_date' : '', 'updated_at' : ''},
-                filter: { 'payment_method' : '', 'is_paid' : '', 'is_shipped' : '', 'target_span' : '', 'from' : null, 'to' : null},
+                filter: { 'search' : '', 'payment_method' : '', 'is_paid' : '', 'is_shipped' : '', 'target_span' : '', 'from' : null, 'to' : null},
                 scope: model
             });
         }

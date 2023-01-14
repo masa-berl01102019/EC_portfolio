@@ -7,6 +7,7 @@ use App\Traits\TimestampCastTrait;
 use App\Traits\OrderByNameScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
+use App\Traits\FilterKeywordScopeTrait;
 use App\Traits\FilterDateRangeScopeTrait;
 use App\Traits\OrderByCreatedAtScopeTrait;
 use App\Traits\OrderByUpdatedAtScopeTrait;
@@ -19,6 +20,7 @@ class Order extends Model
     use OrderByNameScopeTrait;
     use OrderByCreatedAtScopeTrait;
     use OrderByUpdatedAtScopeTrait;
+    use FilterKeywordScopeTrait;
     use FilterDateRangeScopeTrait;
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;

@@ -24,6 +24,7 @@ class OrderController extends Controller
     {
         try {
             $search_order = Order::where('payment_status', config('define.payment_status.success'))->with('user');
+            $search_order->filterKeyword($request, ['payment_token']);
             $search_order->filterDateRange($request);
             $search_order->filterPaymentMethod($request);
             $search_order->filterIsPaid($request);
@@ -105,6 +106,7 @@ class OrderController extends Controller
                     $item->created_at,
                     $item->total_amount_text,
                     $item->payment_method_text,
+                    $item->payment_token,
                     $item->delivery_date,
                     $item->delivery_time,
                     $item->is_paid_text,

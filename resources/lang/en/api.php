@@ -121,7 +121,7 @@ return [
             'update_err' => 'Failed to edited order info.',
             'delete_msg' => 'Successfully deleted order info.',
             'delete_err' => 'Failed to delete order info.',
-            'csv_header' => ['No', 'ID', 'Purchase date', 'Purchase amount', 'Payment method', 'Preferred delivery day', 'Preferred delivery time', 'Payment status', 'Delivery status', 'Name', 'Tel', 'Email', 'Delivery postcode', 'Delivery address', 'Updated date'],
+            'csv_header' => ['No', 'ID', 'Purchase date', 'Purchase amount', 'Payment method', 'Payment token', 'Preferred delivery day', 'Preferred delivery time', 'Payment status', 'Delivery status', 'Name', 'Tel', 'Email', 'Delivery postcode', 'Delivery address', 'Updated date'],
             'csv_file_name' => 'OrderInfo.csv',
             'csv_err' => 'Failed to output csv file.'
         ],

@@ -71,6 +71,7 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
               <Th>{i18next.t('admin.order.purchase-date')}</Th>
               <Th>{i18next.t('admin.order.purchase-amount')}</Th>
               <Th>{i18next.t('admin.order.payment-method')}</Th>
+              <Th>{i18next.t('admin.order.payment-token')}</Th>
               <Th>{i18next.t('admin.order.preferred-delivery-day')}</Th>
               <Th>{i18next.t('admin.order.preferred-delivery-time')}</Th>
               <Th>{i18next.t('admin.order.payment-status')}</Th>
@@ -92,6 +93,7 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
                 <Td>{order.created_at}</Td>
                 <Td>{order.total_amount_text}</Td>
                 <Td>{order.payment_method_text}</Td>
+                <Td>{order.payment_token}</Td>
                 <Td>{order.delivery_date}</Td>
                 <Td>{order.delivery_time}</Td>
                 <Td>{order.is_paid_text}</Td>

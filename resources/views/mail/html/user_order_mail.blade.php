@@ -10,7 +10,7 @@
     {{ __('mail.user.order.p2') }}
   </p>
   <p style="width: 100%">
-    {{ __('mail.user.order.order_id') }} {{ $order->id }}<br>
+    {{ __('mail.user.order.order_id') }} {{ $order->payment_token }}<br>
     {{ __('mail.user.order.full_name') }} {{ $order->user->full_name }}<br>
     {{ __('mail.user.order.created_at') }} {{ $order->created_at->format('Y-m-d') }}<br>
     {{ __('mail.user.order.total_amount') }} ¥{{ $order->total_amount }} {{ __('mail.user.order.tax_amount', ['tax' => $order->tax_amount]) }}<br>

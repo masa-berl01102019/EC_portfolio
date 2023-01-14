@@ -251,6 +251,8 @@
       "total-amount" : "Total amount",
       "purchase-amount" : "Purchase amount",
       "payment-method" : "Payment method",
+      "payment-token" : "Payment token",
+      "keyword-ex" : "Payment token",
       "payment-credit" : "Credit card",
       "payment-cache" : "Cache",
       "payment-status" : "Payment status",

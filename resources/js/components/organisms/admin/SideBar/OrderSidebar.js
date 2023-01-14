@@ -8,6 +8,7 @@ import DateRangeFilter from '../../../molecules/DateRangeFilter/DateRangeFilter'
 import styles from './styles.module.css';
 import Button from '../../../atoms/Button/Button';
 import useI18next from '../../../context/I18nextContext';
+import InputText from '../../../atoms/InputText/InputText';
 
 const OrderSidebar = ({model, onClick}) => {
 
@@ -21,6 +22,19 @@ const OrderSidebar = ({model, onClick}) => {
 
           <Text size='l' className={styles.sec_title}>{i18next.t('admin.filter')}</Text>
 
+          <div className={styles.mb_16}>
+              <label htmlFor='search'>
+                  <Text className={styles.mb_8}>{i18next.t('admin.keyword')}</Text>
+              </label>
+              <InputText
+                  type='text' 
+                  name='search' 
+                  onBlur={handleFilter} 
+                  value={params.filter.search} 
+                  placeholder={i18next.t('admin.order.keyword-ex')}
+                  className={styles.w_100}
+              />
+          </div>
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>{i18next.t('admin.order.payment-method')}</Text>
             <Pulldown name='payment_method' value={params.filter.payment_method} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}> 

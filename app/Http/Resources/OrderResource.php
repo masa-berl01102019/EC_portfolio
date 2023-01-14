@@ -22,7 +22,7 @@ class OrderResource extends JsonResource
     public function toArray($request)
     {
         // 受信リクエストが名前付きルートに一致するかを判定
-        if($request->routeIs('admin.orders.edit')) {
+        if ($request->routeIs('admin.orders.edit')) {
             return [
                 'is_paid' => $this->is_paid,
                 'is_shipped' => $this->is_shipped,
@@ -39,6 +39,7 @@ class OrderResource extends JsonResource
                 'created_at' => $this->created_at->format('Y/m/d H:i'),
                 'total_amount_text' => $this->total_amount_text,
                 'payment_method_text' => $this->payment_method_text,
+                'payment_token' => $this->payment_token,
                 'is_paid_text' => $this->is_paid_text,
                 'is_shipped_text' => $this->is_shipped_text,
                 'full_name' => optional($this->user)->full_name,
@@ -54,7 +55,5 @@ class OrderResource extends JsonResource
                 'delivery_time' => $this->delivery_time
             ];
         }
-
-    } 
-    
+    }
 }

@@ -96,6 +96,7 @@ class OrderController extends Controller
                 'commission_fee' => $commission_fee,
                 'payment_method' => $data['payment_method'],
                 'payment_status' => config('define.payment_status.success'),
+                'payment_token' => $data['payment_token'],
                 'delivery_date' => $data['delivery_date'],
                 'delivery_time' => $data['delivery_time'],
                 'is_paid' => config('define.is_paid.paid'),

@@ -255,6 +255,8 @@
       "payment-credit" : "クレジットカード",
       "payment-cache" : "代引き",
       "payment-status" : "入金状況",
+      "payment-token" : "決済トークン",
+      "keyword-ex" : "決済トークンを検索",
       "not-paid" : "未入金",
       "paid" : "入金済",
       "delivery-status" : "配送状況",

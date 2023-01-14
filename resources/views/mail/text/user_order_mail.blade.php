@@ -6,7 +6,7 @@
 {{ __('mail.user.order.p1') }}
 {{ __('mail.user.order.p2') }}
 
-{{ __('mail.user.order.order_id') }} {{ $order->id }}
+{{ __('mail.user.order.order_id') }} {{ $order->payment_token }}
 {{ __('mail.user.order.full_name') }} {{ $order->user->full_name }}
 {{ __('mail.user.order.created_at') }} {{ $order->created_at->format('Y-m-d') }}
 {{ __('mail.user.order.total_amount') }} ¥{{ $order->total_amount }} {{ __('mail.user.order.tax_amount', ['tax' => $order->tax_amount]) }}
