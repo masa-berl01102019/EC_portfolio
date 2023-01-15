@@ -8,7 +8,7 @@ import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
 import useNotify from '../../../context/NotifyContext';
 import Text from '../../../atoms/Text/Text';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function BrandIndex() {
 
@@ -19,12 +19,12 @@ function BrandIndex() {
     const [editableForm, setEeditableForm] = useState(null);
     const openAdminMenu = useRecoilValue(menuAdminState);
     const confirm = useNotify();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     const handleConfirmDelete = async () => {
         const result = await confirm({
-            body : i18next.t('admin.brand.confirm-msg'),
-            confirmBtnLabel : i18next.t('admin.delete-btn')
+            body : t('admin.brand.confirm-msg'),
+            confirmBtnLabel : t('admin.delete-btn')
         });
         result && deleteData({ url:`/api/admin/brands/${editableForm}` });
     }
@@ -33,12 +33,12 @@ function BrandIndex() {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.brand.index-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.brand.index-title')}</Heading>
                     { errorMessage && <Text role='error' size='s'>{errorMessage.brand_name}</Text> }
                     <div className={styles.form_area}>
                         <FormWithBtn
                             name='brand_name'
-                            placeholder={i18next.t('admin.brand.brand-ex')}
+                            placeholder={t('admin.brand.brand-ex')}
                             formInitialValue={{'brand_name': ''}}
                             validateScope={'admin'}
                             validateConfigKey={'brand_request'}
@@ -52,7 +52,7 @@ function BrandIndex() {
                                 { brand.id === editableForm ? (
                                     <FormWithBtn
                                         name='brand_name'
-                                        placeholder={i18next.t('admin.brand.brand-ex')}
+                                        placeholder={t('admin.brand.brand-ex')}
                                         formInitialValue={{'brand_name': brand.brand_name}}
                                         validateScope={'admin'}
                                         validateConfigKey={'brand_request'}

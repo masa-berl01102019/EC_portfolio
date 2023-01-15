@@ -22,6 +22,7 @@
         "draft-js": "^0.11.7",
         "draft-js-import-html": "^1.4.1",
         "i18next": "^22.1.4",
+        "i18next-browser-languagedetector": "^7.0.1",
         "laravel-mix": "^4.0.7",
         "laravel-mix-react-css-modules": "^2.0.0",
         "react": "^18.1.0",

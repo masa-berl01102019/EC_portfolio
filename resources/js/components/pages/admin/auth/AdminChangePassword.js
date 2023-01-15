@@ -10,7 +10,7 @@ import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function AdminChangePassword(props) {
 
@@ -22,7 +22,7 @@ function AdminChangePassword(props) {
     const {errorMessage, handleChangePassword } = useAuth('/api/admin/auth', 'admin');
     const history = useHistory();
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main className={styles.mt_40}>
@@ -30,7 +30,7 @@ function AdminChangePassword(props) {
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
                     <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
-                            {i18next.t('admin.auth.admin-change-password')}
+                            {t('admin.auth.admin-change-password')}
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -49,15 +49,15 @@ function AdminChangePassword(props) {
                                 type={'password'}
                                 onChange={handleFormData}
                                 value={formData.password}
-                                label={i18next.t('admin.auth.password')}
+                                label={t('admin.auth.password')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.auth.password-ex')}
+                                placeholder={t('admin.auth.password-ex')}
                                 className={styles.mb_24}
                             />
                             <Button size='l' color='primary' type="submit" className={[styles.mb_24, styles.w_100].join(' ')}>
-                                {i18next.t('admin.auth.change-btn')}
+                                {t('admin.auth.change-btn')}
                             </Button>
                         </form>
                     </div>

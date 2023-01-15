@@ -9,7 +9,7 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 
 const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
@@ -17,12 +17,12 @@ const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
-          confirmBtnLabel : i18next.t('admin.delete-btn')
+          body : t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/items`, form:checklist, callback: () => setChecklist([])});
   }
@@ -30,13 +30,13 @@ const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/items/csv`, 
             form:checklist 
           }); 
-        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
+        }}>{t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -65,25 +65,25 @@ const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
                   />
                 )}
               </Th>
-              <Th>{i18next.t('admin.id')}</Th>
-              <Th>{i18next.t('admin.edit-link')}</Th>
-              <Th>{i18next.t('admin.published-status')}</Th>
-              <Th>{i18next.t('admin.item.product-number')}</Th>
-              <Th>{i18next.t('admin.item.item-name')}</Th>
-              <Th>{i18next.t('admin.item.price')}</Th>
-              <Th>{i18next.t('admin.item.cost')}</Th>
-              <Th>{i18next.t('admin.item.color-variation')}</Th>
-              <Th>{i18next.t('admin.item.size-variation')}</Th>
-              <Th>{i18next.t('admin.item.made-in')}</Th>
-              <Th>{i18next.t('admin.item.mixture-ratio')}</Th>
-              <Th>{i18next.t('admin.item.brand-category')}</Th>
-              <Th>{i18next.t('admin.item.gender-category')}</Th>
-              <Th>{i18next.t('admin.item.main-category')}</Th>
-              <Th>{i18next.t('admin.item.sub-category')}</Th>
-              <Th>{i18next.t('admin.item.related-tag')}</Th>
-              <Th>{i18next.t('admin.last-updated-by')}</Th>
-              <Th>{i18next.t('admin.posted-date')}</Th>
-              <Th>{i18next.t('admin.updated-date')}</Th>
+              <Th>{t('admin.id')}</Th>
+              <Th>{t('admin.edit-link')}</Th>
+              <Th>{t('admin.published-status')}</Th>
+              <Th>{t('admin.item.product-number')}</Th>
+              <Th>{t('admin.item.item-name')}</Th>
+              <Th>{t('admin.item.price')}</Th>
+              <Th>{t('admin.item.cost')}</Th>
+              <Th>{t('admin.item.color-variation')}</Th>
+              <Th>{t('admin.item.size-variation')}</Th>
+              <Th>{t('admin.item.made-in')}</Th>
+              <Th>{t('admin.item.mixture-ratio')}</Th>
+              <Th>{t('admin.item.brand-category')}</Th>
+              <Th>{t('admin.item.gender-category')}</Th>
+              <Th>{t('admin.item.main-category')}</Th>
+              <Th>{t('admin.item.sub-category')}</Th>
+              <Th>{t('admin.item.related-tag')}</Th>
+              <Th>{t('admin.last-updated-by')}</Th>
+              <Th>{t('admin.posted-date')}</Th>
+              <Th>{t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -91,7 +91,7 @@ const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
               <Row key={item.id} className={checklist.includes(item.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={item.id} checked={checklist.includes(item.id)} className={styles.table_check}/></Td>
                 <Td>{item.id}</Td>
-                <Td><EditLink to={`/admin/items/${item.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
+                <Td><EditLink to={`/admin/items/${item.id}/edit`}>{t('admin.edit-link')}</EditLink></Td>
                 <Td>{item.is_published_text}</Td>
                 <Td>{item.product_number}</Td>
                 <Td>{item.item_name}</Td>

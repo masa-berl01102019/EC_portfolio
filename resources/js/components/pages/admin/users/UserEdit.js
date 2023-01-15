@@ -15,7 +15,7 @@ import { menuAdminState } from '../../../store/menuState';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function UserEdit(props) {
     
@@ -27,13 +27,13 @@ function UserEdit(props) {
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'user_edit');
     const history = useHistory();
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
     
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.user.edit-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.user.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -47,7 +47,7 @@ function UserEdit(props) {
                                 });
                             }
                         }}>
-                            <Text className={styles.mb_8}>{i18next.t('admin.user.name')}</Text>
+                            <Text className={styles.mb_8}>{t('admin.user.name')}</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText
                                     name={'last_name'}
@@ -56,7 +56,7 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.last-name-ex')}
+                                    placeholder={t('admin.user.last-name-ex')}
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
@@ -66,11 +66,11 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.first-name-ex')}
+                                    placeholder={t('admin.user.first-name-ex')}
                                     className={styles.flex_basis_50}
                                 />
                             </div>
-                            <Text className={styles.mb_8}>{i18next.t('admin.user.name-kana')}</Text>
+                            <Text className={styles.mb_8}>{t('admin.user.name-kana')}</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText 
                                     name={'last_name_kana'} 
@@ -79,7 +79,7 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.last-name-kana-ex')}
+                                    placeholder={t('admin.user.last-name-kana-ex')}
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
@@ -89,11 +89,11 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.first-name-kana-ex')}
+                                    placeholder={t('admin.user.first-name-kana-ex')}
                                     className={styles.flex_basis_50}
                                 />
                             </div>
-                            <Text className={styles.mb_8}>{i18next.t('admin.user.gender')}</Text>
+                            <Text className={styles.mb_8}>{t('admin.user.gender')}</Text>
                             <div className={styles.mb_16}>
                                 <div className={[styles.flex, styles.flex_wrap].join(' ')}>
                                     <FormInputRadio
@@ -101,7 +101,7 @@ function UserEdit(props) {
                                         value={0} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 0}
-                                        label={i18next.t('admin.user.gender-man')}
+                                        label={t('admin.user.gender-man')}
                                         className={[styles.mr_8, styles.mb_8].join(' ')}
                                         error={errorMessage}
                                     />
@@ -110,7 +110,7 @@ function UserEdit(props) {
                                         value={1} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 1}
-                                        label={i18next.t('admin.user.gender-woman')}
+                                        label={t('admin.user.gender-woman')}
                                         className={[styles.mr_8, styles.mb_8].join(' ')}
                                         error={errorMessage}
                                     />
@@ -119,7 +119,7 @@ function UserEdit(props) {
                                         value={2} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 2}
-                                        label={i18next.t('admin.user.gender-other')}
+                                        label={t('admin.user.gender-other')}
                                         className={[styles.mr_8, styles.mb_8].join(' ')}
                                         error={errorMessage}
                                     />
@@ -128,7 +128,7 @@ function UserEdit(props) {
                                         value={3} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 3}
-                                        label={i18next.t('admin.user.gender-no-reply')}
+                                        label={t('admin.user.gender-no-reply')}
                                         className={styles.mb_8}
                                         error={errorMessage}
                                     />
@@ -144,7 +144,7 @@ function UserEdit(props) {
                                 name={'birthday'} 
                                 value={formData.birthday} 
                                 onChange={handleFormDate} 
-                                label={i18next.t('admin.user.birthday')}
+                                label={t('admin.user.birthday')}
                                 className={styles.mb_16} 
                                 error={errorMessage}
                                 validation={validation}
@@ -155,71 +155,71 @@ function UserEdit(props) {
                                 type={'number'}
                                 onChange={handleFormData}
                                 value={formData.post_code}
-                                label={i18next.t('admin.user.postcode')}
+                                label={t('admin.user.postcode')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.postcode-ex')}
+                                placeholder={t('admin.user.postcode-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'prefecture'}
                                 onChange={handleFormData}
                                 value={formData.prefecture}
-                                label={i18next.t('admin.user.prefecture')}
+                                label={t('admin.user.prefecture')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.prefecture-ex')}
+                                placeholder={t('admin.user.prefecture-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'municipality'}
                                 onChange={handleFormData}
                                 value={formData.municipality}
-                                label={i18next.t('admin.user.municipality')}
+                                label={t('admin.user.municipality')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.municipality-ex')}
+                                placeholder={t('admin.user.municipality-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'street_name'}
                                 onChange={handleFormData}
                                 value={formData.street_name}
-                                label={i18next.t('admin.user.street-name')}
+                                label={t('admin.user.street-name')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.street-name-ex')}
+                                placeholder={t('admin.user.street-name-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'street_number'}
                                 onChange={handleFormData}
                                 value={formData.street_number}
-                                label={i18next.t('admin.user.street-number')}
+                                label={t('admin.user.street-number')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.street-number-ex')}
+                                placeholder={t('admin.user.street-number-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'building'}
                                 onChange={handleFormData}
                                 value={formData.building}
-                                label={i18next.t('admin.user.building')}
+                                label={t('admin.user.building')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.building-ex')}
+                                placeholder={t('admin.user.building-ex')}
                                 className={styles.mb_16}
                             />
                             <label className={styles.delivery_address_check}>
                                 <InputCheckbox onChange={() => { setOpen(!open)}} checked={open} />
-                                <Text className={[styles.ml_8, styles.text_nowrap].join(' ')}>{i18next.t('admin.user.set-other-delivery-address')}</Text>
+                                <Text className={[styles.ml_8, styles.text_nowrap].join(' ')}>{t('admin.user.set-other-delivery-address')}</Text>
                             </label>
                             <div className={open? styles.block : styles.hidden}>
                                 <FormInputText
@@ -227,66 +227,66 @@ function UserEdit(props) {
                                     type={'number'}
                                     onChange={handleFormData}
                                     value={formData.delivery_post_code}
-                                    label={i18next.t('admin.user.postcode')}
+                                    label={t('admin.user.postcode')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.postcode-ex')}
+                                    placeholder={t('admin.user.postcode-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_prefecture'}
                                     onChange={handleFormData}
                                     value={formData.delivery_prefecture}
-                                    label={i18next.t('admin.user.prefecture')}
+                                    label={t('admin.user.prefecture')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.prefecture-ex')}
+                                    placeholder={t('admin.user.prefecture-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_municipality'}
                                     onChange={handleFormData}
                                     value={formData.delivery_municipality}
-                                    label={i18next.t('admin.user.municipality')}
+                                    label={t('admin.user.municipality')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.municipality-ex')}
+                                    placeholder={t('admin.user.municipality-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_street_name'}
                                     onChange={handleFormData}
                                     value={formData.delivery_street_name}
-                                    label={i18next.t('admin.user.street-name')}
+                                    label={t('admin.user.street-name')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.street-name-ex')}
+                                    placeholder={t('admin.user.street-name-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_street_number'}
                                     onChange={handleFormData}
                                     value={formData.delivery_street_number}
-                                    label={i18next.t('admin.user.street-number')}
+                                    label={t('admin.user.street-number')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.street-number-ex')}
+                                    placeholder={t('admin.user.street-number-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_building'}
                                     onChange={handleFormData}
                                     value={formData.delivery_building}
-                                    label={i18next.t('admin.user.building')}
+                                    label={t('admin.user.building')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.user.building-ex')}
+                                    placeholder={t('admin.user.building-ex')}
                                     className={styles.mb_16}
                                 />
                             </div>
@@ -295,11 +295,11 @@ function UserEdit(props) {
                                 type='tel'
                                 onChange={handleFormData}
                                 value={formData.tel}
-                                label={i18next.t('admin.user.tel')}
+                                label={t('admin.user.tel')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.tel-ex')}
+                                placeholder={t('admin.user.tel-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
@@ -307,14 +307,14 @@ function UserEdit(props) {
                                 type={'email'}
                                 onChange={handleFormData}
                                 value={formData.email}
-                                label={i18next.t('admin.user.email')}
+                                label={t('admin.user.email')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.user.email-ex')}
+                                placeholder={t('admin.user.email-ex')}
                                 className={styles.mb_16}
                             />
-                            <Text className={styles.mb_8}>{i18next.t('admin.user.dm-register')}</Text>
+                            <Text className={styles.mb_8}>{t('admin.user.dm-register')}</Text>
                             <div className={styles.mb_40}>
                                 <div className={styles.flex}>
                                     <FormInputRadio
@@ -322,7 +322,7 @@ function UserEdit(props) {
                                         value={1} 
                                         onChange={handleFormData}
                                         checked={formData.is_received == 1}
-                                        label={i18next.t('admin.register')}
+                                        label={t('admin.register')}
                                         error={errorMessage}
                                     />
                                     <FormInputRadio
@@ -330,7 +330,7 @@ function UserEdit(props) {
                                         value={0} 
                                         onChange={handleFormData}
                                         checked={formData.is_received == 0}
-                                        label={i18next.t('admin.not-register')}
+                                        label={t('admin.not-register')}
                                         className={styles.ml_32}
                                         error={errorMessage}
                                     />
@@ -343,8 +343,8 @@ function UserEdit(props) {
                                 { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.is_received}</Text> }
                             </div>
                             <div className={[styles.flex, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/users`} size='l' className={styles.mr_12} style={{'width': '100%'}} >{i18next.t('admin.back-btn')}</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
+                                <LinkBtn to={`/admin/users`} size='l' className={styles.mr_12} style={{'width': '100%'}} >{t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{t('admin.update')}</Button>
                             </div>
                         </form>
                     </div>

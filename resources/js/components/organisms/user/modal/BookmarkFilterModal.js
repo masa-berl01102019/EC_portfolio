@@ -10,7 +10,7 @@ import Mask from '../../../atoms/Mask/Mask';
 import Button from '../../../atoms/Button/Button';
 import CheckboxTab from '../../../molecules/Tab/CheckboxTab';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const BookmarkFilterModal = ({
       brands,
@@ -22,31 +22,31 @@ const BookmarkFilterModal = ({
 
     const params = useRecoilValue(paramState(model));
     const {handleFilter, handleFilterCheckbox} = useCreateParams(model);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
       <Mask>
         <div className={styles.container}>
 
-          <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>{i18next.t('user.set-filter')}</Text>
+          <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>{t('user.set-filter')}</Text>
 
           <div className={styles.mb_16}>
             <label htmlFor='search'>
-                <Text className={styles.mb_8}>{i18next.t('user.keyword')}</Text>
+                <Text className={styles.mb_8}>{t('user.keyword')}</Text>
             </label>
             <InputText 
                 type='text' 
                 name='search' 
                 onBlur={handleFilter} 
                 value={params.filter.search} 
-                placeholder={i18next.t('user.bookmark.keyword-ex')}
+                placeholder={t('user.bookmark.keyword-ex')}
                 className={styles.w_100}
             />
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.bookmark.brand')}</Text>
-            <CheckboxTab tabName={i18next.t('user.bookmark.brand-ex')}>
+            <Text className={styles.mb_8}>{t('user.bookmark.brand')}</Text>
+            <CheckboxTab tabName={t('user.bookmark.brand-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   brands &&
                     brands.map((brand) =>
@@ -78,8 +78,8 @@ const BookmarkFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.bookmark.size')}</Text>
-            <CheckboxTab tabName={i18next.t('user.bookmark.size-ex')}>
+            <Text className={styles.mb_8}>{t('user.bookmark.size')}</Text>
+            <CheckboxTab tabName={t('user.bookmark.size-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   sizes &&
                     sizes.map((size) =>
@@ -111,8 +111,8 @@ const BookmarkFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.bookmark.color')}</Text>
-            <CheckboxTab tabName={i18next.t('user.bookmark.color-ex')}>
+            <Text className={styles.mb_8}>{t('user.bookmark.color')}</Text>
+            <CheckboxTab tabName={t('user.bookmark.color-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   colors &&
                     colors.map((color) =>
@@ -143,7 +143,7 @@ const BookmarkFilterModal = ({
             }
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('user.close-btn')}</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{t('user.close-btn')}</Button>
           
         </div>
       </Mask>

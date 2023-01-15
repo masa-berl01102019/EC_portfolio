@@ -13,7 +13,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function UserCreatePage() {
 
@@ -47,13 +47,13 @@ function UserCreatePage() {
     });
     const {valid, setValid, validation} = useValidation(formData, 'user', 'user_create');
     const history = useHistory();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    {i18next.t('user.user.create-title')}
+                    {t('user.user.create-title')}
                 </Heading>
                 <div className={styles.form_contents_area}>
                     <form onSubmit={ e => {
@@ -68,7 +68,7 @@ function UserCreatePage() {
                             });
                         }
                     }}>
-                        <Text className={styles.mb_8}>{i18next.t('user.user.name')}</Text>
+                        <Text className={styles.mb_8}>{t('user.user.name')}</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText
                                 name={'last_name'}
@@ -77,7 +77,7 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.last-name-ex')}
+                                placeholder={t('user.user.last-name-ex')}
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
@@ -87,11 +87,11 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.first-name-ex')}
+                                placeholder={t('user.user.first-name-ex')}
                                 className={styles.flex_basis_50}
                             />
                         </div>
-                        <Text className={styles.mb_8}>{i18next.t('user.user.name-kana')}</Text>
+                        <Text className={styles.mb_8}>{t('user.user.name-kana')}</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText 
                                 name={'last_name_kana'} 
@@ -100,7 +100,7 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.last-name-kana-ex')}
+                                placeholder={t('user.user.last-name-kana-ex')}
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
@@ -110,11 +110,11 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.first-name-kana-ex')}
+                                placeholder={t('user.user.first-name-kana-ex')}
                                 className={styles.flex_basis_50}
                             />
                         </div>
-                        <Text className={styles.mb_8}>{i18next.t('user.user.gender')}</Text>
+                        <Text className={styles.mb_8}>{t('user.user.gender')}</Text>
                         <div className={styles.mb_16}>
                             <div className={[styles.flex, styles.flex_wrap].join(' ')}>
                                 <FormInputRadio
@@ -122,7 +122,7 @@ function UserCreatePage() {
                                     value={0} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 0}
-                                    label={i18next.t('user.user.gender-man')}
+                                    label={t('user.user.gender-man')}
                                     className={[styles.mr_8, styles.mb_8].join(' ')}
                                     error={errorMessage}
                                 />
@@ -131,7 +131,7 @@ function UserCreatePage() {
                                     value={1} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 1}
-                                    label={i18next.t('user.user.gender-woman')}
+                                    label={t('user.user.gender-woman')}
                                     className={[styles.mr_8, styles.mb_8].join(' ')}
                                     error={errorMessage}
                                 />
@@ -140,7 +140,7 @@ function UserCreatePage() {
                                     value={2} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 2}
-                                    label={i18next.t('user.user.gender-other')}
+                                    label={t('user.user.gender-other')}
                                     className={[styles.mr_8, styles.mb_8].join(' ')}
                                     error={errorMessage}
                                 />
@@ -149,7 +149,7 @@ function UserCreatePage() {
                                     value={3} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 3}
-                                    label={i18next.t('user.user.gender-no-reply')}
+                                    label={t('user.user.gender-no-reply')}
                                     className={styles.mb_8}
                                     error={errorMessage}
                                 />
@@ -165,7 +165,7 @@ function UserCreatePage() {
                             name={'birthday'} 
                             value={formData.birthday} 
                             onChange={handleFormDate} 
-                            label={i18next.t('user.user.birthday')}
+                            label={t('user.user.birthday')}
                             className={styles.mb_16} 
                             error={errorMessage}
                             validation={validation}
@@ -176,71 +176,71 @@ function UserCreatePage() {
                             type={'number'}
                             onChange={handleFormData}
                             value={formData.post_code}
-                            label={i18next.t('user.user.postcode')}
+                            label={t('user.user.postcode')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.postcode-ex')}
+                            placeholder={t('user.user.postcode-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'prefecture'}
                             onChange={handleFormData}
                             value={formData.prefecture}
-                            label={i18next.t('user.user.prefecture')}
+                            label={t('user.user.prefecture')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.prefecture-ex')}
+                            placeholder={t('user.user.prefecture-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'municipality'}
                             onChange={handleFormData}
                             value={formData.municipality}
-                            label={i18next.t('user.user.municipality')}
+                            label={t('user.user.municipality')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.municipality-ex')}
+                            placeholder={t('user.user.municipality-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'street_name'}
                             onChange={handleFormData}
                             value={formData.street_name}
-                            label={i18next.t('user.user.street-name')}
+                            label={t('user.user.street-name')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.street-name-ex')}
+                            placeholder={t('user.user.street-name-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'street_number'}
                             onChange={handleFormData}
                             value={formData.street_number}
-                            label={i18next.t('user.user.street-number')}
+                            label={t('user.user.street-number')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.street-number-ex')}
+                            placeholder={t('user.user.street-number-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'building'}
                             onChange={handleFormData}
                             value={formData.building}
-                            label={i18next.t('user.user.building')}
+                            label={t('user.user.building')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.building-ex')}
+                            placeholder={t('user.user.building-ex')}
                             className={styles.mb_16}
                         />
                         <label className={styles.delivery_address_check}>
                             <InputCheckbox onChange={() => { setOpen(!open)}} checked={open} />
-                            <Text className={[styles.ml_8, styles.text_nowrap].join(' ')}>{i18next.t('user.user.set-other-delivery-address')}</Text>
+                            <Text className={[styles.ml_8, styles.text_nowrap].join(' ')}>{t('user.user.set-other-delivery-address')}</Text>
                         </label>
                         <div className={open? styles.block : styles.hidden}>
                             <FormInputText
@@ -248,66 +248,66 @@ function UserCreatePage() {
                                 type={'number'}
                                 onChange={handleFormData}
                                 value={formData.delivery_post_code}
-                                label={i18next.t('user.user.postcode')}
+                                label={t('user.user.postcode')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.postcode-ex')}
+                                placeholder={t('user.user.postcode-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_prefecture'}
                                 onChange={handleFormData}
                                 value={formData.delivery_prefecture}
-                                label={i18next.t('user.user.prefecture')}
+                                label={t('user.user.prefecture')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.prefecture-ex')}
+                                placeholder={t('user.user.prefecture-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_municipality'}
                                 onChange={handleFormData}
                                 value={formData.delivery_municipality}
-                                label={i18next.t('user.user.municipality')}
+                                label={t('user.user.municipality')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.municipality-ex')}
+                                placeholder={t('user.user.municipality-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_street_name'}
                                 onChange={handleFormData}
                                 value={formData.delivery_street_name}
-                                label={i18next.t('user.user.street-name')}
+                                label={t('user.user.street-name')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.street-name-ex')}
+                                placeholder={t('user.user.street-name-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_street_number'}
                                 onChange={handleFormData}
                                 value={formData.delivery_street_number}
-                                label={i18next.t('user.user.street-number')}
+                                label={t('user.user.street-number')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.street-number-ex')}
+                                placeholder={t('user.user.street-number-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_building'}
                                 onChange={handleFormData}
                                 value={formData.delivery_building}
-                                label={i18next.t('user.user.building')}
+                                label={t('user.user.building')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('user.user.building-ex')}
+                                placeholder={t('user.user.building-ex')}
                                 className={styles.mb_16}
                             />
                         </div>
@@ -316,11 +316,11 @@ function UserCreatePage() {
                             type='tel'
                             onChange={handleFormData}
                             value={formData.tel}
-                            label={i18next.t('user.user.tel')}
+                            label={t('user.user.tel')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.tel-ex')}
+                            placeholder={t('user.user.tel-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -328,11 +328,11 @@ function UserCreatePage() {
                             type={'email'}
                             onChange={handleFormData}
                             value={formData.email}
-                            label={i18next.t('user.user.email')}
+                            label={t('user.user.email')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.email-ex')}
+                            placeholder={t('user.user.email-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -340,14 +340,14 @@ function UserCreatePage() {
                             type={'password'}
                             onChange={handleFormData}
                             value={formData.password}
-                            label={i18next.t('user.user.password')}
+                            label={t('user.user.password')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.user.password-ex')}
+                            placeholder={t('user.user.password-ex')}
                             className={styles.mb_16}
                         />
-                        <Text className={styles.mb_8}>{i18next.t('user.user.dm-register')}</Text>
+                        <Text className={styles.mb_8}>{t('user.user.dm-register')}</Text>
                         <div className={styles.mb_40}>
                             <div className={styles.flex}>
                                 <FormInputRadio
@@ -355,7 +355,7 @@ function UserCreatePage() {
                                     value={1} 
                                     onChange={handleFormData}
                                     checked={formData.is_received == 1}
-                                    label={i18next.t('user.register')}
+                                    label={t('user.register')}
                                     error={errorMessage}
                                 />
                                 <FormInputRadio
@@ -363,7 +363,7 @@ function UserCreatePage() {
                                     value={0} 
                                     onChange={handleFormData}
                                     checked={formData.is_received == 0}
-                                    label={i18next.t('user.not-register')}
+                                    label={t('user.not-register')}
                                     className={styles.ml_32}
                                     error={errorMessage}
                                 />
@@ -376,8 +376,8 @@ function UserCreatePage() {
                             { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.is_received}</Text> }
                         </div>
                         <div className={[styles.flex, styles.justify_center].join(' ')}>
-                            <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')}>{i18next.t('user.cancel-btn')}</LinkBtn>
-                            <Button color='primary' type="submit" className={[styles.ml_8, styles.btn_max].join(' ')}>{i18next.t('user.register')}</Button>
+                            <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')}>{t('user.cancel-btn')}</LinkBtn>
+                            <Button color='primary' type="submit" className={[styles.ml_8, styles.btn_max].join(' ')}>{t('user.register')}</Button>
                         </div>
                     </form>
                 </div>

@@ -12,24 +12,24 @@ import styles from '../styles.module.css';
 import {Link} from "react-router-dom";
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function UserLogin() {
 
     const setIsUserLogin = useSetRecoilState(authUserState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'kato.haruka@example.com', 
+        'email': 'kazuya.sasaki@example.com', 
         'password': 'abc12345', 
     });
     const {valid, setValid, validation} = useValidation(formData, 'user', 'login_request');
     const {errorMessage, handleLogin} = useAuth('/api/user/auth', 'user');
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    {i18next.t('user.auth.login')}
+                    {t('user.auth.login')}
                 </Heading>
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
@@ -49,11 +49,11 @@ function UserLogin() {
                             type='email'
                             onChange={handleFormData}
                             value={formData.email}
-                            label={i18next.t('user.auth.email')}
+                            label={t('user.auth.email')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.auth.email-ex')}
+                            placeholder={t('user.auth.email-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -61,28 +61,28 @@ function UserLogin() {
                             type='password'
                             onChange={handleFormData}
                             value={formData.password}
-                            label={i18next.t('user.auth.password')}
+                            label={t('user.auth.password')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.auth.password-ex')}
+                            placeholder={t('user.auth.password-ex')}
                             className={styles.mb_24}
                         />
-                        <Button size='l' color='primary' type="submit" className={styles.mb_8}>{i18next.t('user.auth.login')}</Button>
+                        <Button size='l' color='primary' type="submit" className={styles.mb_8}>{t('user.auth.login')}</Button>
                         <Link to={'/user/reset_password'}>
                             <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
-                                {i18next.t('user.auth.reset-link')}
+                                {t('user.auth.reset-link')}
                             </Text>
                         </Link>
                     </form>
                     <div>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
-                            {i18next.t('user.auth.register-user-guide1')}
+                            {t('user.auth.register-user-guide1')}
                         </Heading>
                         <Text size='s' className={styles.mb_24}>
-                            {i18next.t('user.auth.register-user-guide2')}
+                            {t('user.auth.register-user-guide2')}
                         </Text>
-                        <LinkBtn size='l' color='accent' to={`/users/create`} className={styles.mb_8}>{i18next.t('user.auth.register-user')}</LinkBtn>
+                        <LinkBtn size='l' color='accent' to={`/users/create`} className={styles.mb_8}>{t('user.auth.register-user')}</LinkBtn>
                     </div>
                 </div>
             </Suspense>

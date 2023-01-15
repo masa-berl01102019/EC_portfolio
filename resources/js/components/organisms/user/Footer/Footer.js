@@ -3,11 +3,11 @@ import {Link} from 'react-router-dom';
 import Icon from '../../../atoms/Icon/Icon';
 import Text from '../../../atoms/Text/Text';
 import styles from './styles.module.css';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 export const Footer = ({className, ...props}) => {
 
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <footer className={[styles.footer, className].join('')} {...props}>
@@ -25,22 +25,22 @@ export const Footer = ({className, ...props}) => {
             <ul className={styles.footer_menu_area}>
                 <li className={styles.mb_16}>
                     <Link to="/">
-                        <Text tag='span'>{i18next.t('user.footer-menu.company-info')}</Text>
+                        <Text tag='span'>{t('user.footer-menu.company-info')}</Text>
                     </Link>
                 </li>
                 <li className={styles.mb_16}>
                     <Link to="/">
-                        <Text tag='span'>{i18next.t('user.footer-menu.terms-of-service')}</Text>
+                        <Text tag='span'>{t('user.footer-menu.terms-of-service')}</Text>
                     </Link>
                 </li>
                 <li className={styles.mb_16}>
                     <Link to="/">
-                        <Text tag='span'>{i18next.t('user.footer-menu.privacy-policy')}</Text>
+                        <Text tag='span'>{t('user.footer-menu.privacy-policy')}</Text>
                     </Link>
                 </li>
                 <li>
                     <Link to="/">
-                        <Text tag='span'>{i18next.t('user.footer-menu.rule')}</Text>
+                        <Text tag='span'>{t('user.footer-menu.rule')}</Text>
                     </Link>
                 </li>
             </ul>

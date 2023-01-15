@@ -10,7 +10,7 @@ import Heading from '../../../atoms/Heading/Heading';
 import Image from '../../../atoms/Image/Image';
 import styles from '../styles.module.css';
 import TopItemCard from '../../../molecules/Card/TopItemCard';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function BlogShowPage(props) {
 
@@ -20,7 +20,7 @@ function BlogShowPage(props) {
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const {isJson} = useHelper();
     const blog = data.blog;
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     
     useEffect(() => {
@@ -62,7 +62,7 @@ function BlogShowPage(props) {
                         toolbarClassName={styles.hide_toolbar}
                     />
                     <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_8, styles.mt_40].join(' ')}>
-                        {i18next.t('user.blog.item')}
+                        {t('user.blog.item')}
                     </Heading>
                     {   data.blog.items &&
                         <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

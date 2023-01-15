@@ -10,7 +10,7 @@ import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import Image from '../../../atoms/Image/Image';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 
 const NewsTable = ({news, className = '', deleteMethod, csvOutputMethod}) => {
@@ -18,12 +18,12 @@ const NewsTable = ({news, className = '', deleteMethod, csvOutputMethod}) => {
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
-          confirmBtnLabel : i18next.t('admin.delete-btn')
+          body : t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/news`, form:checklist, callback: () => setChecklist([])});
   }
@@ -31,13 +31,13 @@ const NewsTable = ({news, className = '', deleteMethod, csvOutputMethod}) => {
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/news/csv`, 
             form:checklist 
           }); 
-        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
+        }}>{t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -66,17 +66,17 @@ const NewsTable = ({news, className = '', deleteMethod, csvOutputMethod}) => {
                   />
                 )}
               </Th>
-              <Th>{i18next.t('admin.id')}</Th>
-              <Th>{i18next.t('admin.edit-link')}</Th>
-              <Th>{i18next.t('admin.published-status')}</Th>
-              <Th>{i18next.t('admin.news.thumbnail')}</Th>
-              <Th>{i18next.t('admin.news.title')}</Th>
-              <Th>{i18next.t('admin.news.brand')}</Th>
-              <Th>{i18next.t('admin.news.category')}</Th>
-              <Th>{i18next.t('admin.news.related-tag')}</Th>
-              <Th>{i18next.t('admin.last-updated-by')}</Th>
-              <Th>{i18next.t('admin.posted-date')}</Th>
-              <Th>{i18next.t('admin.updated-date')}</Th>
+              <Th>{t('admin.id')}</Th>
+              <Th>{t('admin.edit-link')}</Th>
+              <Th>{t('admin.published-status')}</Th>
+              <Th>{t('admin.news.thumbnail')}</Th>
+              <Th>{t('admin.news.title')}</Th>
+              <Th>{t('admin.news.brand')}</Th>
+              <Th>{t('admin.news.category')}</Th>
+              <Th>{t('admin.news.related-tag')}</Th>
+              <Th>{t('admin.last-updated-by')}</Th>
+              <Th>{t('admin.posted-date')}</Th>
+              <Th>{t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -84,7 +84,7 @@ const NewsTable = ({news, className = '', deleteMethod, csvOutputMethod}) => {
               <Row key={item.id} className={checklist.includes(item.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={item.id} checked={checklist.includes(item.id)} className={styles.table_check}/></Td>
                 <Td>{item.id}</Td>
-                <Td><EditLink to={`/admin/news/${item.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
+                <Td><EditLink to={`/admin/news/${item.id}/edit`}>{t('admin.edit-link')}</EditLink></Td>
                 <Td>{item.is_published_text}</Td>
                 <Td><Image src={item.thumbnail} type='blog_news' width='60px'/></Td>
                 <Td>{item.title}</Td>

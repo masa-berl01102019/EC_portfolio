@@ -10,7 +10,7 @@ import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function AdminResetPassword() {
 
@@ -21,7 +21,7 @@ function AdminResetPassword() {
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'reset_password_request');
     const {errorMessage, handleResetPasswordEmail } = useAuth('/api/admin/auth', 'admin');
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main className={styles.mt_40}>
@@ -29,7 +29,7 @@ function AdminResetPassword() {
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
                     <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
-                            {i18next.t('admin.auth.admin-reset-password')}
+                            {t('admin.auth.admin-reset-password')}
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -48,15 +48,15 @@ function AdminResetPassword() {
                                 type='email'
                                 onChange={handleFormData}
                                 value={formData.email}
-                                label={i18next.t('admin.auth.email')}
+                                label={t('admin.auth.email')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.auth.email-ex')}
+                                placeholder={t('admin.auth.email-ex')}
                                 className={styles.mb_24}
                             />
                             <Button size='l' color='primary' type="submit" className={[styles.mb_24, styles.w_100].join(' ')}>
-                                {i18next.t('admin.auth.send-btn')}
+                                {t('admin.auth.send-btn')}
                             </Button>
                         </form>
                     </div>

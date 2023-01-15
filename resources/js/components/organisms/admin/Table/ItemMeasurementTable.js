@@ -7,35 +7,35 @@ import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputText from '../../../atoms/InputText/InputText';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 
 const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod, handleFormMethod}) => {
 
   const alert = useNotify();
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   return (
     <>
       <table className={[styles.table, className].join(' ')}>
         <thead>
           <Row>
-            <Th>{i18next.t('admin.delete-btn')}</Th>
-            <Th>{i18next.t('admin.item.size')}</Th>
-            <Th>{i18next.t('admin.item.width')}</Th>
-            <Th>{i18next.t('admin.item.shoulder-width')}</Th>
-            <Th>{i18next.t('admin.item.raglan-sleeve-length')}</Th>
-            <Th>{i18next.t('admin.item.sleeve-length')}</Th>
-            <Th>{i18next.t('admin.item.length')}</Th>
-            <Th>{i18next.t('admin.item.waist')}</Th>
-            <Th>{i18next.t('admin.item.hip')}</Th>
-            <Th>{i18next.t('admin.item.rise')}</Th>
-            <Th>{i18next.t('admin.item.inseam')}</Th>
-            <Th>{i18next.t('admin.item.thigh-width')}</Th>
-            <Th>{i18next.t('admin.item.outseam')}</Th>
-            <Th>{i18next.t('admin.item.sk-length')}</Th>
-            <Th>{i18next.t('admin.item.hem-width')}</Th>
-            <Th>{i18next.t('admin.item.weight')}</Th>
+            <Th>{t('admin.delete-btn')}</Th>
+            <Th>{t('admin.item.size')}</Th>
+            <Th>{t('admin.item.width')}</Th>
+            <Th>{t('admin.item.shoulder-width')}</Th>
+            <Th>{t('admin.item.raglan-sleeve-length')}</Th>
+            <Th>{t('admin.item.sleeve-length')}</Th>
+            <Th>{t('admin.item.length')}</Th>
+            <Th>{t('admin.item.waist')}</Th>
+            <Th>{t('admin.item.hip')}</Th>
+            <Th>{t('admin.item.rise')}</Th>
+            <Th>{t('admin.item.inseam')}</Th>
+            <Th>{t('admin.item.thigh-width')}</Th>
+            <Th>{t('admin.item.outseam')}</Th>
+            <Th>{t('admin.item.sk-length')}</Th>
+            <Th>{t('admin.item.hem-width')}</Th>
+            <Th>{t('admin.item.weight')}</Th>
           </Row>
         </thead>
         <tbody>
@@ -49,20 +49,20 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                           deleteMethod('measurements', index, list.id)
                         } else {
                           alert({
-                            body : i18next.t('admin.table-alert'),
+                            body : t('admin.table-alert'),
                             type: 'alert'
                           });
                         }
                       }} 
                       style={{'maxWidth': '65px'}}
                     >
-                      {i18next.t('admin.delete-btn')}
+                      {t('admin.delete-btn')}
                     </Button>
                   </Td>
                   <Td>
                     <Selectbox name='size_id' value={list.size_id} onChange={ e => { handleFormMethod('measurements', index, e) }} className={styles.table_row_form}>
                         {/* フォーム追加以外未設定の表示を制限 */}
-                        {   list.size_id == '' && <option value={''}>{i18next.t('admin.not-set')}</option>}
+                        {   list.size_id == '' && <option value={''}>{t('admin.not-set')}</option>}
                         {   sizes && sizes.map((size) => (
                                 <option key={size.id} value={size.id}>{size.size_name}</option>
                             ))

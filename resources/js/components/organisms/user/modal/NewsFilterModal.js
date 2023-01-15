@@ -11,7 +11,7 @@ import Mask from '../../../atoms/Mask/Mask';
 import Button from '../../../atoms/Button/Button';
 import CheckboxTab from '../../../molecules/Tab/CheckboxTab';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const NewsFilterModal = ({
       brands,
@@ -23,31 +23,31 @@ const NewsFilterModal = ({
 
     const params = useRecoilValue(paramState(model));
     const {handleFilter, handleFilterCheckbox} = useCreateParams(model);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
       <Mask>
         <div className={styles.container}>
 
-          <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>{i18next.t('user.set-filter')}</Text>
+          <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>{t('user.set-filter')}</Text>
 
           <div className={styles.mb_16}>
             <label htmlFor='search'>
-                <Text className={styles.mb_8}>{i18next.t('user.keyword')}</Text>
+                <Text className={styles.mb_8}>{t('user.keyword')}</Text>
             </label>
             <InputText 
                 type='text' 
                 name='search' 
                 onBlur={handleFilter} 
                 value={params.filter.search} 
-                placeholder={i18next.t('user.news.keyword-ex')}
+                placeholder={t('user.news.keyword-ex')}
                 className={styles.w_100}
             />
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.news.brand')}</Text>
-            <CheckboxTab tabName={i18next.t('user.news.brand-ex')}>
+            <Text className={styles.mb_8}>{t('user.news.brand')}</Text>
+            <CheckboxTab tabName={t('user.news.brand-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   brands &&
                     brands.map((brand) =>
@@ -79,9 +79,9 @@ const NewsFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.news.category')}</Text>
+            <Text className={styles.mb_8}>{t('user.news.category')}</Text>
             {   gender_categories &&
-                <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilter} defaultOption={i18next.t('user.news.gender-category-ex')}> 
+                <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilter} defaultOption={t('user.news.gender-category-ex')}> 
                     {   gender_categories.map((category) => 
                             <option key={category.id} value={category.id}>{category.category_name}</option>
                         )
@@ -91,8 +91,8 @@ const NewsFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.news.related-tag')}</Text>
-            <CheckboxTab tabName={i18next.t('user.news.related-tag-ex')}>
+            <Text className={styles.mb_8}>{t('user.news.related-tag')}</Text>
+            <CheckboxTab tabName={t('user.news.related-tag-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   tags &&
                     tags.map((tag) =>
@@ -123,7 +123,7 @@ const NewsFilterModal = ({
             }
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('user.close-btn')}</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{t('user.close-btn')}</Button>
 
         </div>
       </Mask>

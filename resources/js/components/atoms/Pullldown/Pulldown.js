@@ -1,13 +1,13 @@
 import React, {memo, useState} from 'react';
 import styles from './styles.module.css';
-import useI18next from '../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const Pulldown = ({children, name, value, onChange, className = '', defaultOption}) => {
 
   const [open, setOpen] = useState(false);
   // childrenが複数ないと配列型で渡ってこずエラーになってしまう
   let defaultValue = Array.isArray(children) ? children.filter(child => child.props.value == value).map(el => el.props.children).join('') : null;
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   return (
     <div className={[styles.container, className].join(' ')}>
@@ -26,7 +26,7 @@ const Pulldown = ({children, name, value, onChange, className = '', defaultOptio
                 className={styles.hidden}
                 defaultChecked={value === ''}
               />
-              {i18next.t('admin.not-set')}
+              {t('admin.not-set')}
             </label>
           </li>
           { Array.isArray(children) ? (

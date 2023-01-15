@@ -20,7 +20,7 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import InputImage from '../../../atoms/InputImage/InputImage';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 // TODO ブログ本文で保存された画像をどうするか考える
 
@@ -46,7 +46,7 @@ function BlogEdit(props) {
     const history = useHistory();
     const {blog, brands, gender_categories, tags, items} = data;
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         // 非同期で通信されるので初回読み込み時にblogが入ってこない場合があるので条件分岐してあげる
@@ -80,7 +80,7 @@ function BlogEdit(props) {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.blog.edit-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.blog.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -99,15 +99,15 @@ function BlogEdit(props) {
                                         name={'title'}
                                         onChange={handleFormData}
                                         value={formData.title}
-                                        label={i18next.t('admin.blog.title')}
+                                        label={t('admin.blog.title')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.blog.title-ex')}
+                                        placeholder={t('admin.blog.title-ex')}
                                         className={styles.mb_16}
                                     />
                                     <div className={styles.flex_1}>
-                                        <Text className={styles.mb_8}>{i18next.t('admin.blog.body')}</Text>
+                                        <Text className={styles.mb_8}>{t('admin.blog.body')}</Text>
                                         <div className={styles.edit_area}>
                                             <Editor
                                                 editorState={editorState}
@@ -128,7 +128,7 @@ function BlogEdit(props) {
                                 <div className={styles.sidebar_box}>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.set-published-status')}</Text>
+                                            <Text size='l'>{t('admin.set-published-status')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox
@@ -139,14 +139,14 @@ function BlogEdit(props) {
                                                 validation={validation}
                                                 valid={valid}
                                             >
-                                                <option value={0}>{i18next.t('admin.unpublished')}</option>
-                                                <option value={1}>{i18next.t('admin.published')}</option>
+                                                <option value={0}>{t('admin.unpublished')}</option>
+                                                <option value={1}>{t('admin.published')}</option>
                                             </FormSelectbox>
                                         </div>
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.blog.thumbnail')}</Text>
+                                            <Text size='l'>{t('admin.blog.thumbnail')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <InputImage
@@ -165,39 +165,39 @@ function BlogEdit(props) {
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.blog.category')}</Text>
+                                            <Text size='l'>{t('admin.blog.category')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox
                                                 name='brand_id'
                                                 value={formData.brand_id}
                                                 onChange={handleFormData}
-                                                label={i18next.t('admin.blog.brand-category')}
+                                                label={t('admin.blog.brand-category')}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                                 className={styles.mb_16}
                                             >
-                                                <option value={''}>{i18next.t('admin.not-set')}</option>
+                                                <option value={''}>{t('admin.not-set')}</option>
                                                 { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
                                             </FormSelectbox>
                                             <FormSelectbox
                                                 name='category_id'
                                                 value={formData.category_id}
                                                 onChange={handleFormData}
-                                                label={i18next.t('admin.blog.gender-category')}
+                                                label={t('admin.blog.gender-category')}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                             >
-                                                <option value={''}>{i18next.t('admin.not-set')}</option>
+                                                <option value={''}>{t('admin.not-set')}</option>
                                                 { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
                                             </FormSelectbox>
                                         </div>
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.blog.related-item')}</Text>
+                                            <Text size='l'>{t('admin.blog.related-item')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <div className={styles.scroll_area}>
@@ -233,7 +233,7 @@ function BlogEdit(props) {
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.blog.related-tag')}</Text>
+                                            <Text size='l'>{t('admin.blog.related-tag')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <div className={styles.scroll_area}>
@@ -271,8 +271,8 @@ function BlogEdit(props) {
                             </div>
 
                             <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/blogs`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
+                                <LinkBtn to={`/admin/blogs`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{t('admin.update')}</Button>
                             </div>
                         </form>
                     </div>

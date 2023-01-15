@@ -5,7 +5,7 @@ import Mask from '../../atoms/Mask/Mask';
 import Image from '../../atoms/Image/Image';
 import Button from '../../atoms/Button/Button'
 import Heading from '../../atoms/Heading/Heading';
-import useI18next from '../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 export const NotifyPopup = ({
     title = '',
@@ -19,7 +19,7 @@ export const NotifyPopup = ({
     ...props
   }) => {
 
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   if(isOpen) {
     return (
@@ -30,10 +30,10 @@ export const NotifyPopup = ({
           <Text size='xl' className={styles.notify_body}>{body}</Text>
           <div className={styles.btn_area}>
              { type == 'alert' ? (
-                  <Button onClick={onClose} className={styles.close_alert_btn}>{i18next.t('admin.close-btn')}</Button>
+                  <Button onClick={onClose} className={styles.close_alert_btn}>{t('admin.close-btn')}</Button>
              ) : (
                 <>
-                  <Button onClick={onClose}>{i18next.t('admin.cancel-btn')}</Button>
+                  <Button onClick={onClose}>{t('admin.cancel-btn')}</Button>
                   <Button color='accent' onClick={onConfirm}>{confirmBtnLabel}</Button>
                 </>
              )}

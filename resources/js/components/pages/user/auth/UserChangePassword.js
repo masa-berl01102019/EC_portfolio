@@ -8,7 +8,7 @@ import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function UserChangePassword(props) {
 
@@ -19,13 +19,13 @@ function UserChangePassword(props) {
     const {valid, setValid, validation} = useValidation(formData, 'user', 'change_password_request');
     const {errorMessage, handleChangePassword } = useAuth('/api/user/auth', 'user');
     const history = useHistory();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    {i18next.t('user.auth.change-password')}
+                    {t('user.auth.change-password')}
                 </Heading>
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
@@ -45,15 +45,15 @@ function UserChangePassword(props) {
                             type={'password'}
                             onChange={handleFormData}
                             value={formData.password}
-                            label={i18next.t('user.auth.password')}
+                            label={t('user.auth.password')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder={i18next.t('user.auth.password-ex')}
+                            placeholder={t('user.auth.password-ex')}
                             className={styles.mb_16}
                         />
                         <Button size='l' color='primary' type="submit" className={styles.mb_8}>
-                            {i18next.t('user.auth.change-btn')}
+                            {t('user.auth.change-btn')}
                         </Button>
                     </form>
                 </div>
