@@ -15,10 +15,12 @@ class Authenticate extends Middleware
 
     protected function redirectTo($request)
     {
-        if (!$request->expectsJson()) { // $request->expectsJson()はリクエストされているのがHTMLなのか、JSONなのかを判断してtrue or falseで返す
+        if (!$request->expectsJson()) {
+            // $request->expectsJson() is checking if request is JSON or HTML and return true or false
             return route('login');
         }
 
-        // 上記のredirectToメソッドは認証が完了していないユーザーをリダイレクトする ＊ 今回はlaravelをAPIとして利用してるので利用しない
+        // redirectTo method redirect an user which hasn't authenticated yet 
+        // This time, It doesn't use because laravel is using as API
     }
 }

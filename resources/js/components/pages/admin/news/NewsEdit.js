@@ -22,55 +22,45 @@ import InputImage from '../../../atoms/InputImage/InputImage';
 import useValidation from '../../../hooks/useValidation';
 import { useTranslation } from 'react-i18next';
 
+// TODO: Add preview fuction
+
 function NewsEdit(props) {
 
     const baseUrl = `/api/admin/news/${props.match.params.id}/edit`;
     const model = 'NEWS';
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model)
-    const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm({
-        'title': '',
-        'body': '',
-        'brand_id': '',
-        'category_id': '',
-        'tags_id': [],
-        'is_published': 0, // 0: 非公開 1: 公開中
-        'thumbnail': '/img/no_image.png'
-    });
+    const {news, brands, gender_categories, tags} = data;
+    const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm(news);
     const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'news_edit');
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const {isJson} = useHelper();
     const {handleSendObjectForm} = useObjectForm(formData, setFormData, createData);
     const history = useHistory();
-    const {news, brands, gender_categories, tags} = data;
     const openAdminMenu = useRecoilValue(menuAdminState);
     const { t } = useTranslation();
 
-
     useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にnewsが入ってこない場合があるので条件分岐してあげる
         if(news) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...news});
-            // newsの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
+            // Convert the body of news which is stored as JSON into contentState * Judge if it's HTML or JSON because demo data is stored as HTML
             const contentState = isJson(news.body) ? convertFromRaw(JSON.parse(news.body)) : stateFromHTML(news.body);
-            // contentStateをeditorStateに変換
+            // Convert contentState into editorState
             const editorState = EditorState.createWithContent(contentState);
-            // editorStateをdraft.jsにセット
+            // Set editorState to draft.js
             setEditorState(editorState);
         }
     },[]);
 
     const onEditorStateChange = (editorState) => {
-        // 現在のeditorStateからcontentStateを取得 
+        // Get contentState from editorState
         const contentState = editorState.getCurrentContent();
-        // HTMLに変換して保存すると一部のスタイルが消えてしまうのでcontentStateをJSON形式で保存
+        // ContentState has to be store as JSON because some of styles don't be stored correctly if it's stored after converting HTML
         const content = JSON.stringify(convertToRaw(contentState));
-        // formDataのbodyに保存
+        // Store contect variable to formData
         setFormData({
             ...formData,
             body : content
         });
-        // editorStateを更新
+        // Update editorState
         setEditorState(editorState);
     };
 

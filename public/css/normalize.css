@@ -349,7 +349,7 @@ template {
 }
 
 /*
-    オリジナルベーススタイル
+    Base style
 */
 
 h1,h2,h3,h4,h5,h6,p {
@@ -393,12 +393,12 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 
-/* 暫定スタイル */
+/* temp style */
 
 /* 
    node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css
-   laravel-mix-react-css-modulesをインストールしたらスタイルが崩れてしまったので
-   distされてたスタイルを以下にコピペで一旦対応
+   Style didn't work well when I installed laravel-mix-react-css-modules.
+   So I copied and pasted the following style which was build.
 */
 .rdw-option-wrapper {
     border: 1px solid #F1F1F1;

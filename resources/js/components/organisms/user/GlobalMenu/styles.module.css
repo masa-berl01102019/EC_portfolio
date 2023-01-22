@@ -44,27 +44,3 @@
   margin-bottom: 8px;
 }
 
-
-/* 以下はデザイン保留 */
-
-/* .search_list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.add_icon {
-  border: 1px solid #d4d4d4;
-  box-sizing: border-box;
-}
-.memu_icon {
-  display: block;
-  width: 30px;
-  height: 30px;
-  margin: 0 auto;
-}
-.memu_icon_text {
-  text-align: center;
-  font-size: 11px !important;
-} */
-
-

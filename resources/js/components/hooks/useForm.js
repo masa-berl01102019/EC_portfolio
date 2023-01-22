@@ -1,21 +1,17 @@
 import React, {useState} from 'react';
 
-// form関連の関数
 const useForm = (initialValue) => {
 
     const [formData, setFormData] = useState(initialValue);
 
     const handleFormData = (e) => {
-        console.log('handleFormData');
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
     }
 
-    const handleFormDate = (date, name) => { // Sat Feb 17 2018 14:43:00 GMT+0900 (日本標準時)の形式で値が渡ってくる
-        console.log('handleFormDate');
-        // date型に合わせてフォーマット
+    const handleFormDate = (date, name) => { // Sat Feb 17 2018 14:43:00 GMT+0900 (Timezone)
         let formatted_date = date !== null ? date.getFullYear() + "-" + ("00" + (date.getMonth() + 1)).slice(-2) + "-" + ("00" + date.getDate()).slice(-2) : null;
         setFormData({
             ...formData,
@@ -24,11 +20,11 @@ const useForm = (initialValue) => {
     };
 
     const handleFormCheckbox = (e) => {
-        console.log('handleFormCheckbox');
-        let new_arr; // 配列用の変数を宣言
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const value = Number(e.target.value); // 渡ってきた値を取得
-        if(formData[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
+        let new_arr;
+        const name = e.target.name; // name attribute of input is set DB column name
+        const value = Number(e.target.value);
+        // Checking if there is Specified DB column name at Array
+        if(formData[name].includes(value)) { 
             new_arr = formData[name].filter(item => item !== value );
         } else {
             new_arr = formData[name];
@@ -41,11 +37,9 @@ const useForm = (initialValue) => {
     };
 
     const handleFormFile = (e) => {
-        console.log('handleFormFile');
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const file = e.target.files[0]; // fileオブジェクトを変数に格納
-        const imageUrl = URL.createObjectURL(file); // 新しいオブジェクトURLを生成
-        // ステートを更新
+        const name = e.target.name; // name attribute of input is set DB column name
+        const file = e.target.files[0]; // Assign file object to variable
+        const imageUrl = URL.createObjectURL(file); // Create new objectURL
         setFormData({
             ...formData,
             [name]: imageUrl,
@@ -54,9 +48,8 @@ const useForm = (initialValue) => {
     };
 
     const handleFormCategory = (e) => {
-        console.log('handleFormCategory');
-        let new_obj; // obj用の変数を宣言
-        // 親カテゴリのIDが変更時には子以下のカテゴリをクリアにするようオブジェクト生成して分割代入
+        let new_obj;
+        // Child category ID will be clear when parent category ID is changed
         if(e.target.name === 'gender_category') {
             new_obj = {'gender_category': e.target.value, 'main_category': '', 'sub_category': ''};
         } else if (e.target.name === 'main_category') {

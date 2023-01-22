@@ -12,7 +12,7 @@
   margin: 0 auto 16px;
   display: block;
 }
-/* notify popup 用*/
+/* for notify popup */
 .notify_container {
   background: #fff;
   width: calc(280 / 320 * 100%);

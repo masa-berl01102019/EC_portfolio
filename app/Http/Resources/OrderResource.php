@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class OrderResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -21,7 +20,6 @@ class OrderResource extends JsonResource
      */
     public function toArray($request)
     {
-        // 受信リクエストが名前付きルートに一致するかを判定
         if ($request->routeIs('admin.orders.edit')) {
             return [
                 'is_paid' => $this->is_paid,

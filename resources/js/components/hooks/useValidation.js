@@ -20,7 +20,8 @@ const useValidation = (data, scope, config_key) => {
     Object.entries(validation.errors.all()).forEach(([key, value]) => {
       const correctKey = key.replace(/\d+/, '*');
       const correctAttribute = config[scope][config_key].attributes[correctKey];
-      const correctVlue = value[0].replace(key.replace(/_/g, ' '), correctAttribute); // 同一キーで複数エラーがあったとしても1つのみ取得する
+      // Get one error if there are multiple error for the same key
+      const correctVlue = value[0].replace(key.replace(/_/g, ' '), correctAttribute);
       errorObject[correctKey] = correctVlue;
     });
   }

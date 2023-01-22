@@ -37,7 +37,7 @@ function ItemCreate() {
         'made_in': '',
         'mixture_ratio': '',
         'description': '',
-        'is_published': 0, // 0: 非公開 1: 公開中
+        'is_published': 0, // 0: unpublished 1: published
         'brand_id': '',
         'gender_category' : '',
         'main_category' : '',

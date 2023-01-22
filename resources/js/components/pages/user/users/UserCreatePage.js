@@ -43,7 +43,7 @@ function UserCreatePage() {
         'tel': null,
         'email': null,
         'password': null,
-        'is_received': null, // 0: 受取NG 1: 受取OK
+        'is_received': null, // 0: not register 1: registered
     });
     const {valid, setValid, validation} = useValidation(formData, 'user', 'user_create');
     const history = useHistory();

@@ -9,30 +9,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetail extends Model
 {
-    use SoftDeletes; // 論理削除
+    use SoftDeletes;
     use CustomPaginateScopeTrait;
     use AccessorPriceTrait;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** アクセサ */
+    /** Serializing */
 
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include when the data is serialized from the model
     protected $appends = ['order_price_text'];
 
-    /** リレーション */
+    /** Relationships */
 
-    public function order() {
+    public function order()
+    {
         return $this->belongsTo('App\Models\Order');
     }
 
-    public function sku() {
+    public function sku()
+    {
         return $this->belongsTo('App\Models\Sku');
     }
-    
 }

@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AdminFactory extends Factory
@@ -14,9 +13,8 @@ class AdminFactory extends Factory
     public function definition()
     {
 
-        // ユーザー登録日
         $created_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
-        // ユーザー性別
+
         $gender = $this->faker->numberBetween($min = 0, $max = 3); // 0:man 1:woman 2:others 3:no answer
 
         return [

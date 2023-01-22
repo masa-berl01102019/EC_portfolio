@@ -12,10 +12,10 @@ const DatePicker = ({name, value, onChange, ...props}) => {
       <KeyboardDatePicker
           id={name}
           format='yyyy/MM/dd'
-          disableToolbar // 年月日の選択時に上部に選択されるtoolbarを非表示にする
-          variant="dialog" // modal形式でのカレンダーの表示
-          inputVariant="outlined" // inputっぽい表示
-          openTo="year" // カレンダーアイコンクリック時に年->月->日の順に選択出来るように設定
+          disableToolbar // Hide unnecessary toolbar
+          variant="dialog" // Type of calendar
+          inputVariant="outlined" // display like a input form
+          openTo="year" // It can select in order of year→month→day when calendar icon is clicked
           views={["year", "month", "date"]}
           value={value}
           onChange={e => {

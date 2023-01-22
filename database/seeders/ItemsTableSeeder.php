@@ -19,11 +19,11 @@ class ItemsTableSeeder extends Seeder
      */
     public function run()
     {
-        // Yahoo APIの仕様変更により、1分間に30リクエストしか送れないので修正 件数の調整はfactoryで指定する
+        // Yahoo API has limit 30 request per minutes. 
+        // Adjust how many items it will get by factory function
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化 
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // テーブルごと削除して再構築
         DB::table('items')->truncate();
         DB::table('colors')->truncate();
         DB::table('sizes')->truncate();
@@ -32,27 +32,25 @@ class ItemsTableSeeder extends Seeder
         DB::table('skus')->truncate();
         DB::table('category_item')->truncate();
 
-        // make()でコレクションが返ってくるので配列に変換
+        // Convert a collection into an array * make() return collection
         $factory_items = Item::factory()->count(1)->make()->toArray();
 
-        // シリアライズ時に追加されるカラム
+        // Appended columns is generated automatically when Eloquent model is serialized
         $appends = ['is_published_text', 'price_text', 'cost_text', 'included_tax_price', 'included_tax_price_text'];
 
-        // bulkでinsert時に邪魔なので削除
         foreach ($appends as $value) {
-            //削除実行
+            // Delete Appended columns
             unset($factory_items[0][$value]);
         }
 
-        // 商品の登録
+        // Register items
         DB::table('items')->insert($factory_items[0]['items']);
 
-        // データ不整合を防ぐ為に正しくデータ取得出来なかった品番は削除する
+        // Delete items which is stored incorrectly in order to prevent data inconsistency
         Item::where('product_number', '')->orWhere('mixture_ratio', '')->orWhere('made_in', '')->delete();
 
-        // カラーマスターの登録
+        // Register colors
         foreach ($factory_items[0]['color_masters'] as $value) {
-            // データの挿入
             DB::table('colors')->insert([
                 'color_name' => $value,
                 'created_at' => '2010-04-01 00:00:00',
@@ -60,9 +58,8 @@ class ItemsTableSeeder extends Seeder
             ]);
         }
 
-        // サイズマスターの登録
+        // Register sizes
         foreach ($factory_items[0]['size_masters'] as $value) {
-            // データの挿入
             DB::table('sizes')->insert([
                 'size_name' => $value,
                 'created_at' => '2010-04-01 00:00:00',
@@ -70,31 +67,30 @@ class ItemsTableSeeder extends Seeder
             ]);
         }
 
-        // 登録された商品をDBから取得
+        // Get all registered items
         $items = Item::all();
 
         foreach ($items as $item) {
-            // 商品に紐づく画像を変数に格納
+            // Assign images related with items to variables
             $item_img = $factory_items[0]['item_image'][$item->product_number];
-            // マスターのカラーと一致するものをインスタンスで取得
+            // Create instance from data which correspond with color name registered in DB
             $color_instance = Color::select('id')->where('color_name', $item_img['color_name'])->first();
-            // 画像保存
             Image::create([
                 'item_id' => $item->id,
                 'color_id' => $color_instance->id,
                 'image' => $item_img['image'],
-                'image_category' => 0, // 0: メイン画像, 1: サムネイル画像 * Yahoo商品検索APIではサムネイル画像は取得出来ないのでメインのみ
+                'image_category' => 0, // 0: main image, * ItemSearch API (Yahoo) can get only one item picture
                 'created_at' => !is_null($item->posted_at) ? $item->posted_at : '2010-04-01 00:00:00',
                 'updated_at' => !is_null($item->modified_at) ? $item->modified_at : '2010-04-01 00:00:00',
             ]);
 
-            // 商品に紐づく寸法を変数に格納
+            // Assign measurements related with items to variables
             $item_measurements = $factory_items[0]['item_measurements'][$item->product_number];
 
             for ($n = 0; $n < count($item_measurements); $n++) {
-                // マスターのサイズと一致するものをインスタンスで取得
+                // Create instance from data which correspond with size name registered in DB
                 $size_instance = Size::select('id')->where('size_name', $item_measurements[$n])->first();
-                // 商品に紐づく寸法を保存
+                // Register measurement related with items to variables
                 DB::table('measurements')->insert([
                     'item_id' => $item->id,
                     'size_id' => $size_instance->id,
@@ -116,13 +112,13 @@ class ItemsTableSeeder extends Seeder
                     'updated_at' => !is_null($item->modified_at) ? $item->modified_at : '2010-04-01 00:00:00',
                 ]);
 
-                // 商品に紐づくカラーを変数に格納
+                // Assign colors related with items to variables
                 $item_colors = $factory_items[0]['item_colors'][$item->product_number];
 
                 for ($t = 0; $t < count($item_colors); $t++) {
-                    // マスターのカラーと一致するものをインスタンスで取得
+                    // Create instance from data which correspond with color name registered in DB
                     $color_instance2 = Color::select('id')->where('color_name', $item_colors[$t])->first();
-                    // 商品に紐づくSKUを保存
+                    // Register sku related with items to variables
                     DB::table('skus')->insert([
                         'item_id' => $item->id,
                         'size_id' => $size_instance->id,
@@ -134,7 +130,7 @@ class ItemsTableSeeder extends Seeder
                 }
             }
 
-            // 商品に紐づくカテゴリを変数に格納
+            // Assign categories related with items to variables
             $category_item = $factory_items[0]['category_item'][$item->product_number];
 
             for ($n = 0; $n < count($category_item); $n++) {
@@ -145,6 +141,6 @@ class ItemsTableSeeder extends Seeder
             }
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

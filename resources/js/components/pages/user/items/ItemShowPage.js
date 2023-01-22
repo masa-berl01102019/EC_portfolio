@@ -21,6 +21,9 @@ import CartModal from '../../../organisms/user/modal/CartModal';
 import BookmarkModal from '../../../organisms/user/modal/BookmarkModal';
 import { useTranslation } from 'react-i18next';
 
+// TODO: Create breadcrumbs list
+// TODO: Modify related tag lists design and create link in order to show items which has the same tag
+
 function ItemShowPage(props) {
 
     const baseUrl = `/api/user/items/${props.match.params.id}`;
@@ -44,7 +47,6 @@ function ItemShowPage(props) {
         }
     },[baseUrl]);
 
-    
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>

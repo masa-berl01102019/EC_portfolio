@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ContactResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */

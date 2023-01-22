@@ -25,7 +25,7 @@ function NotificationCreate() {
     const [formData, {handleFormData, handleFormDate}] = useForm({
         'title': null,
         'body': null,
-        'is_published': 0, // 0: 非公開 1: 公開中
+        'is_published': 0, // 0: unpublished 1: published
         'expired_at': null
     });
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'notification_request');

@@ -12,6 +12,9 @@ import styles from '../styles.module.css';
 import TopItemCard from '../../../molecules/Card/TopItemCard';
 import { useTranslation } from 'react-i18next';
 
+// TODO: Create breadcrumbs list
+// TODO: Create button which return index page
+
 function BlogShowPage(props) {
 
     const baseUrl = `/api/user/blogs/${props.match.params.id}`;
@@ -24,13 +27,12 @@ function BlogShowPage(props) {
 
     
     useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にblogが入ってこない場合があるので条件分岐してあげる
         if(blog) {
-            // blogの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
+            // Convert the body of blog which is stored as JSON into contentState * Judge if it's HTML or JSON because demo data is stored as HTML 
             const contentState = isJson(blog.body) ? convertFromRaw(JSON.parse(blog.body)) : stateFromHTML(blog.body);
-            // contentStateをeditorStateに変換
+            // Convert contentState into editorState
             const editorState = EditorState.createWithContent(contentState);
-            // editorStateをdraft.jsにセット
+            // Set editorState to draft.js
             setEditorState(editorState);
         }
     },[]);

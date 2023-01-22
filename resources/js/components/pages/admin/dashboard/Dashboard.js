@@ -4,6 +4,8 @@ import Heading from '../../../atoms/Heading/Heading';
 import styles from '../styles.module.css';
 import { useTranslation } from 'react-i18next';
 
+// TODO: Create dashboard page
+
 function Dashboard() {
 
     const { t } = useTranslation();

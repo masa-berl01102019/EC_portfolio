@@ -6,7 +6,6 @@ import styles from './styles.module.css';
 
 const Pagination = ({meta, className, model}) => {
 
-  // URLパラメータ変更のフックの呼び出し
   const {handleCurrentPage, handlePerPage} = useCreateParams(model);
 
   return (

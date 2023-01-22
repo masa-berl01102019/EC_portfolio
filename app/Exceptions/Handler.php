@@ -16,15 +16,14 @@ class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that are not reported.
-     * ログ出力しない例外の設定
      * @var array
      */
     protected $dontReport = [
-        // \Illuminate\Auth\AuthenticationException::class, // 認証
-        // \Illuminate\Auth\Access\AuthorizationException::class, // 認可
-        // \Illuminate\Validation\ValidationException::class, // バリデーション
-        // \Symfony\Component\HttpKernel\Exception\HttpException::class, // HTTPステータス
-        // \Illuminate\Database\Eloquent\ModelNotFoundException::class, // モデル関係
+        // \Illuminate\Auth\AuthenticationException::class,
+        // \Illuminate\Auth\Access\AuthorizationException::class,
+        // \Illuminate\Validation\ValidationException::class,
+        // \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        // \Illuminate\Database\Eloquent\ModelNotFoundException::class, 
     ];
 
     /**
@@ -61,16 +60,13 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if (!$request->is('api/*')) {
-            // API以外は何もしない
+            // Don't do anything except API request
             return parent::render($request, $exception);
         } else if ($exception instanceof AuthenticationException) {
-            // 認証エラー
             return response()->json(['message' => trans('api.error.401')], 401);
         } else if ($exception instanceof ValidationException) {
-            // バリデーションエラー
             return response()->json(new ErrorResource($exception), 422);
         } else if ($exception instanceof HttpException) {
-            // HTTPステータスエラー
             $err_code = $exception->getStatusCode();
             switch ($err_code) {
                 case 403 || 404:

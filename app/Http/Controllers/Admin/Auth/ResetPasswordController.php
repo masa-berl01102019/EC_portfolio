@@ -35,7 +35,6 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        // ログイン済みの状態でパスワードリセットが出来ないようにミドルウェアで制限
         $this->middleware('guest:admin');
     }
 }

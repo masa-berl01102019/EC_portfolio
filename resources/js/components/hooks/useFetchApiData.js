@@ -6,16 +6,18 @@ import useToastify from '../context/ToastifyContext';
 
 
 const useFetchApiData = (url, model) => {
+    // Get lang which has been used in browser from localStorage or assign default lang
     const locale = {'X-Request-Locale': localStorage.getItem('lang') || 'en'};
-    // checking whether api request is for admin  
+    // Checking whether api request is for admin  
     const isAdmin = url.startsWith('/api/admin/');
-    // error handling
+    // Call error handling custom hook 
     const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
-    // messageを表示する
+    // Call toast custom hook in order to display API message
     const toast = useToastify();
-    // Appのreact-queryのプロバイダーで渡したqueryClientを取得 * keyを指定してデータを再取得 / キャッシュを取得 / キャッシュを更新 等を行える
+    // Get queryClient which is passed by react-query provider in App.js
+    // * It can refetch data / get cache / update cache etc to designate key
     const queryClient = useQueryClient();
-    // get data
+    // Get data
     const { data: {data} } = useQuery(
       [model, url],
       async () => {
@@ -23,7 +25,7 @@ const useFetchApiData = (url, model) => {
         return await axios({ method: 'get', url: url, headers: locale });
       },
       { 
-        onSuccess: (res) => console.log(res.data),
+        // onSuccess: (res) => console.log(res.data),
         onError: (err) =>  handleApiErrorMessage(err),
       }
     );
@@ -32,14 +34,14 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form, headers} = obj;
-        console.log(url, form, {...headers, ...locale});
+        // console.log(url, form, {...headers, ...locale});
         return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
       },
       { 
         onSuccess: (res, obj) => {
-          // 成功メッセージを表示
+          // Display success message
           isAdmin && toast({message: res.data.message});
-          // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+          // Catch callback function as argument and execute if there is it, after API request is done successfully.
           const {callback} = obj;
           callback !== undefined && callback();
           queryClient.invalidateQueries(model)
@@ -52,14 +54,12 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form, headers} = obj;
-        console.log(url, form, {...headers, ...locale});
+        // console.log(url, form, {...headers, ...locale});
         return await axios({ method: 'put', url: url, data: form, headers: {...headers, ...locale} });
       },
       { 
         onSuccess: (res, obj) => {
-          // 成功メッセージを表示
           isAdmin && toast({message: res.data.message});
-          // 成功後のアクションをcallback関数として引数で受け取りあれば実行
           const {callback} = obj;
           callback !== undefined && callback();
           queryClient.invalidateQueries(model)
@@ -72,14 +72,12 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form, headers} = obj;
-        console.log(url, form, {...headers, ...locale});
+        // console.log(url, form, {...headers, ...locale});
         return await axios({ method: 'delete', url: url, data: form, headers: {...headers, ...locale} });
       },
       { 
         onSuccess: (res, obj) => {
-          // 成功メッセージを表示
           isAdmin && toast({message: res.data.message});
-          // 成功後のアクションをcallback関数として引数で受け取りあれば実行
           const {callback} = obj;
           callback !== undefined && callback();
           queryClient.invalidateQueries(model)
@@ -92,16 +90,15 @@ const useFetchApiData = (url, model) => {
       async (obj) => {
         setErrorMessage(null);
         const {url, form} = obj;
-        console.log(url, form, locale);
+        // console.log(url, form, locale);
         return await axios({ method: 'post', url: url, data: form, headers: locale });
       },
       { 
         onSuccess: (res) => {
-          // CSVのファイル名はHTTPレスポンスヘッダーのcontent-dispositionに格納されてるので取得
+          // Get file name of CSV which is stored at content-disposition in HTTP response header
           const contentDisposition = res.headers['content-disposition'];
-          // ファイル名を取得
           const fileName = getFileName(contentDisposition);
-          // CSVを出力
+          // Output CSV file
           useDownloadCsv(res.data, fileName);
           queryClient.invalidateQueries(model);
         },

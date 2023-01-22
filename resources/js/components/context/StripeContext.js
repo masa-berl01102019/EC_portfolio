@@ -2,13 +2,14 @@ import React from 'react';
 import {loadStripe} from '@stripe/stripe-js';
 import {Elements} from '@stripe/react-stripe-js';
 
-const StripeProvider = ({children}) => {
+// TODO: read .env file
 
-  // stipeの初期化 公開キーを設定
+const StripeProvider = ({children}) => {
+  // initialize stipe public key
   const stripePromise = loadStripe('pk_test_51KsaLtCwHY0FaQM1CZfQqsBHTL9ozUN0xvyJFSZxNBn2tEMr1btdGm43cMvJ7CtN8yfOAWHDQVlvpjuRIf3RCoZt008wwWJgVr');
 
   return (
-    // stripeのオブジェクトをpropsで要素に渡す
+    // Stipe public key is passed to stripe object as props
     <Elements stripe={stripePromise}>
       {children}
     </Elements>

@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 
 /**
- * 国内の郵便番号チェック
+ * Check if it's Japanese postcode
  */
 class JapanesePostCode implements Rule
 {

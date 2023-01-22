@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Cart;
@@ -14,12 +15,12 @@ class CartsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('carts')->truncate(); // テーブルごと削除して再構築
+        DB::table('carts')->truncate();
 
         Cart::factory(1200)->create();
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

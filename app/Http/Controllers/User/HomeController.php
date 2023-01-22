@@ -30,8 +30,8 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        // TODO: ランキングは集計の期間を要検討 1週間?
-        // TODO: おすすめを適用するのに十分なデータがない場合のおすすめのアルゴリズム実装必要
+        // TODO: Ranking needs to consider the period of collecting data ex) one week
+        // TODO: Needs to implement another recommend algorithm until collecting enough data to apply current one
         try {
             // get Item ID users ordered
             $order_recodes = User::getUserOrderedItemId();

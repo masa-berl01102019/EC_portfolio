@@ -7,13 +7,11 @@ use App\Models\Cart;
 use App\Models\Item;
 use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Boolean;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderDetailResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -27,16 +25,12 @@ class OrderDetailResource extends JsonResource
      */
     public function toArray($request)
     {
-        // 受信リクエストが名前付きルートに一致するかを判定
         if ($request->routeIs('user.orders.index')) {
 
-            // 同一ユーザーのカート商品のSKUのIDを配列で取得
             $cart_item_arr = Cart::getUserCart(optional(Auth::guard('user')->user())->id);
-
-            // 論理削除されたものも取得
+            // Get soft deleted items
             $sku = Sku::withTrashed()->find($this->sku_id);
             $item = Item::withTrashed()->find($sku->item_id);
-
             $imeges = Image::where('image_category', 0)->where('item_id', $item->id)->pluck('image')->toArray();
 
             return [
@@ -49,10 +43,10 @@ class OrderDetailResource extends JsonResource
                 'order_color' => $this->order_color,
                 'order_size' => $this->order_size,
                 'created_at' => $this->created_at->format('Y/m/d'),
-                'stock_status' => optional($sku)->quantity > 0 ? 1 : 0, // 在庫状況
-                'cart_status' => in_array($this->sku_id, $cart_item_arr) ? 1 : 0, // cartにも入ってるか？
-                'delete_status' => optional($sku)->deleted_at || optional($item)->deleted_at ? 1 : 0, // 削除になってるか？
-                'is_published' => optional($item)->is_published, // 0: 未公開 1: 公開
+                'stock_status' => optional($sku)->quantity > 0 ? 1 : 0,
+                'cart_status' => in_array($this->sku_id, $cart_item_arr) ? 1 : 0, // Is it in cart?
+                'delete_status' => optional($sku)->deleted_at || optional($item)->deleted_at ? 1 : 0, // Check if it's deleted
+                'is_published' => optional($item)->is_published, // 0: Unpublished 1: Published
                 'sku_id' => $this->sku_id,
                 'order_quantity' => $this->order_quantity
             ];

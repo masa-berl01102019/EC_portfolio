@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PasswordReset extends Model
 {
-    // updated_at不要なのでnullをセット
+    // Setting not to create updated_at column
     const UPDATED_AT = null;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];

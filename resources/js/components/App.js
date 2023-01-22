@@ -9,8 +9,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NotifyProvider } from './context/NotifyContext';
 import { ToastifyProvider } from './context/ToastifyContext';
-
-// import i18n (needs to be bundled ;))
 import './i18n';
 
 
@@ -36,6 +34,7 @@ const queryClient = new QueryClient({
 
 function App() {
     return (
+        // TODO: Create and embed Error Page to fallback
         <ErrorBoundary>
             <RecoilRoot>
                 <CookiesProvider>

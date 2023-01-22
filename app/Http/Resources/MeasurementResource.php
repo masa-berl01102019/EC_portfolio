@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class MeasurementResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -40,5 +39,5 @@ class MeasurementResource extends JsonResource
             'hem_width' => $this->hem_width,
             'weight' => $this->weight,
         ];
-    } 
+    }
 }

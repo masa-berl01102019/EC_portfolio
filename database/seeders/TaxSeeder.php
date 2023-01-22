@@ -14,9 +14,9 @@ class TaxSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('taxes')->truncate(); // テーブルごと削除して再構築
+        DB::table('taxes')->truncate();
 
         DB::table('taxes')->insert([
             [
@@ -41,6 +41,6 @@ class TaxSeeder extends Seeder
             ]
         ]);
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

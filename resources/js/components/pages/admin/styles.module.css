@@ -1,4 +1,4 @@
-/* 全体 */
+/* total */
 .container {
   width : 90%;
   margin: 86px auto 72px;
@@ -228,7 +228,7 @@
   margin-bottom: 16px;
 }
 
-/* flex プロパティ */
+/* flex */
 .flex {
   display: flex;
 }
@@ -266,7 +266,7 @@
   padding-left: 64px;
 }
 
-/* 位置指定 */
+/* margin */
 .mt_8 {
   margin-top: 8px;
 }

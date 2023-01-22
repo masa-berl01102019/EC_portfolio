@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 const Pulldown = ({children, name, value, onChange, className = '', defaultOption}) => {
 
   const [open, setOpen] = useState(false);
-  // childrenが複数ないと配列型で渡ってこずエラーになってしまう
+  // Children props are Array type if it's multiple elements. 
   let defaultValue = Array.isArray(children) ? children.filter(child => child.props.value == value).map(el => el.props.children).join('') : null;
   const { t } = useTranslation();
 

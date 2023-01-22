@@ -4,15 +4,17 @@ const validationConfig =  () => {
 
   const { t } = useTranslation();
 
+  // TODO: Add regular expression to judge kana character / Japanese postcode / Japanese tel
+
   return {
     admin : {
       admin_create : {
         rules : {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
-          'last_name_kana': 'string|max:25', // かな判定追加する
-          'first_name_kana': 'string|max:25', // かな判定追加する
-          'tel': 'required|string|max:15', // 日本のサービスなので日本語の電話番号かの判定ロジック必要
+          'last_name_kana': 'string|max:25',
+          'first_name_kana': 'string|max:25',
+          'tel': 'required|string|max:15',
           'email': 'required|email|max:100',
           'password': 'required|string|alpha_num|min:8|max:100'
         },
@@ -30,9 +32,9 @@ const validationConfig =  () => {
         rules : {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
-          'last_name_kana': 'string|max:25', // かな判定追加する
-          'first_name_kana': 'string|max:25', // かな判定追加する
-          'tel': 'required|string|max:15', // 日本のサービスなので日本語の電話番号かの判定ロジック必要
+          'last_name_kana': 'string|max:25',
+          'first_name_kana': 'string|max:25',
+          'tel': 'required|string|max:15',
           'email': 'required|email|max:100'
         },
         attributes : { 

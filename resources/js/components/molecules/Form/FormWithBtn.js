@@ -21,11 +21,8 @@ const FormWithBtn = ({
     ...props
   }) => {
 
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, setFormData}] = useForm(formInitialValue);
-    // フロント用バリデーション
     const {valid, setValid, validation, errorObject} = useValidation(formData, validateScope, validateConfigKey);
-    // formの値をuseRefで管理
     const inputValue = useRef(undefined);
     const { t } = useTranslation();
 

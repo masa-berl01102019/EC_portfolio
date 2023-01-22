@@ -24,8 +24,6 @@ import useHelper from '../../../hooks/useHelper';
 import useValidation from '../../../hooks/useValidation';
 import { useTranslation } from 'react-i18next';
 
-// TODO プレビュー機能の実装
-
 function ItemEdit(props) {
 
     const baseUrl = `/api/admin/items/${props.match.params.id}/edit`;

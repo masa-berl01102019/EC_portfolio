@@ -61,7 +61,6 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
                   </Td>
                   <Td>
                     <Selectbox name='size_id' value={list.size_id} onChange={ e => { handleFormMethod('measurements', index, e) }} className={styles.table_row_form}>
-                        {/* フォーム追加以外未設定の表示を制限 */}
                         {   list.size_id == '' && <option value={''}>{t('admin.not-set')}</option>}
                         {   sizes && sizes.map((size) => (
                                 <option key={size.id} value={size.id}>{size.size_name}</option>

@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Admin;
@@ -14,12 +15,12 @@ class AdminsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // Inactivate foreign key temporary
 
-        DB::table('admins')->truncate(); // テーブルごと削除して再構築
+        DB::table('admins')->truncate();
 
         Admin::factory(10)->create();
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // Activate a foreign key
     }
 }

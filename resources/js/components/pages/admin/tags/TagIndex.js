@@ -22,12 +22,12 @@ function TagIndex() {
     const { t } = useTranslation();
 
     const handleConfirmDelete = async () => {
-        // useNotifyにはpromiseを返却する関数なので返却値を受け取って処理を進める為にasyncでawaitを設定する
+        // Set async and await so that process can do after receiving return variable because of useNotify function will return promise.
         const result = await confirm({
             body : t('admin.tag.confirm-msg'),
             confirmBtnLabel : t('admin.delete-btn')
         });
-        // resolveのfunctionで論理値が渡ってくるのそれを受け取って以下の処理をする
+        // Resolve function will return boolean
         result && deleteData({ url: `/api/admin/tags/${editableForm}`});
     }
 

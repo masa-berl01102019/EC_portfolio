@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests\User;
 
-use Carbon\Carbon;
-use App\Rules\Kana;
-use App\Rules\JapanesePhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderRequest extends FormRequest

@@ -9,6 +9,7 @@ import InputImage from '../../../atoms/InputImage/InputImage';
 import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 
+// TODO: implement limit so that image which has status of main should be one
 
 const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFormMethod}) => {
 
@@ -57,7 +58,6 @@ const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFor
                     </Td>
                     <Td>
                       <Selectbox name='image_category' value={list.image_category} onChange={ e => handleFormMethod('images', index, e) } className={styles.table_row_form}>
-                          {/* フォーム追加以外未設定の表示を制限 */}
                           { list.image_category === '' && <option value={''}>{t('admin.not-set')}</option>}
                           <option value={0}>{t('admin.item.image-main')}</option>
                           <option value={1}>{t('admin.item.image-sub')}</option>
@@ -65,7 +65,6 @@ const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFor
                     </Td>
                     <Td>
                       <Selectbox name='color_id' value={list.color_id} onChange={ e => handleFormMethod('images', index, e) }  className={styles.table_row_form}>
-                        {/* フォーム追加以外未設定の表示を制限 */}
                         { list.color_id == '' && <option value={''}>{t('admin.not-set')}</option>}
                         { colors && colors.map((color) => (
                             <option key={color.id} value={color.id}>{color.color_name}</option>

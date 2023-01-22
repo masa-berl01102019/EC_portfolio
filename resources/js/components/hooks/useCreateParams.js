@@ -3,15 +3,15 @@ import { paramState } from '../store/paramState';
 
 const useCreateParams = (model) => {
 
-    // グローバルで管理するパラメータを取得
+    // Get parameter which is managed globally 
     const [params, setParams] = useRecoilState(paramState(model));
 
     /**
-     * 以下ソート関連の関数
+     * sort-related function the below
     */
 
     const handleSort = (e) => {
-        console.log('handleSort直前のparams', params);
+        // console.log('handleSort', params);
         setParams({
             ...params,
             sort: {
@@ -22,11 +22,11 @@ const useCreateParams = (model) => {
     }
 
     /**
-     * 以下ページネーション関連の関数
+     * paginate-related function the below
     */
 
     const handleCurrentPage = (pageNumber) => {
-        console.log('handleCurrentPage直前のparams', params);
+        // console.log('handleCurrentPage', params);
         setParams({
             ...params,
             paginate: {
@@ -37,7 +37,7 @@ const useCreateParams = (model) => {
     };
 
     const handlePerPage = (e) => {
-        console.log('handlePerPage直前のparams', params);
+        // console.log('handlePerPage', params);
         setParams({
             ...params,
             paginate: {
@@ -48,12 +48,12 @@ const useCreateParams = (model) => {
     };
 
     /**
-     * 以下フィルター関連の関数
+     * filter-related function the below
     */
 
-    // input text / selectbox / input radio 用
+    // for input text / selectbox / input radio 
     const handleFilter = (e) => {
-        console.log('handleFilter直前のparams', params);
+        // console.log('handleFilter', params);
         setParams({
             ...params,
             filter: {
@@ -63,13 +63,14 @@ const useCreateParams = (model) => {
         });
     }
 
-    // input checkbox用
+    // for input checkbox
     const handleFilterCheckbox = (e) => {
-        console.log('handleFilterCheckbox直前のparams', params);
-        let new_arr = []; // 配列用の変数を宣言
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const value = Number(e.target.value); // 渡ってきた値を取得
-        if( params.filter[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
+        // console.log('handleFilterCheckbox', params);
+        let new_arr = [];
+        const name = e.target.name; // name attribute of input is set DB column name
+        const value = Number(e.target.value);
+        // Checking if there is Specified DB column name at Array
+        if( params.filter[name].includes(value)) {
             new_arr = params.filter[name].filter(item => item !== value );
         } else {
             new_arr = [...params.filter[name]];
@@ -84,10 +85,10 @@ const useCreateParams = (model) => {
         });
     };
 
-    // input checkbox用 clear
+    // for input checkbox clear
     const handleClearFilterCheckbox = (e) => {
-        console.log('handleClearFilterCheckbox直前のparams', params);
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
+        // console.log('handleClearFilterCheckbox', params);
+        const name = e.target.name; // name attribute of input is set DB column name
         setParams({
             ...params,
             filter: {
@@ -98,10 +99,10 @@ const useCreateParams = (model) => {
     };
 
     const handleFilterDate = (date, name) => {
-        // date型に合わせてフォーマット  Sat Feb 17 2018 14:43:00 GMT+0900 (日本標準時)の形式で値が渡ってくる
+        // Format argument (date)  * date will be passed like 'Sat Feb 17 2018 14:43:00 GMT+0900' (timezone: Asia/Tokyo)
         let formatted_date = date !== null ? date.getFullYear() + "-" + ("00" + (date.getMonth() + 1)).slice(-2) + "-" + ("00" + date.getDate()).slice(-2) : null;
 
-        // onChangeで入力毎に呼び出されるので正しい日時もしくは完全に入力欄を空にした時以外にsetParamsを呼び出さない用に制御
+        // Not to call setParams function unless formatted_date variable is correct date format or completely blank
         if(formatted_date != null && formatted_date.match(/\d{4}\-\d{2}\-\d{2}/) != null || date == null) {
             setParams({
                 ...params,
@@ -126,9 +127,9 @@ const useCreateParams = (model) => {
     };
  
     const handleFilterCategory = (e) => {
-        console.log('handleFilterCategory直前のparams', params);
-        let new_obj; // obj用の変数を宣言
-        // 親カテゴリのIDが変更時には子以下のカテゴリをクリアにするようオブジェクト生成して分割代入
+        // console.log('handleFilterCategory', params);
+        let new_obj;
+        // Child category ID will be clear when parent category ID is changed
         if(e.target.name === 'gender_category') {
             new_obj = {'gender_category': e.target.value, 'main_category': '', 'sub_category': ''};
         } else if (e.target.name === 'main_category') {

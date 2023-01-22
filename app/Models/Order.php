@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use SoftDeletes; // 論理削除
+    use SoftDeletes;
     use AccessorPriceTrait;
     use OrderByNameScopeTrait;
     use OrderByCreatedAtScopeTrait;
@@ -25,17 +25,17 @@ class Order extends Model
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** アクセサ */
+    /** Serializing */
 
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['tax_amount_text', 'sub_total_text', 'total_amount_text', 'is_shipped_text', 'is_paid_text', 'payment_method_text'];
+
+    /** Accessors */
 
     public function getPaymentMethodTextAttribute()
     {
@@ -52,16 +52,14 @@ class Order extends Model
         return isset($this->is_shipped) ? trans('api.const.is_shipped')[$this->is_shipped] : '';
     }
 
-    /** スコープ */
+    /** Query scopes */
 
     public function scopeFilterIsShipped($query, $request)
     {
         $filter = $request->input('f_is_shipped');
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
-            // カンマ区切りで配列に変換
             $receiver_arr = explode(',', $filter);
-            // 配列内に該当する項目を絞り込み検索
             return $query->whereIn('is_shipped', $receiver_arr);
         });
     }
@@ -71,9 +69,7 @@ class Order extends Model
         $filter = $request->input('f_is_paid');
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
-            // カンマ区切りで配列に変換
             $receiver_arr = explode(',', $filter);
-            // 配列内に該当する項目を絞り込み検索
             return $query->whereIn('is_paid', $receiver_arr);
         });
     }
@@ -83,9 +79,7 @@ class Order extends Model
         $filter = $request->input('f_payment_method');
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
-            // カンマ区切りで配列に変換
             $receiver_arr = explode(',', $filter);
-            // 配列内に該当する項目を絞り込み検索
             return $query->whereIn('payment_method', $receiver_arr);
         });
     }
@@ -106,7 +100,7 @@ class Order extends Model
         });
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function user()
     {

@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class News extends Model
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    use SoftDeletes; // 論理削除
+    use HasFactory;
+    use SoftDeletes;
     use AccessorNameTrait;
     use AccessorPublishTrait;
     use AccessorGenderCategoryTrait;
@@ -37,42 +37,44 @@ class News extends Model
     use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
-    // timestamp無効にしないとデータ挿入時にエラーになる
+    // An error will occur when inserting data in case that isn't defined timestamps() in migration files
     public $timestamps = false;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    // モデルからシリアライズ時の日付形式の設定
+    /** Serializing */
+
+    // Setting the date format
     protected $casts = [
         'posted_at' => 'date:Y/m/d H:i',
         'modified_at' => 'date:Y/m/d H:i',
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['full_name', 'full_name_kana', 'is_published_text', 'gender_category_text'];
 
-    /** リレーション */
+    /** Relationships */
 
-    public function brand() {
+    public function brand()
+    {
         return $this->belongsTo('App\Models\Brand');
     }
 
-    public function admin() {
+    public function admin()
+    {
         return $this->belongsTo('App\Models\Admin');
     }
 
-    public function tags() {
+    public function tags()
+    {
         return $this->belongsToMany('App\Models\Tag');
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo('App\Models\Category');
     }
 }

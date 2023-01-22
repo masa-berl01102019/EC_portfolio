@@ -14,33 +14,29 @@ class ItemFactory extends Factory
 
     public function definition()
     {
-        // 配列の初期化
         $response_data = [];
 
-        // 一度に取得出来る商品リストは100件までかつ1分間に30リクエストまで
+        // Api has limit which is up to 100 items at once and up to 30 requests per minute
         for ($i = 0; $i < 5; $i++) {
-            // Yahoo商品検索API パラメータ https://developer.yahoo.co.jp/webapi/shopping/shopping/v3/itemsearch.html
-            $appid = config('services.yahoo.app_id'); // APIキー ＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
-            $results = 100; // 取得件数
-            $start = ($results * $i) + 1; // 取得開始位置 1 101 201 
-            $genre_category_id = '37019,37052,36861,36913,36887,36903,36571,36583,36504,36624,48271'; // カテゴリを絞ってシューズ・アクセサリ・バッグ等の余計なデータが入らない様にする
-            $seller_id = 'zozo'; // ストアID
-            $brand_id = '2049,33911,9930'; // ブランドID * UNITED ARROWS: 2049, UNITED TOKYO: 33911, nano・universe: 9930
-
-            // urlの生成 ＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
+            // Yahoo SearchItem API parameter info: https://developer.yahoo.co.jp/webapi/shopping/shopping/v3/itemsearch.html
+            $appid = config('services.yahoo.app_id'); // API key
+            $results = 100; // the number of acquired data
+            $start = ($results * $i) + 1; // start position to get data ex) 1 101 201 
+            $genre_category_id = '37019,37052,36861,36913,36887,36903,36571,36583,36504,36624,48271'; // Filtering the category to avoid unnecessary data such as shoes, accessories, bags, etc.
+            $seller_id = 'zozo'; // shop ID
+            $brand_id = '2049,33911,9930'; // brand ID * UNITED ARROWS: 2049, UNITED TOKYO: 33911, nano・universe: 9930
+            // Create request url ＊ Not to throw request with encoded parameter
             $url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=' . $appid . '&results=' . $results . '&seller_id=' . $seller_id . '&brand_id=' . $brand_id . '&genre_category_id=' . $genre_category_id . '&start=' . $start;
-
-            // Clientクラスを初期化  
+            // Initilize Client class  
             $client = new Client();
-
-            // 引数（メソッド、url）でリクエストする。
+            // Get data from external API
             $response = $client->request('GET', $url);
-
-            // $response->getBody()でGuzzleHttp\Psr7\Streamクラスのオブジェクトを取得し、getContents()で文字列に変換してからjson_decodeで変換 * 第二引数にtrueで連想配列を指定して変換
+            // $response->getBody() return  GuzzleHttp\Psr7\Stream class object
+            // getContents() convert GuzzleHttp\Psr7\Stream class object into strings 
+            // json_decode() * Return Associative array if second argument is true 
             $response_data = array_merge($response_data, json_decode($response->getBody()->getContents(), true)['hits']);
         }
 
-        // 配列の初期化
         $color_masters = [];
         $size_masters = [];
         $items = [];
@@ -50,101 +46,74 @@ class ItemFactory extends Factory
         $category_item = [];
 
         for ($i = 0; $i < count($response_data); $i++) {
-
-            // yahoo APIでは商品に関する詳細情報がbrタグを挟んで文字列で帰ってくるのでexplode()で配列にする
+            // Item detail info will be return string separated by '<br>' in the yahoo API, so make it array by using explode function.
             $item_detail = explode('<br>', $response_data[$i]['description']);
-
-            // preg_grep()で配列内の文字列を部分一致検索してマッチした配列を抽出
+            // Partial match search for strings in arrays and extract it by using preg_grep function 
+            // Extract the beginning of the array as strings by using array_shift function,  Extract words after '原産国:' by using mb_substr function
             $made_in_array = preg_grep("/^原産国:/", $item_detail);
-            // preg_grep()で取り出された配列は元の配列のインデックスが保持された状態で帰ってくるので,array_shift()で配列の最初の要素を文字列として取り出し、substr()で「原産国:」以降を切り出す
             $made_in = mb_substr(array_shift($made_in_array), 4);
-
-            // 上記同様に混用率も取得
+            // Extract mixture ratio from $item_detail
             $mixture_ratio_array = preg_grep("/^素材:/", $item_detail);
             $mixture_ratio = mb_substr(array_shift($mixture_ratio_array), 3);
-
-            // 上記同様にブランド品番も取得
+            // Extract product number from $item_detail
             $product_number_array = preg_grep("/^ブランド品番:/", $item_detail);
             $product_number = mb_substr(array_shift($product_number_array), 7);
-
-            // 上記同様にカラーも取得
+            // Extract color name from $item_detail
             $color_array = preg_grep("/^カラー:/", $item_detail);
             $color = mb_substr(array_shift($color_array), 4);
-
-            // 上記同様にサイズも取得
+            // Extract size name from $item_detail
             $size_array = preg_grep("/^サイズ:/", $item_detail);
             $size = mb_substr(array_shift($size_array), 4);
 
-
-            // mb_convert_kana() で全角を半角に変換し、str_replace()でスペースを削除
+            // Convert full-width to half-width by using mb_convert_kana function and delete space by using str_replace function
             $color = str_replace([' ', '　'], '', mb_convert_kana($color, 'a', 'UTF-8'));
-
-            // 画像のカラー用に先頭のカラーを変数に格納しておく
+            // Extract one color name (for image table)
             $img_color = explode(',', $color)[0];
-
-            // 品番ごとに紐づくサイズを配列で変数に格納
+            // Store size related with each product number in array
             $item_color = explode(',', $color);
-
-            // 複数のカラーの文字列をカンマ区切りでexplode()で配列化して$colorsにマージする
+            // Store multiple colors in an array and merge it into $color_masters
             $color_masters = array_merge($color_masters, explode(',', $color));
-
-
-            // 商品品番に紐づくカラーを配列に格納
+            // Store color related with product number in array
             $item_colors[(string)$product_number] = array_values(array_unique($item_color));
 
-
-            // 商品画像のURLを取得
+            // Get URL of item image
             $img_url = $response_data[$i]['image']['medium'];
-            // https://item-shopping.c.yimg.jp/i/g/画像IDの形で返ってくるがこのままだとサイズが小さい→/g/の部分で引き出す画像の大きさを調整している様なのでURLを書き換えるa < z
+            // It will return url of Item picture which is 'https://item-shopping.c.yimg.jp/i/g/image ID' When I throw request to Yahoo API
+            // /g/ means size of picture you can choose dynamically, so it can adjust by using change the URL of image * a < z
             $replaced_img_url = str_replace('/g/', '/f/', $img_url);
-
-            // 商品品番に紐づく画像を配列に格納
+            // Store images related with product number in array
             $item_image[(string)$product_number] = [
-                'color_name' => $img_color, // カラー名
-                'image' => $replaced_img_url,
-                // Yahoo商品検索APIではサムネイル画像は取得出来ないのでメイン画像だけ登録する
+                'color_name' => $img_color,
+                'image' => $replaced_img_url, // * ItemSearch API (Yahoo) can get only one item picture
             ];
 
-
-            // mb_convert_kana() で全角を半角に変換し、str_replace()でスペースを削除
+            // Convert full-width to half-width by using mb_convert_kana function and delete space by using str_replace function
             $size = str_replace([' ', '　'], '', mb_convert_kana($size, 'a', 'UTF-8'));
-
-            // 品番ごとに紐づくサイズを配列で変数に格納
+            // Store size related with each product number in array
             $item_size = explode(',', $size);
-
-            // 複数のカラーの文字列をカンマ区切りでexplode()で配列化して$colorsにマージする
+            // Store multiple sizes in an array and merge it into $sizes
             $size_masters = array_merge($size_masters, explode(',', $size));
-
-
-            // 商品品番に紐づく寸法を配列に格納
+            // Store measurements related with product number in array
             $item_measurements[(string)$product_number] = array_values(array_unique($item_size));
 
-
-            // ランダムに管理者インスタンスを取得
+            // Get the instance of admin randomly
             $admin = Admin::inRandomOrder()->first();
-
-            // ブランドID取得
+            // Get brand ID
             $brand_id = Brand::where('brand_name', $response_data[$i]['brand']['name'])->first()->id;
-
-            // 公開状況 80%の確率で公開
-            $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開 
-            $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開 
-            $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開 
-
-            // 公開日
+            // Publish at 80%  * 0: Unsettled 1: Settled
+            $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1);
+            // Set date
             $posted_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
-
-            // 更新日
             $modified_at = $this->faker->dateTimeBetween($startDate = $posted_at, $endDate = 'now', $timezone = null);
 
-            // デモデータに必要な項目を配列に格納
             $items[] = [
                 'brand_id' => $brand_id,
                 'admin_id' => $admin->id,
                 'item_name' => $response_data[$i]['name'],
                 'product_number' => $product_number,
                 'price' => $response_data[$i]['price'],
-                'cost' => intval($response_data[$i]['price'] * (rand(28, 50) / 100)), // 下代の掛け率28 ~ 50%で設定
+                // Set cost so that it can be item price of 28 to 50 %
+                'cost' => intval($response_data[$i]['price'] * (rand(28, 50) / 100)),
                 'description' => $this->faker->text($maxNbChars = 200),
                 'mixture_ratio' => $mixture_ratio,
                 'made_in' => $made_in,
@@ -153,14 +122,15 @@ class ItemFactory extends Factory
                 'modified_at' => $is_published === 1 ? $modified_at : null,
             ];
 
-            // カテゴリの連想配列
             $category1_arr = config('define.main_category');
             $category2_arr = config('define.sub_category');
 
-            // 商品カテゴリIDを取得
-            $genre = $response_data[$i]['parentGenreCategories'][1]['id']; // 性別カテゴリ
-            $item1 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['parentGenreCategories'][2]['id'] : null; // 大カテゴリ
-            $item2 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['genreCategory']['id'] : null;            // 小カテゴリ
+            // Gender category
+            $genre = $response_data[$i]['parentGenreCategories'][1]['id'];
+            // Main category
+            $item1 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['parentGenreCategories'][2]['id'] : null;
+            // Sub category
+            $item2 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['genreCategory']['id'] : null;
 
             $categoryId1 = $genre == 2494 ? 2 : 1;
             $categoryId2 = null;
@@ -178,24 +148,18 @@ class ItemFactory extends Factory
                 }
             }
 
-            // 配列に格納
             $array = array(
                 $categoryId1,
                 $categoryId2,
                 $categoryId3
             );
-
-            // false要素の削除
+            // Delete value evaluated false
             $arr = array_filter($array);
-
-            // 商品品番に紐づく寸法を配列に格納
+            // Store categories related with product number in array
             $category_item[(string)$product_number] = $arr;
         }
-
-        // 配列内の重複を削除
+        // Delete duplicate value in an array
         $color_masters = array_values(array_unique($color_masters));
-
-        // 配列内の重複を削除
         $size_masters = array_values(array_unique($size_masters));
 
         return [

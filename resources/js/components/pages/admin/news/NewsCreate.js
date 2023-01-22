@@ -20,6 +20,8 @@ import InputImage from '../../../atoms/InputImage/InputImage';
 import useValidation from '../../../hooks/useValidation';
 import { useTranslation } from 'react-i18next';
 
+// TODO: Add preview fuction
+
 function NewsCreate() {
 
     const baseUrl = '/api/admin/news/create';
@@ -31,29 +33,29 @@ function NewsCreate() {
         'brand_id': '',
         'category_id': '',
         'tags_id': [],
-        'is_published': 0, // 0: 非公開 1: 公開中
+        'is_published': 0, // 0: unpublished 1: published
         'thumbnail': '/img/no_image.png'
     });
     const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'news_create');
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const {handleSendObjectForm} = useObjectForm(formData, setFormData, createData);
     const history = useHistory();
-    const {brands, gender_categories, tags, items} = data;
+    const {brands, gender_categories, tags} = data;
     const openAdminMenu = useRecoilValue(menuAdminState);
     const { t } = useTranslation();
 
 
     const onEditorStateChange = (editorState) => {
-        // 現在のeditorStateからcontentStateを取得 
+        // Get contentState from editorState
         const contentState = editorState.getCurrentContent();
-        // HTMLに変換して保存すると一部のスタイルが消えてしまうのでcontentStateをJSON形式で保存
+        // ContentState has to be store as JSON because some of styles don't be stored correctly if it's stored after converting HTML
         const content = JSON.stringify(convertToRaw(contentState));
-        // formDataのbodyに保存
+        // Store contect variable to formData
         setFormData({
             ...formData,
             body : content
         });
-        // editorStateを更新
+        // Update editorState
         setEditorState(editorState);
     };
 

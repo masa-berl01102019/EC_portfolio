@@ -27,12 +27,12 @@ function CartConfirmPage() {
 
     const handleSubmit = async () => {
         if (elements == null) return;
-        // ローディングスタート
+        // Start loading UI
         setIsLoading(true);
-        // 非同期の関数を宣言してるのでawaitをつけてstripeに情報を送信する
+        // Send payment info to stripe
         const {error, paymentMethod} = await stripe.createPaymentMethod({
             type: 'card',
-            // 要素からクレジットカードの入力情報を取得
+            // Get credit card info that user inputted on stripe element
             card: elements.getElement(CardElement),
         });
         if(!error) {
@@ -43,7 +43,6 @@ function CartConfirmPage() {
                 callback: () => history.push('/carts/complete')
             });
         } else {
-            // 失敗ページ表示
             history.push('/carts/error');
         }
     };

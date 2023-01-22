@@ -115,7 +115,6 @@ const ItemTable = ({items, className = '', deleteMethod, csvOutputMethod}) => {
           </tbody>
         </table>
       </div>
-      {/* <p>* サイズ・カラーはSKUに登録されたものが一覧に表示されてます</p> */}
     </>
   );
 };

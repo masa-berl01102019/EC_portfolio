@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class BlogResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -21,7 +20,6 @@ class BlogResource extends JsonResource
      */
     public function toArray($request)
     {
-        // 受信リクエストが名前付きルートに一致するかを判定
         if ($request->routeIs('user.blogs.index') || $request->routeIs('user.home.index') || $request->routeIs('user.items.show')) {
             return [
                 'id' => $this->id,

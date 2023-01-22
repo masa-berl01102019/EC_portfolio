@@ -3,7 +3,7 @@
 return [
     'admin' => [
         'from' => [
-            "name" => "【Notification】XXXX APP",   // メール送信元名
+            "name" => "【Notification】XXXX APP",
         ],
         'change_password' => [
             'subject' => 'Your password has been changed',
@@ -62,7 +62,7 @@ return [
     ],
     'user' => [
         'from' => [
-            "name" => "【Operating company】XXXX company",   // メール送信元名
+            "name" => "【Operating company】XXXX company",
         ],
         'change_password' => [
             'subject' => 'Your password has been changed',

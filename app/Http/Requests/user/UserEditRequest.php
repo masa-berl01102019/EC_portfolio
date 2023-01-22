@@ -52,8 +52,8 @@ class UserEditRequest extends FormRequest
                 'string',
                 'email:strict,dns,spoof',
                 'max:100',
-                Rule::unique('users')->ignore($this->id), // 該当ID以外でユニークを適用
-            ], // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
+                Rule::unique('users')->ignore($this->id)
+            ],
             'is_received' => 'required|integer|min:0|max:1',
         ];
     }

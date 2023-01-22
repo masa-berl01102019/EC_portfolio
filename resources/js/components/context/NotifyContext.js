@@ -1,30 +1,29 @@
 import React, { createContext, useState, useContext, useRef} from 'react';
 import { NotifyPopup } from '../molecules/Popup/NotifyPopup';
 
-// contextの作成
 const NotifyContext = createContext();
 
-// 呼び出し元でuseContextをわざわざ呼び出さなくて済むようにここでカスタムメソッドとして定義してエクスポート
 export default function useNotify () {
     return useContext(NotifyContext);
 }
 
-// providerの作成
 export function NotifyProvider ({children}) {
-    // popupの初期値を制御
+    // Manage initial value of popup
     const [notify, setNotify] = useState({isOpen: false});
-    // コンポーネント間のレンダリングを処理をまたいで値もしくは関数を保持したい場合はuseRefが有効的
+    // Call useRef because values and functions want to retain during rendering between components.
     const func = useRef();
-    // 呼び出しもとに対して表示されたpopupのボタンが押されたときの返却値を受け取ってから次の処理が実行されるようにする為にpromiseを返却する
-    // 呼び出しもとがhandlePromiseを実行する際はasync(非同期)の関数であることを明示的に宣言し、関数呼び出し時にawaitで返却値が返ってくるまで処理を待たせるようにする
+    // The reason why return promise object
+    // 1. It will return value when button of popup is clicked.
+    // 2. Execute next process after catching value that button return.
+    // * Don't forget to use async/await functions
     const handlePromise = (data) => {
         return new Promise ((resolve) => {
             setNotify({isOpen: true, ...data});
-            // useRefにresolveの関数を格納
+            // Store resolve function to useRef
             func.current = (choice) => {
-                // 引数の論理値を渡す
+                // Argument(choice) will be boolean
                 resolve(choice);
-                // resolve実行後にpopupを閉じる
+                // Close popup after execute resolve function 
                 setNotify({isOpen: false});
             };
         });

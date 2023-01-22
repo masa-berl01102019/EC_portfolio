@@ -31,8 +31,8 @@ return [
     /*
      * Matches the request origin. `['*']` allows all origins. Wildcards can be used, eg `*.mydomain.com`
      */
-    'allowed_origins' => ['http://homestead.test/api/*'],
-    
+    'allowed_origins' => [config('app.url') . '/api/*'],
+
     /*
      * Patterns that can be used with `preg_match` to match the origin.
      */
@@ -59,7 +59,5 @@ return [
     'supports_credentials' => true,
 ];
 
-// 参考URL　https://github.com/fruitcake/laravel-cors
-// 参考URL　https://omohikane.com/test_cors_with_curl/
-
-
+// reference URL　https://github.com/fruitcake/laravel-cors
+// reference URL　https://omohikane.com/test_cors_with_curl/

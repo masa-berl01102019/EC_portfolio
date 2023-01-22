@@ -12,6 +12,8 @@ import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 
 
+// TODO: Implement order cancel function
+
 const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => {
 
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
@@ -30,7 +32,6 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        {/* API側の調整が必要な為 */}
         {/* <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{t('admin.delete-all-btn')}</DeleteBtn> */}
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
@@ -101,7 +102,7 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
                 <Td>{order.full_name && order.full_name_kana && (`${order.full_name}(${order.full_name_kana})`)}</Td>
                 <Td>{order.tel}</Td>
                 <Td>{order.email}</Td>
-                {/* 配送先住所が設定されていた場合はそちらを優先する */}
+                {/* Prioritize delivery address over address */}
                 <Td>{order.delivery_post_code_text ? order.delivery_post_code_text : order.post_code_text}</Td>
                 <Td>{order.full_delivery_address ? order.full_delivery_address : order.full_address}</Td>
                 <Td>{order.updated_at}</Td>

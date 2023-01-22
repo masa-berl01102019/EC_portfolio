@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 
 /**
- * 国内電話番号チェック（携帯電話含む）
+ * Check if it's Japanese phone number including cell phone
  */
 class JapanesePhoneNumber implements Rule
 {

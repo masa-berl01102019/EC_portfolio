@@ -15,7 +15,8 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    // ログイン済みの状態で/loginにアクセスしてきた時のリダイレクト先を指定を行う ＊ 今回はlaravelをAPIとして利用してるので利用しない
+    // It designate where to redirect when user has logged already and access to '/login'
+    // This time, It doesn't use because laravel is using as API
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {

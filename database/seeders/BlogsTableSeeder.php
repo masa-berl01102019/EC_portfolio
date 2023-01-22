@@ -15,24 +15,23 @@ class BlogsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('blogs')->truncate(); // テーブルごと削除して再構築
+        DB::table('blogs')->truncate();
 
-        // make()でコレクションが返ってくるので配列に変換
+        // Convert a collection into an array * make() return collection 
         $factory_blogs = Blog::factory()->count(1)->make()->toArray();
 
-        // シリアライズ時に追加されるカラム
+        // Appended columns is generated automatically when Eloquent model is serialized
         $appends = ['full_name', 'full_name_kana', 'is_published_text', 'gender_category_text'];
 
-        // bulkでinsert時に邪魔なので削除
         foreach ($appends as $value) {
-            //削除実行
+            // Delete Appended columns
             unset($factory_blogs[0][$value]);
         }
 
-        DB::table('blogs')->insert($factory_blogs[0]); // データの挿入
+        DB::table('blogs')->insert($factory_blogs[0]);
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

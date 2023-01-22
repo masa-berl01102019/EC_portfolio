@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Notification extends Model
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    use SoftDeletes; // 論理削除
+    use HasFactory;
+    use SoftDeletes;
     use AccessorPublishTrait;
     use AccessorNameTrait;
     use OrderByPostedAtScopeTrait;
@@ -29,29 +29,27 @@ class Notification extends Model
     use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
-    // timestamp無効にしないとデータ挿入時にエラーになる
+    // An error will occur when inserting data in case that isn't defined timestamps() in migration files
     public $timestamps = false;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    // モデルからシリアライズ時の日付形式の設定
+    /** Serializing */
+
+    // Setting the date format
     protected $casts = [
         'posted_at' => 'date:Y/m/d H:i',
         'modified_at' => 'date:Y/m/d H:i',
         'expired_at' => 'date:Y/m/d H:i',
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['is_published_text', 'full_name', 'full_name_kana'];
 
-    /** スコープ */
+    /** Query scopes */
 
     public function scopeOrderByExpiredAt($query, $request)
     {
@@ -61,7 +59,7 @@ class Notification extends Model
         });
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function admin()
     {

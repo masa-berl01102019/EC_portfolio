@@ -13,7 +13,6 @@ return [
     |
     */
 
-    // デフォルトの認証
     'defaults' => [
         'guard' => 'api',
         'passwords' => 'users',
@@ -37,17 +36,14 @@ return [
     */
 
     'guards' => [
-        // user用の認証を追加
         'user' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        // Admin用の認証を追加
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],
-        // sanctum認証用に追加
         'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',
@@ -71,14 +67,11 @@ return [
     |
     */
 
-    //  providersでどのモデルを認証に使うべきかなどが設定
     'providers' => [
-        // Modelsディレクトリを作っていれたのでnamespaceを変更
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        // Adminも上記のUsers同様追加
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
@@ -108,7 +101,6 @@ return [
             'expire' => 60,
         ],
 
-        // Adminも上記のUsers同様追加
         'admins' => [
             'provider' => 'admins',
             'table' => 'password_resets',

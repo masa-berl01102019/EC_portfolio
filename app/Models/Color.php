@@ -7,22 +7,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Color extends Model
 {
-    // use SoftDeletes; // 論理削除
+    // use SoftDeletes;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** リレーション */
+    /** Relationships */
 
-    public function skus() {
+    public function skus()
+    {
         return $this->hasMany('App\Models\Sku');
     }
 
-    public function images() {
+    public function images()
+    {
         return $this->hasMany('App\Models\Image');
     }
 }

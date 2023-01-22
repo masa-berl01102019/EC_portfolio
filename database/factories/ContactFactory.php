@@ -13,22 +13,20 @@ class ContactFactory extends Factory
 
     public function definition()
     {
-        // 会員IDをすべて配列で取得
+        // Get all of user ID in array
         $users_id = User::pluck('id')->all();
 
-        // ランダムで会員IDを一つ取り出し 30%の確率で会員以外の問い合わせ
+        // Extract an user ID randomly * Adjusted so that contact from the general public is 30%
         $user_id = $this->faker->optional($weight = 0.7, $default = null)->randomElement($users_id);
 
-        // 会員のインスタンス作成
+        // Create the instance of user
         $user = User::find($user_id);
 
-        // ランダムに管理者インスタンスを取得
+        // Get the instance of admin randomly
         $admin = Admin::inRandomOrder()->first();
 
-        // 対応状況フラグ
-        $response_status = $this->faker->numberBetween($min = 0, $max = 2); // 0: 未対応 1: 対応中 2: 対応済
+        $response_status = $this->faker->numberBetween($min = 0, $max = 2); // 0:Yet 1:During 2:Done
 
-        // お問合せ日
         $created_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
 
         return [

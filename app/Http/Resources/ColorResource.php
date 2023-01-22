@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ColorResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -21,10 +20,9 @@ class ColorResource extends JsonResource
      */
     public function toArray($request)
     {
-            return [
-                'id' => $this->id,
-                'color_name' => $this->color_name
-            ];
-    } 
-    
+        return [
+            'id' => $this->id,
+            'color_name' => $this->color_name
+        ];
+    }
 }

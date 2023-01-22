@@ -17,6 +17,7 @@ import styles from './styles.module.css';
 import LinkBtn from '../../atoms/LinkButton/LinkBtn';
 import { useTranslation } from 'react-i18next';
 
+// TODO: Create slick to show the thumbnails of blogs and news to promote instead of top image.
 
 function TopPage() {
 

@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class NotificationResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -21,8 +20,7 @@ class NotificationResource extends JsonResource
      */
     public function toArray($request)
     {
-        // 受信リクエストが名前付きルートに一致するかを判定
-        if($request->routeIs('user.home.index') || $request->routeIs('user.notifications.index')) {
+        if ($request->routeIs('user.home.index') || $request->routeIs('user.notifications.index')) {
             return [
                 'id' => $this->id,
                 'title' => $this->title,
@@ -50,7 +48,5 @@ class NotificationResource extends JsonResource
                 'expired_at' => $this->expired_at !== null ? $this->expired_at->format('Y/m/d H:i') : null
             ];
         }
-
-    } 
-    
+    }
 }

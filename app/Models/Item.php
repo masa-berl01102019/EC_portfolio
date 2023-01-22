@@ -25,8 +25,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    use SoftDeletes; // 論理削除
+    use HasFactory;
+    use SoftDeletes;
     use AccessorPublishTrait;
     use AccessorPriceTrait;
     use OrderByPostedAtScopeTrait;
@@ -43,35 +43,33 @@ class Item extends Model
     use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
-    // timestamp無効にしないとデータ挿入時にエラーになる
+    // An error will occur when inserting data in case that isn't defined timestamps() in migration files
     public $timestamps = false;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    // モデルからシリアライズ時の日付形式の設定
+    /** Serializing */
+
+    // Setting the date format
     protected $casts = [
         'posted_at' => 'date:Y/m/d H:i',
         'modified_at' => 'date:Y/m/d H:i',
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['is_published_text', 'price_text', 'cost_text', 'included_tax_price', 'included_tax_price_text'];
 
-    /** スコープ */
+    /** Query scopes */
 
     public function scopeFilterCategory($query, $request)
     {
         $gender_category = $request->input('f_gender_category');
         $main_category = $request->input('f_main_category');
         $sub_category = $request->input('f_sub_category');
-        // カテゴリフィルターは詳細度の高いものを優先順位にして代入
+        // $filter should be assigned more specific category IDs 
         if ($sub_category) {
             $filter = $sub_category;
         } else if ($main_category) {
@@ -82,9 +80,7 @@ class Item extends Model
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
             $query->whereHas('categories', function ($query) use ($filter) {
-                // カンマ区切りで配列に変換
                 $receiver_arr = explode(',', $filter);
-                // 配列内に該当する項目を絞り込み検索
                 return $query->where('categories.id', $receiver_arr);
             });
         });
@@ -142,10 +138,11 @@ class Item extends Model
         });
     }
 
-    /** static method */
+    /** Static method */
+
     public static function itemNew()
     {
-        // 当日から2か月前を新着商品と定義
+        // Define items which is posted within 2 months as new arrivals
         $begin = Carbon::today()->subMonth(2);
 
         return Self::getPublished()->with(['brand', 'categories', 'topImage'])
@@ -155,28 +152,29 @@ class Item extends Model
 
     public static function itemRanking()
     {
-        // 商品の非公開ステータスも含んだ商品単位のブックマークの集計 * skuの論理削除されたものは除外してる
+        // Aggregation of bookmarked items including unpublished items by items unit * exclude soft deleted items
         $bookmark_quantity = DB::table('skus')
             ->join('bookmarks', 'skus.id', '=', 'bookmarks.sku_id')
             ->select('item_id', DB::raw('count(bookmarks.id) as booked'))
             ->where('skus.deleted_at', null)
             ->groupBy('item_id');
 
-        // 商品の非公開ステータスも含んだ商品単位のカートの集計 * skuの論理削除されたものは除外してる 同SKUの数量単位では集計してない
+        // Aggregation of cart items including unpublished items by items unit * exclude soft deleted items 
+        // * It's not aggregated by quantity of skus
         $cart_quantity = DB::table('skus')
             ->join('carts', 'skus.id', '=', 'carts.sku_id')
             ->select('item_id', DB::raw('count(carts.id) as cart'))
             ->where('skus.deleted_at', null)
             ->groupBy('item_id');
 
-        // 商品の非公開ステータスも含んだ商品単位の購入実績点数の集計 * skuの論理削除されたものは除外してる
+        // Aggregation of ordered items including unpublished items by items unit * exclude soft deleted items
         $order_quantity = DB::table('skus')
             ->join('order_details', 'skus.id', '=', 'order_details.sku_id')
             ->select('item_id', DB::raw('sum(order_details.order_quantity) as ordered'))
             ->where('skus.deleted_at', null)
             ->groupBy('item_id');
 
-        // 上記で集計した物をjoinSubでサブクエリとして挿入
+        // Apply the above aggregation as sub query by joinSub()
         return Self::getPublished()->with(['brand', 'categories', 'topImage'])
             ->joinSub($bookmark_quantity, 'bookmark_quantity', function ($join) {
                 $join->on('items.id', '=', 'bookmark_quantity.item_id');
@@ -194,32 +192,28 @@ class Item extends Model
 
     public static function getRelatedItems($item_id)
     {
-        // 中間テーブルから商品IDをもつカテゴリIDを取得
         $tag_arr = getRelatedTagId($item_id);
-        // 中間テーブルから商品IDをもつカテゴリIDを取得
         $category_arr = getRelatedCategoryId($item_id);
-        // gender_categoryを除外
+        // exclude gender category ID
         array_shift($category_arr);
-        // 関連商品の取得
+        // Get similar items 
         $related_item = Self::getPublished()->where('id', '!=', $item_id)
             ->with(['categories', 'tags', 'brand', 'topImage'])
             ->whereHas('categories', function ($query) use ($category_arr) {
-                // メインカテゴリもしくはサブカテゴリが一致する商品を絞り込む
+                // Get items which is correspond with main category ID or sub category ID
                 return $query->whereIn('categories.id', $category_arr);
             })
             ->whereHas('tags', function ($query) use ($tag_arr) {
-                // タグが一致する商品を絞り込む
+                // Get items which is correspond with tag ID
                 return $query->whereIn('tags.id', $tag_arr);
             })->get();
 
-        // 取得した関連商品を展開
         foreach ($related_item as $key => $value) {
-            // 関連商品に紐づくカテゴリやタグのIDを配列で抜き出しarray_intersectで共通項を取得しカウントした値を元の関連商品のプロパティと各配列に格納
+            // count common item by using array_intersect(), and insert it into collection of $related_item 
             $related_item[$key]['category_similarity'] = count(array_intersect($category_arr, array_column($value['categories']->toArray(), 'id')));
             $related_item[$key]['tag_similarity'] = count(array_intersect($tag_arr, array_column($value['tags']->toArray(), 'id')));
         }
 
-        // ソートして先頭6件を抜き出し
         $collection = $related_item->sortBy([
             ['category_similarity', 'desc'],
             ['tag_similarity', 'desc'],
@@ -258,7 +252,7 @@ class Item extends Model
         return collect($recommend_items);
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function brand()
     {
@@ -300,37 +294,36 @@ class Item extends Model
         return $this->hasMany('App\Models\Measurement');
     }
 
-    /** 条件付きリレーション * withでリレーション組んで静的に呼び出せる */
+    /** Conditional Relationships */
 
     public function publishedBlogs()
     {
-        // 紐づくのブログの内、公開ステータスが公開のブログのみを取得
         return $this->belongsToMany('App\Models\Blog')->getPublished();
     }
 
     public function topImage()
     {
-        // 紐づくの画像の内、main画像を取得出来る
         return $this->hasMany('App\Models\Image')->where('image_category', config('define.image_category.main'));
     }
 
     public function genderCategory()
     {
-        // men's: 1 ladies: 2 は固定なのでリレーションとしてインスタンス化する際に予めに絞っておく
-        return $this->belongsToMany('App\Models\Category')->whereIn('categories.id', [1, 2]);
+        $gender_category_arr = array_values(config('define.gender_category'));
+
+        return $this->belongsToMany('App\Models\Category')->whereIn('categories.id', $gender_category_arr);
     }
 
     public function mainCategory()
     {
-        // men's: 1 ladies: 2 を親IDに持つものがメインカテゴリなのでリレーションとしてインスタンス化する際に予めに絞っておく
-        return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', [1, 2]);
+        $gender_category_arr = array_values(config('define.gender_category'));
+
+        return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', $gender_category_arr);
     }
 
     public function subCategory()
     {
-        // メインカテゴリのIDを配列で取得
         $main_categories = Category::mainCategories()->pluck('id')->toArray();
-        // メインカテゴリのIDを親IDに持つものがサブカテゴリなのでリレーションとしてインスタンス化する際に予めに絞っておく
+
         return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', $main_categories);
     }
 }

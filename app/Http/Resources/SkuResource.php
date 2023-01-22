@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class SkuResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -28,5 +27,5 @@ class SkuResource extends JsonResource
             'size_id' => $this->size_id,
             'quantity' => $this->quantity,
         ];
-    } 
+    }
 }

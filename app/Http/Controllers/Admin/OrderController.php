@@ -73,7 +73,7 @@ class OrderController extends Controller
         }
     }
 
-    // TODO: 返金処理や在庫の戻し処理を追加する必要があり、APIのインターフェイスは残しておくがフロントからは削除出来ない様に制御
+    // TODO: Need to implement process of refund and return stock
     public function destroy(Request $request)
     {
         DB::beginTransaction();

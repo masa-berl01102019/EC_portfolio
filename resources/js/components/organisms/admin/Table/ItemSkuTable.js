@@ -49,14 +49,12 @@ const ItemSkuTable = ({skus, colors, sizes, className = '', deleteMethod, handle
                     </Td>
                     <Td>
                         <Selectbox name='size_id' value={list.size_id} onChange={ e => handleFormMethod('skus', index, e) } className={styles.table_row_form}>
-                            {/* フォーム追加以外未設定の表示を制限 */}
                             { list.size_id == '' && <option value={''}>{t('admin.not-set')}</option>}
                             { sizes && sizes.map( size => ( <option key={size.id} value={size.id}>{size.size_name}</option>)) }
                         </Selectbox>
                     </Td>
                     <Td>
                         <Selectbox name='color_id' value={list.color_id} onChange={ e => handleFormMethod('skus', index, e) } className={styles.table_row_form}>
-                            {/* フォーム追加以外未設定の表示を制限 */}
                             { list.color_id == '' && <option value={''}>{t('admin.not-set')}</option>}
                             { colors && colors.map( color => ( <option key={color.id} value={color.id}>{color.color_name}</option>)) }
                         </Selectbox>

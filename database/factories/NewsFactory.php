@@ -14,27 +14,26 @@ class NewsFactory extends Factory
 
     public function definition()
     {
-        // 配列の初期化
         $arr = [];
-        // デモ画像を取得
+        // Get demo data
         $news_men_imges = Storage::allFiles('public/img/demo/news_men');
         $news_women_imges = Storage::allFiles('public/img/demo/news_women');
 
         foreach ($news_men_imges as $image) {
-            // ファイル名のみ抜き出し
+            // Extract a file name from path
             $file_name = str_replace('public/img/demo/news_men/', '', $image);
-            // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
+            // Change path because it has to be '/storage/img/file name' in order to call from front-side
             $db_reserve_path = '/storage/img/demo/news_men/' . $file_name;
-            // 配列に格納
+            // Add data to an array
             $arr[] = $this->createDemo($db_reserve_path, 'men');
         }
 
         foreach ($news_women_imges as $image) {
-            // ファイル名のみ抜き出し
+            // Extract a file name from path
             $file_name = str_replace('public/img/demo/news_women/', '', $image);
-            // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
+            // Change path because it has to be '/storage/img/file name' in order to call from front-side
             $db_reserve_path = '/storage/img/demo/news_women/' . $file_name;
-            // 配列に格納
+            // Add data to an array
             $arr[] = $this->createDemo($db_reserve_path, 'women');
         }
 
@@ -42,28 +41,25 @@ class NewsFactory extends Factory
     }
 
     /**
-     * デモデータを作る関数
+     * Create demo data function
      * @param string $image URL
      * @param string $gender men:1 / women:2
      */
     public function createDemo($image, $gender)
     {
-        // ランダムに管理者インスタンスを取得
+        // Get the instance of admin randomly
         $admin = Admin::inRandomOrder()->first();
 
-        // ランダムにブランドのインスタンスを取得
+        // Get the instance of brand randomly
         $brand = Brand::inRandomOrder()->first();
 
-        // カテゴリID
         $category_id = config('define.gender_category')[$gender];
 
-        // 公開状況 * 80%の確率で公開
-        $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開
+        // Publish at 80 %
+        $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: Unpublished 1: Published
 
-        // 投稿日
         $posted_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
 
-        // 更新日
         $modified_at = $this->faker->dateTimeBetween($startDate = $posted_at, $endDate = 'now', $timezone = null);
 
         return [

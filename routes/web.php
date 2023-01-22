@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// どのURLにアクセスが来てもindex.blade.phpファイルが表示されるように設定を変更　React * Laravel API
+// Every URL have to access index.blade.php because of SPA app.
 Route::get('/{any}', function () {
     return view('index');
-})->where('any','.*');
+})->where('any', '.*');

@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class RelatedItemResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -25,11 +24,10 @@ class RelatedItemResource extends JsonResource
             'id' => $this->id,
             'item_name' => $this->item_name,
             'included_tax_price_text' => $this->included_tax_price_text,
-            'top_image' => !$this->topImage->isEmpty() ? $this->topImage->first()->image: null,
+            'top_image' => !$this->topImage->isEmpty() ? $this->topImage->first()->image : null,
             'brand_name' => optional($this->brand)->brand_name,
             'category_similarity' => $this->category_similarity,
             'tag_similarity' => $this->tag_similarity
         ];
-    } 
-    
+    }
 }
