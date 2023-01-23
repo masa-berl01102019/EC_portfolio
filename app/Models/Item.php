@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\PriceAccessorTrait;
+use App\Traits\AccessorPriceTrait;
 use App\Traits\FilterTagScopeTrait;
-use App\Traits\PublishAccessorTrait;
+use App\Traits\AccessorPublishTrait;
 use App\Traits\FilterBrandScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CustomPaginateScopeTrait;
 use App\Traits\FilterDateRangeScopeTrait;
 use App\Traits\OrderByPostedAtScopeTrait;
 use App\Traits\FilterIsPublishedScopeTrait;
@@ -18,9 +19,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Item extends Model
 {
     use HasFactory; // laravel8 factory関数使用する為
-    use SoftDeletes; //　論理削除
-    use PublishAccessorTrait;
-    use PriceAccessorTrait;
+    use SoftDeletes; // 論理削除
+    use AccessorPublishTrait;
+    use AccessorPriceTrait;
     use OrderByPostedAtScopeTrait;
     use OrderByModifiedAtScopeTrait;
     use FilterKeywordScopeTrait;
@@ -28,6 +29,7 @@ class Item extends Model
     use FilterIsPublishedScopeTrait;
     use FilterTagScopeTrait;
     use FilterBrandScopeTrait;
+    use CustomPaginateScopeTrait;
 
     // timestamp無効にしないとデータ挿入時にエラーになる
     public $timestamps = false;
@@ -41,8 +43,8 @@ class Item extends Model
 
     // モデルからシリアライズ時の日付形式の設定
     protected $casts = [
-        'posted_at' => 'date:Y-m-d',
-        'modified_at' => 'date:Y-m-d',
+        'posted_at' => 'date:Y/m/d H:i',
+        'modified_at' => 'date:Y/m/d H:i',
     ];
 
     /** アクセサ */
@@ -161,5 +163,24 @@ class Item extends Model
 
     public function measurements() {
         return $this->hasMany('App\Models\Measurement');
+    }
+
+    /** 条件付きリレーション * withでリレーション組んで静的に呼び出せる */
+
+    public function genderCategory() {
+        // men's: 1 ladies: 2 は固定なのでリレーションとしてインスタンス化する際に予めに絞っておく
+        return $this->belongsToMany('App\Models\Category')->whereIn('categories.id', [1,2]);
+    }
+
+    public function mainCategory() {
+         // men's: 1 ladies: 2 を親IDに持つものがメインカテゴリなのでリレーションとしてインスタンス化する際に予めに絞っておく
+        return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', [1,2]);
+    }
+
+    public function subCategory() {
+        // メインカテゴリのIDを配列で取得
+        $main_categories = Category::mainCategories()->pluck('id')->toArray();
+        // メインカテゴリのIDを親IDに持つものがサブカテゴリなのでリレーションとしてインスタンス化する際に予めに絞っておく
+        return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', $main_categories);
     }
 }

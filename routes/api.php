@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// TODO 実行ログ用のmiddleware作成
 
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
 
@@ -24,36 +25,33 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
 
         // 会員情報のCRUD
         Route::get('/users', 'UserController@index')->name('users.index');
-        Route::get('/users/create', 'UserController@create')->name('users.create');
         Route::post('/users', 'UserController@store')->name('users.store');
         Route::get('/users/{user}/edit', 'UserController@edit')->name('users.edit');
         Route::put('/users/{user}', 'UserController@update')->name('users.update');
-        Route::delete('/users/delete', 'UserController@destroy')->name('users.destroy'); // 一括削除
+        Route::delete('/users', 'UserController@destroy')->name('users.destroy'); // 一括削除
         Route::post('/users/csv', 'UserController@csvExport')->name('users.csvExport'); // 一括CSV出力
 
         // 管理者情報のCRUD
         Route::get('/admins', 'AdminController@index')->name('admins.index');
-        Route::get('/admins/create', 'AdminController@create')->name('admins.create');
         Route::post('/admins', 'AdminController@store')->name('admins.store');
         Route::get('/admins/{admin}/edit', 'AdminController@edit')->name('admins.edit');
         Route::put('/admins/{admin}', 'AdminController@update')->name('admins.update');
-        Route::delete('/admins/delete', 'AdminController@destroy')->name('admins.destroy'); // 一括削除
+        Route::delete('/admins', 'AdminController@destroy')->name('admins.destroy'); // 一括削除
         Route::post('/admins/csv', 'AdminController@csvExport')->name('admins.csvExport'); // 一括CSV出力
 
         // お知らせ情報のCRUD
         Route::get('/notifications', 'NotificationController@index')->name('notifications.index');
-        Route::get('/notifications/create', 'NotificationController@create')->name('notifications.create');
         Route::post('/notifications', 'NotificationController@store')->name('notifications.store');
         Route::get('/notifications/{notification}/edit', 'NotificationController@edit')->name('notifications.edit');
         Route::put('/notifications/{notification}', 'NotificationController@update')->name('notifications.update');
-        Route::delete('/notifications/delete', 'NotificationController@destroy')->name('notifications.destroy'); // 一括削除
+        Route::delete('/notifications', 'NotificationController@destroy')->name('notifications.destroy'); // 一括削除
         Route::post('/notifications/csv', 'NotificationController@csvExport')->name('notifications.csvExport'); // 一括CSV出力
 
         // お問い合わせ情報のCRUD
         Route::get('/contacts', 'ContactController@index')->name('contacts.index');
         Route::get('/contacts/{contact}/edit', 'ContactController@edit')->name('contacts.edit');
         Route::put('/contacts/{contact}', 'ContactController@update')->name('contacts.update');
-        Route::delete('/contacts/delete', 'ContactController@destroy')->name('contacts.destroy'); // 一括削除
+        Route::delete('/contacts', 'ContactController@destroy')->name('contacts.destroy'); // 一括削除
         Route::post('/contacts/csv', 'ContactController@csvExport')->name('contacts.csvExport'); // 一括CSV出力
 
         // アイテム情報のCRUD
@@ -62,10 +60,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/items', 'ItemController@store')->name('items.store');
         Route::get('/items/{item}/edit', 'ItemController@edit')->name('items.edit');
         Route::post('/items/{item}', 'ItemController@update')->name('items.update')->where('item', '[0-9]+');; // ファイルはPOSTでしか受け取れない
-        Route::delete('/items/delete', 'ItemController@destroy')->name('items.destroy'); // 一括削除
-        Route::delete('/items/delete/measurements', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
-        Route::delete('/items/delete/skus', 'ItemController@destroySku')->name('items.destroySku');
-        Route::delete('/items/delete/images', 'ItemController@destroyImage')->name('items.destroyImage');
+        Route::delete('/items', 'ItemController@destroy')->name('items.destroy'); // 一括削除
+        Route::delete('/items/measurements/{measurement}', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
+        Route::delete('/items/skus/{sku}', 'ItemController@destroySku')->name('items.destroySku');
+        Route::delete('/items/images/{image}', 'ItemController@destroyImage')->name('items.destroyImage');
         Route::post('/items/csv', 'ItemController@csvExport')->name('items.csvExport'); // 一括CSV出力
 
         // ブログ情報のCRUD
@@ -74,7 +72,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/blogs', 'BlogController@store')->name('blogs.store');
         Route::get('/blogs/{blog}/edit', 'BlogController@edit')->name('blogs.edit');
         Route::post('/blogs/{blog}', 'BlogController@update')->name('blogs.update')->where('blog', '[0-9]+'); // ファイルはPOSTでしか受け取れない;
-        Route::delete('/blogs/delete', 'BlogController@destroy')->name('blogs.destroy'); // 一括削除
+        Route::delete('/blogs', 'BlogController@destroy')->name('blogs.destroy'); // 一括削除
         Route::post('/blogs/csv', 'BlogController@csvExport')->name('blogs.csvExport'); // 一括CSV出力
 
         // ニュース情報のCRUD
@@ -83,39 +81,39 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/news', 'NewsController@store')->name('news.store');
         Route::get('/news/{news}/edit', 'NewsController@edit')->name('news.edit');
         Route::post('/news/{news}', 'NewsController@update')->name('news.update')->where('news', '[0-9]+'); // ファイルはPOSTでしか受け取れない;
-        Route::delete('/news/delete', 'NewsController@destroy')->name('news.destroy'); // 一括削除
+        Route::delete('/news', 'NewsController@destroy')->name('news.destroy'); // 一括削除
         Route::post('/news/csv', 'NewsController@csvExport')->name('news.csvExport'); // 一括CSV出力
 
         // 注文情報のCRUD
         Route::get('/orders', 'OrderController@index')->name('orders.index');
         Route::get('/orders/{order}/edit', 'OrderController@edit')->name('orders.edit');
         Route::put('/orders/{order}', 'OrderController@update')->name('orders.update');
-        Route::delete('/orders/delete', 'OrderController@destroy')->name('orders.destroy'); // 一括削除
+        Route::delete('/orders', 'OrderController@destroy')->name('orders.destroy'); // 一括削除
         Route::post('/orders/csv', 'OrderController@csvExport')->name('orders.csvExport'); // 一括CSV出力
 
-        // カラー情報のCRUD
+        // カラーマスタのCRUD
         Route::get('/colors', 'ColorController@index')->name('colors.index');
         Route::post('/colors', 'ColorController@store')->name('colors.store');
         Route::put('/colors/{color}', 'ColorController@update')->name('colors.update'); 
-        Route::delete('/colors/delete', 'ColorController@destroy')->name('colors.destroy');
+        Route::delete('/colors/{color}', 'ColorController@destroy')->name('colors.destroy');
 
-        // ブランド情報のCRUD
+        // ブランドマスタのCRUD
         Route::get('/brands', 'BrandController@index')->name('brands.index');
         Route::post('/brands', 'BrandController@store')->name('brands.store');
         Route::put('/brands/{brand}', 'BrandController@update')->name('brands.update'); 
-        Route::delete('/brands/delete', 'BrandController@destroy')->name('brands.destroy');
+        Route::delete('/brands/{brand}', 'BrandController@destroy')->name('brands.destroy');
 
-        // タグ情報のCRUD
+        // タグマスタのCRUD
         Route::get('/tags', 'TagController@index')->name('tags.index');
         Route::post('/tags', 'TagController@store')->name('tags.store');
         Route::put('/tags/{tag}', 'TagController@update')->name('tags.update'); 
-        Route::delete('/tags/delete', 'TagController@destroy')->name('tags.destroy');
+        Route::delete('/tags/{tag}', 'TagController@destroy')->name('tags.destroy');
 
-        // カテゴリー情報のCRUD
+        // カテゴリーマスタのCRUD
         Route::get('/categories', 'CategoryController@index')->name('categories.index');
         Route::post('/categories', 'CategoryController@store')->name('categories.store');
         Route::put('/categories/{category}', 'CategoryController@update')->name('categories.update'); 
-        Route::delete('/categories/delete', 'CategoryController@destroy')->name('categories.destroy');
+        Route::delete('/categories/{category}', 'CategoryController@destroy')->name('categories.destroy');
     });
 
 });

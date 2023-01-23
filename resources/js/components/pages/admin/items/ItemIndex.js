@@ -4,14 +4,9 @@ import {CircularProgress} from '@material-ui/core';
 import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import useInputCheckBox from "../../../hooks/useInputCheckBox";
-import usePaginate from "../../../hooks/usePaginate";
-import useSort from "../../../hooks/useSort";
-import useFilter from "../../../hooks/useFilter";
+import useCreateParams from "../../../hooks/useCreateParams";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import { useParamsContext } from '../../../context/ParamsContext';
-
-// TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
-// 注意事項　API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function ItemIndex() {
 
@@ -19,12 +14,8 @@ function ItemIndex() {
     const baseUrl = `/api/admin/items`;
     // paramsの適用範囲を決めるscope名を定義
     const model = 'ITEM';
-    // paginateフックの呼び出し
-    const { handlePageChange, handleTableRow} = usePaginate();
-    // sortフックの呼び出し
-    const {handleSort} = useSort();
-    // filterフックの呼び出し
-    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter();
+    // URLパラメータ変更のフックの呼び出し
+    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilter, handleFilterCheckbox, handleFilterDateRange, handleFilterCategory, handleCurrentPage, handlePerPage, handleSort}] = useCreateParams();
     // checkboxフックの呼び出し
     const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
     // useContext呼び出し
@@ -32,7 +23,7 @@ function ItemIndex() {
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
     // APIから取得したデータを変数に格納
-    const items = data.items? data.items.data: null;
+    const items = data.data? data.data: null;
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const main_categories = data.main_categories? data.main_categories: null;
@@ -62,28 +53,6 @@ function ItemIndex() {
         }
     },[data]);
 
-    const handleFilterCategory = (e) => {
-        console.log('handleFilterCategory直前のparams', params);
-
-        let new_obj; // obj用の変数を宣言
-
-        // 親カテゴリのIDが変更時には子以下のカテゴリをクリアにするようオブジェクト生成して分割代入
-        if(e.target.name === 'gender_category') {
-            new_obj = {'gender_category': e.target.value, 'main_category': '', 'sub_category': ''};
-        } else if (e.target.name === 'main_category') {
-            new_obj = {'main_category': e.target.value, 'sub_category': ''};
-        } else {
-            new_obj = {'sub_category': e.target.value};
-        }
-        setParams({
-            ...params,
-            filter: {
-                ...params.filter,
-                ...new_obj
-            }
-        });
-    }
-
     // 描画のみを担当
     return (
         isLoading ? (
@@ -99,19 +68,19 @@ function ItemIndex() {
                 }}>選択解除</button>
                 <button onClick={ () => {
                     let answer = confirm(`選択項目${checklist.length}件を削除しますか？`);
-                    answer && dispatch({type:'DELETE', url:`/api/admin/items/delete`, form:checklist});
+                    answer && dispatch({type:'DELETE', url:`/api/admin/items`, form:checklist});
                 }}>一括削除</button>
                 <button onClick={ () => {
                         dispatch({ type:'CREATE', url:`/api/admin/items/csv`, form:checklist })
                 }}>CSV出力</button>
 
-                {   Object.keys(params.filter).length > 0 &&　scope === model &&
+                {   Object.keys(params.filter).length > 0 && scope === model &&
 
                     <div className={'filter'}>
                         <h3>フィルター機能</h3>
                         <div>
                             <span>キーワード検索</span>
-                            <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword} placeholder={'商品名を検索'}/>
+                            <input type='text' name='keyword' onBlur={handleFilter} defaultValue={params.filter.keyword} placeholder={'商品名を検索'}/>
                         </div>
                         <div>
                             <span style={{'marginRight': '20px'}}>公開状況</span>
@@ -186,7 +155,7 @@ function ItemIndex() {
                                 <option value={'posted_at'}>投稿日</option>
                                 <option value={'modified_at'}>更新日</option>
                             </select>
-                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜
+                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
                             <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
                         </div>
                     </div>
@@ -282,17 +251,16 @@ function ItemIndex() {
                                 <td>{item.item_name}</td>
                                 <td>{item.price_text}</td>
                                 <td>{item.cost_text}</td>
-                                {/* mapでobjectから取得したいkeyとvalueの配列を生成してSetのインスタンス作成時に重複が削除されArray.from()で配列に再変換のちjoin()で文字列に変換 */}
-                                {   item.skus && <td>{ Array.from(new Set( item.skus.map(sku => (sku.color.color_name)) )).join(' / ') }</td> }
-                                {   item.skus && <td>{ Array.from(new Set( item.skus.map(sku => (sku.size.size_name)) )).join(' / ') }</td> }
+                                <td>{item.color_variation.join(' / ') }</td>
+                                <td>{item.size_variation.join(' / ') }</td>
                                 <td>{item.made_in}</td>
                                 <td>{item.mixture_ratio}</td>
-                                {   item.brand && <td>{item.brand.brand_name}</td> }
-                                {   item.categories && item.categories[0] ? <td>{item.categories[0].category_name}</td> : <td>  </td> }
-                                {   item.categories && item.categories[1] ? <td>{item.categories[1].category_name}</td> : <td>  </td> }
-                                {   item.categories && item.categories[2] ? <td>{item.categories[2].category_name}</td> : <td>  </td> }
-                                {   item.tags && <td>{ item.tags.map(tag => (tag.tag_name)).join(' / ') }</td> }
-                                {   item.admin && <td>{item.admin.full_name}({item.admin.full_name_kana})</td> }
+                                <td>{item.brand_name}</td>
+                                <td>{item.gender_category}</td>
+                                <td>{item.main_category}</td>
+                                <td>{item.sub_category}</td>
+                                <td>{ item.tags.join(' / ') }</td>
+                                <td>{item.full_name && item.full_name_kana && (`${item.full_name}(${item.full_name_kana})`)}</td>
                                 <td>{item.posted_at}</td>
                                 <td>{item.modified_at}</td>
                             </tr>
@@ -301,17 +269,17 @@ function ItemIndex() {
                     </tbody>
                 </table>
                 <p>* サイズ・カラーはSKUに登録されたものが一覧に表示されてます</p>
-                { data.items &&
+                { data.meta &&
                     <>
-                        <label>行数<input type='number' onBlur={handleTableRow} defaultValue={data.items.per_page} style={{'width': '40px'}} /></label>
-                        <div>検索結果{data.items.total}</div>
-                        <div>現在のページ{data.items.current_page}</div>
+                        <label>行数<input type='number' onBlur={handlePerPage} defaultValue={data.meta.per_page} style={{'width': '40px'}} /></label>
+                        <div>検索結果{data.meta.total}</div>
+                        <div>現在のページ{data.meta.current_page}</div>
                         <Pagination
-                            activePage={data.items.current_page}
-                            itemsCountPerPage={data.items.per_page}
-                            totalItemsCount={data.items.total}
-                            pageRangeDisplayed={data.items.page_range_displayed}
-                            onChange={handlePageChange}
+                            activePage={data.meta.current_page}
+                            itemsCountPerPage={data.meta.per_page}
+                            totalItemsCount={data.meta.total}
+                            pageRangeDisplayed={data.meta.page_range_displayed}
+                            onChange={handleCurrentPage}
                         />
                     </>
                 }

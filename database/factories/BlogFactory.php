@@ -44,7 +44,7 @@ class BlogFactory extends Factory
             'brand_id' => $brand_id,
             'admin_id' => $admin_id,
             'category_id' => $category_id,
-            'title' => $this->faker->realText(20),
+            'title' => $this->faker->text($maxNbChars = 20),
             'body' => $this->faker->randomHtml(2, 3),
             'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480),
             'is_published' => $is_published,

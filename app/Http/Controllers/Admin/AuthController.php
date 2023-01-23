@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\AuthenticationException;
 
 class AuthController extends Controller
 {
@@ -32,7 +33,7 @@ class AuthController extends Controller
             return response()->json(['success' => true, 'message' => 'ログインに成功しました'], 200);
         }
         // 認証失敗時にFALSEを返却
-        return response()->json(['success' => false, 'message' => 'ログインに失敗しました'], 401);
+        return throw new AuthenticationException('ログインに失敗しました');
     }
 
     public function logout(Request $request)
@@ -47,7 +48,7 @@ class AuthController extends Controller
             return response()->json(['success' => true, 'message' => 'ログアウトに成功しました'], 200);
         }
         // 認証失敗時にFALSEを返却
-        return response()->json(['success' => false, 'message' => 'ログアウトに失敗しました'], 401);
+        return throw new AuthenticationException('ログアウトに失敗しました');
     }
 
 

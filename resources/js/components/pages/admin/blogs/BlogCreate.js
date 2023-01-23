@@ -4,21 +4,17 @@ import {Editor} from "react-draft-wysiwyg";
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
-
-// TODO フロント側でのバリデーション設定
-// TODO ブログ本文で保存された画像をどうするか考える
+import useForm from "../../../hooks/useForm";
+import useObjectForm from "../../../hooks/useObjectForm";
 
 function BlogCreate() {
 
     // urlの設定
     const baseUrl = '/api/admin/blogs/create';
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData, setFormData}] = useInputForm({
+    const [formData, {setFormData, handleFormData, handleFormCheckbox, handleFormFile}] = useForm({
         'title': '',
         'body': '',
         'brand_id': '',
@@ -28,12 +24,13 @@ function BlogCreate() {
         'is_published': 0, // 0: 非公開 1: 公開中
         'thumbnail': '/img/no_image.png'
     });
-
+    // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
+    // file送信用にフォームのラッパー関数呼び出し
+    const {handleSendObjectForm} = useObjectForm(formData, setFormData);
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値 }の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const tags = data.tags? data.tags: null;
@@ -46,77 +43,7 @@ function BlogCreate() {
         }
     },[data]);
 
-    // ItemIndexにも使われてるもののオブジェクトではない番
-    const handleFormFile = (e) => {
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const file = e.target.files[0]; // fileオブジェクトを変数に格納
-        const imageUrl = URL.createObjectURL(file); // 新しいオブジェクトURLを生成
-        // ステートを更新
-        setFormData({
-            ...formData,
-            [name]: imageUrl,
-            'file': file
-        });
-    };
-
-    // objecy判定便利関数 ItemIndexにも使われてるので後で切り出す
-    function isObject(val) {
-        if( val !== null && typeof(val) === 'object' && val.constructor === Object ) {
-            return true;
-        }
-        return false;
-    }
-
-    // ItemIndexにも使われてるので後で切り出す
-    const handleFormSendwithFile = () => {
-        // FormDataオブジェクトのインスタンス生成
-        const params = new FormData();
-        // formオブジェクトを展開
-        Object.entries(formData).forEach(([key, value]) => {
-            // valueが配列形式か判定
-            if(Array.isArray(value)) {
-                // 配列を展開
-                for(let i = 0; i < value.length; i++) {
-                    // 展開した配列内に複数オブジェクトを持つか単純な配列か判定
-                    if(isObject(value[i])) {
-                        // FormDataは配列やオブジェクトそのままappend()で追加出来ないので formData.images = [ {id:'1', item_id:'2'...} {id:'2', item_id:'3'...}] の場合
-                        // 全て展開してkey: valueの形でappend()で代入する際に文字列を下記のように加工すればサーバー側に渡る際にオブジェクトの形式で渡せる
-                        Object.entries(value[i]).forEach(([key2, value2]) => {
-                            params.append(key+'['+i+']['+key2+']', value2)
-                        })
-                    } else {
-                        // 全て展開してkey[]: valueの形でappend()で代入すればサーバー側に渡る際に配列の形式で渡せる
-                        params.append(key+'[]', value[i])
-                    }
-                }
-            } else {
-                params.append(key, value);
-            }
-        });
-        // axiosで画像等のファイル形式を送信する際はcontent-typeを'multipart/form-data'にしないと送信出来ない
-        // post形式でないと正しく送れない * axiosの仕様的な問題？？
-        dispatch({type: 'CREATE', form: params, url:'/api/admin/blogs', headers: {'content-type': 'multipart/form-data'}});
-    }
-
-    // ItemIndexにも使われてるので後で切り出す
-    const handleFormCheckbox = (e) => {
-        let new_arr; // 配列用の変数を宣言
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const value = Number(e.target.value); // 渡ってきた値を取得
-
-        if(formData[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
-            new_arr = formData[name].filter(item => item !== value );
-        } else {
-            new_arr = formData[name];
-            new_arr.push(value);
-        }
-
-        setFormData({
-            ...formData,
-            [name]: new_arr
-        });
-    };
-
+    // draft-jsの更新関数
     const onEditorStateChange = (editorState) => {
         // 現在のeditorStateからcontentStateを取得 
         const contentState = editorState.getCurrentContent();
@@ -141,7 +68,7 @@ function BlogCreate() {
                 <h1>ブログ新規登録</h1>
                 <form onSubmit={ e => {
                     e.preventDefault();
-                    handleFormSendwithFile();
+                    handleSendObjectForm('/api/admin/blogs', dispatch);
                 }}>
                     <div>
                         <label>
@@ -208,13 +135,7 @@ function BlogCreate() {
                                 }
                             </div>
                         </div>
-                        {   errorMessage &&
-                            Object.entries(errorMessage).map((value, index) => {
-                                if(value[0].includes('items_id')) {
-                                    return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                }
-                            })
-                        }
+                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.items_id}</p> }
                     </div>
 
                     <div>
@@ -231,13 +152,7 @@ function BlogCreate() {
                                 }
                             </div>
                         </div>
-                        {   errorMessage &&
-                            Object.entries(errorMessage).map((value, index) => {
-                                if(value[0].includes('tags_id')) {
-                                    return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                }
-                            })
-                        }
+                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.tags_id}</p> }
                     </div>
 
                     <div>

@@ -2,20 +2,16 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import {CircularProgress} from "@material-ui/core";
 import useFetchApiData from "../../../hooks/useFetchApiData";
-import useInputForm from "../../../hooks/useInputForm";
-
-// TODO フロント側でのバリデーション設定
+import useForm from "../../../hooks/useForm";
 
 function AdminCreate() {
 
     // urlの設定
     const baseUrl = '/api/admin/admins/create';
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData}] = useInputForm({
+    const [formData, {handleFormData}] = useForm({
         'last_name': null,
         'first_name': null,
         'last_name_kana': null,
@@ -24,7 +20,7 @@ function AdminCreate() {
         'email': null,
         'password': null,
     });
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
 
     useEffect(() => {

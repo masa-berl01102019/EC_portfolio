@@ -2,28 +2,24 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
+import useForm from "../../../hooks/useForm";
 
-// TODO フロント側でのバリデーション設定
 // TODO モーダルで実装する
 
 function OrderEdit(props) {
 
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/orders/${props.match.params.id}/edit`;
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useInputForm({
+    const [formData, {setFormData, handleFormData}] = useForm({
         'is_paid': '', 
         'is_shipped': ''
     });
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値 }の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const order = data.order;
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
 
     useEffect(() => {

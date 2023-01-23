@@ -12,8 +12,6 @@ use App\Http\Requests\admin\CategoryRegisterRequest;
 
 class CategoryController extends Controller
 {
-    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
-
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'id', 'category_name', 'parent_id'];
 
@@ -54,11 +52,9 @@ class CategoryController extends Controller
         return response()->json(['update' => true, 'message' => 'カテゴリーマスタの編集を完了しました'], 200);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Category $category)
     {
         try {
-            // インスタンスを生成
-            $category = Category::find($request->id);
             // 関連の中間テーブルの削除
             $category->items()->sync([]);
             // カテゴリーを削除
@@ -67,8 +63,6 @@ class CategoryController extends Controller
             return response()->json(['delete' => true, 'message' => 'カテゴリーマスタの削除を完了しました'], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            // インスタンスを生成
-            $category = Category::find($request->id);
             $msg1 = !$category->children->isEmpty() || !$category->grandChildren->isEmpty() ? '先に選択カテゴリに紐づく子カテゴリを削除する必要があります': '';
             $msg2 = !$category->items->isEmpty() || !$category->news->isEmpty() || !$category->blogs->isEmpty() ? '選択カテゴリーが商品・ニュース・ブログ等で使用されております。': '';
             

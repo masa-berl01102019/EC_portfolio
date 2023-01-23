@@ -2,29 +2,25 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
+import useForm from "../../../hooks/useForm";
 import DateFnsUtils from '@date-io/date-fns';
 import jaLocale from "date-fns/locale/ja";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-
-// TODO フロント側でのバリデーション設定
 
 function NotificationCreate() {
 
     // urlの設定
     const baseUrl = '/api/admin/notifications/create';
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData, handleDateChange}] = useInputForm({
+    const [formData, {handleFormData, handleFormDate}] = useForm({
         'title': null,
         'body': null,
-        'is_published': 0, // 0: 非公開　1: 公開中
+        'is_published': 0, // 0: 非公開 1: 公開中
         'expired_at': null
     });
-
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
 
     useEffect(() => {
@@ -76,7 +72,7 @@ function NotificationCreate() {
                                 views={["year", "month", "date"]}
                                 value={formData.expired_at}
                                 onChange={e => {
-                                    handleDateChange(e, 'expired_at')
+                                    handleFormDate(e, 'expired_at')
                                 }}
                                 placeholder='1991/01/01'
                             />

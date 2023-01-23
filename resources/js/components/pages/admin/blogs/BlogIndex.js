@@ -4,14 +4,9 @@ import {CircularProgress} from '@material-ui/core';
 import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import useInputCheckBox from "../../../hooks/useInputCheckBox";
-import usePaginate from "../../../hooks/usePaginate";
-import useSort from "../../../hooks/useSort";
-import useFilter from "../../../hooks/useFilter";
+import useCreateParams from "../../../hooks/useCreateParams";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import { useParamsContext } from '../../../context/ParamsContext';
-
-// TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
-// 注意事項 API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function BlogIndex() {
 
@@ -19,12 +14,8 @@ function BlogIndex() {
     const baseUrl = `/api/admin/blogs`;
     // paramsの適用範囲を決めるscope名を定義
     const model = 'BLOG';
-    // paginateフックの呼び出し
-    const { handlePageChange, handleTableRow} = usePaginate();
-    // sortフックの呼び出し
-    const {handleSort} = useSort();
-    // filterフックの呼び出し
-    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter();
+    // URLパラメータ変更のフックの呼び出し
+    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilter, handleFilterCheckbox, handleFilterDateRange, handleCurrentPage, handlePerPage, handleSort}] = useCreateParams();
     // checkboxフックの呼び出し
     const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
     // useContext呼び出し
@@ -32,7 +23,7 @@ function BlogIndex() {
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
     // APIから取得したデータを変数に格納
-    const blogs = data.blogs? data.blogs.data: null;
+    const blogs = data.data? data.data: null;
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const tags = data.tags? data.tags: null;
@@ -73,7 +64,7 @@ function BlogIndex() {
                 }}>選択解除</button>
                 <button onClick={ () => {
                     let answer = confirm(`選択項目${checklist.length}件を削除しますか？`);
-                    answer && dispatch({type:'DELETE', url:`/api/admin/blogs/delete`, form:checklist});
+                    answer && dispatch({type:'DELETE', url:`/api/admin/blogs`, form:checklist});
                 }}>一括削除</button>
                 <button onClick={ () => {
                         dispatch({ type:'CREATE', url:`/api/admin/blogs/csv`, form:checklist })
@@ -85,7 +76,7 @@ function BlogIndex() {
                         <h3>フィルター機能</h3>
                         <div>
                             <span>キーワード検索</span>
-                            <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword} placeholder={'タイトルを検索'}/>
+                            <input type='text' name='keyword' onBlur={handleFilter} defaultValue={params.filter.keyword} placeholder={'タイトルを検索'}/>
                         </div>
                         <div>
                             <span style={{'marginRight': '20px'}}>公開状況</span>
@@ -135,7 +126,7 @@ function BlogIndex() {
                                 <option value={'posted_at'}>投稿日</option>
                                 <option value={'modified_at'}>更新日</option>
                             </select>
-                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜
+                            <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
                             <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
                         </div>
                     </div>
@@ -194,11 +185,11 @@ function BlogIndex() {
                                 <td>{blog.is_published_text}</td>
                                 <td><img src={blog.thumbnail} alt="" style={{ 'width':'100%', 'height': '50px', 'display': 'block' }}/></td>
                                 <td><span style={{ 'display':'block', 'width': '318px', 'overflowX':'hidden' }}>{blog.title}</span></td>
-                                <td>{blog.brand.brand_name}</td>
+                                <td>{blog.brand_name}</td>
                                 <td>{blog.gender_category_text}</td>
-                                <td>{blog.items.map(item => item.product_number).join(' / ')}</td>
-                                <td>{blog.tags.map(tag => tag.tag_name).join(' / ')}</td> 
-                                <td>{blog.admin.full_name} ({blog.admin.full_name_kana})</td>
+                                <td>{blog.items.join(' / ')}</td>
+                                <td>{blog.tags.join(' / ')}</td> 
+                                <td>{blog.full_name && blog.full_name_kana && (`${blog.full_name}(${blog.full_name_kana})`)}</td>
                                 <td>{blog.posted_at}</td>
                                 <td>{blog.modified_at}</td>
                             </tr>
@@ -206,17 +197,17 @@ function BlogIndex() {
                     }
                     </tbody>
                 </table>
-                { data.blogs &&
+                { data.meta &&
                     <>
-                        <label>行数<input type='number' onBlur={handleTableRow} defaultValue={data.blogs.per_page} style={{'width': '40px'}} /></label>
-                        <div>検索結果{data.blogs.total}</div>
-                        <div>現在のページ{data.blogs.current_page}</div>
+                        <label>行数<input type='number' onBlur={handlePerPage} defaultValue={data.meta.per_page} style={{'width': '40px'}} /></label>
+                        <div>検索結果{data.meta.total}</div>
+                        <div>現在のページ{data.meta.current_page}</div>
                         <Pagination
-                            activePage={data.blogs.current_page}
-                            itemsCountPerPage={data.blogs.per_page}
-                            totalItemsCount={data.blogs.total}
-                            pageRangeDisplayed={data.blogs.page_range_displayed}
-                            onChange={handlePageChange}
+                            activePage={data.meta.current_page}
+                            itemsCountPerPage={data.meta.per_page}
+                            totalItemsCount={data.meta.total}
+                            pageRangeDisplayed={data.meta.page_range_displayed}
+                            onChange={handleCurrentPage}
                         />
                     </>
                 }

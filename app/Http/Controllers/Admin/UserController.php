@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\admin\UserEditRequest;
-use App\Http\Requests\admin\UserRegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\admin\UserEditRequest;
+use App\Http\Requests\admin\UserRegisterRequest;
 
 class UserController extends Controller
 {
-    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
-    // TODO フリーワード検索でカラムを指定受けて検索をかける仕様にするか要検討
-
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [
         'last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'gender', 'birthday', 'post_code', 'prefecture', 'municipality', 'street_name', 'street_number', 'building',
@@ -50,30 +48,17 @@ class UserController extends Controller
         // 更新日でソート
         $search_user->orderByUpdatedAt($request);
 
-        // 1ページ当たり件数の指定の有無を確認
-        if($request->input('per_page')) {
-            $per_page = $request->input('per_page');
-            //　取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
-            $users = $search_user->paginate((int)$per_page);
-        } else {
-            // 取得件数が未設定の場合はデフォルトの表示件数　１０件
-            $users = $search_user->paginate(10);
-        }
+        // ページネーション
+        $users = $search_user->customPaginate($request);
 
         // レスポンスを返却
-        return response()->json(['users' => $users],200);
-    }
-
-    public function create()
-    {
-        // とりあえずなんか返す
-        return response()->json(['read' => true],200);
+        return UserResource::collection($users);
     }
 
     public function store(UserRegisterRequest $request)
     {
         // ブラウザで不正に仕込んだinputに対してaxios側で制御出来ない上、フォームリクエストを通過してしまうので
-        //　ホワイトリスト以外のカラム名は受け付けないように制御　＊　{last_name: 髙田, first_name: 清雅} の形でPOSTされてくる
+        // ホワイトリスト以外のカラム名は受け付けないように制御 ＊ {last_name: 髙田, first_name: 清雅} の形でPOSTされてくる
         $data = $request->only($this->form_items);
 
         // DBに登録
@@ -108,7 +93,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         // レスポンスを返却
-        return response()->json(['user' => $user],200);
+        return new UserResource ($user);
     }
 
     public function update(UserEditRequest $request, User $user)
@@ -140,45 +125,34 @@ class UserController extends Controller
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
         // 該当のIDのユーザーを取得
-        $users = User::select(['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'gender', 'birthday', 'post_code', 'prefecture', 'municipality', 'street_name', 'street_number', 'building', 'delivery_post_code', 'delivery_prefecture', 'delivery_municipality', 'delivery_street_name', 'delivery_street_number', 'delivery_building', 'tel', 'email', 'is_received', 'created_at', 'updated_at' ])
-            ->whereIn('id', $id)->cursor();
-
-        // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
-        return response()->streamDownload(function () use ($users) {
-            // CSVのヘッダー作成
-            $csv_header = ['No','氏名', '氏名（カナ）', '性別', '生年月日', '郵便番号', '住所', '配送先-郵便番号', '配送先-住所', '電話番号', 'メールアドレス', 'DM登録', '作成日時', '更新日時'];
-            //　SplFileObjectのインスタンスを生成
-            $file = new \SplFileObject('php://output', 'w');
-            // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
-            $file->fwrite(pack('C*',0xEF,0xBB,0xBF));
-            // ヘッダーの読み込み
-            $file->fputcsv($csv_header);
-            // 一行ずつ連想配列から値を取り出して配列に格納
-            $num = 1;
-            foreach ($users as $user){
-                $file->fputcsv([
-                    $num,                                   // NO
-                    $user->full_name,                       // 氏名
-                    $user->full_name_kana,                  // 氏名（カナ）
-                    $user->gender_text,                     // 性別
-                    $user->birthday->format('Y-m-d'),       // 生年月日
-                    $user->post_code_text,                  // 郵便番号
-                    $user->full_address,                    // 住所
-                    $user->delivery_post_code_text,         // 配送先　郵便番号
-                    $user->full_delivery_address,           // 配送先　住所
-                    $user->tel,                             // 電話番号
-                    $user->email,                           // メールアドレス
-                    $user->is_received_text,                // DM登録
-                    $user->created_at,                      // 作成日時
-                    $user->updated_at,                      // 更新日時
-                ]);
-                $num++;
-            }
-
-        }, '顧客情報出力.csv', [
-            'Content-Type' => 'text/csv'
-        ]);
+        $users = User::whereIn('id', $id)->cursor();
+        // 配列の初期化
+        $csv_body = [];
+        // CSVに必要な項目を配列に格納
+        $num = 1;
+        foreach ($users as $user){
+            $csv_body[] = [
+                $num,
+                $user->id,
+                $user->full_name,
+                $user->full_name_kana,
+                $user->gender_text,
+                $user->birthday->format('Y/m/d'), 
+                $user->post_code_text,
+                $user->full_address,
+                $user->delivery_post_code_text,
+                $user->full_delivery_address,
+                $user->tel,
+                $user->email,
+                $user->is_received_text,
+                $user->created_at,
+                $user->updated_at
+            ];
+            $num++;
+        }
+        // headerの作成
+        $csv_header = ['No','ID','氏名', '氏名（カナ）', '性別', '生年月日', '郵便番号', '住所', '配送先-郵便番号', '配送先-住所', '電話番号', 'メールアドレス', 'DM登録', '作成日時', '更新日時'];
+        // 独自helper関数呼び出し
+        return csvExport($csv_body,$csv_header,'顧客情報出力.csv');
     }
-
-
 }

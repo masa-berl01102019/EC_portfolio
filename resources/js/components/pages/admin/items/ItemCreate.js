@@ -2,23 +2,17 @@ import React, {useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
-import useInputForm from "../../../hooks/useInputForm";
-
-// TODO フロント側でのバリデーション設定
-// TODO フォーム部品に関しての関数をリファクタリング時にhooksに切り出す
-// TODO 公開設定の表示場所を要検討
-// TODO プレビュー機能の実装
+import useForm from "../../../hooks/useForm";
+import useObjectForm from "../../../hooks/useObjectForm";
 
 function ItemCreate() {
 
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/items/create`;
-
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
-
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useInputForm({
+    const [formData, {setFormData, handleFormData, handleFormCheckbox, handleFormCategory}] = useForm({
         'product_number': '',
         'item_name': '',
         'price': '',
@@ -36,10 +30,11 @@ function ItemCreate() {
         'images': [ {image: '', image_category: '', color_id:''} ],
         'measurements': [ {size_id: '', width: '', shoulder_width: '', raglan_sleeve_length: '', sleeve_length: '', length: '', waist: '', hip: '', rise: '', inseam: '', thigh_width: '', outseam: '', sk_length: '', hem_width: '', weight: ''}  ]
     });
-
+    // 複数オブジェクト送信用にフォームのラッパー関数呼び出し
+    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData);
+    // リダイレクト用の関数呼び出し
     const history = useHistory();
-
-    // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値 }の形で返却されるので変数に代入しておく
+    // API接続の返却値を変数に格納
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const main_categories = data.main_categories? data.main_categories: null;
@@ -56,157 +51,6 @@ function ItemCreate() {
         }
     },[data]);
 
-    const handleFormFile = (e, index) => {
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const recode = formData['images'][index] // 配列のindex番目のオブジェクト取得
-        const file = e.target.files[0]; // fileオブジェクトを変数に格納
-        const imageUrl = URL.createObjectURL(file); // 新しいオブジェクトURLを生成
-        recode[name] = imageUrl; // 配列のindex番目のオブジェクトの特定カラムを更新 *画像プレビューのセット用
-        recode['file'] = file; // fileというカラム名を追加してfileオブジェクトを格納
-        // ステートを更新
-        setFormData({
-            ...formData,
-            images : [
-                ...formData.images,
-            ]
-        });
-    }
-    
-    // objecy判定便利関数
-    function isObject(val) {
-        if( val !== null && typeof(val) === 'object' && val.constructor === Object ) {
-          return true;
-        }
-        return false;
-    }
-
-    const handleFormSendwithFile = () => {
-        // FormDataオブジェクトのインスタンス生成
-        const params = new FormData();
-        // formオブジェクトを展開
-        Object.entries(formData).forEach(([key, value]) => {
-            // valueが配列形式か判定
-            if(Array.isArray(value)) {
-                // 配列を展開
-                for(let i = 0; i < value.length; i++) {
-                    // 展開した配列内に複数オブジェクトを持つか単純な配列か判定
-                    if(isObject(value[i])) {
-                        // FormDataは配列やオブジェクトそのままappend()で追加出来ないので formData.images = [ {id:'1', item_id:'2'...} {id:'2', item_id:'3'...}] の場合
-                        // 全て展開してkey: valueの形でappend()で代入する際に文字列を下記のように加工すればサーバー側に渡る際にオブジェクトの形式で渡せる
-                        Object.entries(value[i]).forEach(([key2, value2]) => {
-                            params.append(key+'['+i+']['+key2+']', value2)
-                        })
-                    } else {
-                        // 全て展開してkey[]: valueの形でappend()で代入すればサーバー側に渡る際に配列の形式で渡せる
-                        params.append(key+'[]', value[i])
-                    }
-                }
-            } else {
-                params.append(key, value);
-            }
-        });
-        // axiosで画像等のファイル形式を送信する際はcontent-typeを'multipart/form-data'にしないと送信出来ない
-        // post形式でないと正しく送れない * axiosの仕様的な問題？？
-        dispatch({type: 'CREATE', form: params, url: `/api/admin/items`, headers: {'content-type': 'multipart/form-data'} });
-    }
-
-    const handleFormOjectRecodes = (e, index, table_name) => {
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const recode = formData[table_name][index] // 配列のindex番目のオブジェクト取得
-        recode[name] = e.target.value; // 配列のindex番目のオブジェクトの特定カラムを更新
-        // ステートを更新
-        setFormData({
-            ...formData,
-            [table_name] : [
-                ...formData[table_name],
-            ]
-        });
-    }
-
-    const handleInsertForm = (target) => {
-        let new_obj = {};
-        if(formData[target].length > 0) {
-            // スプレッド構文でオブジェクトのコピー
-            new_obj = {...formData[target][0]}
-            // 不要なプロパティを削除
-            delete new_obj.created_at;
-            delete new_obj.updated_at;
-            // オブジェクトを展開して初期化
-            for (let key in new_obj) {
-                if(key === 'item_id')  continue; // item_idはformにないので残しておく
-                new_obj[key] = ''; // 値の初期化
-            }
-            // ステートを更新して再描画走らせる
-            setFormData({
-                ...formData,
-                [target] : [
-                    ...formData[target],
-                    new_obj
-                ]
-            });
-        }
-    }
-
-    const handleDeleteForm = (id, index, target) => {
-        if(formData[target].length > 1) {
-            let answer = confirm(`選択項目を削除しますか？`);
-            if(answer) {
-                // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
-                if(id) {
-                    // 削除のリクエスト送信
-                    dispatch({type:'DELETE', url:`/api/admin/items/delete/${target}`, form:{id: id}});
-                } else {
-                    // 配列からindex番目のオブジェクトを1個削除
-                    formData[target].splice(index,1);
-                    // ステートを更新して再描画走らせる
-                    setFormData({
-                        ...formData
-                    });
-                }
-            }
-        } else {
-            alert('全ての行は削除出来ません。');
-        }
-    }
-
-    const handleFormCategory = (e) => {
-        console.log('handleFormCategory');
-
-        let new_obj; // obj用の変数を宣言
-
-        // 親カテゴリのIDが変更時には子以下のカテゴリをクリアにするようオブジェクト生成して分割代入
-        if(e.target.name === 'gender_category') {
-            new_obj = {'gender_category': e.target.value, 'main_category': '', 'sub_category': ''};
-        } else if (e.target.name === 'main_category') {
-            new_obj = {'main_category': e.target.value, 'sub_category': ''};
-        } else {
-            new_obj = {'sub_category': e.target.value};
-        }
-
-        setFormData({
-            ...formData,
-            ...new_obj
-        });
-    }
-
-    const handleFormCheckbox = (e) => {
-        let new_arr; // 配列用の変数を宣言
-        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-        const value = Number(e.target.value); // 渡ってきた値を取得
-
-        if(formData[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
-            new_arr = formData[name].filter(item => item !== value );
-        } else {
-            new_arr = formData[name];
-            new_arr.push(value);
-        }
-
-        setFormData({
-            ...formData,
-            [name]: new_arr
-        });
-    };
-
     // 描画のみを担当
     return (
         isLoading ? (
@@ -219,7 +63,7 @@ function ItemCreate() {
                 <div>
                     <form onSubmit={ e => {
                         e.preventDefault();
-                        handleFormSendwithFile();
+                        handleSendObjectForm(`/api/admin/items`, dispatch);
                     }}>
                         <div>
                             <h2>基本情報</h2>
@@ -345,13 +189,7 @@ function ItemCreate() {
                                         )
                                     }
                                 </div>
-                                {   errorMessage &&
-                                    Object.entries(errorMessage).map((value, index) => {
-                                        if(value[0].includes('tags_id')) {
-                                            return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                        }
-                                    })
-                                }
+                                { errorMessage && <p style={{'color': 'red'}}>{errorMessage.tags_id}</p> }
                             </div>
                         </div>
 
@@ -378,7 +216,7 @@ function ItemCreate() {
                                                         } else if(list.color_id !== '' && formData.images.map(item => item.color_id).includes(String(list.color_id))) {
                                                             alert('画像セクションで選択されたカラーが含まれておりますので削除出来ません。\n先に画像セクションのカラーを変更してください。');
                                                         } else {
-                                                            handleDeleteForm(list.id, index, 'skus')
+                                                            handleDeleteObjectForm('skus', index, list.id)
                                                         }
                                                     }} 
                                                     style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}
@@ -387,32 +225,30 @@ function ItemCreate() {
                                                 </span>
                                             </td>
                                             <td>
-                                                <select name='size_id' value={list.size_id} onChange={ e => handleFormOjectRecodes(e, index, 'skus') }>
+                                                <select name='size_id' value={list.size_id} onChange={ e => handleChangeObjectForm('skus', index, e) }>
                                                     <option value={''}>未設定</option>
                                                     { sizes && sizes.map( size => ( <option key={size.id} value={size.id}>{size.size_name}</option>)) }
                                                 </select>
                                             </td>
                                             <td>
-                                                <select name='color_id' value={list.color_id} onChange={ e => handleFormOjectRecodes(e, index, 'skus') }>
+                                                <select name='color_id' value={list.color_id} onChange={ e => handleChangeObjectForm('skus', index, e) }>
                                                     <option value={''}>未設定</option>
                                                     { colors && colors.map( color => ( <option key={color.id} value={color.id}>{color.color_name}</option>)) }
                                                 </select>
                                             </td>
-                                            <td><input type='number' name='quantity' onBlur={ e => handleFormOjectRecodes(e, index, 'skus') } defaultValue={list.quantity} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='quantity' onBlur={ e => handleChangeObjectForm('skus', index, e) } defaultValue={list.quantity} placeholder='数値のみ入力' /></td>
                                         </tr>
                                     )
                                 }
                                 </tbody>
                             </table>
-                            {   errorMessage &&
-                                Object.entries(errorMessage).map((value, index) => {
-                                    if(value[0].includes('skus')) {
-                                        return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                    }
+                            {   errorMessage && errorMessage.skus &&
+                                Object.values(errorMessage.skus).map((value, index) => {
+                                    return <p key={index} style={{'color': 'red'}}>{value}</p> 
                                 })
                             }
                         </div>
-                        <div onClick={() => handleInsertForm('skus')} style={{'width': '30px', 'height': '30px', 'lineHeight': '30px', 'textAlign': 'center', 'border': '1px solid #000'}}>＋</div>
+                        <div onClick={() => handleInsertObjectForm('skus',['item_id'])} style={{'width': '30px', 'height': '30px', 'lineHeight': '30px', 'textAlign': 'center', 'border': '1px solid #000'}}>＋</div>
 
                         <div>
                             <h2>画像</h2>
@@ -429,29 +265,29 @@ function ItemCreate() {
                                 {   formData.images &&
                                     formData.images.map((list, index) =>
                                         <tr key={index}>
-                                            <td><span onClick={() => handleDeleteForm(list.id, index, 'images')} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span></td>
+                                            <td><span onClick={() => handleDeleteObjectForm('images', index, list.id)} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span></td>
                                             <td>
                                                 { list.image ? (
                                                     <label className="insert_image">
                                                         <img src={list.image} alt="item image" style={{'width' : '100px', 'height' : '100px'}} />
-                                                        <input name="image" type="file" accept="image/*" onChange={ e => handleFormFile(e, index)} style={{'display': 'none'}} />
+                                                        <input name="image" type="file" accept="image/*" onChange={ e => handleChangeObjectForm('images', index, e)} style={{'display': 'none'}} />
                                                     </label>
                                                 ) : (
                                                     <label  className="insert_image">
                                                         <img src={'/img/no_image.png'} alt="no image" style={{'width' : '100px', 'height' : '100px'}} />
-                                                        <input name="image" type="file" accept="image/*" onChange={ e => handleFormFile(e, index)} style={{'display': 'none'}} />
+                                                        <input name="image" type="file" accept="image/*" onChange={ e => handleChangeObjectForm('images', index, e)} style={{'display': 'none'}} />
                                                     </label>
                                                 )}
                                             </td>
                                             <td>
-                                                <select name='image_category' value={list.image_category} onChange={ e => handleFormOjectRecodes(e, index, 'images') }>
+                                                <select name='image_category' value={list.image_category} onChange={ e => handleChangeObjectForm('images', index, e) }>
                                                     <option value={''}>画像カテゴリを選択</option>
                                                     <option value={0}>メイン画像</option>
                                                     <option value={1}>サムネイル画像</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                <select name='color_id' value={list.color_id} onChange={ e => handleFormOjectRecodes(e, index, 'images') }>
+                                                <select name='color_id' value={list.color_id} onChange={ e => handleChangeObjectForm('images', index, e) }>
                                                     <option value={''}>関連カラーを選択</option>
                                                     {   colors && colors.filter((color) => formData.skus.map(item => item.color_id).includes(String(color.id))).map((color) => (
                                                             <option key={color.id} value={color.id}>{color.color_name}</option>
@@ -464,15 +300,13 @@ function ItemCreate() {
                                 }
                                 </tbody>
                             </table>
-                            {   errorMessage &&
-                                Object.entries(errorMessage).map((value, index) => {
-                                    if(value[0].includes('images')) {
-                                        return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                    }
+                            {   errorMessage && errorMessage.images &&
+                                Object.values(errorMessage.images).map((value, index) => {
+                                    return <p key={index} style={{'color': 'red'}}>{value}</p> 
                                 })
                             }
                         </div>
-                        <div onClick={() => handleInsertForm('images')} style={{'width': '30px', 'height': '30px', 'lineHeight': '30px', 'textAlign': 'center', 'border': '1px solid #000'}}>＋</div>
+                        <div onClick={() => handleInsertObjectForm('images',['item_id'])} style={{'width': '30px', 'height': '30px', 'lineHeight': '30px', 'textAlign': 'center', 'border': '1px solid #000'}}>＋</div>
 
                         <div>
                             <h2>寸法</h2>
@@ -502,9 +336,9 @@ function ItemCreate() {
                                     formData.measurements &&
                                     formData.measurements.map((list, index) =>
                                         <tr key={index}>
-                                            <td><span onClick={() => handleDeleteForm(list.id, index,'measurements')} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span></td>
+                                            <td><span onClick={() => handleDeleteObjectForm('measurements', index, list.id)} style={{'background': 'red', 'color': '#fff', 'padding': '4px 8px'}}>削除</span></td>
                                             <td>
-                                                <select name='size_id' value={list.size_id} onChange={ e => handleFormOjectRecodes(e, index, 'measurements') }>
+                                                <select name='size_id' value={list.size_id} onChange={ e => handleChangeObjectForm('measurements', index, e) }>
                                                     <option value={''}>未設定</option>
                                                     {   sizes && sizes.filter((size) => formData.skus.map(item => item.size_id).includes(String(size.id))).map((size) => (
                                                             <option key={size.id} value={size.id}>{size.size_name}</option>
@@ -512,34 +346,32 @@ function ItemCreate() {
                                                     }
                                                 </select>
                                             </td>
-                                            <td><input type='number' name='width' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.width} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='shoulder_width' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.shoulder_width} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='raglan_sleeve_length' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.raglan_sleeve_length} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='sleeve_length' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.sleeve_length} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='length' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.length} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='waist' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.waist} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='hip' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.hip} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='rise' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.rise} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='inseam' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.inseam} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='thigh_width' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.thigh_width} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='outseam' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.outseam} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='sk_length' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.sk_length} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='hem_width' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.hem_width} placeholder='数値のみ入力' /></td>
-                                            <td><input type='number' name='weight' onBlur={ e => handleFormOjectRecodes(e, index, 'measurements') } defaultValue={list.weight} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='width' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.width} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='shoulder_width' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.shoulder_width} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='raglan_sleeve_length' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.raglan_sleeve_length} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='sleeve_length' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.sleeve_length} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='length' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.length} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='waist' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.waist} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='hip' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.hip} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='rise' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.rise} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='inseam' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.inseam} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='thigh_width' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.thigh_width} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='outseam' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.outseam} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='sk_length' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.sk_length} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='hem_width' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.hem_width} placeholder='数値のみ入力' /></td>
+                                            <td><input type='number' name='weight' onBlur={ e => handleChangeObjectForm('measurements', index, e) } defaultValue={list.weight} placeholder='数値のみ入力' /></td>
                                         </tr>
                                     )
                                 }
                                 </tbody>
                             </table>
-                            {   errorMessage && 
-                                Object.entries(errorMessage).map((value, index) => {
-                                    if(value[0].includes('measurements')) {
-                                        return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                    }
+                            {   errorMessage && errorMessage.measurements &&
+                                Object.values(errorMessage.measurements).map((value, index) => {
+                                    return <p key={index} style={{'color': 'red'}}>{value}</p> 
                                 })
                             }
                         </div>
-                        <div onClick={() => handleInsertForm('measurements')} style={{'width': '30px', 'height': '30px', 'lineHeight': '30px', 'textAlign': 'center', 'border': '1px solid #000'}}>＋</div>
+                        <div onClick={() => handleInsertObjectForm('measurements',['item_id'])} style={{'width': '30px', 'height': '30px', 'lineHeight': '30px', 'textAlign': 'center', 'border': '1px solid #000'}}>＋</div>
 
                         <button><Link to={`/admin/items`}>一覧に戻る</Link></button>
                         <button type="submit">新規登録</button>

@@ -10,34 +10,37 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\TagResource;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NewsResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\BrandResource;
 use App\Http\Requests\admin\NewsEditRequest;
 use App\Http\Requests\admin\NewsRegisterRequest;
 
 class NewsController extends Controller
 {
-    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
-    // TODO フリーワード検索でカラムを指定受けて検索をかける仕様にするか要検討
-
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'title', 'body', 'brand_id', 'category_id', 'items_id', 'tags_id', 'is_published', 'file', 'thumbnail'];
+    // 各種フィルター用プロパティ
+    private $tags = null;
+    private $brands = null;
+    private $gender_categories = null;
 
     public function __construct()
     {
         // Auth認証
         $this->middleware('auth:admin');
+        // 各種フィルター用選択肢を取得
+        $this->tags = TagResource::collection(Tag::all());
+        $this->brands = BrandResource::collection(Brand::all());
+        $this->gender_categories = Category::genderCategories()->get();
     }
 
     public function index(Request $request)
     {
-        $search_news = News::select(['news.id', 'title', 'thumbnail', 'is_published', 'posted_at', 'modified_at', 'brand_id', 'admin_id', 'category_id'])->with([
-            'admin:id,first_name,last_name,first_name_kana,last_name_kana',
-            'brand:id,brand_name',
-            'tags:id,tag_name'
-        ]);
+        $search_news = News::with(['admin', 'brand', 'tags']);
 
         // フリーワード検索
         $search_news->filterKeyword($request, ['title']);
@@ -59,42 +62,25 @@ class NewsController extends Controller
         // 修正更新日でソート
         $search_news->orderByModifiedAt($request);
 
-        // 1ページ当たり件数の指定の有無を確認
-        if($request->input('per_page')) {
-            $per_page = $request->input('per_page');
-            // 取得件数が指定されていた場合はpaginationに引数としてわたしてあげる * 数字にキャストしないと返り値が文字列になってしまうので注意
-            $news = $search_news->paginate((int)$per_page);
-        } else {
-            // 取得件数が未設定の場合はデフォルトの表示件数　１０件
-            $news = $search_news->paginate(10);
-        }
-
-        // 各種フィルター用選択肢を取得
-        $brands = Brand::select('id','brand_name')->get();
-        $gender_categories = Category::select('id', 'category_name')->whereIn('id', [1,2])->get();
-        $tags = Tag::select('id','tag_name')->get();
-
+        // ページネーション
+        $news = $search_news->customPaginate($request);
+        
         // レスポンスを返却
-        return response()->json([
-            'news' => $news,
-            'brands' => $brands,
-            'gender_categories' => $gender_categories,
-            'tags' => $tags,
-        ],200);
+        return (NewsResource::collection($news))->additional([
+            // 各種選択肢をmeta情報としてトップレベルに追加
+            'brands' => $this->brands,
+            'gender_categories' => $this->gender_categories,
+            'tags' => $this->tags
+        ]);
     }
 
     public function create()
-    {
-        // 各種選択肢を取得
-        $brands = Brand::select('id','brand_name')->get();
-        $gender_categories = Category::select('id', 'category_name')->whereIn('id', [1,2])->get();
-        $tags = Tag::select('id','tag_name')->get();
-        
-        // レスポンスを返却
+    {       
+        // 各種選択肢を取得してレスポンスとして返却
         return response()->json([
-            'brands' => $brands,
-            'gender_categories' => $gender_categories,
-            'tags' => $tags,
+            'brands' => $this->brands,
+            'gender_categories' => $this->gender_categories,
+            'tags' => $this->tags
         ],200);
     }
 
@@ -106,10 +92,8 @@ class NewsController extends Controller
         try {
             // 画像ファイルがあるかチェック
             if(!empty($data['file'])) {
-                // ランダムなファイル名を生成してstorage/app/public/img配下に保存
-                $path_as = Storage::putFile('public/img', $data['file']);
-                // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
-                $db_reserve_path = str_replace('public/img/', '/storage/img/', $path_as);
+                // 新しい画像の保存と古い画像の削除
+                $db_reserve_path = saveImage($data['file']);                
             }
             // 基本情報をDBに保存
             $news = News::create([
@@ -135,28 +119,13 @@ class NewsController extends Controller
 
     public function edit(News $news)
     {
-        // 各種選択肢を取得
-        $brands = Brand::select('id','brand_name')->get();
-        $gender_categories = Category::select('id', 'category_name')->whereIn('id', [1,2])->get();
-        $tags = Tag::select('id','tag_name')->get();
-
-        $arr = [
-            'title' => $news->title,
-            'body' => $news->body,
-            'brand_id' => $news->brand_id,
-            'category_id' => $news->category_id,
-            'thumbnail' => $news->thumbnail,
-            'is_published' => $news->is_published,
-            'tags_id' => $news->tags->pluck('id')->toArray() // 別テーブル
-        ];
-        
         // レスポンスを返却
-        return response()->json([
-            'news' => $arr,
-            'brands' => $brands,
-            'gender_categories' => $gender_categories,
-            'tags' => $tags,
-        ],200);
+        return (new NewsResource($news))->additional([
+            // 各種選択肢をmeta情報としてトップレベルに追加
+            'brands' => $this->brands,
+            'gender_categories' => $this->gender_categories,
+            'tags' => $this->tags
+        ]);
     }
 
     public function update(NewsEditRequest $request, News $news)
@@ -168,14 +137,8 @@ class NewsController extends Controller
             $db_reserve_path = null;
             // 画像ファイルがあるかチェック
             if(!empty($data['file'])) {
-                // ランダムなファイル名を生成してstorage/app/public/img配下に保存
-                $path_as = Storage::putFile('public/img', $data['file']);
-                // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
-                $db_reserve_path = str_replace('public/img/', '/storage/img/', $path_as);
-                // 変更時はニュースの古いサムネイル画像を削除する必要があるのでパスを取得して変換
-                $old_img = str_replace('/storage/img/', 'public/img/', $news->thumbnail !== null ? $news->thumbnail : '');
-                // fileの存在をチェックして削除
-                if(Storage::exists($old_img)) Storage::delete($old_img);
+                // 新しい画像の保存と古い画像の削除
+                $db_reserve_path = saveImage($data['file'], $news->thumbnail);
             }
             // 初回登録時に非公開の状態で保存されている場合もあるのでカラム名の出し分け
             $registered_date = $news->posted_at !== null ? 'modified_at': 'posted_at';
@@ -222,42 +185,29 @@ class NewsController extends Controller
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
         // 該当のIDのニュースを取得
-        $news = News::whereIn('id', $id)->select(['news.id', 'title', 'thumbnail', 'is_published', 'posted_at', 'modified_at', 'brand_id', 'admin_id', 'category_id'])->with([
-            'admin:id,first_name,last_name,first_name_kana,last_name_kana',
-            'brand:id,brand_name',
-            'tags:id,tag_name'
-        ])->cursor();
-
-        // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
-        return response()->streamDownload(function () use ($news) {
-            // CSVのヘッダー作成
-            $csv_header = ['No', '公開状況', 'タイトル', 'ブランド', 'カテゴリ', 'タグ', '最終更新者', '投稿日', '更新日'];
-            // SplFileObjectのインスタンスを生成
-            $file = new \SplFileObject('php://output', 'w');
-            // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
-            $file->fwrite(pack('C*',0xEF,0xBB,0xBF));
-            // ヘッダーの読み込み
-            $file->fputcsv($csv_header);
-            // 一行ずつ連想配列から値を取り出して配列に格納
-            $num = 1;
-            foreach ($news as $item){
-
-                $file->fputcsv([
-                    $num,
-                    $item->is_published_text,
-                    $item->title,
-                    $item->brand->brand_name,
-                    $item->gender_category_text,
-                    implode(' / ', $item->tags->pluck('tag_name')->toArray()),
-                    $item->admin->full_name.'('.$item->admin->full_name_kana.')',
-                    $item->posted_at !== null ? $item->posted_at->format('Y-m-d'): '　　',
-                    $item->modified_at !== null ? $item->modified_at->format('Y-m-d'): '　　',
-                ]);
-                $num++;
-            }
-
-        }, 'ニュース情報出力.csv', [
-            'Content-Type' => 'text/csv'
-        ]);
+        $news = News::whereIn('id', $id)->with(['admin','brand','tags'])->cursor();
+        // 配列の初期化
+        $csv_body = [];
+        // CSVに必要な項目を配列に格納
+        $num = 1;
+        foreach ($news as $item){
+            $csv_body[] = [
+                $num,
+                $item->id,
+                $item->is_published_text,
+                $item->title,
+                $item->brand->brand_name,
+                $item->gender_category_text,
+                implode(' / ', $item->tags->pluck('tag_name')->toArray()),
+                $item->admin->full_name.'('.$item->admin->full_name_kana.')',
+                $item->posted_at !== null ? $item->posted_at->format('Y/m/d H:i'): '　　',
+                $item->modified_at !== null ? $item->modified_at->format('Y/m/d H:i'): '　　',
+            ];
+            $num++;
+        }
+        // headerの作成
+        $csv_header = ['No', 'ID', '公開状況', 'タイトル', 'ブランド', 'カテゴリ', 'タグ', '最終更新者', '投稿日', '更新日'];
+        // 独自helper関数呼び出し
+        return csvExport($csv_body,$csv_header,'ニュース情報出力.csv');
     }
 }

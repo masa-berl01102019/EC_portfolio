@@ -2,7 +2,7 @@ import React from 'react';
 
 // Reactのデフォルトではエラー発生時は全てのコンポーネントが強制的にアンマウントされるため画面が真っ白になる
 // Error Boundaryはコンポーネントでエラーが発生した場合にフォールバック(代替表示)を提供する仕組み
-// Error Boundaryはクラスコンポーネントとして実装される　＊現時点ではHooks未対応
+// Error Boundaryはクラスコンポーネントとして実装される ＊現時点ではHooks未対応
 //
 class ErrorBoundary extends React.Component {
     constructor(props) {
