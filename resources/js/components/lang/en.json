@@ -191,6 +191,7 @@
       "price-low-ex" : "Minimum price",
       "price-high-ex" : "Maximum price",
       "table-alert" : "You can't delete all of rows.",
+      "table-alert-img" : "Only one main image can be selected.",
       "alert-msg1" : "Some combinations of color and size you selected at SKU section is duplicated.",
       "alert-msg2" : "Size you selected at measurements section is duplicated.",
       "alert-msg3" : "It doesn't match size at sku section and size at measurement section.",
