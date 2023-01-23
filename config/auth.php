@@ -13,8 +13,9 @@ return [
     |
     */
 
+    // デフォルトの認証
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'user',
         'passwords' => 'users',
     ],
 
@@ -36,9 +37,15 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        // user用の認証を追加
+        'user' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+        // Admin用の認証を追加
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
         ],
 
         'api' => [
@@ -65,16 +72,18 @@ return [
     |
     */
 
+    //  providersでどのモデルを認証に使うべきかなどが設定
     'providers' => [
+        // Modelsディレクトリを作っていれたのでnamespaceを変更
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        // Adminも上記のUsers同様追加
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
     ],
 
     /*
@@ -93,11 +102,33 @@ return [
     */
 
     'passwords' => [
+
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
         ],
+
+        // Adminも上記のUsers同様追加
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_resets',
+            'expire' => 60,
+        ],
+
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the amount of seconds before a password confirmation
+    | times out and the user is prompted to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => 10800,
 
 ];
