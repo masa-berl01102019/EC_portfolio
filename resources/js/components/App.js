@@ -13,6 +13,9 @@ import UserCreate from "./admin/users/UserCreate";
 import AdminIndex from './admin/admins/AdminIndex';
 import AdminEdit from "./admin/admins/AdminEdit";
 import AdminCreate from "./admin/admins/AdminCreate";
+import NotificationIndex from "./admin/notifications/NotificationIndex";
+import NotificationCreate from "./admin/notifications/NotificationCreate";
+import NotificationEdit from "./admin/notifications/NotificationEdit";
 
 function App() {
 
@@ -29,6 +32,9 @@ function App() {
                         <Route path="/admin/admins" exact component={AdminIndex} />
                         <Route path="/admin/admins/create" exact component={AdminCreate} />
                         <Route path="/admin/admins/:id/edit" exact component={AdminEdit} />
+                        <Route path="/admin/notifications" exact component={NotificationIndex} />
+                        <Route path="/admin/notifications/create" exact component={NotificationCreate} />
+                        <Route path="/admin/notifications/:id/edit" exact component={NotificationEdit} />
                     </ParamsProvider>
                 </Switch>
             </Router>

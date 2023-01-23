@@ -7,7 +7,7 @@
         // contacts
         'response_status' => [ 0 => '未対応', 1 => '対応中', 2 => '対応済'],
         // notifications, news, blogs, items
-        'is_published' => [ 0 => '未公開', 1 => '公開中'],
+        'is_published' => [ 0 => '非公開', 1 => '公開中'],
         // images
         'image_category' => [ 0 => 'メイン画像', 1 => 'サムネイル画像'],
         // orders

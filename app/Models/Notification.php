@@ -26,6 +26,15 @@ class Notification extends Model
         'expired_at' => 'date:Y-m-d',
     ];
 
+    /** アクセサ */
+
+    // 配列内に含めたい独自の属性(カラム名)を定義
+    protected $appends = ['ac_is_published'];
+
+    public function getAcIsPublishedAttribute() {
+        return isset($this->is_published) ? config('define.is_published')[$this->is_published]: '';
+    }
+
     /** リレーション */
 
     public function admin() {

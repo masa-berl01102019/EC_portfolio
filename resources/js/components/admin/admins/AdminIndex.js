@@ -21,7 +21,7 @@ function AdminIndex() {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'ADMIN';
     // paginateフックの呼び出し
-    const { handlePageChange, handleTableRow} = usePaginate();
+    const {handlePageChange, handleTableRow} = usePaginate();
     // sortフックの呼び出し
     const {handleSort} = useSort();
     // filterフックの呼び出し
@@ -41,7 +41,7 @@ function AdminIndex() {
             console.log('ADMINにてparamsの初期値をセットしてscopeを変更');
             setParams({
                 ...params,
-                sort: { 'last_name_kana' : '', 'created_at' : '', 'updated_at' : ''},
+                sort: { 'last_name_kana' : '', 'created_at' : '', 'updated_at' : '' },
                 filter: { 'keyword' : '', 'dateRange': {} },
                 // paginate: {
                 //     data: null, // 取得したデータ
@@ -51,7 +51,7 @@ function AdminIndex() {
                 //     page_range_displayed: 5// ページネーションの表示個数
                 // }
             });
-            setScope('ADMIN');
+            setScope(model);
         }
         // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐
         if(data.delete && data.delete === true) {
@@ -83,7 +83,7 @@ function AdminIndex() {
                         dispatch({ type:'CREATE', url:`/api/admin/admins/csv`, form:checklist })
                     }}>CSV出力</button>
 
-                    {   Object.keys(params.filter).length > 0 &&
+                    {   Object.keys(params.filter).length > 0 && scope === model &&
 
                         <div style={{'marginTop': '10px'}}>
                             <p style={{'marginBottom': '8px', 'fontWeight': 'bold'}}>フィルター機能</p>
@@ -104,7 +104,7 @@ function AdminIndex() {
                         </div>
                     }
 
-                    {  Object.keys(params.sort).length > 0 &&
+                    {  Object.keys(params.sort).length > 0 && scope === model &&
 
                         <div style={{'marginTop': '10px'}}>
                             <p style={{'marginBottom': '5px', 'fontWeight': 'bold'}}>ソート機能</p>
