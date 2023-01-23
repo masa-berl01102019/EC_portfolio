@@ -12,8 +12,9 @@ import styles from '../styles.module.css';
 import TopItemCard from '../../../molecules/Card/TopItemCard';
 import { useTranslation } from 'react-i18next';
 
-// TODO: Create breadcrumbs list
-// TODO: Create button which return index page
+// TODO: Create breadcrumb lists
+// TODO: Add related tag lists
+// TODO: Add browser history lists
 
 function BlogShowPage(props) {
 

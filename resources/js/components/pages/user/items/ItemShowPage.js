@@ -21,8 +21,10 @@ import CartModal from '../../../organisms/user/modal/CartModal';
 import BookmarkModal from '../../../organisms/user/modal/BookmarkModal';
 import { useTranslation } from 'react-i18next';
 
-// TODO: Create breadcrumbs list
-// TODO: Modify related tag lists design and create link in order to show items which has the same tag
+// TODO: Create breadcrumb lists
+// TODO: Modify related tag lists design and add link
+// TODO: Create carousel UI to show item image.
+
 
 function ItemShowPage(props) {
 

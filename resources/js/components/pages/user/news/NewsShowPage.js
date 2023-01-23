@@ -10,8 +10,9 @@ import Heading from '../../../atoms/Heading/Heading';
 import Image from '../../../atoms/Image/Image';
 import styles from '../styles.module.css';
 
-// TODO: Create breadcrumbs list
-// TODO: Create button which return index page
+// TODO: Create breadcrumb lists
+// TODO: Add related tag lists
+// TODO: Add browser history lists
 
 function NewsShowPage(props) {
 

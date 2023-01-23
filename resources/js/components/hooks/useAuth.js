@@ -2,7 +2,6 @@ import {useQuery, useMutation, useQueryClient} from 'react-query';
 import axios from "axios";
 import useSetErrorMsg from "./useSetErrorMsg";
 
-// TODO: Modify initialCSRF func
 
 const useAuth = (url, auth) => {
     // Get lang which has been used in browser from localStorage or assign default lang
@@ -13,18 +12,17 @@ const useAuth = (url, auth) => {
     // * It can refetch data / get cache / update cache etc to designate key
     const queryClient = useQueryClient();
     // Function to initialize CSRF
-    const initialCSRF = () => axios({ method: 'get', url: '/sanctum/csrf-cookie' }).then(res => console.log('Initialized CSRF successfully', res.data)).catch(err => console.log('Failed to initialize CSRF', err));
+    const initialCSRF = (func) => axios({ method: 'get', url: '/sanctum/csrf-cookie' }).then(res => func());
 
     // Login check
     const {data : {data}} = useQuery(
         [auth, url],
         async () => {
             setErrorMessage(null);
-            await initialCSRF();
-            return await axios({ method: 'get', url: url, headers: locale });
+            return await initialCSRF(() => axios({ method: 'get', url: url, headers: locale }));
         },
         { 
-            onSuccess: (res) => console.log('success', res.data),
+            // onSuccess: (res) => console.log('success', res.data),
             onError: (err) =>  handleApiErrorMessage(err)
         }
     );
@@ -32,9 +30,8 @@ const useAuth = (url, auth) => {
     const {mutate: handleLogin} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
             // console.log('Login', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
@@ -51,9 +48,8 @@ const useAuth = (url, auth) => {
     const {mutate: handleLogout} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
             // console.log('Logout', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
@@ -69,9 +65,8 @@ const useAuth = (url, auth) => {
     const {mutate: handleResetPasswordEmail} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
             // console.log('send ResetPasswordEmail', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
@@ -87,9 +82,8 @@ const useAuth = (url, auth) => {
     const {mutate: handleChangePassword} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
             // console.log('change Password', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
