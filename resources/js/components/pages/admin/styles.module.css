@@ -64,9 +64,15 @@
   overflow-y: scroll;
   height: 126px;
 }
-.edit_area {
+.news_edit_area {
   border: 1px solid #666;
   height: 95.5%;
+  max-height: 621px;
+}
+.blog_edit_area {
+  border: 1px solid #666;
+  height: 95.5%;
+  max-height: 827px;
 }
 .blog_area {
   margin-right: 16px;
@@ -346,6 +352,12 @@
   }
   .sidebar_box > .sidebar_card {
     width: 48%;
+  }
+  .news_edit_area {
+    max-height: none;
+  }
+  .blog_edit_area {
+    max-height: none;
   }
 }
 

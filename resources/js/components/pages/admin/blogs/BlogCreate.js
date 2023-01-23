@@ -92,7 +92,7 @@ function BlogCreate() {
                                     />
                                     <div className={styles.flex_1}>
                                         <Text className={styles.mb_8}>{t('admin.blog.body')}</Text>
-                                        <div className={styles.edit_area}>
+                                        <div className={styles.blog_edit_area}>
                                             <Editor
                                                 editorState={editorState}
                                                 toolbarClassName="toolbarClassName"

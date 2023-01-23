@@ -91,7 +91,7 @@ function NewsCreate() {
                                     />
                                     <div className={styles.flex_1}>
                                         <Text className={styles.mb_8}>{t('admin.news.body')}</Text>
-                                        <div className={styles.edit_area}>
+                                        <div className={styles.news_edit_area}>
                                             <Editor
                                                 editorState={editorState}
                                                 toolbarClassName="toolbarClassName"
