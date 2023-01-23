@@ -1,9 +1,10 @@
 <?php
 namespace Database\Factories;
 
-use App\Models\Admin;
 use App\Models\Item;
+use App\Models\Admin;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ItemFactory extends Factory
@@ -12,19 +13,18 @@ class ItemFactory extends Factory
 
     public function definition()
     {
-        // Yahoo商品検索API パラメータ
-        $appid = config('services.yahoo.app_id'); // APIキー　＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
+        // Yahoo商品検索API パラメータ https://developer.yahoo.co.jp/webapi/shopping/shopping/v3/itemsearch.html
+        $appid = config('services.yahoo.app_id'); // APIキー ＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
         $results = 1; // 取得件数
-        $start = rand(0, 998); // 取得開始位置
+        $start = $this->faker->unique()->numberBetween(1, 900); // 取得開始位置
         $genre_category_id = '37019,37052,36861,36913,36887,36903,36571,36583,36504,36624,48271'; // カテゴリを絞ってシューズ・アクセサリ・バッグ等の余計なデータが入らない様にする
-        $query = '';
         $seller_id = 'zozo'; // ストアID
         $brand_id = '2049,33911,9930'; // ブランドID * UNITED ARROWS: 2049, UNITED TOKYO: 33911, nano・universe: 9930
 
-        // urlの生成　＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
-        $url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid='.$appid.'&results='.$results.'&query='.$query.'&seller_id='.$seller_id.'&brand_id='.$brand_id.'&genre_category_id='.$genre_category_id.'&start='.$start;
+        // urlの生成 ＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
+        $url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid='.$appid.'&results='.$results.'&seller_id='.$seller_id.'&brand_id='.$brand_id.'&genre_category_id='.$genre_category_id.'&start='.$start;
 
-        // Clientクラスを初期化
+        // Clientクラスを初期化  
         $client = new Client();
 
         // 引数（メソッド、url）でリクエストする。
@@ -66,11 +66,8 @@ class ItemFactory extends Factory
             ];
         }
 
-        // 管理者IDをすべて配列で取得
-        $admins_id = Admin::pluck('id')->all();
-
-        // ランダムで管理者IDを一つ取り出し
-        $admin_id = $this->faker->randomElement($admins_id);
+        // ランダムに管理者インスタンスを取得
+        $admin = Admin::inRandomOrder()->first();
 
         // APIのデータに合わせてブランドIDを格納
         if($items[0]['brand_name'] === 'UNITED ARROWS') {
@@ -81,8 +78,8 @@ class ItemFactory extends Factory
             $brand_id = 3;
         }
 
-        // 公開状況
-        $is_published = $this->faker->numberBetween($min = 0, $max = 1); // 0: 未公開　1: 公開
+        // 公開状況 80%の確率で公開
+        $is_published = $this->faker->optional($weight = 0.2, $default = 1)->numberBetween($min = 0, $max = 1); // 0: 未公開 1: 公開 
 
         // 公開日
         $posted_at = $this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now', $timezone = null);
@@ -92,7 +89,7 @@ class ItemFactory extends Factory
 
         return [
             'brand_id' => $brand_id,
-            'admin_id' => $admin_id,
+            'admin_id' => $admin->id,
             'item_name' => $items[0]['item_name'],
             'product_number' => $items[0]['product_number'],
             'price' => $items[0]['price'],
@@ -104,5 +101,5 @@ class ItemFactory extends Factory
             'posted_at' => $is_published === 1? $posted_at: null,
             'modified_at' => $is_published === 1? $modified_at: null,
         ];
-    }
+     }
 }

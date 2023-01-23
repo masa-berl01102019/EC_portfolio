@@ -6,6 +6,7 @@ use App\Traits\AccessorNameTrait;
 use App\Traits\FilterTagScopeTrait;
 use App\Traits\AccessorPublishTrait;
 use App\Traits\FilterBrandScopeTrait;
+use App\Traits\GetPublishedScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
@@ -33,6 +34,7 @@ class Blog extends Model
     use FilterTagScopeTrait;
     use FilterBrandScopeTrait;
     use FilterGenderCategoryScopeTrait;
+    use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
     // timestamp無効にしないとデータ挿入時にエラーになる

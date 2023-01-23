@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
-trait FilterBrandScopeTrait
+trait FilterColorScopeTrait
 {
-    public function scopeFilterBrand($query, $request, $table_name = 'brand', $column_name = 'id') {
+    public function scopeFilterColor($query, $request, $table_name = 'skus.color', $column_name = 'id') {
 
-        $filter = $request->input('f_brand');
+        $filter = $request->input('f_color');
 
         $flag = $filter !== null ? true : false;
         

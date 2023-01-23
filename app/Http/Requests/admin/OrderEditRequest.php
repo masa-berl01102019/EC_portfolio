@@ -25,7 +25,9 @@ class OrderEditRequest extends FormRequest
     {
         return [
             'is_paid' => 'required|integer|min:0|max:1',
-            'is_shipped' => 'required|integer|min:0|max:1'
+            'is_shipped' => 'required|integer|min:0|max:1',
+            'delivery_date' => 'required|date',
+            'delivery_time' => 'required|string|max:30' 
         ];
     }
 
@@ -33,7 +35,9 @@ class OrderEditRequest extends FormRequest
     {
         return [
             'is_paid' => '入金状況',
-            'is_shipped' => '出荷状況'
+            'is_shipped' => '出荷状況',
+            'delivery_date' => '希望配達日', 
+            'delivery_time' => '希望配達時間帯'
         ];
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
-trait FilterBrandScopeTrait
+trait FilterSizeScopeTrait
 {
-    public function scopeFilterBrand($query, $request, $table_name = 'brand', $column_name = 'id') {
+    public function scopeFilterSize($query, $request, $table_name = 'skus.size', $column_name = 'id') {
 
-        $filter = $request->input('f_brand');
+        $filter = $request->input('f_size');
 
         $flag = $filter !== null ? true : false;
         

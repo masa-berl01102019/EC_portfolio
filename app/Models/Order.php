@@ -89,6 +89,13 @@ class Order extends Model
         });
     }
 
+    public function scopeOrderByDeliveryDate($query, $request) {
+        $sort = $request->input('delivery_date');
+        $query->when($sort, function($query, $sort) {
+            return $query->orderBy('delivery_date', $sort);
+        });
+    }
+
     /** リレーション */
 
     public function user() {

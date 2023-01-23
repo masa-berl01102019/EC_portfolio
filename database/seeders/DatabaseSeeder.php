@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
              ContactsTableSeeder::class,
              NewsTableSeeder::class,
              BlogsTableSeeder::class,
+             TaxSeeder::class,
+             BlogTagTableSeeder::class,
+             NewsTagTableSeeder::class,
              ItemsTableSeeder::class,
              ColorsTableSeeder::class,
              SizesTableSeeder::class,
@@ -33,9 +36,7 @@ class DatabaseSeeder extends Seeder
              OrdersTableSeeder::class,
              ItemTagTableSeeder::class,
              CategoryItemTableSeeder::class,
-             BlogTagTableSeeder::class,
-             BlogItemTableSeeder::class,
-             NewsTagTableSeeder::class
+             BlogItemTableSeeder::class
          ]);
     }
 }

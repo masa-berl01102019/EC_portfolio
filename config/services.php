@@ -33,5 +33,10 @@ return [
     'yahoo' => [
         'app_id' => env('YAHOO_APP_ID'),
     ],
+    // stripe決済用
+    'stripe' => [
+        'public_key' => env('STRIPE_KEY'),
+        'secret_key' => env('STRIPE_SECRET'),
+    ],
 
 ];

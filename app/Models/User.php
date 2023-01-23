@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Laravel\Cashier\Billable;
 use App\Traits\AccessorNameTrait;
 use App\Traits\TimestampCastTrait;
 use App\Traits\OrderByNameScopeTrait;
@@ -29,6 +30,7 @@ class User extends Authenticatable
     use FilterDateRangeScopeTrait;
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;
+    use Billable; // leravel stripe 用
 
     /** シリアライズ */
 
@@ -106,6 +108,29 @@ class User extends Authenticatable
         $query->when($sort, function($query, $sort) {
             return $query->orderBy('birthday', $sort);
         });
+    }
+
+    /** static method */
+
+    public static function getUserOrderedItemId () {
+        // 購入履歴のあるユーザーと購入商品IDを取得
+        $users = Self::select(['users.id', 'items.id as order_item_id'])
+            ->join('orders', 'users.id', '=', 'orders.user_id')
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->join('skus', 'skus.id', '=', 'order_details.sku_id')
+            ->join('items', function ($join) {
+                $join->on('items.id', '=', 'skus.item_id')
+                        ->where('is_published', config('define.is_published_r.open'))->where('items.deleted_at', null);
+            })
+            ->groupBy('users.id', 'order_item_id')
+            ->get()->toArray();
+        // 配列の初期化
+        $order_recodes = [];
+        // ユーザーID単位で注文した商品IDを配列に格納
+        foreach($users as $value) {
+            $order_recodes[$value['id']][] = $value['order_item_id'];
+        }
+        return $order_recodes;
     }
 
     /** リレーション */

@@ -40,4 +40,8 @@ class Sku extends Model
     public function carts() {
         return $this->hasMany('App\Models\Cart');
     }
+
+    public function orderDetails() {
+        return $this->hasMany('App\Models\OrderDetail');
+    }
 }

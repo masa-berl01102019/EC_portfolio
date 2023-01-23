@@ -11,7 +11,7 @@ use App\Http\Requests\admin\OrderEditRequest;
 class OrderController extends Controller
 {
     // 該当のカラム以外を扱わないようにホワイトリスト作成
-    private $form_items = [ 'is_paid', 'is_shipped' ];
+    private $form_items = [ 'is_paid', 'is_shipped', 'delivery_date', 'delivery_time' ];
 
     public function __construct()
     {
@@ -21,7 +21,7 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $search_order = Order::where('payment_status', config('define.payment_status')[0])->with('user');
+        $search_order = Order::where('payment_status', config('define.payment_status_r.success'))->with('user');
 
         // 検索期間の指定フィルター
         $search_order->filterDateRange($request);
@@ -32,10 +32,12 @@ class OrderController extends Controller
         // 配送ステータスの指定フィルター
         $search_order->filterIsShipped($request);
 
-        // 合計金額->作成日順->更新日順の優先順位でソートされる仕組み
+        // 合計金額->配達希望日->作成日順->更新日順の優先順位でソートされる仕組み
 
         // 合計金額でソート
         $search_order->orderByTotalAmount($request);
+        // 配達希望日でソート
+        $search_order->orderByDeliveryDate($request);
         // 作成日でソート
         $search_order->orderByCreatedAt($request);
         // 更新日でソート
@@ -50,7 +52,7 @@ class OrderController extends Controller
 
     public function edit($order)
     {
-        $order = Order::where('payment_status', config('define.payment_status')[0])->where('id', $order)->with('orderDetails')->first();
+        $order = Order::where('id', $order)->where('payment_status', config('define.payment_status_r.success'))->with('orderDetails')->first();
 
         // レスポンスを返却
         return new OrderResource($order);
@@ -64,6 +66,8 @@ class OrderController extends Controller
         $order->fill([
             'is_paid' => $data['is_paid'],
             'is_shipped' => $data['is_shipped'],
+            'delivery_date' => $data['delivery_date'],
+            'delivery_time' => $data['delivery_time']
         ])->save();
 
         return response()->json(['update' => true, 'message' => '注文の編集を完了しました'], 200);
@@ -87,7 +91,7 @@ class OrderController extends Controller
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
         // 該当のIDのオーダーを取得
-        $items = Order::where('payment_status', config('define.payment_status')[0])->whereIn('id', $id)->with('user')->cursor();
+        $items = Order::where('payment_status', config('define.payment_status_r.success'))->whereIn('id', $id)->with('user')->cursor();
         // 配列の初期化
         $csv_body = [];
         // CSVに必要な項目を配列に格納
@@ -99,6 +103,8 @@ class OrderController extends Controller
                 $item->created_at,
                 $item->total_amount_text,
                 $item->payment_method_text,
+                $item->delivery_date,
+                $item->delivery_time,
                 $item->is_paid_text,
                 $item->is_shipped_text,
                 $item->user->full_name.'('.$item->user->full_name_kana.')',
@@ -111,7 +117,7 @@ class OrderController extends Controller
             $num++;
         }
         // headerの作成
-        $csv_header = ['No', 'ID', '購入日', '購入金額', '支払方法', '入金状況', '出荷状況', '購入者(カナ)', '連絡先', 'メールアドレス', '配送先 郵便番号', '配送先 住所', 'ステータス更新日'];
+        $csv_header = ['No', 'ID', '購入日', '購入金額', '支払方法', '希望配達日', '希望配達時間帯', '入金状況', '出荷状況', '購入者(カナ)', '連絡先', 'メールアドレス', '配送先 郵便番号', '配送先 住所', 'ステータス更新日'];
         // 独自helper関数呼び出し
         return csvExport($csv_body,$csv_header,'注文情報出力.csv');
    }
