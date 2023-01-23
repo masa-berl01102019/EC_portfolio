@@ -1,12 +1,13 @@
 <?php
+namespace Database\Seeders;
 
-use App\Models\Color;
 use App\Models\Item;
+use App\Models\Size;
 use GuzzleHttp\Client;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ColorsTableSeeder extends Seeder
+class MeasurementsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,7 +18,7 @@ class ColorsTableSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
 
-        DB::table('colors')->truncate(); // テーブルごと削除して再構築
+        DB::table('measurements')->truncate(); // テーブルごと削除して再構築
 
         // Yahoo商品検索API パラメータ
         $appid = config('services.yahoo.app_id'); // APIキー　＊config:cacheコマンドで.envが読み込まれなくなってしまうのでconfigヘルパ関数で呼び出す
@@ -29,16 +30,13 @@ class ColorsTableSeeder extends Seeder
         // 商品を全件取得
         $items = Item::all();
 
-        // 配列の初期化
-        $colors = [];
-
         // for文で展開
         for($i = 0; $i < count($items); $i++) {
 
             // ブランド品番(product_number)をクエリにしこむ
             $query = $items[$i]->product_number;
 
-            // urlの生成　＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
+            // urlの生成 ＊ yahooのAPIはパラメータをエンコードしてリクエスト投げるとエラーになるので要注意
             $url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid='.$appid.'&results='.$results.'&query='.$query.'&seller_id='.$seller_id.'&brand_id='.$brand_id.'&genre_category_id='.$genre_category_id;
 
             // Clientクラスを初期化
@@ -54,30 +52,40 @@ class ColorsTableSeeder extends Seeder
             $item_detail = explode('<br>', $response_data['hits'][0]['description']);
 
             // preg_grep()で配列内の文字列を部分一致検索してマッチした配列を抽出
-            $color_array = preg_grep("/^カラー:/", $item_detail);
+            $size_array = preg_grep("/^サイズ:/", $item_detail);
 
             // preg_grep()で取り出された配列は元の配列のインデックスが保持された状態で帰ってくるので,array_shift()で配列の最初の要素を文字列として取り出し、substr()で「カラー:」以降を切り出す
-            $color = mb_substr(array_shift($color_array), 4);
+            $size = mb_substr(array_shift($size_array), 4);
 
-            // mb_convert_kana() で全角を半角に変換し、str_replace()でスペースを削除
-            $color = str_replace([' ','　'], '', mb_convert_kana($color, 'a', 'UTF-8'));
+            // mb_convert_kana() で全角を半角に変換し、str_replace()でスペースを削除してカンマ区切りで配列に変換
+            $size = explode(',', str_replace([' ','　'], '', mb_convert_kana($size, 'a', 'UTF-8')));
 
-            // 複数のカラーの文字列をカンマ区切りでexplode()で配列化して$colorsにマージする
-            $colors = array_merge($colors, explode(',',$color));
+            for($n = 0; $n < count($size); $n++) {
+                // sizeモデルに登録されているものと一致するものをインスタンスで取得
+                $size_instance = Size::select('id')->where('size_name', $size[$n])->first();
 
-        }
-
-        // 配列内の重複を削除
-        $colors = array_unique($colors);
-
-        // array_unique()で展開した配列はインデックスは元の配列を受け継ぐのでforeachで展開
-        foreach($colors as $value) {
-            // データの挿入
-            DB::table('colors')->insert([
-                'color_name' => $value,
-                'created_at' => '2010-04-01 00:00:00',
-                'updated_at' => '2010-04-01 00:00:00',
-            ]);
+                // データの挿入
+                DB::table('measurements')->insert([
+                    'item_id' => $items[$i]->id,
+                    'size_id' => $size_instance->id,
+                    'width' => rand(0, 100),
+                    'shoulder_width' => rand(0, 100),
+                    'raglan_sleeve_length' => rand(0, 100),
+                    'sleeve_length' => rand(0, 100),
+                    'length' => rand(0, 100),
+                    'waist' => rand(0, 100),
+                    'hip' => rand(0, 100),
+                    'rise' => rand(0, 100),
+                    'inseam' => rand(0, 100),
+                    'thigh_width' => rand(0, 100),
+                    'outseam' => rand(0, 100),
+                    'sk_length' => rand(0, 100),
+                    'hem_width' => rand(0, 100),
+                    'weight' => rand(0, 100),
+                    'created_at' => !is_null($items[$i]->posted_at)? $items[$i]->posted_at: '2010-04-01 00:00:00',
+                    'updated_at' => !is_null($items[$i]->modified_at)? $items[$i]->modified_at: '2010-04-01 00:00:00',
+                ]);
+            }
         }
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化

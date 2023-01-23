@@ -59,6 +59,12 @@ function AdminHeader(props) {
                     <Link to="/admin/notifications/create">
                         <li>お知らせ新規登録</li>
                     </Link>
+                    <Link to="/admin/items">
+                        <li>商品一覧</li>
+                    </Link>
+                    <Link to="/admin/items/create">
+                        <li>商品新規登録</li>
+                    </Link>
                     <Link to="/admin/contacts">
                         <li>お問い合わせ一覧</li>
                     </Link>

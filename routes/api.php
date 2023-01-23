@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -53,6 +56,17 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::delete('/contacts/delete', 'ContactController@destroy')->name('contacts.destroy'); // 一括削除
         Route::post('/contacts/csv', 'ContactController@csvExport')->name('contacts.csvExport'); // 一括CSV出力
 
+        // アイテム情報のCRUD
+        Route::get('/items', 'ItemController@index')->name('items.index');
+        Route::get('/items/create', 'ItemController@create')->name('items.create');
+        Route::post('/items', 'ItemController@store')->name('items.store');
+        Route::get('/items/{item}/edit', 'ItemController@edit')->name('items.edit');
+        Route::post('/items/{item}', 'ItemController@update')->name('items.update')->where('item', '[0-9]+');; // ファイルはPOSTでしか受け取れない
+        Route::delete('/items/delete', 'ItemController@destroy')->name('items.destroy'); // 一括削除
+        Route::delete('/items/delete/measurements', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
+        Route::delete('/items/delete/skus', 'ItemController@destroySku')->name('items.destroySku');
+        Route::delete('/items/delete/images', 'ItemController@destroyImage')->name('items.destroyImage');
+        Route::post('/items/csv', 'ItemController@csvExport')->name('items.csvExport'); // 一括CSV出力
     });
 
 });

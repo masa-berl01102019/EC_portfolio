@@ -12,9 +12,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contact extends Model
 {
+    use HasFactory; // laravel8 factory関数使用する為
     use SoftDeletes; //　論理削除
     use NameAccessorTrait;
     use OrderByNameScopeTrait;

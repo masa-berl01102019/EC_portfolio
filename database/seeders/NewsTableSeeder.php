@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use App\Models\News;
 use Illuminate\Database\Seeder;
@@ -17,7 +18,7 @@ class NewsTableSeeder extends Seeder
 
         DB::table('news')->truncate(); // テーブルごと削除して再構築
 
-        factory(News::class, 50)->create();
+        News::factory(50)->create();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }

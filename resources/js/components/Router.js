@@ -28,6 +28,9 @@ const NotificationCreate = lazy(() => import( "./pages/admin/notifications/Notif
 const NotificationEdit = lazy(() => import( "./pages/admin/notifications/NotificationEdit" ));
 const ContactIndex = lazy(() => import( "./pages/admin/contacts/ContactIndex" ));
 const ContactEdit = lazy(() => import( "./pages/admin/contacts/ContactEdit" ));
+const ItemIndex = lazy(() => import( "./pages/admin/items/ItemIndex" ));
+const ItemCreate = lazy(() => import( "./pages/admin/items/ItemCreate" ));
+const ItemEdit = lazy(() => import( "./pages/admin/items/ItemEdit" ));
 // エラーページ用　コンポーネント
 const NotFound = lazy(() => import( "./pages/error/NotFound" ));
 
@@ -94,6 +97,9 @@ function Router() {
                             <AdminPrivateRoute path="/admin/notifications/:id/edit" exact component={NotificationEdit} />
                             <AdminPrivateRoute path="/admin/contacts" exact component={ContactIndex} />
                             <AdminPrivateRoute path="/admin/contacts/:id/edit" exact component={ContactEdit} />
+                            <AdminPrivateRoute path="/admin/items" exact component={ItemIndex} />
+                            <AdminPrivateRoute path="/admin/items/create" exact component={ItemCreate} />
+                            <AdminPrivateRoute path="/admin/items/:id/edit" exact component={ItemEdit} />
                             {/* NOT FOUND PAGE */}
                             <Route component={NotFound} />
                         </Switch>

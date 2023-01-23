@@ -23,7 +23,7 @@ class Image extends Model
     }
 
     public function colors() {
-        return $this->belongsToMany('App\Models\Color');
+        return $this->belongsTo('App\Models\Color');
     }
 
 }

@@ -402,3 +402,95 @@ h1 {
 .filter > div > span{
     margin-right: 16px;
 }
+
+.tabs > label {
+    padding: 8px 16px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.tab_area {
+    margin-top: 7px;
+    padding: 10px 20px;
+    border: 1px solid #666;
+    border-top-color: #49A3D8;
+    display: none;
+}
+
+#basic_tab:checked ~ .basic_form,
+#category_tab:checked ~ .category_form,
+#tag_tab:checked ~ .tag_form,
+#image_tab:checked ~ .image_form,
+#size_tab:checked ~ .size_form,
+#sku_tab:checked ~ .sku_form
+{
+    display: block;
+}
+
+#basic_tab:checked ~ .basic_tab,
+#category_tab:checked ~ .category_tab,
+#tag_tab:checked ~ .tag_tab,
+#image_tab:checked ~ .image_tab,
+#size_tab:checked ~ .size_tab,
+#sku_tab:checked ~ .sku_tab
+{
+    background: #49A3D8;
+    color: #fff;
+}
+
+.insert_image {
+    position: relative;
+    width:100px;
+    height: 100px;
+    display: block;
+}
+.insert_image:hover::after {
+    content: '画像を変更';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    color: #fff;
+    display: block;
+    background: #0000005e;
+    line-height: 100px;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

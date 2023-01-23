@@ -1,10 +1,11 @@
 <?php
+namespace Database\Seeders;
 
-use App\Models\OrderDetail;
+use App\Models\Notification;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class OrderDetailsTableSeeder extends Seeder
+class NotificationsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +16,9 @@ class OrderDetailsTableSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
 
-        DB::table('order_details')->truncate(); // テーブルごと削除して再構築
+        DB::table('notifications')->truncate(); // テーブルごと削除して再構築
 
-//        factory(OrderDetail::class, 3000)->create();
+        Notification::factory(50)->create();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }
