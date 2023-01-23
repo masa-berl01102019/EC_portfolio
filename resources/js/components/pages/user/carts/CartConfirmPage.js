@@ -111,6 +111,7 @@ function CartConfirmPage() {
                             <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{t('user.cart.payment-method')}</Text>
                         </legend>
                         <CardElement options={{ hidePostalCode: true }} />
+                        <Text role='error' className={styles.mt_8} style={{'lineHeight' : '1.5'}}>TEST CARD NUMBER: 4242 4242 4242 4242</Text>
                         <Text className={styles.mt_8} style={{'lineHeight' : '1.5'}}>{t('user.cart.confirm.caution')}</Text>
                     </fieldset>
                     <div className={styles.cart_btn_area}>

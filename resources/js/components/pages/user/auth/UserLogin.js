@@ -18,7 +18,7 @@ function UserLogin() {
 
     const setIsUserLogin = useSetRecoilState(authUserState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'kazuya.sasaki@example.com', 
+        'email': 'user@test.com', 
         'password': 'abc12345', 
     });
     const {valid, setValid, validation} = useValidation(formData, 'user', 'login_request');

@@ -18,7 +18,7 @@ function AdminLogin() {
 
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'yoko.hirokawa@example.net', 
+        'email': 'admin@test.com', 
         'password': 'abc12345', 
     });
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'login_request');
