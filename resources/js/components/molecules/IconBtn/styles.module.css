@@ -1,0 +1,13 @@
+.icon_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sort_icon {
+  margin-right: 4px;
+}
+
+.disabled {
+  opacity: 0.3;
+}

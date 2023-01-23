@@ -3,17 +3,11 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Cart;
-use App\Models\Size;
-use App\Models\Brand;
-use App\Models\Color;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
-use App\Http\Resources\SizeResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\BrandResource;
-use App\Http\Resources\ColorResource;
 use App\Http\Requests\user\CartEditRequest;
 use App\Http\Requests\user\CartRegisterRequest;
 
@@ -42,33 +36,12 @@ class CartController extends Controller
         // * Resouce内でjoinしてないリレーションを呼び出す為にはきちんとselectでリレーション通りに外部キーを渡す必要がある
         // * Bookmark ModelでAccessorPriceTraitを読み込んでるので、上記のselectで該当の元カラム(price)を指定しておけばResouce内で$this->price_textで呼び出せる
 
-        // フリーワード検索
-        $search_cart->filterKeyword($request, ['item_name']);
-        // ブランドのフィルター
-        $search_cart->filterBrand($request, 'sku.item', 'brand_id');
-        // カラーのフィルター
-        $search_cart->filterColor($request, 'sku', 'color_id');
-        // サイズのフィルター
-        $search_cart->filterSize($request, 'sku', 'size_id');
-
-        // 商品名順->価格順->更新日順の優先順位でソートされる仕組み
-
-        // 商品名順でソート
-        $search_cart->orderByItemName($request);
-        // 価格順でソート
-        $search_cart->orderByPrice($request);
-        // 更新日でソート
-        $search_cart->orderByUpdatedAt($request);
-
         // ページネーション
         $carts = $search_cart->get();
         
         // レスポンスを返却
         return (CartResource::collection($carts))->additional([
             // 各種選択肢をmeta情報としてトップレベルに追加
-            'brands' => BrandResource::collection(Brand::orderBy('brand_name', 'asc')->get()),
-            'sizes' => SizeResource::collection(Size::orderBy('size_name', 'desc')->get()),
-            'colors' => ColorResource::collection(Color::orderBy('color_name', 'asc')->get()),
             'user' => new UserResource(Auth::guard('user')->user())
         ]);
     }

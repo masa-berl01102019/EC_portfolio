@@ -1,15 +1,28 @@
-import React, {useEffect} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import useFetchApiData from "../../../hooks/useFetchApiData";
+import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import { useCookies } from 'react-cookie';
+import Text from '../../../atoms/Text/Text';
+import Heading from '../../../atoms/Heading/Heading';
+import Image from '../../../atoms/Image/Image';
+import InfoCard from '../../../molecules/Card/InfoCard';
+import TopItemCard from '../../../molecules/Card/TopItemCard';
+import RadioBoxTab from '../../../atoms/RadioboxTab/RadioBoxTab';
+import MeasurementTable from '../../../organisms/user/Table/MeasurementTable';
+import BookmarkBtn from '../../../molecules/IconBtn/BookmarkBtn';
+import CartBtn from '../../../molecules/IconBtn/CartBtn';
+import styles from '../styles.module.css';
+import BookmarkPopup from '../../../molecules/Popup/BookmarkPopup';
+import CartPopup from '../../../molecules/Popup/CartPopup';
 
 function ItemShowPage(props) {
-
-    // urlの設定 * propsで渡ってきたIDを初期URLにセット
+    // urlの設定
     const baseUrl = `/api/user/items/${props.match.params.id}`;
+    // paramsの適用範囲を決めるscope名を定義
+    const model = 'ITEM';
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
+    const {data, errorMessage, createData} = useFetchApiData2(baseUrl, model);
     // cookieを管理
     const [cookies, setCookie] = useCookies();
     // API接続の返却値を変数に格納
@@ -17,10 +30,25 @@ function ItemShowPage(props) {
     const sizes = data.sizes? data.sizes: null;
     const related_items = data.related_items? data.related_items: null;
 
+    const [tab, setTab] = useState('1');
+    const [popup, setPopup] = useState('');
+ 
+
     useEffect(() => {
         if(item) {
             if(cookies.item_info) {
-                const cookie_info = {
+                // cookieからIDの配列を取得
+                const cookie_id_arr = cookies.item_info;
+                // cookieに保存されてる商品IDと渡ってきたIDが一致しなければ
+                if(!cookie_id_arr.includes(item.id)) {
+                    // 配列の先頭に追加
+                    cookies.item_info.unshift(item.id);
+                    // cookieに保存
+                    setCookie('item_info', JSON.stringify(cookies.item_info), { maxAge : 60 * 60 * 24 } );
+                }
+
+                // オブジェクトの生成
+                const storage_info = {
                     'id' : item.id,
                     'brand_name' : item.brand_name,
                     'item_name' : item.item_name,
@@ -28,14 +56,23 @@ function ItemShowPage(props) {
                     'top_image' : item.top_image,
                     'url' : window.location.href,
                 };
-                const id_arr = cookies.item_info.map(list => list.id);
-                if(!id_arr.includes(cookie_info.id)) {
-                    cookies.item_info.push(cookie_info);
-                    setCookie('item_info', JSON.stringify(cookies.item_info) );
+                // decodeして変数に格納 * cookieが消えてもlocalStrageは残り続けてしまうので更新時にcookieと同期
+                const storage_arr = JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookie_id_arr.includes(list.id));
+                // IDを配列で取得));
+                const storage_id_arr = storage_arr.map(list => list.id);
+                // localStorageに保存されてる商品IDと渡ってきたIDが一致しなければ
+                if(!storage_id_arr.includes(item.id)) {
+                    // 配列の先頭に追加
+                    storage_arr.unshift(storage_info);
+                    // local storageに保存
+                    localStorage.setItem('viewed_items', JSON.stringify(storage_arr));
                 }
             } else {
-                const item_arr = [];
-                const cookie_info = {
+                // 配列の初期化
+                const cookie_arr = [];
+                const storage_arr = [];
+                // local storageに保存
+                const storage_info = {
                     'id' : item.id,
                     'brand_name' : item.brand_name,
                     'item_name' : item.item_name,
@@ -43,218 +80,197 @@ function ItemShowPage(props) {
                     'top_image' : item.top_image,
                     'url' : window.location.href,
                 };
-                item_arr.push(cookie_info);
-                setCookie('item_info', JSON.stringify(item_arr) );
+                storage_arr.push(storage_info);
+                localStorage.setItem('viewed_items', JSON.stringify(storage_arr));
+                // 商品IDのみcookieに追加して保存
+                cookie_arr.push(item.id);
+                setCookie('item_info', JSON.stringify(cookie_arr), { maxAge : 60 * 60 * 24 } );
             }
         }
-        // 削除や更新後に再読み込み
-        if(data.create && data.create === true) {
-            // ページネーションの設定を保持して再度読み込み
-            dispatch({ type: 'READ', url: baseUrl });
-        }
-    },[data]);
+    },[baseUrl]);
 
-    // 描画のみを担当
+    
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <>
-            {   item && 
-                <div style={{'width': '50%', 'margin': '0 auto'}}>
-                    <img src={item.top_image} alt="blog image" style={{'width' : '100%'}} />
-                    <ul>
-                        {   item.images &&
-                            item.images.map((list, index) =>
-                                <li style={{'display': 'inline-block'}} key={index}>
-                                    { list.image ? (
-                                        <img src={list.image} alt="item image" style={{'width' : '100px', 'height' : '100px'}} />
-                                    ) : (
-                                        <img src={'/img/no_image.png'} alt="no image" style={{'width' : '100px', 'height' : '100px'}} />
-                                    )}
-                                </li>
-                            )
+        <main className={styles.mt_40}>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
+                    <>
+                        {   popup == '1' && 
+                            <CartPopup
+                                item={item} 
+                                sizes={sizes} 
+                                createData={createData} 
+                                closeMethod={() => setPopup('')} 
+                            />
                         }
-                    </ul>
-                    <div style={{'margin': '30px auto 0'}}>
-                        <div>{item.brand_name}</div>
-                        <div>{item.item_name}</div>
-                        <div>{item.included_tax_price_text} (税込)</div>
-                    </div>
-                    <div style={{'margin': '15px auto 0'}}>
-                        {/* TODO: SKU から選択するウィンドウを表示必要 */}
-                        <button>カートに入れる</button><br/>
-                        <button>お気に入りに登録する</button>
-                    </div>
-                    <div style={{'margin': '15px auto 0'}}>
-                        {   item.skus.map( (sku, index) => 
-                                <div key={index}>
-                                    <img src={sku.img ? sku.img : '/img/no_image.png'} alt="item image" style={{'width' : '100px', 'height' : '100px'}} />
-                                    <span>{sku.color_name}</span>
-                                    <ul>
-                                        { sku.sizes.map((sku_item, i) => 
-                                            <li key={i}>
-                                                { sizes.filter((size) => size.id == sku_item.size_id).map(el => <span key={el.id}>{el.size_name}</span>)}　
-                                                {sku_item.quantity > 0 ? '在庫有り': '在庫無し'}
-                                                <button 
-                                                    onClick={() => { dispatch({type:'CREATE', form: {sku_id: `${sku_item.id}`}, url:`/api/user/bookmarks`})}}
-                                                    disabled={item.bookmark_items.includes(sku_item.id)}
-                                                >
-                                                    ブックマークに追加
-                                                </button>
-                                            </li>
-                                        )}
-                                    </ul>
-                                </div>
-                            )
+
+                        {   popup == '2' && 
+                            <BookmarkPopup 
+                                item={item} 
+                                sizes={sizes} 
+                                createData={createData} 
+                                closeMethod={() => setPopup('')} 
+                            />
                         }
-                        {   item.skus.map( (sku, index) => 
-                                <div key={index}>
-                                    <img src={sku.img ? sku.img : '/img/no_image.png'} alt="item image" style={{'width' : '100px', 'height' : '100px'}} />
-                                    <span>{sku.color_name}</span>
-                                    <ul>
-                                        { sku.sizes.map((sku_item, i) => 
-                                            <li key={i}>
-                                                { sizes.filter((size) => size.id == sku_item.size_id).map(el => <span key={el.id}>{el.size_name}</span>)}　
-                                                {sku_item.quantity > 0 ? '在庫有り': '在庫無し'}
-                                                <button 
-                                                    onClick={() => { dispatch({type:'CREATE', form: {sku_id: `${sku_item.id}`}, url:`/api/user/carts`})}}
-                                                    disabled={item.cart_items.includes(sku_item.id)}
-                                                >
-                                                    カートに追加
-                                                </button>
-                                            </li>
-                                        )}
-                                    </ul>
-                                </div>
-                            )
-                        }
-                    </div>
-                    <div style={{'margin': '15px auto 0'}}>
-                        <h2>商品説明</h2>
-                        <div>{item.description}</div>
-                    </div>
-                    <div style={{'margin': '15px auto 0'}}>
-                        <h2>サイズ・詳細</h2>
-                        <h3 style={{'margin': '15px auto 0'}}>サイズ表</h3>
-                        <table border="1" style={{'display': 'block', 'overflowX': 'scroll', 'borderCollapse': 'collapse', 'whiteSpace': 'nowrap', 'margin': '10px auto 0'}}>
-                            <thead>
-                                <tr>
-                                    <th>サイズ</th>
-                                    <th>身幅</th>
-                                    <th>肩幅</th>
-                                    <th>裄丈</th>
-                                    <th>袖丈</th>
-                                    <th>着丈</th>
-                                    <th>ウエスト</th>
-                                    <th>ヒップ</th>
-                                    <th>股上</th>
-                                    <th>股下</th>
-                                    <th>わたり</th>
-                                    <th>パンツ総丈</th>
-                                    <th>スカート丈</th>
-                                    <th>裾幅</th>
-                                    <th>重量</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                item.measurements && sizes &&
-                                item.measurements.map((list, index) =>
-                                    <tr key={index}> 
-                                        {
-                                            sizes.filter(size => size.id == list.size_id).map(s => (
-                                                <td key={s.id}>{s.size_name}</td>
-                                            ))
+
+
+                        <div className={styles.main_contents_area}>
+                            <div className={styles.item_detail_area}>
+                                {/* TODO: thumbnailタッチすると画像が切り替わるようにする */}
+                                <div className={styles.item_img_area}>
+                                    <Image src={item.top_image} alt="商品画像" className={styles.item_top_img}/>
+                                    <div className={styles.item_thumbnail_area}>
+                                        {   item.images &&
+                                            item.images.map((list, index) =>
+                                                <Image 
+                                                    key={index}
+                                                    src={list.image ? list.image : '/img/no_image.png'} 
+                                                    alt="商品画像" 
+                                                    style={{'width' : '16%'}}
+                                                />
+                                            )
                                         }
-                                        <td>{list.width}</td>
-                                        <td>{list.shoulder_width}</td>
-                                        <td>{list.raglan_sleeve_length}</td>
-                                        <td>{list.sleeve_length}</td>
-                                        <td>{list.length}</td>
-                                        <td>{list.waist}</td>
-                                        <td>{list.hip}</td>
-                                        <td>{list.rise}</td>
-                                        <td>{list.inseam}</td>
-                                        <td>{list.thigh_width}</td>
-                                        <td>{list.outseam}</td>
-                                        <td>{list.sk_length}</td>
-                                        <td>{list.hem_width}</td>
-                                        <td>{list.weight}</td>
-                                    </tr>
-                                )
-                            }
-                            </tbody>
-                        </table>
-                        <h3 style={{'margin': '15px auto 0'}}>商品詳細</h3>
-                        <ul style={{'margin': '10px auto 0'}}>
-                            <li><span style={{'fontWeight': 'bold'}}>カラー </span><span>{item.color_variation.join(' / ') }</span></li>
-                            <li><span style={{'fontWeight': 'bold'}}>サイズ </span><span>{item.size_variation.join(' / ') }</span></li>
-                            <li><span style={{'fontWeight': 'bold'}}>性別 </span><span>{item.gender_category}</span></li>
-                            <li><span style={{'fontWeight': 'bold'}}>カテゴリ </span><span>{item.main_category + ' > ' + item.sub_category}</span></li>
-                            <li><span style={{'fontWeight': 'bold'}}>素材 </span><span>{item.mixture_ratio}</span></li>
-                            <li><span style={{'fontWeight': 'bold'}}>生産国 </span><span>{item.made_in}</span></li>
-                            <li><span style={{'fontWeight': 'bold'}}>品番 </span><span>{item.product_number}</span></li>
-                        </ul>
-                    </div>
-                    <div style={{'margin': '30px auto 0'}}>
-                        <h2>関連ブログ</h2>
-                        {   item.publishedBlogs &&
-                            item.publishedBlogs.map((blog) =>
-                            <Link to={`/blogs/${blog.id}`} key={blog.id}>
-                                <div style={{'display': 'flex'}}>
-                                    <img src={blog.thumbnail} alt="" style={{ 'width':'120px', 'height': '80px', 'display': 'block' }}/>
-                                    <div>
-                                        <p>{blog.title}</p>
-                                        <p>{blog.brand_name}</p>
-                                        <p>{blog.modified_at ? blog.modified_at : blog.posted_at}</p>
                                     </div>
                                 </div>
-                            </Link>
-                            )
-                        }                      
-                    </div>
-                    <div style={{'margin': '30px auto 0'}}>
-                        <h2>関連商品</h2>
-                        {
-                            related_items && !errorMessage &&
-                            <ul> 
-                                {                        
-                                    related_items.map((item) =>
-                                        <li key={item.id}>
-                                             {/* TODO URLの変更を検知出来ない為dispatchを使ってる点を修正 */}
-                                            <Link to={`/items/${item.id}`} onClick={() => { dispatch({ type: 'READ', url: `/api/user/items/${item.id}` }); }}>
-                                                <span><img src={item.top_image} alt="" style={{ 'width':'150px', 'height': '150px', 'display': 'block' }}/></span>
-                                                <span style={{'display': 'block'}}>{item.item_name}</span>
-                                                <span style={{'display': 'block'}}>{item.included_tax_price_text} (税込)</span>
-                                                <span style={{'display': 'block'}}>{item.brand_name}</span>
-                                            </Link>
-                                        </li>
-                                    )
+                                <div className={styles.item_info_area}>
+                                    <div className={styles.item_basic_info_area}>
+                                        <Text className={styles.mb_8}>{item.brand_name}</Text>
+                                        <Text className={styles.mb_8}>{item.item_name}</Text>
+                                        <Text size='l'>{item.included_tax_price_text} (税込)</Text>
+                                    </div>
+                                    <div className={styles.show_item_btn_area}>
+                                        {/* TODO: ログインしてなくてもカート登録出来てしまう */}
+                                        <CartBtn size='l' onClick={() => setPopup('1')} className={styles.mb_16}>カートに入れる</CartBtn>
+                                        <BookmarkBtn size='l' onClick={() => setPopup('2')} >お気に入りに登録する</BookmarkBtn>
+                                    </div>
+                                    <div className={[styles.flex, styles.mb_32].join(' ')}>
+                                        <RadioBoxTab
+                                            name='switch_tab' 
+                                            value={'1'} 
+                                            onChange={e => setTab(e.target.value)} 
+                                            checked={tab == '1'} 
+                                            label={'サイズ・詳細'}
+                                            style={{'flex' : '1'}}
+                                        />
+                                        <RadioBoxTab
+                                            name='switch_tab' 
+                                            value={'2'} 
+                                            onChange={e => setTab(e.target.value)} 
+                                            checked={tab == '2'} 
+                                            label={'商品説明'}
+                                            style={{'flex' : '1'}}
+                                        />
+                                    </div>
+                                    { tab == '1' ? (
+                                        <div className={styles.mb_32}>
+                                            <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>サイズ表</Heading>
+                                            <MeasurementTable 
+                                                measurements={item.measurements} 
+                                                sizes={sizes} 
+                                                className={styles.mb_24} 
+                                            />
+                                            <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>商品詳細</Heading>
+                                            <ul>
+                                                <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>カラー </Text>
+                                                    <Text className={styles.flex_1}>{item.color_variation.join(' / ') }</Text>
+                                                </li>
+                                                <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>サイズ </Text>
+                                                    <Text className={styles.flex_1}>{item.size_variation.join(' / ') }</Text>
+                                                </li>
+                                                <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>性別 </Text>
+                                                    <Text className={styles.flex_1}>{item.gender_category}</Text>
+                                                </li>
+                                                <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>カテゴリ </Text>
+                                                    <Text className={styles.flex_1}>{item.main_category + ' > ' + item.sub_category}</Text>
+                                                </li>
+                                                <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>素材 </Text>
+                                                    <Text className={styles.flex_1}>{item.mixture_ratio}</Text>
+                                                </li>
+                                                <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>生産国 </Text>
+                                                    <Text className={styles.flex_1}>{item.made_in}</Text>
+                                                </li>
+                                                <li className={styles.flex}>
+                                                    <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>品番 </Text>
+                                                    <Text className={styles.flex_1}>{item.product_number}</Text>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        <Text className={styles.mb_32}>{item.description}</Text>
+                                    )}
+                                </div>
+                            </div>
+                            <div className={styles.item_related_area}>
+                                {   item.publishedBlogs &&
+                                    <>
+                                        <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>関連ブログ</Heading>
+                                        <div className={styles.mb_32}>
+                                            {
+                                                item.publishedBlogs.map((blog) =>
+                                                    <InfoCard
+                                                        key={blog.id}
+                                                        src={blog.thumbnail}
+                                                        to={`/blogs/${blog.id}`}
+                                                        title={blog.title}
+                                                        brand_name={blog.brand_name}
+                                                        posted_at={blog.posted_at}
+                                                        modified_at={blog.modified_at}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </>
+                                }  
+                                {   related_items &&
+                                    <>
+                                        <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>関連商品</Heading>
+                                        <div className={[styles.show_card_area, styles.mb_32].join(' ')}>
+                                            {   related_items.map((item) =>
+                                                    <TopItemCard 
+                                                        key={item.id}
+                                                        src={item.top_image}
+                                                        to={`/items/${item.id}`}
+                                                        brand_name={item.brand_name}
+                                                        item_name={item.item_name}
+                                                        price={item.included_tax_price_text}
+                                                        className={styles.item_card}
+                                                        // style={{'width' : '29%', 'marginBottom' : '16px'}}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </>
                                 }
-                            </ul>
-                        }
-                    </div>
-                    <div style={{'margin': '30px auto 0'}}>
-                        <h2>チェックした商品</h2>
-                        <div style={{'display': 'flex'}}>
-                        {/* TODO URLの変更を検知出来ない為dispatchを使ってる点を修正 */}
-                        { cookies.item_info&&
-                            cookies.item_info.map(list => (
-                                <Link to={`/items/${list.id}`} key={list.id} onClick={() => { dispatch({ type: 'READ', url: `/api/user/items/${list.id}` }); }}>
-                                    <img src={list.top_image} alt="" style={{ 'width':'100px', 'height': '100px', 'display': 'block' }}/>
-                                </Link>
-                            ))
-                        }
+                                { JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&
+                                    <>
+                                        <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>チェックした商品</Heading>
+                                        <div className={[styles.flex, styles.scroll_x].join(' ')}>
+                                        {   
+                                            JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookies.item_info.includes(list.id)).map(list => (
+                                                <Link to={`/items/${list.id}`} key={list.id}>
+                                                    <Image src={list.top_image} alt="閲覧商品画像" className={styles.history_recodes}/> 
+                                                </Link>
+                                            ))
+                                        }
+                                        </div>
+                                    </>
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <Link to={`/items`}>一覧に戻る</Link>
-                </div>
+                    </>
+                )
             }
-            </>
-        )
+            </Suspense>
+        </main>
     );
 }
 

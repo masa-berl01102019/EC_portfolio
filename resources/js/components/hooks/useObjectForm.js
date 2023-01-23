@@ -8,7 +8,7 @@ const useObjectForm = (formData, setFormData, dispatch) => {
   const {isObject} = useHelper();
 
   // content-typeを'multipart/form-data'にしないと送信出来ないフォームの送信 ex) 画像等のファイル形式
-  const handleSendObjectForm = (sendUrl) => {
+  const handleSendObjectForm = (sendUrl, callback) => {
     console.log('handleSendObjectForm');
     // FormDataオブジェクトのインスタンス生成
     const params = new FormData();
@@ -37,7 +37,13 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     });
     // axiosで画像等のファイル形式を送信する際はcontent-typeを'multipart/form-data'にしないと送信出来ない
     // post形式でないと正しく送れない * axiosの仕様的な問題？？
-    dispatch({type: 'CREATE', form: params, url: sendUrl, headers: {'content-type': 'multipart/form-data'} });
+    // dispatch({type: 'CREATE', form: params, url: sendUrl, headers: {'content-type': 'multipart/form-data'} });
+    dispatch({ 
+        form: params, 
+        url: sendUrl, 
+        headers: {'content-type': 'multipart/form-data'}, 
+        callback: () => callback 
+    });
   }
 
   // オブジェクトFormの追加

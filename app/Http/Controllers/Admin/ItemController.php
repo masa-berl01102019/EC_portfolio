@@ -343,7 +343,7 @@ class ItemController extends Controller
                 count($item->categories) > 1 ? $item->categories[1]['category_name'] : '', 
                 count($item->categories) > 2 ? $item->categories[2]['category_name'] : '', 
                 implode(' / ', $item->tags->pluck('tag_name')->toArray()),
-                $item->admin->full_name.'('.$item->admin->full_name_kana.')',
+                optional($item->admin)->full_name.'('.optional($item->admin)->full_name_kana.')',
                 $item->posted_at !== null ? $item->posted_at->format('Y/m/d H:i'): '　　',
                 $item->modified_at !== null ? $item->modified_at->format('Y/m/d H:i'): '　　',
             ];

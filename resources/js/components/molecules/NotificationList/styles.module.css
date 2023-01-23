@@ -1,0 +1,20 @@
+.container {
+  border: 1px solid #D4D4D4;
+  margin-bottom: 24px
+}
+.title_area {
+  background: #D4D4D4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px
+}
+.body_area {
+  background: #fff;
+  padding: 8px;
+  line-height: 18px;
+  letter-spacing: 1px;
+}
+.mb_4 {
+  margin-bottom: 4px;
+}

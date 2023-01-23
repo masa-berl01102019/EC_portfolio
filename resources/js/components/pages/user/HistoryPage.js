@@ -1,38 +1,36 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import Heading from '../../atoms/Heading/Heading';
+import TopItemCard from '../../molecules/Card/TopItemCard';
+import styles from './styles.module.css';
 
 function HistoryPage() {
-
     // cookieを管理
     const [cookies, setCookie] = useCookies();
 
-    // 描画のみを担当
     return (
-        <>
-          <h1>閲覧履歴</h1>
-          {
-              <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                  {
-                      cookies.item_info&&
-                      <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                          {                        
-                              cookies.item_info.map((list) =>
-                                  <li key={list.id}>
-                                      <Link to={`/items/${list.id}`} style={{'display': 'block', 'width': '150px', 'overflow': 'hidden'}}>
-                                          <span><img src={list.top_image} alt="" style={{ 'width':'150px', 'height': '150px' }}/></span><br/>
-                                          <span>{list.item_name}</span><br/>
-                                          <span>{list.included_tax_price_text} (税込)</span><br/>
-                                          <span>{list.brand_name}</span>
-                                      </Link>
-                                  </li>
-                              )
-                          }
-                      </ul>
-                  }
-              </ul>
-          }
-        </>
+        <main className={styles.mt_40}>
+            <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>閲覧履歴</Heading>
+            <div className={styles.main_contents_area}>
+                {   JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&
+                    <div className={[styles.flex, styles.flex_wrap].join(' ')}>
+                        {                        
+                            JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookies.item_info.includes(list.id)).map((item) =>
+                                <TopItemCard 
+                                    key={item.id}
+                                    src={item.top_image}
+                                    to={`/items/${item.id}`}
+                                    brand_name={item.brand_name}
+                                    item_name={item.item_name}
+                                    price={item.included_tax_price_text}
+                                    className={styles.item_card_history}
+                                />
+                            )
+                        }
+                    </div>
+                }
+            </div>
+        </main>
     );
 }
 

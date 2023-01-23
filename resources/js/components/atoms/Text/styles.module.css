@@ -1,0 +1,32 @@
+/* role */
+.error {
+  color: #f44336;
+}
+.title {
+  color: #000;
+}
+.text {
+  color: #666;
+}
+.light {
+  color: #D4D4D4;
+}
+.reverse {
+  color: #fff;
+}
+.primary {
+  color: rgb(73, 163, 216);
+}
+/* size */
+.xl {
+  font-size: 18px;
+}
+.l {
+  font-size: 16px;
+}
+.m {
+  font-size: 14px;
+}
+.s {
+  font-size: 12px;
+}

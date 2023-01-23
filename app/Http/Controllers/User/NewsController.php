@@ -38,7 +38,7 @@ class NewsController extends Controller
 
         // ページネーション
         $news = $search_news->customPaginate($request);
-        
+
         // レスポンスを返却
         return (NewsResource::collection($news))->additional([
             // 各種選択肢をmeta情報としてトップレベルに追加
@@ -55,5 +55,4 @@ class NewsController extends Controller
         // レスポンスを返却
         return new NewsResource($news);
     }
-
 }

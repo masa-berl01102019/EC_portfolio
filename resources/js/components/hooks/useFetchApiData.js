@@ -4,7 +4,8 @@ import {useCreateUrl} from "./useCreateUrl";
 import {useDownloadCsv, getFileName} from "./useDownloadCsv";
 import useSetErrorMsg from "./useSetErrorMsg";
 import {dataFetchReducer} from "../reducer/dataFetchReducer";
-import { useParamsContext } from '../context/ParamsContext';
+import {useRecoilValue} from 'recoil'
+import { paramState, scopeState } from "../store/paramState"; 
 
 const useFetchApiData = (initialUrl, initialMethod, initialData, initialScope) => {
 
@@ -17,7 +18,8 @@ const useFetchApiData = (initialUrl, initialMethod, initialData, initialScope) =
     // useReducerでreducer関数と初期値をセット
     const [state, dispatch] = useReducer(dataFetchReducer, initialState);
     // useContextで管理してるURLパラメータを呼び出し
-    const {params, scope} = useParamsContext();
+    const params = useRecoilValue(paramState(model));
+    const scope = useRecoilValue(scopeState);
     // API接続時の状態遷移(error/loading)と取得したデータと直前にコールしたAPIのURLを管理
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
@@ -60,7 +62,7 @@ const useFetchApiData = (initialUrl, initialMethod, initialData, initialScope) =
                     // axiosの処理結果によらずいつも実行させたい処理を記述
                     console.log('axios処理終了');
                 });
-
+                
                 // ローディングアイコンストップ
                 setIsLoading(false);
             };

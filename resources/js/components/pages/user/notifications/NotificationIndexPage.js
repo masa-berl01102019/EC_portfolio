@@ -1,42 +1,46 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React, {Suspense} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData from "../../../hooks/useFetchApiData";
+import useFetchApiData2 from '../../../hooks/useFetchApiData2';
+import Heading from '../../../atoms/Heading/Heading';
+import Text from '../../../atoms/Text/Text';
+import styles from '../styles.module.css';
+import NotificationList from '../../../molecules/NotificationList/NotificationList';
 
 function NotificationIndexPage() {
-
     // urlの設定
     const baseUrl = `/api/user/notifications`;
+    // paramsの適用範囲を決めるscope名を定義
+    const model = 'NOTIFICATION';
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}] = useFetchApiData(baseUrl, 'get', []);
+    const {data, errorMessage} = useFetchApiData2(baseUrl, model);
     // APIから取得したデータを変数に格納
     const notifications = data.data? data.data: null;
 
-    // 描画のみを担当
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <>
-                <h1>お知らせ一覧</h1>
+        <main className={styles.mt_40}>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
+                    <>
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>お知らせ一覧</Heading>
 
-                {   notifications && !errorMessage &&
-                    notifications.map((notification) =>
-                        <div style={{'width': '50%'}} key={notification.id}>
-                            <div style={{'background': '#bfbdbd'}}>
-                                <p>{notification.modified_at ? notification.modified_at : notification.posted_at}</p>
-                                <p>{notification.title}</p>
-                            </div>
-                            <div style={{'background': '#fff'}}>
-                                <p>{notification.body}</p>
-                            </div>
+                        <div className={styles.main_contents_area}>
+                            {   notifications &&
+                                notifications.map((notification) =>
+                                    <NotificationList
+                                        key={notification.id}
+                                        notification={notification}
+                                    />
+                                )
+                            }
                         </div>
-                    )
-                }
-            </>
-        )
+                    </>
+                )
+            }
+            </Suspense>
+        </main>
     );
 }
 

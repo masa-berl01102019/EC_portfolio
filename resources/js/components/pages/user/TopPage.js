@@ -1,23 +1,33 @@
-import React, {useEffect} from 'react';
+import React, {Suspense, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData from "../../hooks/useFetchApiData";
+import useFetchApiData2 from "../../hooks/useFetchApiData2";
 import useCreateParams from "../../hooks/useCreateParams";
-import { useParamsContext } from '../../context/ParamsContext';
 import { useCookies } from 'react-cookie';
+import { useRecoilState } from 'recoil';
+import { paramState } from '../../store/paramState';
+import {useCreateUrl} from "../../hooks/useCreateUrl";
+import TopItemCard from '../../molecules/Card/TopItemCard';
+import Heading from '../../atoms/Heading/Heading'
+import InfoCard from '../../molecules/Card/InfoCard';
+import NotificationList from '../../molecules/Card/NotificationList';
+import RadioBoxTab from '../../atoms/RadioboxTab/RadioBoxTab';
+import Image from '../../atoms/Image/Image';
+import Text from '../../atoms/Text/Text';
+import styles from './styles.module.css';
+
 
 function TopPage() {
-
     // urlの設定
     const baseUrl = `/api/user/home`;
     // paramsの適用範囲を決めるscope名を定義
     const model = 'HOME';
     // URLパラメータ変更のフックの呼び出し
-    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilter, handleFilterCheckbox, handleClearFilterCheckbox, handleFilterDateRange, handleCurrentPage, handlePerPage, handleSort}] = useCreateParams();
-    // useContext呼び出し
-    const {params, setParams, scope, setScope} = useParamsContext();
+    const {handleFilter} = useCreateParams(model);
+    // グローバルステート呼び出し
+    const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
+    const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
     // cookieを管理
     const [cookies, setCookie] = useCookies();
     // APIから取得したデータを変数に格納
@@ -27,173 +37,206 @@ function TopPage() {
     const notifications = data.notifications? data.notifications: null;
     const ranked_items = data.ranked_items? data.ranked_items: null;
     const recommend_items = data.recommend_items? data.recommend_items: null;
-    // const brands = data.brands? data.brands: null;
-    // const gender_categories = data.gender_categories? data.gender_categories: null;
-    // const main_categories = data.main_categories? data.main_categories: null;
-    // const sub_categories = data.sub_categories? data.sub_categories: null;
-    // const sizes = data.sizes? data.sizes: null;
-    // const colors = data.colors? data.colors: null;
-    // const tags = data.tags? data.tags: null;
 
     useEffect(() => {
         // paramsのデフォルト値と適用範囲を設定
-        if(scope === null || scope !== model) { // 全てのページにおいての初回読み込みなので初期値を代入
-            console.log('USERにてparamsの初期値をセットしてscopeを変更');
+        if(params.scope === null) {
+            console.log('HOMEにてparamsの初期値をセット');
             setParams({
-                ...params,
+                paginate: {},
                 sort: { 'last_name_kana' : '', 'birthday' : '', 'created_at' : '', 'updated_at' : ''},
-                filter: { 'keyword' : '', 'gender_category' : '', },
+                filter: { 'search' : '', 'gender_category' : ''},
+                scope: model
             });
-            setScope(model);
         }
-    },[data]);
+    },[]);
 
-    // 描画のみを担当
+    // TODO: 全てをみるボタンを作成する
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <>
-                <h1>ログイン前 TOP PAGE</h1>
-                {   Object.keys(params.filter).length > 0 && scope === model &&
-                    <div className={'filter'}>
-                        <div>
-                            <label><input type='radio' name='gender_category' onChange={handleFilter} value={''} checked={params.filter.gender_category == ''} />ALL</label>
-                            <label><input type='radio' name='gender_category' onChange={handleFilter} value={1} checked={params.filter.gender_category.includes(1)} />Men's</label>
-                            <label><input type='radio' name='gender_category' onChange={handleFilter} value={2} checked={params.filter.gender_category.includes(2)} />Ladies</label>
+        <main className={styles.mt_40}>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
+                    <div>
+                        <div className={styles.flex}>
+                            <RadioBoxTab
+                                name='gender_category' 
+                                value={''} 
+                                onChange={handleFilter} 
+                                checked={params.filter.gender_category == ''} 
+                                label={'ALL'}
+                                style={{'flex' : '1'}}
+                            />
+                            <RadioBoxTab
+                                name='gender_category' 
+                                value={'1'} 
+                                onChange={handleFilter} 
+                                checked={params.filter.gender_category == '1'} 
+                                label={'MENS'}
+                                style={{'flex' : '1'}}
+                            />
+                            <RadioBoxTab
+                                name='gender_category' 
+                                value={'2'} 
+                                onChange={handleFilter} 
+                                checked={params.filter.gender_category == '2'} 
+                                label={'WOMEN'}
+                                style={{'flex' : '1'}}
+                            />
                         </div>
-                    </div>
-                }
-                
-                <h2 style={{'margin': '30px auto 0'}}>お知らせ一覧</h2>
-                {
-                    notifications && !errorMessage &&
-                    <ul> 
-                        {                        
-                            notifications.map((notification) =>
-                                <li key={notification.id}>
-                                    <Link to={`/`}>
-                                        <span>{notification.title}</span>
-                                        <span>{notification.modified_at ? notification.modified_at : notification.posted_at}</span>
-                                    </Link>
-                                </li>
-                            )
-                        }
-                    </ul>
-                }
-                                
-                <h2 style={{'margin': '30px auto 0'}}>新着一覧</h2>
-                {
-                    items && !errorMessage &&
-                    <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                        {                        
-                            items.map((item) =>
-                                <li key={item.id}>
-                                    <Link to={`/items/${item.id}`} style={{'display': 'block', 'width': '150px', 'overflow': 'hidden'}}>
-                                        <span><img src={item.top_image} alt="" style={{ 'width':'150px', 'height': '150px' }}/></span><br/>
-                                        <span>{item.item_name}</span><br/>
-                                        <span>{item.included_tax_price_text} (税込)</span><br/>
-                                        <span>{item.brand_name}</span>
-                                    </Link>
-                                </li>
-                            )
-                        }
-                    </ul>
-                }
 
-                <h2 style={{'margin': '30px auto 0'}}>おすすめ一覧</h2>
-                {
-                    recommend_items && !errorMessage &&
-                    <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                        {                        
-                            recommend_items.map((item) =>
-                                <li key={item.id}>
-                                    <Link to={`/items/${item.id}`} style={{'display': 'block', 'width': '150px', 'overflow': 'hidden'}}>
-                                        <span><img src={item.top_image} alt="" style={{ 'width':'150px', 'height': '150px' }}/></span><br/>
-                                        <span>{item.item_name}</span><br/>
-                                        <span>{item.included_tax_price_text} (税込)</span><br/>
-                                        <span>{item.brand_name}</span>
-                                    </Link>
-                                </li>
-                            )
+                        <Image src={'https://via.placeholder.com/640x480.png/003333?text=BLOG+et'} type='demo' className={styles.top_img} alt="TOP IMAGE" />
+                        
+                        {   notifications &&
+                            <div className={styles.mb_40}> 
+                                {                        
+                                    notifications.map((notification) =>
+                                        <NotificationList
+                                            key={notification.id}
+                                            to={`/notifications`}
+                                            title={notification.title}
+                                            posted_at={notification.posted_at}
+                                            modified_at={notification.modified_at}
+                                        />
+                                    )
+                                }
+                            </div>
                         }
-                    </ul>
-                }
 
-                <h2 style={{'margin': '30px auto 0'}}>ランキング一覧</h2>
-                {
-                    ranked_items && !errorMessage &&
-                    <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                        {                        
-                            ranked_items.map((item) =>
-                                <li key={item.id}>
-                                    <Link to={`/items/${item.id}`} style={{'display': 'block', 'width': '150px', 'overflow': 'hidden'}}>
-                                        <span><img src={item.top_image} alt="" style={{ 'width':'150px', 'height': '150px' }}/></span><br/>
-                                        <span>{item.item_name}</span><br/>
-                                        <span>{item.included_tax_price_text} (税込)</span><br/>
-                                        <span>{item.brand_name}</span>
-                                    </Link>
-                                </li>
-                            )
-                        }
-                    </ul>
-                }
+                        <div className={styles.main_contents_area}>
 
-                <h2 style={{'margin': '30px auto 0'}}>ニュース一覧</h2>
-                {
-                    news && !errorMessage &&
-                    <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                        {                        
-                            news.map((item) =>
-                                <li key={item.id}>
-                                    <Link to={`/news/${item.id}`}>
-                                        <span><img src={item.thumbnail} alt="" style={{ 'width':'75px', 'height': '50px', 'display': 'block' }}/></span>
-                                        <span style={{ 'display':'block', 'width': '150px' }}>{item.title}</span>
-                                        <span style={{'display': 'block'}}>{item.brand_name}</span>
-                                        <span  style={{'display': 'block'}}>{item.modified_at ? item.modified_at : item.posted_at}</span>
-                                    </Link>
-                                </li>
-                            )
-                        }
-                    </ul>
-                }
+                            <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>新着一覧</Heading>
+                            {
+                                items &&
+                                <div className={styles.card_area}> 
+                                    {                        
+                                        items.map((item) =>
+                                            <TopItemCard 
+                                                key={item.id}
+                                                src={item.top_image}
+                                                to={`/items/${item.id}`}
+                                                brand_name={item.brand_name}
+                                                item_name={item.item_name}
+                                                price={item.included_tax_price_text}
+                                                className={styles.item_card}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            }
             
-                <h2 style={{'margin': '30px auto 0'}}>ブログ一覧</h2>
-                {
-                    blogs && !errorMessage &&
-                    <ul style={{'display': 'flex', 'flexFlow': 'wrap'}}> 
-                        {                        
-                            blogs.map((blog) =>
-                            <li key={blog.id}>
-                                <Link to={`/blogs/${blog.id}`}>
-                                    <span><img src={blog.thumbnail} alt="" style={{ 'width':'75px', 'height': '50px', 'display': 'block' }}/></span>
-                                    <span style={{ 'display':'block', 'width': '150px' }}>{blog.title}</span>
-                                    <span style={{'display': 'block'}}>{blog.brand_name}</span>
-                                    <span style={{'display': 'block'}}>{blog.modified_at ? blog.modified_at : blog.posted_at}</span>
-                                </Link>
-                            </li>
-                            )
-                        }
-                    </ul>
-                }
+                            <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>おすすめ一覧</Heading>
+                            {
+                                recommend_items && 
+                                <div className={styles.card_area}> 
+                                    {                        
+                                        recommend_items.map((item) =>
+                                            <TopItemCard 
+                                                key={item.id}
+                                                src={item.top_image}
+                                                to={`/items/${item.id}`}
+                                                brand_name={item.brand_name}
+                                                item_name={item.item_name}
+                                                price={item.included_tax_price_text}
+                                                className={styles.item_card}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            }
+            
+                            <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>ランキング一覧</Heading>
+                            {
+                                ranked_items &&
+                                <div className={styles.card_area}>
+                                {                        
+                                    ranked_items.map((item) =>
+                                        <TopItemCard 
+                                            key={item.id}
+                                            src={item.top_image}
+                                            to={`/items/${item.id}`}
+                                            brand_name={item.brand_name}
+                                            item_name={item.item_name}
+                                            price={item.included_tax_price_text}
+                                            className={styles.item_card}
+                                        />
+                                    )
+                                }
+                                </div>
+                            }
 
-                <div style={{'margin': '30px auto 0'}}>
-                    <h2>チェックした商品</h2>
-                    <div style={{'display': 'flex'}}>
-                    { cookies.item_info&&
-                        cookies.item_info.map(list => (
-                            <Link to={`/items/${list.id}`} key={list.id}>
-                                <img src={list.top_image} alt="" style={{ 'width':'100px', 'height': '100px', 'display': 'block' }}/>
-                            </Link>
-                        ))
-                    }
+                            <div className={styles.blog_news_wrap}>
+                                <div className={styles.news_wrap}>
+                                    <div className={[styles.mb_16, styles.flex, styles.align_center, styles.justify_between].join(' ')}>
+                                        <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>ニュース一覧</Heading>
+                                        <Link to="/news">一覧へ</Link>
+                                    </div>
+                                    {
+                                        news &&
+                                        <div className={styles.mb_40}> 
+                                            {                        
+                                                news.map((item) =>
+                                                    <InfoCard
+                                                        key={item.id}
+                                                        src={item.thumbnail}
+                                                        to={`/news/${item.id}`}
+                                                        title={item.title}
+                                                        brand_name={item.brand_name}
+                                                        posted_at={item.posted_at}
+                                                        modified_at={item.modified_at}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                <div className={styles.blog_wrap}>
+                                    <div className={[styles.mb_16, styles.flex, styles.align_center, styles.justify_between].join(' ')}>
+                                        <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>ブログ一覧</Heading>
+                                        <Link to="/blogs">一覧へ</Link>
+                                    </div>
+                                    {
+                                        blogs &&
+                                        <div className={styles.mb_40}>
+                                            {                        
+                                                blogs.map((blog) =>
+                                                    <InfoCard
+                                                        key={blog.id}
+                                                        src={blog.thumbnail}
+                                                        to={`/blogs/${blog.id}`}
+                                                        title={blog.title}
+                                                        brand_name={blog.brand_name}
+                                                        posted_at={blog.posted_at}
+                                                        modified_at={blog.modified_at}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={styles.mb_16}>
+                                <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>チェックした商品</Heading>
+                            </div>
+                            <div className={[styles.flex, styles.scroll_x].join(' ')}>
+                            { JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&
+                                JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookies.item_info.includes(list.id)).map(list => (
+                                    <Link to={`/items/${list.id}`} key={list.id}>
+                                        <Image src={list.top_image} alt="閲覧商品画像" className={styles.show_recode_img} />
+                                    </Link>
+                                ))
+                            }
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-
-            </>
-        )
+                )
+            }
+            </Suspense>
+        </main>
     );
 }
 

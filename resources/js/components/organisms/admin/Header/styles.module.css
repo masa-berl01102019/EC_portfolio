@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  align-items: center;
+  background: #01B6AD;
+  box-shadow: 0px 3px 4px #0000001a;
+  padding: 10px 16px;
+}
+.global_menu {
+  position: fixed;
+  top: 54px;
+}
+.icon {
+  width: 30px !important;
+  height: 30px !important;
+}
+.account_icon {
+  margin-right: 4px;
+}
+.meun_icon {
+  margin-right: auto;
+}
+.text {
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.ml {
+  margin-left: 8px;
+}
+.mr_auto {
+  margin-right: auto;
+}

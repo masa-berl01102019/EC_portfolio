@@ -1,35 +1,76 @@
-import React, {useState} from 'react';
-import useAuth from "../../../hooks/useAuth";
+import { CircularProgress } from '@material-ui/core';
+import React, {Suspense} from 'react';
+import useForm from '../../../hooks/useForm';
+import { authAdminState } from '../../../store/authState';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { menuAdminState } from '../../../store/menuState';
+import useAuth2 from "../../../hooks/useAuth2";
+import Text from '../../../atoms/Text/Text';
+import Heading from '../../../atoms/Heading/Heading';
+import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import Button from '../../../atoms/Button/Button';
+import styles from '../styles.module.css';
 
 function AdminLogin() {
-
-    // Auth名の設定
-    const auth = 'admin'
-    // 入力値のステート管理
-    const [email, setEmail] = useState('hiroshi35@example.org');
-    const [password, setPassword] = useState('abc12345');
+    // グローバルステートの呼び出し
+    const setIsAdminLogin = useSetRecoilState(authAdminState);
+    // フォーム項目の初期値をuseStateで管理
+    const [formData, {handleFormData}] = useForm({
+        'email': 'msakamoto@example.net', 
+        'password': 'abc12345', 
+    });
     // Auth hooksの呼び出し
-    const {errorMessage, handleLogin} = useAuth(auth);
+    const {errorMessage, handleLogin} = useAuth2('/api/admin/auth', 'admin');
+    // menuの状態管理
+    const openAdminMenu = useRecoilValue(menuAdminState);
 
     return (
-        <div style={{'width': '50%', 'margin': '40px auto 60px'}}>
-            <h1>管理者ログイン</h1>
-            { errorMessage && errorMessage.httpRequestError && <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p> }
-            <form onSubmit={ e => {
-                e.preventDefault();
-                handleLogin({email: email, password: password});
-            }}>
-                <label htmlFor='email'>メールアドレス</label>
-                <div>
-                    <input id="email" type='email' name='email' onBlur={ e => setEmail(e.target.value) } defaultValue={email} placeholder='test@example.com' />
+        <main>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
+
+                    { errorMessage && errorMessage.httpRequestError && <Text role='error'>{errorMessage.httpRequestError}</Text> }
+
+                    <div className={styles.form_area}>
+                        <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
+                            管理者ログイン
+                        </Heading>
+                        <form onSubmit={ e => {
+                            e.preventDefault();
+                            handleLogin({
+                                url: '/api/admin/login', 
+                                form: formData,
+                                callback: () => setIsAdminLogin(true)
+                            });
+                        }}>
+                            <div className={styles.mb_16}>
+                                <FormInputText
+                                    name={'email'}
+                                    type='email'
+                                    onBlur={handleFormData}
+                                    value={formData.email}
+                                    label={'メールアドレス'}
+                                    error={errorMessage}
+                                    placeholder='080-1234-5678'
+                                />
+                            </div>
+                            <div className={styles.mb_24}>
+                                <FormInputText
+                                    name={'password'}
+                                    type='password'
+                                    onBlur={handleFormData}
+                                    value={formData.password}
+                                    label={'パスワード'}
+                                    error={errorMessage}
+                                    placeholder='半角英数字8文字以上'
+                                />
+                            </div>
+                            <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>ログイン</Button>
+                        </form>
+                    </div>
                 </div>
-                <label htmlFor='password'>パスワード</label>
-                <div>
-                    <input id="password" type='password' name='password' onBlur={ e => setPassword(e.target.value) } defaultValue={password} placeholder='半角英数字8文字以上' />
-                </div>
-                <button type="submit">ログイン</button>
-            </form>
-        </div>
+            </Suspense>
+        </main>
     );
 }
 

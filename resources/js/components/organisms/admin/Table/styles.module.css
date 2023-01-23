@@ -1,0 +1,44 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+.fix_theader {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* checkbox override */
+.table_check {
+  margin : 0 auto;
+}
+
+/* position of Button */
+.mr {
+  margin-right: 16px;
+}
+
+/* row override */
+.checked_row {
+  background: #25bfc652 !important;
+}
+
+/* table form override */
+.table_row_form {
+  min-width: 120px;
+}
+.table_row_form2 {
+  max-width: 120px;
+}
+
+/* ItemOrderTable用 デザイン */
+.td_order {
+  padding: 8px !important;
+  text-align: center !important;
+}
+.th_order {
+  padding: 8px 12px !important;
+}
+

@@ -1,10 +1,11 @@
 import React from "react";
 import {Redirect, Route} from "react-router-dom";
-import {useAuthContext} from "./context/AuthContext";
+import { useRecoilValue } from 'recoil';
+import { authAdminState, authUserState } from "./store/authState";
 
 export function UserPrivateRoute (props) {
 
-    const {isUserLogin} = useAuthContext();
+    const isUserLogin = useRecoilValue(authUserState);
 
     if(!isUserLogin) {
         return <Redirect to={'/user/login'} />
@@ -15,10 +16,11 @@ export function UserPrivateRoute (props) {
 
 export function UserLoginRoute (props) {
 
-    const {isUserLogin} = useAuthContext();
+    const isUserLogin = useRecoilValue(authUserState);
 
+    // 直前のURLにリダイレクト
     if(isUserLogin) {
-        return <Redirect to={'/'} />
+        return <Redirect to={props.prevUrl == '/user/login' ? '/' : props.prevUrl} />
     } else {
         return <Route {...props} />
     }
@@ -26,7 +28,7 @@ export function UserLoginRoute (props) {
 
 export function AdminPrivateRoute (props) {
 
-    const {isAdminLogin} = useAuthContext();
+    const isAdminLogin = useRecoilValue(authAdminState);
 
     if(!isAdminLogin) {
         return <Redirect to={'/admin/login'} />
@@ -37,10 +39,11 @@ export function AdminPrivateRoute (props) {
 
 export function AdminLoginRoute (props) {
 
-    const {isAdminLogin} = useAuthContext();
+    const isAdminLogin = useRecoilValue(authAdminState);
 
     if(isAdminLogin) {
-        return <Redirect to={'/admin/dashboard'} />
+        // 直前のURLにリダイレクト
+        return <Redirect to={props.prevUrl == '/admin/login' ? '/admin/Dashboard' : props.prevUrl} />
     } else {
         return <Route {...props} />
     }

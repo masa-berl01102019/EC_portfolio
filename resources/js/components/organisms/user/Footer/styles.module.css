@@ -1,0 +1,37 @@
+.footer {
+  width: 100%;
+  padding: 16px 10px 10px;
+  background: #E6E7E9;
+  box-sizing: border-box;
+}
+.mb_16 {
+  margin-bottom: 16px;
+}
+.mb_24 {
+  margin-bottom: 24px;
+}
+.footer_menu_area {
+  margin-bottom: 32px;
+}
+.text_center {
+  text-align: center;
+}
+.social_icon {
+  width: 34px;
+  height: 34px;
+}
+@media screen and (min-width : 768px) {
+  .footer {
+    text-align: center;
+    padding: 24px;
+  }
+  .footer_menu_area {
+    display: flex;
+    justify-content: space-evenly;
+    width: 720px;
+    margin: 0 auto 32px;
+  }
+  .mb_16 {
+    margin-bottom: 8px;
+  }
+}

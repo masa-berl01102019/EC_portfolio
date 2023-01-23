@@ -1,18 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {EditorState, convertFromRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import {stateFromHTML} from 'draft-js-import-html';
-import {Link} from "react-router-dom";
-import useFetchApiData from "../../../hooks/useFetchApiData";
+import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import useHelper from "../../../hooks/useHelper";
+import Text from '../../../atoms/Text/Text';
+import Heading from '../../../atoms/Heading/Heading';
+import Image from '../../../atoms/Image/Image';
+import styles from '../styles.module.css';
 
 function BlogShowPage(props) {
-
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/user/blogs/${props.match.params.id}`;
+    // paramsの適用範囲を決めるscope名を定義
+    const model = 'BLOG';
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}] = useFetchApiData(baseUrl, 'get', []);
+    const {data, errorMessage} = useFetchApiData2(baseUrl, model);
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     // 便利関数の呼び出し
@@ -30,43 +34,46 @@ function BlogShowPage(props) {
             // editorStateをdraft.jsにセット
             setEditorState(editorState);
         }
-    },[data]);
+    },[]);
 
-    // 描画のみを担当
+    
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <>
-            {   blog &&
-                <div style={{'width': '50%', 'margin': '0 auto'}}>
-                    <h1>{blog.title}</h1>
-                    <p>{blog.modified_at ? blog.modified_at : blog.posted_at}</p>
+        <main className={styles.mt_40}>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
                     <div>
-                        <img src={blog.thumbnail} alt="blog image" style={{'width' : '100%'}} />
+                    {   blog &&
+                        <div className={styles.blog_news_contents_area}>
+                            <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
+                                {blog.title}
+                            </Heading>
+                            <Text size='s' className={styles.mb_8}>
+                                {blog.modified_at ? blog.modified_at : blog.posted_at}
+                            </Text>
+                            <Image src={blog.thumbnail} alt="ブログ画像" style={{'width' : '100%', 'marginBottom': '8px'}} />
+                            <Editor
+                                editorState={editorState}
+                                readOnly={true}
+                                toolbar={{
+                                    options: [],
+                                    inline: {
+                                    options: [],
+                                    },
+                                    list: {
+                                    options: [],
+                                    }
+                                }}
+                            />
+                        </div>
+                    }
                     </div>
-                    <div>
-                        <Editor
-                            editorState={editorState}
-                            readOnly={true}
-                            toolbar={{
-                                options: [],
-                                inline: {
-                                  options: [],
-                                },
-                                list: {
-                                  options: [],
-                                }
-                            }}
-                        />
-                    </div>
-                    <Link to={`/blogs`}>一覧に戻る</Link>
-                </div>
+                )
             }
-            </>
-        )
+            </Suspense>
+        </main>
     );
 }
 

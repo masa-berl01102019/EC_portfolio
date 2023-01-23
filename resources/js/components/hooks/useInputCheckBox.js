@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
 const useInputCheckBox = (initialValue = []) => {
 
@@ -6,7 +6,7 @@ const useInputCheckBox = (initialValue = []) => {
     const [checklist, setChecklist] = useState(initialValue);
 
     // ステートの更新関数
-    const handleCheck = (e) => {
+    const handleCheck = useCallback((e) => {
         console.log('handleCheck');
         // APIから渡ってくるデータは数値型だが、e.target.valueで値を取得する際はstringに型変換されて渡ってくるので数値型にキャストする
         const value = Number(e.target.value);
@@ -18,16 +18,16 @@ const useInputCheckBox = (initialValue = []) => {
             // 含まれてない場合は分割代入後に配列に追加
             setChecklist([...checklist, value] );
         }
-    };
+    }, [checklist]);
 
     // ステートの初期化関数
-    const handleUnCheckAll = () => {
+    const handleUnCheckAll = useCallback(() => {
         console.log('handleUnCheckAll');
         setChecklist([])
-    };
+    }, []);
 
     // ステートの一括更新関数
-    const handleCheckAll = (multiArr) => {
+    const handleCheckAll = useCallback((multiArr) => {
         console.log('handleCheckAll');
         // 配列の初期化
         const arr = [];
@@ -43,7 +43,7 @@ const useInputCheckBox = (initialValue = []) => {
             // arrに含まれてるIDを分割代入で展開してステートを更新することで再描画が走るのでcheckboxがチェックされた状態で再描画される
             setChecklist([...checklist, ...arr] );
         }
-    }
+    },[]);
 
     return [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}];
 };

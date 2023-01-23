@@ -1,0 +1,65 @@
+/* .image_defalt {
+  width: 60px;
+  height: 40px;
+} */
+
+.item {
+  aspect-ratio: 5/6;
+}
+.info_list {
+  aspect-ratio: 1/1;
+}
+
+/* 呼び出し元に任せる */
+/* @media screen and (min-width: 768px) {
+
+} */
+
+/* user 画面 */
+
+/* 商品画像のアスペクト比 5:6 */
+
+/* 商品画面 サムネイル 商品 */
+.list {
+  width: 48px;
+  height: 57.6px
+}
+/* カート一覧画面  商品 */
+.list {
+  width: 60px;
+  height: 72px;
+}
+/* 閲覧履歴画面  商品 / 商品画面 関連商品 商品 */
+.list {
+  width: 93px;
+  height: 111.6px;
+}
+/* お気に入り一覧画面  商品 / 商品画面 閲覧履歴 商品 / 購入履歴画面 リスト 商品 */
+.list {
+  width: 100px;
+  height: 120px;
+}
+/* TOP画面 商品 / 商品一覧 商品 */
+.list {
+  width: 145px;
+  height: 174px;
+}
+/* 商品画面 TOP 商品 */
+.list {
+  width: 320px;
+  height: 384px;
+}
+
+
+
+/* ブログ ・ ニュース サムネイル  */
+.list {
+  width: 88px;
+  height: 88px;
+}
+
+/* ブログ ・ ニュース画面 TOP  */
+.list {
+  width: 300px;
+  height: 400px;
+}

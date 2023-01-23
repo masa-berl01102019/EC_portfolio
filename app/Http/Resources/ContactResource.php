@@ -44,13 +44,12 @@ class ContactResource extends JsonResource
                 'tel' => $this->tel,
                 'email' => $this->email,
                 'response_status_text' => $this->response_status_text,
-                'admin_full_name' => optional($this->admin)->full_name,
-                'admin_full_name_kana' => optional($this->admin)->full_name_kana,
+                'admin_full_name' => !empty($this->admin) ? $this->admin->last_name . ' ' . $this->admin->first_name : null,
+                'admin_full_name_kana' => !empty($this->admin) ? $this->admin->last_name_kana . ' ' . $this->admin->first_name_kana : null,
                 'memo' => $this->memo,
                 'created_at' => $this->created_at->format('Y/m/d H:i'),
                 'updated_at' => $this->updated_at !== null ? $this->updated_at->format('Y/m/d H:i') : null
             ];
         }
-    } 
-    
+    }
 }

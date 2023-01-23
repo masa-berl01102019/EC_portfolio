@@ -1,19 +1,29 @@
-import React, {useEffect} from 'react';
+import React, {Suspense, useEffect} from 'react';
 import {Link, useHistory} from "react-router-dom";
-import useFetchApiData from "../../../hooks/useFetchApiData";
+import useFetchApiData2 from "../../../hooks/useFetchApiData2";
 import {CircularProgress} from "@material-ui/core";
 import useForm from "../../../hooks/useForm";
 import useToggle from "../../../hooks/useToggle";
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import jaLocale from "date-fns/locale/ja";
+import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import Badge from '../../../atoms/Badge/Badge';
+import Button from '../../../atoms/Button/Button';
+import Heading from '../../../atoms/Heading/Heading';
+import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
+import DatePicker from '../../../atoms/DatePicker/DatePicker';
+import InputRadio from '../../../atoms/InputRadio/InputRadio';
+import Text from '../../../atoms/Text/Text';
+import styles from '../styles.module.css';
+import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import { useRecoilValue } from 'recoil';
+import { menuAdminState } from '../../../store/menuState';
 
 function UserEdit(props) {
-
     // urlの設定 * propsで渡ってきたIDを初期URLにセット
     const baseUrl = `/api/admin/users/${props.match.params.id}/edit`;
+    // paramsの適用範囲を決めるscope名を定義
+    const model = 'USER';
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
+    const {data, errorMessage, updateData} = useFetchApiData2(baseUrl, model);
     // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
     const [toggle, {handleToggle}] = useToggle(false);
     // フォーム項目の初期値をuseStateで管理
@@ -45,6 +55,8 @@ function UserEdit(props) {
     const history = useHistory();
     // API接続の返却値を変数に格納
     const user = data.user;
+    // menuの状態管理
+    const openAdminMenu = useRecoilValue(menuAdminState);
 
     useEffect(() => {
         // 非同期で通信されるので初回読み込み時にuserが入ってこない場合があるので条件分岐してあげる
@@ -52,153 +64,340 @@ function UserEdit(props) {
             // フォームのデフォルト値を設定するためにsetUserInfoで値をセット
             setFormData({...user});
         }
-        if(data.update === true) {
-            // 処理が完了した時点でリダイレクトの処理
-            history.push('/admin/users');
-        }
-    },[data]);
+    },[]);
 
-    // 描画のみを担当
+    
     return (
-        isLoading ? (
-            <CircularProgress disableShrink />
-        ) : errorMessage && errorMessage.httpRequestError ? (
-            <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
-        ) : (
-            <div style={{'width': '50%', 'margin':'0 auto'}}>
-                <h1>会員編集</h1>
-                <form onSubmit={ e => {
-                    e.preventDefault();
-                    dispatch({type: 'UPDATE', form: formData, url: `/api/admin/users/${props.match.params.id}` });
-                }}>
-                    <div>氏名</div>
-                    <div>
-                        <input type='text' name='last_name' onBlur={handleFormData} defaultValue={formData.last_name} placeholder='田中'/>
-                        <input type='text' name='first_name' onBlur={handleFormData} defaultValue={formData.first_name} placeholder='太郎'/>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.last_name}</p> }
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.first_name}</p> }
-                    </div>
-                    <div>氏名(カナ)</div>
-                    <div>
-                        <input type='text' name='last_name_kana' onBlur={handleFormData} defaultValue={formData.last_name_kana} />
-                        <input type='text' name='first_name_kana' onBlur={handleFormData} defaultValue={formData.first_name_kana} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.last_name_kana}</p> }
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.first_name_kana}</p> }
-                    </div>
-                    <div>性別</div>
-                    <div>
-                        <label><input type='radio' name='gender' onClick={handleFormData} value={0} defaultChecked={formData.gender === 0 } />男性</label>
-                        <label><input type='radio' name='gender' onClick={handleFormData} value={1} defaultChecked={formData.gender === 1 } />女性</label>
-                        <label><input type='radio' name='gender' onClick={handleFormData} value={2} defaultChecked={formData.gender === 2 } />その他</label>
-                        <label><input type='radio' name='gender' onClick={handleFormData} value={3} defaultChecked={formData.gender === 3 } />未回答</label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.gender}</p> }
-                    </div>
-                    <label htmlFor='birthday'>生年月日</label>
-                    <div>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>
-                            <KeyboardDatePicker
-                                id="birthday"
-                                format='yyyy/MM/dd'
-                                disableToolbar // 年月日の選択時に上部に選択されるtoolbarを非表示にする
-                                variant="dialog" // modal形式でのカレンダーの表示
-                                inputVariant="outlined" // inputっぽい表示
-                                openTo="year" // カレンダーアイコンクリック時に年->月->日の順に選択出来るように設定
-                                views={["year", "month", "date"]}
-                                value={formData.birthday}
-                                onChange={e => {
-                                    handleFormDate(e, 'birthday')
-                                }}
-                                placeholder='1991/01/01'
-                            />
-                        </MuiPickersUtilsProvider>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.birthday}</p> }
-                    </div>
-                    <label htmlFor='post_code'>郵便番号</label>
-                    <div>
-                        <input id="post_code" type='number' name='post_code' onBlur={handleFormData} defaultValue={formData.post_code} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.post_code}</p> }
-                    </div>
-                    <label htmlFor='prefecture'>都道府県</label>
-                    <div>
-                        <input id="prefecture" type='text' name='prefecture' onBlur={handleFormData} defaultValue={formData.prefecture} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.prefecture}</p> }
-                    </div>
-                    <label htmlFor='municipality'>市区町村郡</label>
-                    <div>
-                        <input id="municipality" type='text' name='municipality' onBlur={handleFormData} defaultValue={formData.municipality} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.municipality}</p> }
-                    </div>
-                    <label htmlFor='street_name'>町名</label>
-                    <div>
-                        <input id="street_name" type='text' name='street_name' onBlur={handleFormData} defaultValue={formData.street_name} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.street_name}</p> }
-                    </div>
-                    <label htmlFor='street_number'>町目番地</label>
-                    <div>
-                        <input id="street_number" type='text' name='street_number' onBlur={handleFormData} defaultValue={formData.street_number} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.street_number}</p> }
-                    </div>
-                    <label htmlFor='building'>建物名</label>
-                    <div>
-                        <input id="building" type='text' name='building' onBlur={handleFormData} defaultValue={formData.building} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.building}</p> }
-                    </div>
-                    <div>
-                        <label><input type="checkbox" onClick={handleToggle} />配送先に別の住所を指定する</label>
-                    </div>
-                    <div style={ toggle? { 'display': 'block' } : { 'display': 'none' } }>
-                        <label htmlFor='delivery_post_code'>郵便番号</label>
-                        <div>
-                            <input id="delivery_post_code" type='number' name='delivery_post_code' onBlur={handleFormData} defaultValue={formData.delivery_post_code} />
-                            { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_post_code}</p> }
+        <main>
+            <Suspense fallback={<CircularProgress disableShrink />}>
+            {
+                errorMessage && errorMessage.httpRequestError ? (
+                    <Text role='error'>{errorMessage.httpRequestError}</Text>
+                ) : (
+                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>会員編集</Heading>
+                        <div className={styles.form_area}>
+                            <form onSubmit={ e => {
+                                e.preventDefault();
+                                updateData({
+                                    form: formData, 
+                                    url: `/api/admin/users/${props.match.params.id}`,
+                                    callback: () => history.push('/admin/users')
+                                });
+                            }}>
+                                <div className={styles.mb_16}>
+                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
+                                        <Text className={styles.mr_4}>氏名</Text>
+                                        <Badge text='必須' />
+                                    </div>
+                                    <div className={styles.flex}>
+                                        <div className={[styles.flex_basis_50, styles.mr_24].join(' ')}>
+                                            <FormInputText
+                                                name={'last_name'}
+                                                onBlur={handleFormData}
+                                                value={formData.last_name}
+                                                error={errorMessage}
+                                                placeholder='山田'
+                                                style={{'width' : '100%'}}
+                                            />
+                                        </div>
+                                        <div className={styles.flex_basis_50}>
+                                            <FormInputText
+                                                name={'first_name'}
+                                                onBlur={handleFormData}
+                                                value={formData.first_name}
+                                                error={errorMessage}
+                                                placeholder='太郎'
+                                                style={{'width' : '100%'}}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
+                                        <Text className={styles.mr_4}>氏名(カナ)</Text>
+                                        <Badge text='必須' />
+                                    </div>
+                                    <div className={styles.flex}>
+                                        <div className={[styles.flex_basis_50, styles.mr_24].join(' ')}>
+                                            <FormInputText 
+                                                name={'last_name_kana'} 
+                                                onBlur={handleFormData} 
+                                                value={formData.last_name_kana} 
+                                                error={errorMessage} 
+                                                placeholder='ヤマダ'
+                                                style={{'width' : '100%'}}
+                                            />
+                                        </div>
+                                        <div className={styles.flex_basis_50}>
+                                            <FormInputText
+                                                name={'first_name_kana'}
+                                                onBlur={handleFormData}
+                                                value={formData.first_name_kana}
+                                                error={errorMessage}
+                                                placeholder='タロウ'
+                                                style={{'width' : '100%'}}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
+                                        <Text className={styles.mr_4}>性別</Text>
+                                        <Badge text='必須' />
+                                    </div>
+                                    <div className={[styles.flex, styles.mb_8, styles.flex_sp].join(' ')} >
+                                        <label className={[styles.flex, styles.align_center, styles.mb_8_sp].join(' ')}>
+                                            <InputRadio 
+                                                name='gender' 
+                                                onChange={handleFormData}
+                                                value={0} 
+                                                checked={formData.gender == 0}
+                                            />
+                                            <Text className={styles.ml_8}>男性</Text>
+                                        </label>
+                                        <label className={[styles.flex, styles.align_center, styles.ml_32, styles.mb_8_sp].join(' ')}>
+                                            <InputRadio 
+                                                name='gender' 
+                                                onChange={handleFormData} 
+                                                value={1} 
+                                                checked={formData.gender == 1}
+                                            />
+                                            <Text className={styles.ml_8}>女性</Text>
+                                        </label>
+                                        <label className={[styles.flex, styles.align_center, styles.ml_32, styles.mb_8_sp].join(' ')}>
+                                            <InputRadio 
+                                                name='gender' 
+                                                onChange={handleFormData} 
+                                                value={2} 
+                                                checked={formData.gender == 2}
+                                            />
+                                            <Text className={styles.ml_8}>その他</Text>
+                                        </label>
+                                        <label className={[styles.flex, styles.align_center, styles.ml_32, styles.mb_8_sp].join(' ')}>
+                                            <InputRadio 
+                                                name='gender' 
+                                                onChange={handleFormData} 
+                                                value={3} 
+                                                checked={formData.gender == 3}
+                                            />
+                                            <Text className={styles.ml_8}>未回答</Text>
+                                        </label>
+                                    </div>
+                                    { errorMessage && <Text role='error' size='s'>{errorMessage.gender}</Text> }
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
+                                        <label htmlFor='birthday' className={styles.mr_4}><Text>生年月日</Text></label>
+                                        <Badge text='必須' />
+                                    </div>
+                                    <div className={styles.mb_8}>
+                                        <DatePicker name={'birthday'} value={formData.birthday} onChange={handleFormDate} />
+                                    </div>
+                                    { errorMessage && <Text role='error' size='s'>{errorMessage.birthday}</Text> }
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'post_code'}
+                                        type={'number'}
+                                        onBlur={handleFormData}
+                                        value={formData.post_code}
+                                        label={'郵便番号'}
+                                        error={errorMessage}
+                                        placeholder='1234567'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'prefecture'}
+                                        onBlur={handleFormData}
+                                        value={formData.prefecture}
+                                        label={'都道府県'}
+                                        error={errorMessage}
+                                        placeholder='神奈川県'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'municipality'}
+                                        onBlur={handleFormData}
+                                        value={formData.municipality}
+                                        label={'市区町村郡'}
+                                        error={errorMessage}
+                                        placeholder='川崎市麻生区'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'street_name'}
+                                        onBlur={handleFormData}
+                                        value={formData.street_name}
+                                        label={'町名'}
+                                        error={errorMessage}
+                                        placeholder='千代ヶ丘'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'street_number'}
+                                        onBlur={handleFormData}
+                                        value={formData.street_number}
+                                        label={'町目番地'}
+                                        error={errorMessage}
+                                        placeholder='1-1-1'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'building'}
+                                        onBlur={handleFormData}
+                                        value={formData.building}
+                                        label={'建物名'}
+                                        error={errorMessage}
+                                        placeholder='○☓△ビルディング 1F'
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <label className={styles.flex}>
+                                        <InputCheckbox onChange={handleToggle} checked={toggle} />
+                                        <Text className={styles.ml_8}>配送先に別の住所を指定する</Text>
+                                    </label>
+                                </div>
+
+                                {   toggle &&
+                                    <>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'delivery_post_code'}
+                                                type={'number'}
+                                                onBlur={handleFormData}
+                                                value={formData.delivery_post_code}
+                                                label={'郵便番号'}
+                                                error={errorMessage}
+                                                placeholder='1234567'
+                                            />
+                                        </div>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'delivery_prefecture'}
+                                                onBlur={handleFormData}
+                                                value={formData.delivery_prefecture}
+                                                label={'都道府県'}
+                                                error={errorMessage}
+                                                placeholder='神奈川県'
+                                            />
+                                        </div>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'delivery_municipality'}
+                                                onBlur={handleFormData}
+                                                value={formData.delivery_municipality}
+                                                label={'市区町村郡'}
+                                                error={errorMessage}
+                                                placeholder='川崎市麻生区'
+                                            />
+                                        </div>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'delivery_street_name'}
+                                                onBlur={handleFormData}
+                                                value={formData.delivery_street_name}
+                                                label={'町名'}
+                                                error={errorMessage}
+                                                placeholder='千代ヶ丘'
+                                            />
+                                        </div>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'delivery_street_number'}
+                                                onBlur={handleFormData}
+                                                value={formData.delivery_street_number}
+                                                label={'町目番地'}
+                                                error={errorMessage}
+                                                placeholder='1-1-1'
+                                            />
+                                        </div>
+                                        <div className={styles.mb_16}>
+                                            <FormInputText
+                                                name={'delivery_building'}
+                                                onBlur={handleFormData}
+                                                value={formData.delivery_building}
+                                                label={'建物名'}
+                                                error={errorMessage}
+                                                placeholder='○☓△ビルディング 1F'
+                                            />
+                                        </div>
+                                    </>
+                                }
+
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'tel'}
+                                        type='tel'
+                                        onBlur={handleFormData}
+                                        value={formData.tel}
+                                        label={'電話番号'}
+                                        error={errorMessage}
+                                        placeholder='080-1234-5678'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_16}>
+                                    <FormInputText
+                                        name={'email'}
+                                        type={'email'}
+                                        onBlur={handleFormData}
+                                        value={formData.email}
+                                        label={'メールアドレス'}
+                                        error={errorMessage}
+                                        placeholder='test@example.com'
+                                        required={true}
+                                    />
+                                </div>
+                                <div className={styles.mb_40}>
+                                    <div className={[styles.flex, styles.align_center, styles.mb_8].join(' ')} >
+                                        <Text className={styles.mr_4}>DM登録</Text>
+                                        <Badge text='必須' />
+                                    </div>
+                                    <div className={[styles.flex, styles.mb_8].join(' ')}>
+                                        <label className={[styles.flex, styles.align_center].join(' ')}>
+                                            <InputRadio 
+                                                name='is_received' 
+                                                onChange={handleFormData}
+                                                value={1} 
+                                                checked={formData.is_received == 1}
+                                            />
+                                            <Text className={styles.ml_8}>登録する</Text>
+                                        </label>
+                                        <label className={[styles.flex, styles.align_center, styles.ml_32].join(' ')}>
+                                            <InputRadio 
+                                                name='is_received' 
+                                                onChange={handleFormData} 
+                                                value={0} 
+                                                checked={formData.is_received == 0}
+                                            />
+                                            <Text className={styles.ml_8}>登録しない</Text>
+                                        </label>
+                                    </div>
+                                    { errorMessage && <Text role='error' size='s'>{errorMessage.is_received}</Text> }
+                                </div>
+
+                                <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
+                                    <LinkBtn to={`/admin/users`} size='l' className={[styles.mr_12, styles.w_100].join(' ')} >一覧に戻る</LinkBtn>
+                                    <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
+                                </div>
+                            </form>
                         </div>
-                        <label htmlFor='delivery_prefecture'>都道府県</label>
-                        <div>
-                            <input id="delivery_prefecture" type='text' name='delivery_prefecture' onBlur={handleFormData} defaultValue={formData.delivery_prefecture} />
-                            { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_prefecture}</p> }
-                        </div>
-                        <label htmlFor='delivery_municipality'>市区町村郡</label>
-                        <div>
-                            <input id="delivery_municipality" type='text' name='delivery_municipality' onBlur={handleFormData} defaultValue={formData.delivery_municipality} />
-                            { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_municipality}</p> }
-                        </div>
-                        <label htmlFor='delivery_street_name'>町名</label>
-                        <div>
-                            <input id="delivery_street_name" type='text' name='delivery_street_name' onBlur={handleFormData} defaultValue={formData.delivery_street_name} />
-                            { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_street_name}</p> }
-                        </div>
-                        <label htmlFor='delivery_street_number'>町目番地</label>
-                        <div>
-                            <input id="delivery_street_number" type='text' name='delivery_street_number' onBlur={handleFormData} defaultValue={formData.delivery_street_number} />
-                            { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_street_number}</p> }
-                        </div>
-                        <label htmlFor='delivery_building'>建物名</label>
-                        <div>
-                            <input id="delivery_building" type='text' name='delivery_building' onBlur={handleFormData} defaultValue={formData.delivery_building} />
-                            { errorMessage && <p style={{'color': 'red'}}>{errorMessage.delivery_building}</p> }
-                        </div>
                     </div>
-                    <label htmlFor='tel'>電話番号</label>
-                    <div>
-                        <input id="tel" type='tel' name='tel' onBlur={handleFormData} defaultValue={formData.tel} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.tel}</p> }
-                    </div>
-                    <label htmlFor='email'>メールアドレス</label>
-                    <div>
-                        <input id="email" type='email' name='email' onBlur={handleFormData} defaultValue={formData.email} />
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.email}</p> }
-                    </div>
-                    <div>DM登録</div>
-                    <div>
-                        <label><input type='radio' name='is_received' onClick={handleFormData} value={1} defaultChecked={formData.is_received === 1} />登録する</label>
-                        <label><input type='radio' name='is_received' onClick={handleFormData} value={0} defaultChecked={formData.is_received === 0} />登録しない</label>
-                        { errorMessage && <p style={{'color': 'red'}}>{errorMessage.is_received}</p> }
-                    </div>
-                    <button><Link to={`/admin/users`}>一覧に戻る</Link></button>
-                    <button type="submit">更新する</button>
-                </form>
-            </div>
-        )
+                )
+            }
+            </Suspense>
+        </main>
     );
 }
 

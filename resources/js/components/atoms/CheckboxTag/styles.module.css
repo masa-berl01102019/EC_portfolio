@@ -1,0 +1,27 @@
+
+.checkbox_tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #666;
+  color: #666;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+}
+.checkbox {
+  display: none;
+}
+.checkbox_tag:hover {
+  border: 1px solid #25bfc652;
+}
+.checkbox:checked ~ .checkbox_tag {
+  background: #49A3D8;
+  color: #fff;
+  border: 1px solid #E6E7E9;
+}
+
+
+
