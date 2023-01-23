@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "@material-ui/core": "^4.11.4",
+        "react-js-pagination": "^3.0.3",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0"
     }

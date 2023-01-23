@@ -22,8 +22,9 @@ const DataFetchApi = (initialUrl, initialMethod, initialData) => {
                     data: action.form
                 };
             case 'READ':
+                console.log(state.url);
                 return {
-                    url: state.url, // GET '/api/admin/users' or '/api/admin/users/create' or '/api/admin/users/{id}' or `/api/admin/users/{id}/edit`
+                    url: action.url, // GET '/api/admin/users' or '/api/admin/users/create' or '/api/admin/users/{id}' or `/api/admin/users/{id}/edit`
                     method: 'get'
                 };
             case 'UPDATE':
