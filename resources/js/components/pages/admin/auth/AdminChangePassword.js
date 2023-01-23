@@ -9,6 +9,7 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useValidation from '../../../hooks/useValidation';
 import useI18next from '../../../context/I18nextContext';
 
 function AdminChangePassword(props) {
@@ -17,6 +18,7 @@ function AdminChangePassword(props) {
         'uuid': props.match.params.uuid,
         'password': null
     });
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'change_password_request');
     const {errorMessage, handleChangePassword } = useAuth('/api/admin/auth', 'admin');
     const history = useHistory();
     const openAdminMenu = useRecoilValue(menuAdminState);
@@ -32,6 +34,10 @@ function AdminChangePassword(props) {
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
+                            if(validation.fails()) {
+                                setValid(true);
+                                return false;
+                            }
                             handleChangePassword({
                                 url: `/api/admin/resetPasswords/change`, 
                                 form: formData,
@@ -45,6 +51,8 @@ function AdminChangePassword(props) {
                                 value={formData.password}
                                 label={i18next.t('admin.auth.password')}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder={i18next.t('admin.auth.password-ex')}
                                 className={styles.mb_24}
                             />

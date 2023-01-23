@@ -9,14 +9,16 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useValidation from '../../../hooks/useValidation';
 import useI18next from '../../../context/I18nextContext';
 
 function AdminResetPassword() {
 
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'fwakamatsu@example.net'
+        'email': ''
     });
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'reset_password_request');
     const {errorMessage, handleResetPasswordEmail } = useAuth('/api/admin/auth', 'admin');
     const openAdminMenu = useRecoilValue(menuAdminState);
     const i18next = useI18next();
@@ -31,6 +33,10 @@ function AdminResetPassword() {
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
+                            if(validation.fails()) {
+                                setValid(true);
+                                return false;
+                            }
                             handleResetPasswordEmail({
                                 url: `/api/admin/resetPasswords/send`, 
                                 form: formData,
@@ -44,6 +50,8 @@ function AdminResetPassword() {
                                 value={formData.email}
                                 label={i18next.t('admin.auth.email')}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder={i18next.t('admin.auth.email-ex')}
                                 className={styles.mb_24}
                             />

@@ -460,9 +460,33 @@ const validationConfig =  () => {
         attributes : { 
           'size_name': i18next.t('validation.admin.size.size_name')
         }
+      },
+      change_password_request : {
+        rules : {
+          'password' : 'required|string|alpha_num|min:8|max:100'
+        },
+        attributes : { 
+          'password': i18next.t('validation.admin.auth.password')
+        }
+      },
+      reset_password_request : {
+        rules : {
+          'email' : 'required|email|max:100'
+        },
+        attributes : { 
+          'email': i18next.t('validation.admin.auth.email')
+        }
+      },
+      login_request : {
+        rules : {
+          'email' : 'required|email|max:100',
+          'password' : 'required|string|alpha_num|min:8|max:100',
+        },
+        attributes : { 
+          'email': i18next.t('validation.admin.auth.email'),
+          'password': i18next.t('validation.admin.auth.password')
+        }
       }
-      // ChangePasswordRequest
-      // ResetPasswordRequest
     },
     user : {
       contact_request : {
@@ -598,9 +622,33 @@ const validationConfig =  () => {
           'email': i18next.t('validation.user.user.email'),
           'is_received': i18next.t('validation.user.user.is_received')
         }
+      },
+      change_password_request : {
+        rules : {
+          'password' : 'required|string|alpha_num|min:8|max:100'
+        },
+        attributes : { 
+          'password': i18next.t('validation.user.auth.password')
+        }
+      },
+      reset_password_request : {
+        rules : {
+          'email' : 'required|email|max:100'
+        },
+        attributes : { 
+          'email': i18next.t('validation.user.auth.email')
+        }
+      },
+      login_request : {
+        rules : {
+          'email' : 'required|email|max:100',
+          'password' : 'required|string|alpha_num|min:8|max:100',
+        },
+        attributes : { 
+          'email': i18next.t('validation.user.auth.email'),
+          'password': i18next.t('validation.user.auth.password')
+        }
       }
-      // ChangePasswordRequest
-      // ResetPasswordRequest
     }
   }
 
