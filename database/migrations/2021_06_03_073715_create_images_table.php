@@ -14,8 +14,13 @@ class CreateImagesTable extends Migration
     public function up()
     {
         Schema::create('images', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->increments('id');
+            $table->unsignedInteger('item_id'); // 外部キー
+            $table->foreign('item_id')->references('id')->on('items'); // 外部キー
+            $table->string('image',255);
+            $table->unsignedTinyInteger('image_category'); // 0~255 0: メイン画像 1: サムネイル画像
+            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
+            $table->softDeletes(); // 論理削除
         });
     }
 

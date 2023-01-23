@@ -14,8 +14,10 @@ class CreateBrandsTable extends Migration
     public function up()
     {
         Schema::create('brands', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->increments('id');
+            $table->string('brand_name',255);
+            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
+            $table->softDeletes(); // 論理削除
         });
     }
 
