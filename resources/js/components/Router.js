@@ -10,10 +10,22 @@ import AdminHeader from "./AdminHeader" ;
 import UserHeader from "./UserHeader";
 import Footer from './Footer' ;
 // user用 各ページコンポーネント
-const Top = lazy(() => import( "./pages/user/Top" ));
+const TopPage = lazy(() => import( "./pages/user/TopPage" ));
+const HistoryPage = lazy(() => import( "./pages/user/HistoryPage" ));
+const ItemIndexPage = lazy(() => import( "./pages/user/items/ItemIndexPage" ));
+const ItemShowPage = lazy(() => import( "./pages/user/items/ItemShowPage" ));
+const BlogIndexPage = lazy(() => import( "./pages/user/blogs/BlogIndexPage" ));
+const BlogShowPage = lazy(() => import( "./pages/user/blogs/BlogShowPage" ));
+const NewsIndexPage = lazy(() => import( "./pages/user/news/NewsIndexPage" ));
+const NewsShowPage = lazy(() => import( "./pages/user/news/NewsShowPage" ));
+const NotificationIndexPage = lazy(() => import( "./pages/user/notifications/NotificationIndexPage" ));
+const CartIndexPage = lazy(() => import( "./pages/user/carts/CartIndexPage" ));
+const BookmarkIndexPage = lazy(() => import( "./pages/user/bookmarks/BookmarkIndexPage" ));
+const OrderIndexPage = lazy(() => import( "./pages/user/orders/OrderIndexPage" ));
 const UserLogin = lazy(() => import( "./pages/user/auth/UserLogin" ));
-// マルチ認証Test用 コンポーネント
-const TestUserIndex = lazy(() => import( "./pages/user/users/TestUserIndex" ));
+const UserCreatePage = lazy(() => import( "./pages/user/users/UserCreatePage" ));
+const ContactCreatePage = lazy(() => import( "./pages/user/contacts/ContactCreatePage" ));
+const UserEditPage = lazy(() => import( "./pages/user/users/UserEditPage" ));
 // admin用 各ページコンポーネント
 const AdminLogin = lazy(() => import( "./pages/admin/auth/AdminLogin" ));
 const Dashboard = lazy(() => import( './pages/admin/dashboard/Dashboard' ));
@@ -63,6 +75,7 @@ function Router() {
     const [isResolve, setIsResolve] = useState(false);
 
     useEffect(() => {
+        console.log('Router.jsが呼ばれた')
         // ログインしているかどうかをAPIにアクセスして調べる
         axios.get(`/api/${auth}/auth`).then(res => {
             // ログインしていればサーバーからログイン者名が返ってくるのでそこで条件分岐
@@ -92,10 +105,22 @@ function Router() {
                     <Suspense fallback={<CircularProgress disableShrink />}>
                         <Switch>
                             {/* USER ROUTING */}
-                            <Route path="/" exact component={Top} />
+                            <Route path="/" exact component={TopPage} />
+                            <Route path="/items" exact component={ItemIndexPage} />
+                            <Route path="/items/:id" exact component={ItemShowPage} />
+                            <Route path="/blogs" exact component={BlogIndexPage} />
+                            <Route path="/blogs/:id" exact component={BlogShowPage} />
+                            <Route path="/news" exact component={NewsIndexPage} />
+                            <Route path="/news/:id" exact component={NewsShowPage} />
+                            <Route path="/notifications" exact component={NotificationIndexPage} />
+                            <Route path="/histories" exact component={HistoryPage} />
+                            <Route path="/users/create" exact component={UserCreatePage} />
+                            <Route path="/contacts" exact component={ContactCreatePage} />
                             <UserLoginRoute path="/user/login" exact component={UserLogin} />
-                            {/* test component */}
-                            <UserPrivateRoute path="/user/users" exact component={TestUserIndex} />
+                            <UserPrivateRoute path="/users/edit" exact component={UserEditPage} />
+                            <UserPrivateRoute path="/carts" exact component={CartIndexPage} />
+                            <UserPrivateRoute path="/bookmarks" exact component={BookmarkIndexPage} />
+                            <UserPrivateRoute path="/orders" exact component={OrderIndexPage} />
                             {/* ADMIN ROUTING */}
                             <AdminLoginRoute path="/admin/login" exact component={AdminLogin} />
                             <AdminPrivateRoute path="/admin/Dashboard" exact component={Dashboard} />

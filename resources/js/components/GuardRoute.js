@@ -18,7 +18,7 @@ export function UserLoginRoute (props) {
     const {isUserLogin} = useAuthContext();
 
     if(isUserLogin) {
-        return <Redirect to={'/user/users'} />
+        return <Redirect to={'/'} />
     } else {
         return <Route {...props} />
     }

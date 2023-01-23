@@ -88,6 +88,19 @@ const useCreateParams = () => {
         });
     };
 
+    // input checkbox用 clear
+    const handleClearFilterCheckbox = (e) => {
+        console.log('handleClearFilterCheckbox直前のparams', params);
+        const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
+        setParams({
+            ...params,
+            filter: {
+                ...params.filter,
+                [name]: []
+            }
+        });
+    };
+
     // dateRange用
     const handleFilterDateRange = () => {
         console.log('handleFilterDateRange直前のparams', params);
@@ -144,7 +157,7 @@ const useCreateParams = () => {
         });
     }
 
-    return [ dateRangeStart, dateRangeEnd, dateRangeField, {handleSort, handleCurrentPage, handlePerPage, handleFilter, handleFilterCheckbox, handleFilterDateRange, handleFilterCategory}];
+    return [ dateRangeStart, dateRangeEnd, dateRangeField, {handleSort, handleCurrentPage, handlePerPage, handleFilter, handleFilterCheckbox, handleClearFilterCheckbox, handleFilterDateRange, handleFilterCategory}];
 }
 
 export default useCreateParams;
