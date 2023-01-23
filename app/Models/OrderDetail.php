@@ -22,5 +22,8 @@ class OrderDetail extends Model
         return $this->belongsTo('App\Models\Order');
     }
 
-    // sku ID とのリレーションを要検討
+    public function sku() {
+        return $this->belongsTo('App\Models\Sku');
+    }
+    
 }

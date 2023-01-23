@@ -4,6 +4,7 @@ namespace App\Traits;
 
 trait FilterKeywordScopeTrait
 {
+    // TODO 現状の仕様ではリレーション先のカラム名に対して検索ワードの指定が出来ないので修正必要
     public function scopeFilterKeyword($query, $request, $columns) {
 
         $filter = $request->input('f_keyword');
@@ -20,7 +21,7 @@ trait FilterKeywordScopeTrait
             $keyword = preg_replace('/\s+/', ',', $keyword);
             // カンマ区切りで配列に変換
             $keywords = explode(',',$keyword);
-            // キーワード検索で渡ってきた値と部分一致するアイテムに絞りこみ　* DBのカラムが分かれてるのでスペースなしでフルネームで検索されると表示されない！！
+            // キーワード検索で渡ってきた値と部分一致するアイテムに絞りこみ * DBのカラムが分かれてるのでスペースなしでフルネームで検索されると表示されない！！
             return $query->where(function ($query) use ($keywords, $columns) {
                 foreach ($keywords as $keyword) {
                     // 複数のkeywordを検索

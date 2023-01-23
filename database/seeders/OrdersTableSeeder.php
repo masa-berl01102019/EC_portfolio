@@ -1,14 +1,16 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\Color;
 use App\Models\Item;
-use App\Models\Order;
-use App\Models\OrderDetail;
 use App\Models\Size;
 use App\Models\User;
+use App\Models\Color;
+use App\Models\Order;
+use App\Models\OrderDetail;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Provider\DateTime;
 
 class OrdersTableSeeder extends Seeder
 {
@@ -22,6 +24,8 @@ class OrdersTableSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
 
         DB::table('orders')->truncate(); // テーブルごと削除して再構築
+
+        DB::table('order_details')->truncate(); // テーブルごと削除して再構築
 
         for($n = 0; $n < 100; $n++) {
 
@@ -37,7 +41,7 @@ class OrdersTableSeeder extends Seeder
             // 小計を算出
             $sub_total = $purchased_items->sum('price');
 
-            // 消費税合計を算出
+            // 消費税合計を算出 合算値で消費税かけてる * 商品単体で消費税計算した場合に消費税額がズレるが一旦このままでＯＫ
             $tax_amount = intval(floor($sub_total * 0.1));
 
             // 購入総額を算出
@@ -53,10 +57,20 @@ class OrdersTableSeeder extends Seeder
             $payment_status = rand(0, 1); // 0:決済済み 1:3D認証決済前
 
             // 入金の有無
-            $is_paid = $payment_status === 0? rand(0, 1): 0; // 0:入金無し　1:入金有り
+            $is_paid = $payment_status === 0? rand(0, 1): 0; // 0:入金無し 1:入金有り
 
             // 配送の有無
             $is_shipped = $is_paid === 1? rand(0, 1): 0; // 0:未配送 1:配送済
+
+            // dateTimeThisDecade() 過去10年のランダムな日付を取得→Carbon::instance()でDatetime型の日付からCarbonインスタンスを取得
+            $first = Carbon::instance(DateTime::dateTimeThisDecade());
+            $second = Carbon::instance(DateTime::dateTimeThisDecade());
+            
+            // オーダー作成日
+            $created_at = $first->min($second); // 2つの日付のうち前のものを取得
+
+            // オーダー更新日
+            $updated_at = $is_paid === 1 || $is_shipped === 1 ? $first->max($second) : $created_at; // 2つの日付のうち先のものを取得
 
             $order = Order::create([
                 'user_id' => $users_id[$key],
@@ -68,6 +82,8 @@ class OrdersTableSeeder extends Seeder
                 'payment_status' => $payment_status,
                 'is_paid' => $is_paid,
                 'is_shipped' => $is_shipped,
+                'created_at' => $created_at,
+                'updated_at' => $updated_at
             ]);
 
             for($i = 0; $i < count($purchased_items); $i++) {
@@ -86,6 +102,8 @@ class OrdersTableSeeder extends Seeder
                     'order_color' => $color,
                     'order_size' => $size,
                     'order_quantity' => 1,
+                    'created_at' => $created_at,
+                    'updated_at' => $created_at
                 ]);
             }
 

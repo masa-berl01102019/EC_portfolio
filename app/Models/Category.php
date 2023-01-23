@@ -22,6 +22,14 @@ class Category extends Model
         return $this->belongsToMany('App\Models\Item');
     }
 
+    public function blogs() {
+        return $this->hasMany('App\Models\Blog');
+    }
+
+    public function news() {
+        return $this->hasMany('App\Models\News');
+    }
+
     // 階層構造用にリレーション
     public function parent() {
         return $this->belongsTo('App\Models\Category', "parent_id", "id");
@@ -35,10 +43,6 @@ class Category extends Model
     // 階層構造用にリレーション
     public function grandChildren() {
         return $this->hasMany('App\Models\Category', "parent_id", "id");
-    }
-
-    public function blog() {
-        return $this->hasOne('App\Models\Blog');
     }
 
 }

@@ -37,6 +37,8 @@ const BlogEdit = lazy(() => import( "./pages/admin/blogs/BlogEdit" ));
 const NewsIndex = lazy(() => import( "./pages/admin/news/NewsIndex" ));
 const NewsCreate = lazy(() => import( "./pages/admin/news/NewsCreate" ));
 const NewsEdit = lazy(() => import( "./pages/admin/news/NewsEdit" ));
+const OrderIndex = lazy(() => import( "./pages/admin/orders/OrderIndex" ));
+const OrderEdit = lazy(() => import( "./pages/admin/orders/OrderEdit" ));
 // エラーページ用 コンポーネント
 const NotFound = lazy(() => import( "./pages/error/NotFound" ));
 
@@ -112,6 +114,8 @@ function Router() {
                             <AdminPrivateRoute path="/admin/news" exact component={NewsIndex} />
                             <AdminPrivateRoute path="/admin/news/create" exact component={NewsCreate} />
                             <AdminPrivateRoute path="/admin/news/:id/edit" exact component={NewsEdit} />
+                            <AdminPrivateRoute path="/admin/orders" exact component={OrderIndex} />
+                            <AdminPrivateRoute path="/admin/orders/:id/edit" exact component={OrderEdit} />
                             {/* NOT FOUND PAGE */}
                             <Route component={NotFound} />
                         </Switch>
