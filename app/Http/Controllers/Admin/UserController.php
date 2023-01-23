@@ -15,6 +15,7 @@ class UserController extends Controller
     // TODO レスポンスの返却形式の統一
     // TODO エラーハンドリングの統一 * auth認証されてない場合等のエラーと入力バリデーション等のエラーは出しどころを分ける必要あり
     // TODO フリーワード検索　カラムを指定して検索をかけるようにするか要検討
+    // TODO 他のコントローラーでも使用する共通処理をヘルパー関数でまとめる
 
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [
@@ -85,9 +86,9 @@ class UserController extends Controller
         }
 
         // 検索期間の指定
-        $t = $request->all();
+        $target = $request->all();
         // array_flip()でkeyとvalueを反転させてpreg_grep()で正規表現を使って該当の連想配列を取り出す * keyとvalueが反転した状態で連想配列が返されてる
-        $flip_array = preg_grep( '/f_dr_/', array_flip($t) ); // f_dr_ = 期間指定のフィルタリング　
+        $flip_array = preg_grep( '/f_dr_/', array_flip($target) ); // f_dr_ = 期間指定のフィルタリング　
         // 該当のkeyがあるか条件分岐
         if(!empty($flip_array)) {
             // array_key_first()で最初のキーを取得して変数に格納

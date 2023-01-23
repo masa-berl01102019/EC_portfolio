@@ -35,6 +35,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::delete('/users/delete', 'UserController@destroy')->name('users.destroy'); // 一括削除
         Route::post('/users/csv', 'UserController@csvExport')->name('users.csvExport'); // 一括CSV出力
 
+        // 管理者情報のCRUD
+        Route::get('/admins', 'AdminController@index')->name('admins.index');
+        Route::get('/admins/create', 'AdminController@create')->name('admins.create');
+        Route::post('/admins', 'AdminController@store')->name('admins.store');
+        Route::get('/admins/{admin}/edit', 'AdminController@edit')->name('admins.edit');
+        Route::put('/admins/{admin}', 'AdminController@update')->name('admins.update');
+        Route::delete('/admins/delete', 'AdminController@destroy')->name('admins.destroy'); // 一括削除
+        Route::post('/admins/csv', 'AdminController@csvExport')->name('admins.csvExport'); // 一括CSV出力
+
     });
 
 });

@@ -19,12 +19,6 @@ $factory->define(Admin::class, function (Faker $faker) {
         'first_name' => $gender === 0 || $gender === 2? $faker->firstNameMale: $faker->firstNameFemale,
         'last_name_kana' => $faker->lastKanaName,
         'first_name_kana' => $gender === 0 || $gender === 2? $faker->firstKanaNameMale: $faker->firstKanaNameFemale,
-        'post_code' => $faker->postcode,
-        'prefecture' => $faker->prefecture,
-        'municipality' => $faker->city,
-        'street_name' => $faker->streetName,
-        'street_number' => '1-1-1',
-        'building' => $faker->randomElement([$faker->secondaryAddress, null]), // 建物名がある場合とない場合の想定
         'tel' => $faker->phoneNumber,
         'email' => $faker->unique()->safeEmail,
         'password' => Hash::make('abc12345'),
