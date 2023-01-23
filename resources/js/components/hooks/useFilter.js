@@ -1,9 +1,8 @@
-import React, {useState, useRef} from 'react';
+import React, {useRef} from 'react';
 import { useParamsContext } from '../context/ParamsContext';
 
-const useFilter = (initialValue) => {
-    // フィルター管理
-    const [filter, setFilter] = useState(initialValue);
+const useFilter = () => {
+
     // useContextでグローバルで管理するパラメータを取得
     const {params, setParams} = useParamsContext();
     // 期間していするフィルターの制御するためのuseRefの呼び出し
@@ -14,7 +13,6 @@ const useFilter = (initialValue) => {
     // input text用
     const handleFilterInputText = (e) => {
         console.log('handleFilterInputText直前のparams', params);
-        // setFilter({ ...filter, [e.target.name]: e.target.value });
         setParams({
             ...params,
             filter: {
@@ -39,7 +37,6 @@ const useFilter = (initialValue) => {
         if(field !== 'clear' && startDate !== '' && endDate !== '') {
             // 検索開始日と終了日を配列に格納
             let dateRange = [startDate, endDate];
-            // setFilter({ ...filter, dateRange: { [field]: dateRange } });
             setParams({
                 ...params,
                 filter: {
@@ -68,39 +65,23 @@ const useFilter = (initialValue) => {
         const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
         const value = Number(e.target.value); // 渡ってきた値を取得
 
-        if(params.filter[name] !== undefined) { // useParamsContextのparamsは初期値が入ってないので最初のアクションでは必ずundefinedが返ってくるので条件分岐する
-            if( params.filter[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
-                new_arr = params.filter[name].filter(item => item !== value );
-                console.log('trueで代入された配列',new_arr);
-            } else {
-                new_arr = params.filter[name];
-                new_arr.push(value);
-                console.log('else if で代入された配列',new_arr);
-            }
-            // setFilter({ ...filter, [name]: new_arr });
-            setParams({
-                ...params,
-                filter: {
-                    ...params.filter,
-                    [name]: new_arr
-                }
-            });
-        } else { // useParamsContextのparamsは初期値がundefinedの場合　初期値として渡ってきてるオブジェクトを代入する
-            new_arr = []; // 空の配列を用意
-            new_arr.push(value);　// 値を代入
-            console.log('else で代入された配列',new_arr);
-            // setFilter({ ...filter, [name]: new_arr });
-            setParams({
-                ...params,
-                filter: {
-                    ...params.filter,
-                    [name]: new_arr
-                }
-            });
+        if( params.filter[name].includes(value)) { // 指定のカラム名の配列に該当の値が既にないか確認
+            new_arr = params.filter[name].filter(item => item !== value );
+        } else {
+            new_arr = params.filter[name];
+            new_arr.push(value);
         }
+
+        setParams({
+            ...params,
+            filter: {
+                ...params.filter,
+                [name]: new_arr
+            }
+        });
     };
 
-    return [filter, dateRangeStart, dateRangeEnd, dateRangeField, {setFilter, handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}];
+    return [ dateRangeStart, dateRangeEnd, dateRangeField, { handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}];
 
 }
 

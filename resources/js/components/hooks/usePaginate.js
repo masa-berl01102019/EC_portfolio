@@ -1,17 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { useParamsContext } from '../context/ParamsContext';
 
-const usePaginate = (initialValue) => {
+const usePaginate = () => {
 
-    // paginationのステータス管理
-    const [paginate, setPaginate] = useState(initialValue);
     // useContextでグローバルで管理するパラメータを取得
     const {params, setParams} = useParamsContext();
 
     // 各ページネーションをクリックすると数字が渡ってくるのでパラメータをつけてリクエストを飛ばす
     const handlePageChange = (pageNumber) => {
         console.log('handlePageChange直前のparams', params);
-        // setPaginate({...paginate, [paginate.current_page]: pageNumber});
         setParams({
             ...params,
             paginate: {
@@ -24,7 +21,6 @@ const usePaginate = (initialValue) => {
     //　行数の指定をした場合にパラメータを渡して１ページ当たりの取得件数を変更してリクエストを飛ばす
     const handleTableRow = (e) => {
         console.log('handleTableRow直前のparams', params);
-        // setPaginate({...paginate, [paginate.per_page]: e.target.value});
         setParams({
             ...params,
             paginate: {
@@ -34,7 +30,7 @@ const usePaginate = (initialValue) => {
         });
     };
 
-    return [paginate, {setPaginate, handlePageChange, handleTableRow}];
+    return {handlePageChange, handleTableRow};
 
 }
 

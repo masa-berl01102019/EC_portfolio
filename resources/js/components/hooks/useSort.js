@@ -1,16 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { useParamsContext } from '../context/ParamsContext';
 
-const useSort = (initialValue) => {
+const useSort = () => {
 
-    // ソート管理
-    const [sort, setSort] = useState(initialValue);
     // useContextでグローバルで管理するパラメータを取得
     const {params, setParams} = useParamsContext();
 
     const handleSort = (e) => {
         console.log('handleSort直前のparams', params);
-        // setSort({ ...sort, [e.target.name]: e.target.value });
         setParams({
             ...params,
             sort: {
@@ -20,7 +17,7 @@ const useSort = (initialValue) => {
         });
     }
 
-    return [sort, {setSort, handleSort}];
+    return {handleSort};
 
 }
 

@@ -18,27 +18,41 @@ function UserIndex() {
 
     // urlの設定
     const baseUrl = `/api/admin/users`;
-    // paginateフックの呼び出しと初期値をセット
-    const [paginate, { handlePageChange, handleTableRow}] = usePaginate({
-        data: null, // 取得したデータ
-        current_page: 1, // 現在のページ
-        per_page: 10, // 1ページ当たりの取得件数
-        total: 0, // 総件数
-        page_range_displayed: 5// ページネーションの表示個数
-    });
-    // sortフックの呼び出しと初期値をセット
-    const [sort, {handleSort}] = useSort({ 'last_name_kana' : '', 'birthday' : '', 'created_at' : '', 'updated_at' : ''});
-    const [filter, dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter({ 'keyword' : '', 'gender' : [], 'is_received' : [], 'dateRange': {} });
+    // paramsの適用範囲を決めるscope名を定義
+    const model = 'USER';
+    // paginateフックの呼び出し
+    const { handlePageChange, handleTableRow} = usePaginate();
+    // sortフックの呼び出し
+    const {handleSort} = useSort();
+    // filterフックの呼び出し
+    const [dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter();
     // checkboxフックの呼び出し
     const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
     // useContext呼び出し
-    const {params} = useParamsContext();
+    const {params, setParams, scope, setScope} = useParamsContext();
     // APIと接続して返り値を取得
-    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
+    const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', [],  model);
     // APIから取得したデータを変数に格納
     const users = data.users? data.users.data: null;
 
     useEffect(() => {
+        // paramsのデフォルト値と適用範囲を設定
+        if(scope === null || scope !== model) { // 全てのページにおいての初回読み込みなので初期値を代入
+            console.log('USERにてparamsの初期値をセットしてscopeを変更');
+            setParams({
+                ...params,
+                sort: { 'last_name_kana' : '', 'birthday' : '', 'created_at' : '', 'updated_at' : ''},
+                filter: { 'keyword' : '', 'gender' : [], 'is_received' : [], 'dateRange': {} },
+                // paginate: {
+                //     data: null, // 取得したデータ
+                //     current_page: 1, // 現在のページ
+                //     per_page: 20, // 1ページ当たりの取得件数
+                //     total: 0, // 総件数
+                //     page_range_displayed: 5// ページネーションの表示個数
+                // }
+            });
+            setScope('USER');
+        }
         // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐
         if(data.delete && data.delete === true) {
             // ページネーションの設定を保持して再度読み込み
@@ -68,67 +82,76 @@ function UserIndex() {
                         <button onClick={ () => {
                                 dispatch({ type:'CREATE', url:`/api/admin/users/csv`, form:checklist })
                         }}>CSV出力</button>
-                        <div style={{'marginTop': '10px'}}>
-                            <p style={{'marginBottom': '8px', 'fontWeight': 'bold'}}>フィルター機能</p>
-                            <div style={{'marginBottom': '8px'}}>
-                                <span style={{'marginRight': '20px'}}>キーワード検索</span>
-                                <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword !== undefined ? params.filter.keyword: ''} />
+
+                        {   Object.keys(params.filter).length > 0 &&
+
+                            <div style={{'marginTop': '10px'}}>
+                                <p style={{'marginBottom': '8px', 'fontWeight': 'bold'}}>フィルター機能</p>
+                                <div style={{'marginBottom': '8px'}}>
+                                    <span style={{'marginRight': '20px'}}>キーワード検索</span>
+                                    <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword} />
+                                </div>
+                                <div>
+                                    <span style={{'marginRight': '20px'}}>性別</span>
+                                    <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={0} checked={params.filter.gender.includes(0)} />男性</label>
+                                    <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={1} checked={params.filter.gender.includes(1)} />女性</label>
+                                    <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={2} checked={params.filter.gender.includes(2)} />その他</label>
+                                    <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={3} checked={params.filter.gender.includes(3)} />未回答</label>
+                                </div>
+                                <div>
+                                    <span style={{'marginRight': '20px'}}>DM登録状況</span>
+                                    <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={0} checked={params.filter.is_received.includes(0)} />未登録</label>
+                                    <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={1} checked={params.filter.is_received.includes(1)} />登録済</label>
+                                </div>
+                                <div>
+                                    <span style={{'marginRight': '20px'}}>期間指定</span>
+                                    <select name='field' ref={dateRangeField} value={Object.keys(params.filter.dateRange)[0]} onChange={handleFilterDateRange}>
+                                        <option value={'clear'}>フィールド選択</option>
+                                        <option value={'birthday'}>生年月日</option>
+                                        <option value={'created_at'}>作成日時</option>
+                                        <option value={'updated_at'}>更新日時</option>
+                                    </select>
+                                    <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜
+                                    <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
+                                </div>
                             </div>
-                            <div>
-                                <span style={{'marginRight': '20px'}}>性別</span>
-                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={0} checked={params.filter.gender !== undefined ? params.filter.gender.includes(0): false} />男性</label>
-                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={1} checked={params.filter.gender !== undefined ? params.filter.gender.includes(1): false} />女性</label>
-                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={2} checked={params.filter.gender !== undefined ? params.filter.gender.includes(2): false} />その他</label>
-                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={3} checked={params.filter.gender !== undefined ? params.filter.gender.includes(3): false} />未回答</label>
+                        }
+
+                        {   Object.keys(params.sort).length > 0 &&
+
+                            <div style={{'marginTop': '10px'}}>
+                                <p style={{'marginBottom': '5px', 'fontWeight': 'bold'}}>ソート機能</p>
+                                <label>氏名(カナ)
+                                    <select name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>
+                                        <option value={''}>未選択</option>
+                                        <option value={'desc'}>降順</option>
+                                        <option value={'asc'}>昇順</option>
+                                    </select>
+                                </label>
+                                <label>生年月日
+                                    <select name='birthday' value={params.sort.birthday} onChange={handleSort}>
+                                        <option value={''}>未選択</option>
+                                        <option value={'desc'}>降順</option>
+                                        <option value={'asc'}>昇順</option>
+                                    </select>
+                                </label>
+                                <label>作成日時
+                                    <select name='created_at' value={params.sort.created_at} onChange={handleSort}>
+                                        <option value={''}>未選択</option>
+                                        <option value={'desc'}>降順</option>
+                                        <option value={'asc'}>昇順</option>
+                                    </select>
+                                </label>
+                                <label>更新日時
+                                    <select name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
+                                        <option value={''}>未選択</option>
+                                        <option value={'desc'}>降順</option>
+                                        <option value={'asc'}>昇順</option>
+                                    </select>
+                                </label>
                             </div>
-                            <div>
-                                <span style={{'marginRight': '20px'}}>DM登録状況</span>
-                                <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={0} checked={params.filter.is_received !== undefined ? params.filter.is_received.includes(0): false} />未登録</label>
-                                <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={1} checked={params.filter.is_received !== undefined ? params.filter.is_received.includes(1): false} />登録済</label>
-                            </div>
-                            <div>
-                                <span style={{'marginRight': '20px'}}>期間指定</span>
-                                <select name='field' ref={dateRangeField} value={params.filter.dateRange !== undefined ? Object.keys(params.filter.dateRange)[0]: undefined} onChange={handleFilterDateRange}>
-                                    <option value={'clear'}>フィールド選択</option>
-                                    <option value={'birthday'}>生年月日</option>
-                                    <option value={'created_at'}>作成日時</option>
-                                    <option value={'updated_at'}>更新日時</option>
-                                </select>
-                                <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
-                                <input type='number' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} placeholder={'1980101'} />
-                            </div>
-                        </div>
-                        <div style={{'marginTop': '10px'}}>
-                            <p style={{'marginBottom': '5px', 'fontWeight': 'bold'}}>ソート機能</p>
-                            <label>氏名(カナ)
-                                <select name='last_name_kana' value={params.sort && params.sort.last_name_kana} onChange={handleSort}>
-                                    <option value={''}>未選択</option>
-                                    <option value={'desc'}>降順</option>
-                                    <option value={'asc'}>昇順</option>
-                                </select>
-                            </label>
-                            <label>生年月日
-                                <select name='birthday' value={params.sort && params.sort.birthday} onChange={handleSort}>
-                                    <option value={''}>未選択</option>
-                                    <option value={'desc'}>降順</option>
-                                    <option value={'asc'}>昇順</option>
-                                </select>
-                            </label>
-                            <label>作成日時
-                                <select name='created_at' value={params.sort && params.sort.created_at} onChange={handleSort}>
-                                    <option value={''}>未選択</option>
-                                    <option value={'desc'}>降順</option>
-                                    <option value={'asc'}>昇順</option>
-                                </select>
-                            </label>
-                            <label>更新日時
-                                <select name='updated_at' value={params.sort && params.sort.updated_at} onChange={handleSort}>
-                                    <option value={''}>未選択</option>
-                                    <option value={'desc'}>降順</option>
-                                    <option value={'asc'}>昇順</option>
-                                </select>
-                            </label>
-                        </div>
+                        }
+
                         <table border="1" style={{'display': 'block', 'overflowX': 'scroll', 'borderCollapse': 'collapse', 'whiteSpace': 'nowrap'}}>
                             <thead>
                             <tr>
