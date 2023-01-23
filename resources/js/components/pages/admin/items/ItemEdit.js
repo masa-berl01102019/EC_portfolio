@@ -19,14 +19,14 @@ function ItemEdit(props) {
 
     // フォーム項目の初期値をuseStateで管理
     const [formData, {setFormData, handleFormData}] = useInputForm({
-        'product_number': null,
-        'item_name': null,
-        'price': null,
-        'cost': null,
-        'made_in': null,
-        'mixture_ratio': null,
-        'description': null,
-        'is_published': '', // 0: 非公開 1: 公開中
+        'product_number': '',
+        'item_name': '',
+        'price': '',
+        'cost': '',
+        'made_in': '',
+        'mixture_ratio': '',
+        'description': '',
+        'is_published': 0, // 0: 非公開 1: 公開中
         'brand_id': '',
         'gender_category' : '',
         'main_category' : '',

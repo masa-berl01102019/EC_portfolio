@@ -24,7 +24,7 @@ class ContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'response_status' => 'required|numeric|min:0|max:2',
+            'response_status' => 'required|integer|min:0|max:2',
             'memo' => 'nullable|string',
         ];
     }
