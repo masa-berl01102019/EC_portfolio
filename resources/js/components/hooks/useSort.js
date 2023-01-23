@@ -1,23 +1,20 @@
-import React, {useState, useContext} from 'react';
-import { shareParams } from '../App';
+import React, {useState} from 'react';
+import { useParamsContext } from '../context/ParamsContext';
 
 const useSort = (initialValue) => {
 
     // ソート管理
     const [sort, setSort] = useState(initialValue);
-
-    const {params, setParams} = useContext(shareParams);
+    // useContextでグローバルで管理するパラメータを取得
+    const {params, setParams} = useParamsContext();
 
     const handleSort = (e) => {
-        console.log('handleSort');
-        setSort({
-            ...sort,
-            [e.target.name]: e.target.value
-        });
+        console.log('handleSort直前のparams', params);
+        // setSort({ ...sort, [e.target.name]: e.target.value });
         setParams({
             ...params,
             sort: {
-                ...sort,
+                ...params.sort,
                 [e.target.name]: e.target.value
             }
         });

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import {CircularProgress} from '@material-ui/core';
 import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
@@ -6,15 +6,14 @@ import useFetchApiData from "./hooks/useFetchApiData";
 import useInputCheckBox from "./hooks/useInputCheckBox";
 import usePaginate from "./hooks/usePaginate";
 import useSort from "./hooks/useSort";
+import useFilter from "./hooks/useFilter";
 import {useCreateUrl} from "./hooks/useCreateUrl";
-import {shareParams} from './App';
 import ShowErrorMsg from "./ShowErrorMsg";
+import { useParamsContext } from './context/ParamsContext';
 
 // TODO 性別とDM送付の出力形式を変更
 // TODO 誕生日/郵便番号/電話番号の入出力の仕方を決める
-// TODO 絞り込み機能の実装
-// TODO CSV出力内容修正　＊性別等がDBと同じで数値で出力されてる
-// TODO globalでもつべき値について影響範囲を考える
+// TODO CSV出力内容修正　＊性別等がDBと同じで数値で出力されてるので要修正
 // 注意事項　API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function UserIndex() {
@@ -22,7 +21,7 @@ function UserIndex() {
     // urlの設定
     const baseUrl = `/api/admin/users`;
     // paginateフックの呼び出しと初期値をセット
-    const [paginate, {setPaginate, handlePageChange, handleTableRow}] = usePaginate({
+    const [paginate, { handlePageChange, handleTableRow}] = usePaginate({
         data: null, // 取得したデータ
         current_page: 1, // 現在のページ
         per_page: 10, // 1ページ当たりの取得件数
@@ -31,32 +30,23 @@ function UserIndex() {
     });
     // sortフックの呼び出しと初期値をセット
     const [sort, {handleSort}] = useSort({ 'last_name_kana' : '', 'birthday' : '', 'created_at' : '', 'updated_at' : ''});
+    const [filter, dateRangeStart, dateRangeEnd, dateRangeField, {handleFilterInputText, handleFilterCheckbox, handleFilterDateRange}] = useFilter({ 'keyword' : '', 'gender' : [], 'is_received' : [], 'dateRange': {} });
     // checkboxフックの呼び出し
     const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
     // useContext呼び出し
-    const {params} = useContext(shareParams);
+    const {params} = useParamsContext();
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
     // APIから取得したデータを変数に格納
     const users = data.users? data.users.data: null;
 
     useEffect(() => {
-        // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐
+        // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐 // TODO デリート後に再取得のAPIを叩く仕様をやめるか要検討
         if(data.delete && data.delete === true) {
             // ページネーションの設定を保持して再度読み込み
             dispatch({ type: 'READ', url: useCreateUrl(baseUrl, params) });
             // ステートの配列を初期化
             setChecklist([]);
-        }
-        // 非同期での通信の為dataにusersが含まれてるかチェック
-        if(data.users) {
-            setPaginate({
-                data: data.users.data,
-                current_page: data.users.current_page,
-                per_page: data.users.per_page,
-                total: data.users.total,
-                page_range_displayed: 5
-            });
         }
     },[data]);
 
@@ -83,7 +73,38 @@ function UserIndex() {
                                 dispatch({ type:'CREATE', url:`/api/admin/users/csv`, form:checklist })
                         }}>CSV出力</button>
                         <div style={{'marginTop': '10px'}}>
-                            <label>名前
+                            <p style={{'marginBottom': '8px', 'fontWeight': 'bold'}}>フィルター機能</p>
+                            <div style={{'marginBottom': '8px'}}>
+                                <span style={{'marginRight': '20px'}}>キーワード検索</span>
+                                <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword !== undefined ? params.filter.keyword: ''} />
+                            </div>
+                            <div>
+                                <span style={{'marginRight': '20px'}}>性別</span>
+                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={0} checked={params.filter.gender !== undefined ? params.filter.gender.includes(0): false} />男性</label>
+                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={1} checked={params.filter.gender !== undefined ? params.filter.gender.includes(1): false} />女性</label>
+                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={2} checked={params.filter.gender !== undefined ? params.filter.gender.includes(2): false} />その他</label>
+                                <label><input type='checkbox' name='gender' onChange={handleFilterCheckbox} value={3} checked={params.filter.gender !== undefined ? params.filter.gender.includes(3): false} />設定しない</label>
+                            </div>
+                            <div>
+                                <span style={{'marginRight': '20px'}}>DM登録の有無</span>
+                                <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={0} checked={params.filter.is_received !== undefined ? params.filter.is_received.includes(0): false} />DM未登録</label>
+                                <label><input type='checkbox' name='is_received' onChange={handleFilterCheckbox} value={1} checked={params.filter.is_received !== undefined ? params.filter.is_received.includes(1): false} />DM登録</label>
+                            </div>
+                            <div>
+                                <span style={{'marginRight': '20px'}}>期間指定</span>
+                                <select name='field' ref={dateRangeField} value={params.filter.dateRange !== undefined ? Object.keys(params.filter.dateRange)[0]: undefined} onChange={handleFilterDateRange}>
+                                    <option value={'clear'}>フィールド選択</option>
+                                    <option value={'birthday'}>誕生日</option>
+                                    <option value={'created_at'}>作成日</option>
+                                    <option value={'updated_at'}>更新日</option>
+                                </select>
+                                <input type='text' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} />　〜　
+                                <input type='text' name='end' ref={dateRangeEnd} onBlur={handleFilterDateRange} defaultValue={params.filter.dateRange !== undefined && Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][1]: ''} />
+                            </div>
+                        </div>
+                        <div style={{'marginTop': '10px'}}>
+                            <p style={{'marginBottom': '5px', 'fontWeight': 'bold'}}>ソート機能</p>
+                            <label>氏名(カナ)
                                 <select name='last_name_kana' value={params.sort && params.sort.last_name_kana} onChange={handleSort}>
                                     <option value={''}>未選択</option>
                                     <option value={'desc'}>降順</option>
@@ -162,15 +183,20 @@ function UserIndex() {
                             }
                             </tbody>
                         </table>
-                        <label>行数<input type='number' onBlur={handleTableRow} defaultValue={paginate.per_page} style={{'width': '40px'}} /></label>
-                        <p>現在のページ{paginate.current_page}</p>
-                        <Pagination
-                            activePage={paginate.current_page}
-                            itemsCountPerPage={paginate.per_page}
-                            totalItemsCount={paginate.total}
-                            pageRangeDisplayed={paginate.page_range_displayed}
-                            onChange={handlePageChange}
-                        />
+                        { data.users &&
+                            <>
+                                <label>行数<input type='number' onBlur={handleTableRow} defaultValue={data.users.per_page} style={{'width': '40px'}} /></label>
+                                <div>検索結果{data.users.total}</div>
+                                <div>現在のページ{data.users.current_page}</div>
+                                <Pagination
+                                    activePage={data.users.current_page}
+                                    itemsCountPerPage={data.users.per_page}
+                                    totalItemsCount={data.users.total}
+                                    pageRangeDisplayed={data.users.page_range_displayed}
+                                    onChange={handlePageChange}
+                                />
+                            </>
+                        }
                     </>
                 )
             }
