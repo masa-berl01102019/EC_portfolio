@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6d38ffd7eb473ddc32bd89be9e320535",
+    "content-hash": "a2532d3afa39c5e52b59024a3289d07e",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -385,6 +385,113 @@
             "time": "2020-10-22T13:48:01+00:00"
         },
         {
+            "name": "iak/make-testable",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iaK/make-testable.git",
+                "reference": "4a5c1602d4c894f61ceca19573e3f861a7253365"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iaK/make-testable/zipball/4a5c1602d4c894f61ceca19573e3f861a7253365",
+                "reference": "4a5c1602d4c894f61ceca19573e3f861a7253365",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/legacy-factories": "^1.0",
+                "php": "^7.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.3",
+                "vimeo/psalm": "^3.11"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "IaK\\MakeTestable\\Providers\\MakeTestableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "IaK\\MakeTestable\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Isak Berglind",
+                    "email": "info@isakberglind.se",
+                    "homepage": "https://isakberglind.se",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Create a test along with your class, when using the laravel make commandrm",
+            "homepage": "https://github.com/iak/make-testable",
+            "keywords": [
+                "iaK",
+                "make-testable"
+            ],
+            "support": {
+                "issues": "https://github.com/iaK/make-testable/issues",
+                "source": "https://github.com/iaK/make-testable/tree/1.0.0"
+            },
+            "time": "2020-09-17T19:20:16+00:00"
+        },
+        {
+            "name": "illuminate/macroable",
+            "version": "v8.44.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/macroable.git",
+                "reference": "300aa13c086f25116b5f3cde3ca54ff5c822fb05"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/macroable/zipball/300aa13c086f25116b5f3cde3ca54ff5c822fb05",
+                "reference": "300aa13c086f25116b5f3cde3ca54ff5c822fb05",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Support\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Macroable package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2020-10-27T15:20:30+00:00"
+        },
+        {
             "name": "laravel/framework",
             "version": "v6.20.27",
             "source": {
@@ -532,6 +639,62 @@
                 "laravel"
             ],
             "time": "2021-05-11T14:00:28+00:00"
+        },
+        {
+            "name": "laravel/legacy-factories",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/legacy-factories.git",
+                "reference": "5e3fe2fd5fda64e20ea5c74c831a7346294e902a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/legacy-factories/zipball/5e3fe2fd5fda64e20ea5c74c831a7346294e902a",
+                "reference": "5e3fe2fd5fda64e20ea5c74c831a7346294e902a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/macroable": "^8.0",
+                "php": "^7.3|^8.0",
+                "symfony/finder": "^3.4|^4.0|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Illuminate\\Database\\Eloquent\\LegacyFactoryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "helpers.php"
+                ],
+                "psr-4": {
+                    "Illuminate\\Database\\Eloquent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The legacy version of the Laravel Eloquent factories.",
+            "homepage": "http://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2020-10-27T14:25:32+00:00"
         },
         {
             "name": "laravel/tinker",
