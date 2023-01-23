@@ -26,7 +26,7 @@ function NewsCreate() {
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     // file送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm} = useObjectForm(formData, setFormData);
+    const {handleSendObjectForm} = useObjectForm(formData, setFormData, dispatch);
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // API接続の返却値を変数に格納
@@ -65,7 +65,7 @@ function NewsCreate() {
                 <h1>ニュース新規登録</h1>
                 <form onSubmit={ e => {
                     e.preventDefault();
-                    handleSendObjectForm('/api/admin/news', dispatch);
+                    handleSendObjectForm('/api/admin/news');
                 }}>
                     <div>
                         <label>

@@ -38,7 +38,7 @@ function ItemEdit(props) {
         'skus': []
     });
     // 複数オブジェクト送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData);
+    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData, dispatch);
     // API接続の返却値を変数に格納
     const item = data.item;
     const brands = data.brands? data.brands: null;
@@ -74,7 +74,7 @@ function ItemEdit(props) {
                 <div>
                     <form onSubmit={ e => {
                         e.preventDefault();
-                        handleSendObjectForm(formData, `/api/admin/items/${props.match.params.id}`, dispatch);
+                        handleSendObjectForm(`/api/admin/items/${props.match.params.id}`);
                     }}>
                         <div>
                             <h2>基本情報</h2>
