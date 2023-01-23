@@ -11,6 +11,7 @@ import jaLocale from "date-fns/locale/ja";
 // TODO フロント側でのバリデーション設定
 // TODO 登録後に一覧へリダイレクトして成功のメッセージを表示
 // TODO handleDateChangeをhooksに切り分け
+// TODO 登録後のリダイレクトのバグを修正
 
 function NotificationEdit(props) {
 
@@ -48,7 +49,7 @@ function NotificationEdit(props) {
         }
         if(data.success === true) {
             // 処理が完了した時点でリダイレクトの処理
-            location.href = '/admin/home';
+            location.href = '/admin/notifications';
             // redirect先で成功したメッセージを表示必要
         }
     },[data]);

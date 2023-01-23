@@ -11,6 +11,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 // TODO フロント側でのバリデーション設定
 // TODO 登録後に一覧へリダイレクトして成功のメッセージを表示
 // TODO handleDateChangeをhooksに切り分け
+// TODO 登録後のリダイレクトのバグを修正
 
 function NotificationCreate() {
 
@@ -21,8 +22,8 @@ function NotificationCreate() {
     const [formData, {setFormData, handleFormData}] = useInputForm({
         'title': null,
         'body': null,
-        'is_published': '',
-        'expired_at': null // 0: 非公開　1: 公開中
+        'is_published': 0, // 0: 非公開　1: 公開中
+        'expired_at': null
     });
 
     // APIと接続して返り値を取得
@@ -40,7 +41,7 @@ function NotificationCreate() {
     useEffect(() => {
         if(data.success === true) {
             // 処理が完了した時点でリダイレクトの処理
-            location.href = '/admin/home';
+            location.href = '/admin/notifications';
             // redirect先で成功したメッセージを表示必要
         }
     },[data]);

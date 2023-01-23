@@ -12,8 +12,8 @@ import ShowErrorMsg from "../../../ShowErrorMsg";
 import { useParamsContext } from '../../../context/ParamsContext';
 
 // TODO 削除後に再取得のAPIを叩く仕様をやめるか要検討
-// TODO 管理者氏名でソート機能の実装
-// TODO テーブルで最終更新者の表示
+// TODO 期間指定のフィルター機能を修正(カレンダーで選択する / パラメータがセットされてる時にクリアボタンを表示する)
+// TODO 一覧で本文の一部を表示する
 // 注意事項　API通信で取得したデータもform部品から値を取得する時は文字列で渡ってくるのでデータ型をキャストしないと想定外の挙動になるので注意する　＊typesScriptの導入要検討
 
 function NotificationIndex() {
@@ -43,7 +43,7 @@ function NotificationIndex() {
             console.log('NOTIFICATIONにてparamsの初期値をセットしてscopeを変更');
             setParams({
                 ...params,
-                sort: { 'expired_at' : '', 'posted_at' : '', 'modified_at' : ''},
+                sort: { 'last_name_kana' : '', 'expired_at' : '', 'posted_at' : '', 'modified_at' : ''},
                 filter: { 'keyword' : '', 'is_published' : [], 'dateRange': {} },
                 // paginate: {
                 //     data: null, // 取得したデータ
@@ -91,7 +91,7 @@ function NotificationIndex() {
                                 <p style={{'marginBottom': '8px', 'fontWeight': 'bold'}}>フィルター機能</p>
                                 <div style={{'marginBottom': '8px'}}>
                                     <span style={{'marginRight': '20px'}}>キーワード検索</span>
-                                    <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword} />
+                                    <input type='text' name='keyword' onBlur={handleFilterInputText} defaultValue={params.filter.keyword} placeholder={'タイトルを検索'}/>
                                 </div>
                                 <div>
                                     <span style={{'marginRight': '20px'}}>公開状況</span>
@@ -116,13 +116,13 @@ function NotificationIndex() {
 
                             <div style={{'marginTop': '10px'}}>
                                 <p style={{'marginBottom': '5px', 'fontWeight': 'bold'}}>ソート機能</p>
-                                {/*<label>管理者氏名(カナ)*/}
-                                {/*    <select name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>*/}
-                                {/*        <option value={''}>未選択</option>*/}
-                                {/*        <option value={'desc'}>降順</option>*/}
-                                {/*        <option value={'asc'}>昇順</option>*/}
-                                {/*    </select>*/}
-                                {/*</label>*/}
+                                <label>氏名(カナ)
+                                    <select name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>
+                                        <option value={''}>未選択</option>
+                                        <option value={'desc'}>降順</option>
+                                        <option value={'asc'}>昇順</option>
+                                    </select>
+                                </label>
                                 <label>掲載終了日
                                     <select name='expired_at' value={params.sort.expired_at} onChange={handleSort}>
                                         <option value={''}>未選択</option>
@@ -155,7 +155,7 @@ function NotificationIndex() {
                                     <th>編集</th>
                                     <th>公開状況</th>
                                     <th>タイトル</th>
-                                    {/*<th>最終更新者</th>*/}
+                                    <th>最終更新者</th>
                                     <th>掲載終了日</th>
                                     <th>投稿日</th>
                                     <th>更新日</th>
@@ -174,7 +174,7 @@ function NotificationIndex() {
                                         <td><Link to={`/admin/notifications/${notification.id}/edit`}>編集</Link></td>
                                         <td>{notification.ac_is_published}</td>
                                         <td>{notification.title}</td>
-                                        {/*<td>{notification.admin_id}</td>*/}
+                                        <td>{notification.last_name} {notification.first_name} ({notification.last_name_kana} {notification.first_name_kana})</td>
                                         <td>{notification.expired_at}</td>
                                         <td>{notification.posted_at}</td>
                                         <td>{notification.modified_at}</td>
