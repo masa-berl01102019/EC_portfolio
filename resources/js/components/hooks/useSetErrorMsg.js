@@ -20,7 +20,8 @@ const useSetErrorMsg = (initialValue) => {
             }
         } else {
             // 配列に格納
-            arrayErrors.push(`${error.response.status} ${error.response.statusText}`);
+            // arrayErrors.push(`${error.response.status} ${error.response.statusText}`);　＊ ステータステキストではサーバーからのjson　error message が拾えないので変更
+            arrayErrors.push(`${error.response.status} ${error.response.data.message}`);
         }
         // エラーメッセージをセット
         setErrorMessage([...arrayErrors]);

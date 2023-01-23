@@ -15,7 +15,7 @@ return [
 
     // デフォルトの認証
     'defaults' => [
-        'guard' => 'user',
+        'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -47,11 +47,10 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
-
+        // sanctum認証用に追加
         'api' => [
-            'driver' => 'token',
+            'driver' => 'sanctum',
             'provider' => 'users',
-            'hash' => false,
         ],
     ],
 
