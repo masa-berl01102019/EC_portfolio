@@ -27,6 +27,12 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
+        // web.phpで定義したルートはデフォルトでCSRF保護などの機能が有効になっており、api.phpで定義したルートはデフォルトでCSRF保護などの機能が有効になっていない
+        // その為、デフォルトのapi.phpだと外部からもアクセスできてしまう
+        // web.phpとapi.phpのデフォルトでの動作の違いはapp/Http/Kernel.phpにそれぞれの設定がミドルウェアとして下記に組み込まれている
+        // 通常フロントとサーバーサイドのAPIを分けて作る場合は別サーバーで作成するため、CSRFでの認証はかけられず、IP制御やその他の認証で外からのアクセスを制御するので
+        // 今回のように同サーバ内であればデフォルトのweb.php(下記)の設定をapi側にも読み込ませてあげればAuthもCSRFを有効に出来る
+
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
@@ -38,6 +44,13 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
             'throttle:60,1',
             'bindings',
         ],

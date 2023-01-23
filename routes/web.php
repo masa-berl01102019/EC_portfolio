@@ -13,9 +13,12 @@
 
 // どのURLにアクセスが来てもwelcome.blade.phpファイルが表示されるように以下の設定に変更します。React * Laravel API
 //Route::get('/{any}', function () {
-//    return view('welcome');
+//    return view('layouts.admin.app');
 //})->where('any','.*');
 
+Route::get('/', function () {
+    return view('layouts.admin.app');
+});
 
 // Userに対してのルーティング
 Route::namespace('User')->prefix('user')->name('user.')->group(function() {
@@ -64,6 +67,6 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
     Route::middleware('auth:admin')->group(function() {
         // TOPページにアクセス
         Route::get('/home', 'HomeController@index')->name('home');
-    });
 
+    });
 });
