@@ -17,7 +17,7 @@ class CartsTableSeeder extends Seeder
 
         DB::table('carts')->truncate(); // テーブルごと削除して再構築
 
-        factory(Cart::class, 1000)->create();
+        factory(Cart::class, 500)->create();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
     }
