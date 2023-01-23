@@ -46,6 +46,13 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::delete('/notifications/delete', 'NotificationController@destroy')->name('notifications.destroy'); // 一括削除
         Route::post('/notifications/csv', 'NotificationController@csvExport')->name('notifications.csvExport'); // 一括CSV出力
 
+        // お問い合わせ情報のCRUD
+        Route::get('/contacts', 'ContactController@index')->name('contacts.index');
+        Route::get('/contacts/{contact}/edit', 'ContactController@edit')->name('contacts.edit');
+        Route::put('/contacts/{contact}', 'ContactController@update')->name('contacts.update');
+        Route::delete('/contacts/delete', 'ContactController@destroy')->name('contacts.destroy'); // 一括削除
+        Route::post('/contacts/csv', 'ContactController@csvExport')->name('contacts.csvExport'); // 一括CSV出力
+
     });
 
 });
