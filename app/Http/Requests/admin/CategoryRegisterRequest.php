@@ -32,7 +32,7 @@ class CategoryRegisterRequest extends FormRequest
     public function attributes()
     {
         return [
-            'category_name' => 'カテゴリー',
+            'category_name' => 'カテゴリー名',
             'parent_id' => '親カテゴリーID',
         ];
     }

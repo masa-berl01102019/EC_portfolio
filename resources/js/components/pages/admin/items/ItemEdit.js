@@ -21,9 +21,8 @@ import { menuAdminState } from '../../../store/menuState';
 import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import useNotify from '../../../context/NotifyContext';
 import useHelper from '../../../hooks/useHelper';
+import useValidation from '../../../hooks/useValidation';
 
-
-// TODO フロント側でのバリデーション設定
 // TODO プレビュー機能の実装
 
 function ItemEdit(props) {
@@ -35,6 +34,8 @@ function ItemEdit(props) {
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {setFormData, handleFormData, handleFormCheckbox, handleFormCategory}] = useForm(data.item);
+    // フロント用バリデーション
+    const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'item_edit');
     // 複数オブジェクト送信用にフォームのラッパー関数呼び出し
     const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData, createData);
     // リダイレクト用の関数呼び出し
@@ -55,6 +56,10 @@ function ItemEdit(props) {
     const {isDuplicated} = useHelper();
 
     const handleFormSubmit = () => {
+        if(validation.fails()) {
+            setValid(true);
+            return false;
+        }
         // 二次元配列から比較したい値を配列で抜き出す
         const skus_size = formData.skus.map(item => item.size_id);
         const skus_color = formData.skus.map(item => item.color_id);
@@ -109,39 +114,47 @@ function ItemEdit(props) {
                                 <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb].join(' ')}>
                                     <FormInputText
                                         name={'product_number'}
-                                        onBlur={handleFormData}
+                                        onChange={handleFormData}
                                         value={formData.product_number}
                                         label={'品番'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         placeholder='AS1003200'
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
                                         name={'item_name'}
-                                        onBlur={handleFormData}
+                                        onChange={handleFormData}
                                         value={formData.item_name}
                                         label={'商品名'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         placeholder='プリーツスカート'
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
                                         name={'price'}
                                         type={'number'}
-                                        onBlur={handleFormData}
+                                        onChange={handleFormData}
                                         value={formData.price}
                                         label={'価格'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         placeholder='3400'
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
                                         name={'cost'}
                                         type={'number'}
-                                        onBlur={handleFormData}
+                                        onChange={handleFormData}
                                         value={formData.cost}
                                         label={'原価'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         placeholder='1200'
                                         className={styles.mb_16}
                                     />
@@ -155,10 +168,12 @@ function ItemEdit(props) {
                                     </div>
                                     <FormInputText
                                         name={'made_in'}
-                                        onBlur={handleFormData}
+                                        onChange={handleFormData}
                                         value={formData.made_in}
                                         label={'生産国'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         placeholder='中国'
                                     />
                                 </div>
@@ -166,20 +181,24 @@ function ItemEdit(props) {
                                     <FormInputTextarea
                                         name={'mixture_ratio'} 
                                         value={formData.mixture_ratio} 
-                                        onBlur={handleFormData} 
+                                        onChange={handleFormData} 
                                         placeholder={'綿100%'}
                                         label={'混用率'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         className={styles.mb_16}
                                         style={{'minHeight' : '148px'}}
                                     />
                                     <FormInputTextarea
                                         name={'description'} 
                                         value={formData.description} 
-                                        onBlur={handleFormData} 
+                                        onChange={handleFormData} 
                                         placeholder={'商品説明を入力'}
                                         label={'商品説明'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         style={{'minHeight' : '148px'}}
                                     />
                                 </div>
@@ -199,6 +218,8 @@ function ItemEdit(props) {
                                     onChange={handleFormData}
                                     label={'ブランド'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={styles.mb_16}
                                 >
                                     <option value={''}>未設定</option>
@@ -210,6 +231,8 @@ function ItemEdit(props) {
                                     onChange={handleFormCategory}
                                     label={'性別'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={styles.mb_16}
                                 >
                                     <option value={''}>未設定</option>
@@ -221,6 +244,8 @@ function ItemEdit(props) {
                                     onChange={handleFormCategory}
                                     label={'メイン'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={styles.mb_16}
                                 >
                                     <option value={''}>未設定</option>
@@ -234,6 +259,8 @@ function ItemEdit(props) {
                                     onChange={handleFormCategory}
                                     label={'サブ'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                 >
                                     <option value={''}>未設定</option>
                                         {   sub_categories && sub_categories.filter((category) => Number(formData.main_category) === category.parent_id).map((category) => (
@@ -263,6 +290,19 @@ function ItemEdit(props) {
                                             )
                                         }
                                     </div>
+                                    { valid && validation.fails() && errorObject && 
+                                        Object.entries(errorObject).map(([key, value]) => {
+                                            if(key.includes('tags_id')) {
+                                                return (
+                                                    <div key={key}>
+                                                        <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                            {value}
+                                                        </Text> 
+                                                    </div>
+                                                )
+                                            }
+                                        }) 
+                                    }
                                     { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.tags_id}</Text> }
                                 </div>
                             </div>
@@ -284,6 +324,19 @@ function ItemEdit(props) {
                                         handleFormMethod={handleChangeObjectForm}
                                     />
                                 </div>
+                                { valid && validation.fails() && errorObject && 
+                                    Object.entries(errorObject).map(([key, value]) => {
+                                        if(key.includes('skus')) {
+                                            return (
+                                                <div key={key}>
+                                                    <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                        {value}
+                                                    </Text> 
+                                                </div>
+                                            )
+                                        }
+                                    }) 
+                                }
                                 {   errorMessage && errorMessage.skus &&
                                     Object.values(errorMessage.skus).map((value, index) => {
                                         return <Text role='error' size='s' key={index} className={styles.mt_8}>{value}</Text>
@@ -313,6 +366,19 @@ function ItemEdit(props) {
                                         handleFormMethod={handleChangeObjectForm}
                                     />
                                 </div>
+                                { valid && validation.fails() && errorObject && 
+                                    Object.entries(errorObject).map(([key, value]) => {
+                                        if(key.includes('images')) {
+                                            return (
+                                                <div key={key}>
+                                                    <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                        {value}
+                                                    </Text> 
+                                                </div>
+                                            )
+                                        }
+                                    }) 
+                                }
                                 {   errorMessage && errorMessage.images &&
                                     Object.values(errorMessage.images).map((value, index) => {
                                         return <Text role='error' size='s' key={index} className={styles.mt_8}>{value}</Text> 
@@ -342,6 +408,19 @@ function ItemEdit(props) {
                                         handleFormMethod={handleChangeObjectForm}
                                     />
                                 </div>
+                                { valid && validation.fails() && errorObject && 
+                                    Object.entries(errorObject).map(([key, value]) => {
+                                        if(key.includes('measurements')) {
+                                            return (
+                                                <div key={key}>
+                                                    <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                        {value}
+                                                    </Text> 
+                                                </div>
+                                            )
+                                        }
+                                    }) 
+                                }
                                 {   errorMessage && errorMessage.measurements &&
                                     Object.values(errorMessage.measurements).map((value, index) => {
                                         return <Text role='error' size='s' key={index} className={styles.mt_8}>{value}</Text>
@@ -362,6 +441,8 @@ function ItemEdit(props) {
                             onChange={handleFormData}
                             label={'公開設定'}
                             error={errorMessage}
+                            validation={validation}
+                            valid={valid}
                             className={styles.mb_40}
                         >
                             <option value={0}>非公開</option>

@@ -14,6 +14,7 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
+import useValidation from '../../../hooks/useValidation';
 
 function UserCreate() {
     // urlの設定
@@ -49,6 +50,8 @@ function UserCreate() {
         'password': null,
         'is_received': null, // 0: 受取NG 1: 受取OK
     });
+    // フロント用バリデーション
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'user_create');
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // menuの状態管理
@@ -62,27 +65,35 @@ function UserCreate() {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
-                            createData({ 
-                                form: formData, 
-                                url:'/api/admin/users',
-                                callback: () => history.push('/admin/users')
-                            });
+                            if(validation.fails()) {
+                                setValid(true);
+                            } else {
+                                createData({ 
+                                    form: formData, 
+                                    url:'/api/admin/users',
+                                    callback: () => history.push('/admin/users')
+                                });
+                            }
                         }}>
                             <Text className={styles.mb_8}>氏名</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText
                                     name={'last_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.last_name}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='山田'
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
                                     name={'first_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.first_name}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='太郎'
                                     className={styles.flex_basis_50}
                                 />
@@ -91,17 +102,21 @@ function UserCreate() {
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText 
                                     name={'last_name_kana'} 
-                                    onBlur={handleFormData} 
+                                    onChange={handleFormData} 
                                     value={formData.last_name_kana} 
-                                    error={errorMessage} 
+                                    error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='ヤマダ'
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
                                     name={'first_name_kana'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.first_name_kana}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='タロウ'
                                     className={styles.flex_basis_50}
                                 />
@@ -145,6 +160,11 @@ function UserCreate() {
                                         error={errorMessage}
                                     />
                                 </div>
+                                { (valid && validation.fails() && validation.errors.first('gender')) && 
+                                    <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                        {validation.errors.first('gender')}
+                                    </Text> 
+                                }
                                 { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.gender}</Text> }
                             </div>
                             <FormDatePicker
@@ -154,59 +174,73 @@ function UserCreate() {
                                 label={'生年月日'} 
                                 className={styles.mb_16} 
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                             />
                             <FormInputText
                                 name={'post_code'}
                                 type={'number'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.post_code}
                                 label={'郵便番号'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='1234567'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'prefecture'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.prefecture}
                                 label={'都道府県'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='神奈川県'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'municipality'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.municipality}
                                 label={'市区町村郡'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='川崎市麻生区'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'street_name'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.street_name}
                                 label={'町名'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='千代ヶ丘'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'street_number'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.street_number}
-                                label={'町目番地'}
+                                label={'丁目番地'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='1-1-1'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'building'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.building}
                                 label={'建物名'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='○☓△ビルディング 1F'
                                 className={styles.mb_16}
                             />
@@ -218,55 +252,67 @@ function UserCreate() {
                                 <FormInputText
                                     name={'delivery_post_code'}
                                     type={'number'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.delivery_post_code}
                                     label={'郵便番号'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='1234567'
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_prefecture'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.delivery_prefecture}
                                     label={'都道府県'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='神奈川県'
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_municipality'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.delivery_municipality}
                                     label={'市区町村郡'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='川崎市麻生区'
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_street_name'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.delivery_street_name}
                                     label={'町名'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='千代ヶ丘'
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_street_number'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.delivery_street_number}
-                                    label={'町目番地'}
+                                    label={'丁目番地'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='1-1-1'
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_building'}
-                                    onBlur={handleFormData}
+                                    onChange={handleFormData}
                                     value={formData.delivery_building}
                                     label={'建物名'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     placeholder='○☓△ビルディング 1F'
                                     className={styles.mb_16}
                                 />
@@ -274,30 +320,36 @@ function UserCreate() {
                             <FormInputText
                                 name={'tel'}
                                 type='tel'
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.tel}
                                 label={'電話番号'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='080-1234-5678'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'email'}
                                 type={'email'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.email}
                                 label={'メールアドレス'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='test@example.com'
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'password'}
                                 type={'password'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.password}
                                 label={'パスワード'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='半角英数字8文字以上'
                                 className={styles.mb_16}
                             />
@@ -322,6 +374,11 @@ function UserCreate() {
                                         error={errorMessage}
                                     />
                                 </div>
+                                { (valid && validation.fails() && validation.errors.first('is_received')) && 
+                                    <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                        {validation.errors.first('is_received')}
+                                    </Text> 
+                                }
                                 { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.is_received}</Text> }
                             </div>
                             <div className={[styles.flex, styles.justify_center].join(' ')}>

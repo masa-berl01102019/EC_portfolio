@@ -1,5 +1,5 @@
 import React, {Suspense, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import useForm from "../../../hooks/useForm";
@@ -11,6 +11,8 @@ import DatePicker from '../../../atoms/DatePicker/DatePicker';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputRadio from '../../../atoms/InputRadio/InputRadio';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
+import useValidation from '../../../hooks/useValidation';
+import Button from '../../../atoms/Button/Button';
 
 function CartIndexPage() {
     // urlの設定
@@ -24,8 +26,10 @@ function CartIndexPage() {
         'total_amount': 0,
         'payment_method': 0, // 0: クレジットカード 1: 代引き * 第一フェーズでの支払い方法はクレジットカードのみ
         'delivery_date': null,
-        'delivery_time': '',
+        'delivery_time': ''
     });
+    // フロント用バリデーション
+    const {valid, setValid, validation} = useValidation(formData, 'user', 'order_request');
     // APIから取得したデータを変数に格納
     const carts = data.data? data.data: null;
     const user = data.user? data.user: null;
@@ -33,6 +37,8 @@ function CartIndexPage() {
     const amount = carts.length > 0 ? carts.map(item => item.included_tax_price * item.quantity).reduce((prev,next) => prev + next) : 0;
     // 在庫状況を管理
     const stock = carts.map(item => item.stock);
+    // リダイレクト用の関数呼び出し
+    const history = useHistory();
 
     useEffect(() => {
         // 合計金額をセット
@@ -43,8 +49,6 @@ function CartIndexPage() {
             });
         }
     },[amount]);
-
-    // このページ単体でっはトータル
 
     return (
         <main className={styles.mt_40}>
@@ -58,6 +62,30 @@ function CartIndexPage() {
                     <Text className={styles.disable}>注文完了</Text>
                 </div>
                 <div className={styles.form_contents_area}>
+                    {   valid && validation.fails() && 
+                        <div className={[styles.mb_24, styles.pa_16, styles.w_100, styles.border_box, styles.front_validation].join(' ')}>
+                            {   validation.errors.first('total_amount') && 
+                                <Text size='s' role='error' className={styles.paragraph}>
+                                    {validation.errors.first('total_amount')}
+                                </Text>
+                            }
+                            {   validation.errors.first('payment_method') && 
+                                <Text size='s' role='error' className={styles.paragraph}>
+                                    {validation.errors.first('payment_method')}
+                                </Text>
+                            }
+                            {   validation.errors.first('delivery_date') && 
+                                <Text size='s' role='error' className={styles.paragraph}>
+                                    {validation.errors.first('delivery_date')}
+                                </Text>
+                            }
+                            {   validation.errors.first('delivery_time') && 
+                                <Text size='s' role='error' className={styles.paragraph}>
+                                    {validation.errors.first('delivery_time')}
+                                </Text>
+                            }
+                        </div>
+                    }
                     <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
                         <Text role='title' className={styles.bold}>ショッピングカート</Text>
                         <Text role='title' className={styles.bold}>{carts ? carts.length+'点' : '0点'}</Text>
@@ -191,9 +219,16 @@ function CartIndexPage() {
                     }
                     <div className={styles.cart_btn_area}>
                         {   carts.length > 0 && !stock.includes(0) &&
-                            <LinkBtn size='l' color='primary' to={{pathname: '/carts/confirm', state: formData}} className={styles.mb_16} style={{'width' : '100%'}}>
+                            <Button size='l' color='primary' className={styles.mb_16} style={{'width' : '100%'}} onClick={e => {
+                                e.preventDefault();
+                                if(validation.fails()) {
+                                    setValid(true);
+                                } else {
+                                    history.push('/carts/confirm', formData);
+                                }
+                            }}>
                                 決済内容確認に進む
-                            </LinkBtn>
+                            </Button>
                         }
                         <LinkBtn size='l' to={'/'} style={{'width' : '100%'}}>ショッピングを続ける</LinkBtn>
                     </div>

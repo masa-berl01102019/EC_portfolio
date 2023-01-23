@@ -12,6 +12,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { menuAdminState } from '../../../store/menuState';
 import { useRecoilValue } from 'recoil';
 import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
+import useValidation from '../../../hooks/useValidation';
 
 function ContactEdit(props) {
     // urlの設定
@@ -22,6 +23,8 @@ function ContactEdit(props) {
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm(data.contact);
+    // フロント用バリデーション
+    const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'contact_request');
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // menuの状態管理
@@ -36,6 +39,10 @@ function ContactEdit(props) {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
+                            if(validation.fails()) {
+                                setValid(true);
+                                return false;
+                            }
                             updateData({
                                 form: formData, 
                                 url: `/api/admin/contacts/${props.match.params.id}`,
@@ -58,10 +65,12 @@ function ContactEdit(props) {
                             <FormInputTextarea
                                 name={'memo'} 
                                 value={formData.memo} 
-                                onBlur={handleFormData} 
+                                onChange={handleFormData} 
                                 placeholder={'本文を入力'}
                                 label={'備考記入欄'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 className={styles.mb_16}
                                 style={{'minHeight' : '148px'}}
                             />
@@ -72,6 +81,8 @@ function ContactEdit(props) {
                                 onChange={handleFormData}
                                 label={'対応状況'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 className={styles.mb_40}
                             >
                                 <option value={0}>未対応</option>

@@ -31,7 +31,7 @@ class SizeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'size_name' => 'サイズ',
+            'size_name' => 'サイズ名',
         ];
     }
 }

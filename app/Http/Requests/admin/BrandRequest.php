@@ -31,7 +31,7 @@ class BrandRequest extends FormRequest
     public function attributes()
     {
         return [
-            'brand_name' => 'ブランド',
+            'brand_name' => 'ブランド名',
         ];
     }
 }

@@ -19,6 +19,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import InputImage from '../../../atoms/InputImage/InputImage';
+import useValidation from '../../../hooks/useValidation';
 
 // TODO ブログ本文で保存された画像をどうするか考える
 
@@ -40,6 +41,8 @@ function BlogEdit(props) {
         'is_published': 0, // 0: 非公開 1: 公開中
         'thumbnail': '/img/no_image.png'
     });
+    // フロント用バリデーション
+    const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'blog_edit');
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     // 便利関数の呼び出し
@@ -93,6 +96,10 @@ function BlogEdit(props) {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
+                            if(validation.fails()) {
+                                setValid(true);
+                                return false;
+                            }
                             handleSendObjectForm(
                                 `/api/admin/blogs/${props.match.params.id}`, 
                                 () => history.push('/admin/blogs')
@@ -102,10 +109,12 @@ function BlogEdit(props) {
                                 <div className={styles.blog_area}>
                                     <FormInputText
                                         name={'title'}
-                                        onBlur={handleFormData}
+                                        onChange={handleFormData}
                                         value={formData.title}
                                         label={'タイトル'}
                                         error={errorMessage}
+                                        validation={validation}
+                                        valid={valid}
                                         placeholder='タイトル名'
                                         className={styles.mb_16}
                                     />
@@ -120,6 +129,11 @@ function BlogEdit(props) {
                                                 onEditorStateChange={onEditorStateChange}
                                             />
                                         </div>
+                                        { valid && validation.fails() && validation.errors.first('body') && 
+                                            <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                {validation.errors.first('body')}
+                                            </Text> 
+                                        }
                                         { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.body}</Text> }
                                     </div>
                                 </div>
@@ -135,6 +149,8 @@ function BlogEdit(props) {
                                                 onChange={handleFormData}
                                                 label={'公開設定'}
                                                 error={errorMessage}
+                                                validation={validation}
+                                                valid={valid}
                                             >
                                                 <option value={0}>非公開</option>
                                                 <option value={1}>公開</option>
@@ -151,6 +167,11 @@ function BlogEdit(props) {
                                                 name="thumbnail"
                                                 onChange={e => handleFormFile(e)}
                                             />
+                                            { valid && validation.fails() && validation.errors.first('thumbnail') && 
+                                                <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                    {validation.errors.first('thumbnail')}
+                                                </Text> 
+                                            }
                                             { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.file}</Text> }
                                             { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.thumbnail}</Text> }
                                         </div>
@@ -164,8 +185,10 @@ function BlogEdit(props) {
                                                 name='brand_id'
                                                 value={formData.brand_id}
                                                 onChange={handleFormData}
-                                                label={'ブランド'}
+                                                label={'ブランドカテゴリ'}
                                                 error={errorMessage}
+                                                validation={validation}
+                                                valid={valid}
                                                 className={styles.mb_16}
                                             >
                                                 <option value={''}>未設定</option>
@@ -177,6 +200,8 @@ function BlogEdit(props) {
                                                 onChange={handleFormData}
                                                 label={'性別カテゴリ'}
                                                 error={errorMessage}
+                                                validation={validation}
+                                                valid={valid}
                                             >
                                                 <option value={''}>未設定</option>
                                                 { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
@@ -203,6 +228,19 @@ function BlogEdit(props) {
                                                 )
                                             }
                                             </div>
+                                            { valid && validation.fails() && errorObject && 
+                                                Object.entries(errorObject).map(([key, value]) => {
+                                                    if(key.includes('items_id')) {
+                                                        return (
+                                                            <div key={key}>
+                                                                <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                                    {value}
+                                                                </Text> 
+                                                            </div>
+                                                        )
+                                                    }
+                                                }) 
+                                            }
                                             { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.items_id}</Text> }
                                         </div>
                                     </div>
@@ -226,6 +264,19 @@ function BlogEdit(props) {
                                                 )
                                             }
                                             </div>
+                                            { valid && validation.fails() && errorObject && 
+                                                Object.entries(errorObject).map(([key, value]) => {
+                                                    if(key.includes('tags_id')) {
+                                                        return (
+                                                            <div key={key}>
+                                                                <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')} >
+                                                                    {value}
+                                                                </Text> 
+                                                            </div>
+                                                        )
+                                                    }
+                                                }) 
+                                            }
                                             { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.tags_id}</Text> }
                                         </div>
                                     </div>

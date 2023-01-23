@@ -29,6 +29,13 @@
   max-width: 300px !important;
 }
 
+.front_validation {
+  background: #ed82af45;
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
 /* TOP */
 .view_all_btn {
   margin: 0 auto 40px;
@@ -131,6 +138,9 @@
 /* other */
 .time_zome_field {
   min-width: 186px;
+}
+.border_box {
+  box-sizing: border-box;
 }
 .disable {
   color: #D4D4D4;

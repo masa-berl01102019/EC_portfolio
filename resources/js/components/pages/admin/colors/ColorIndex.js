@@ -1,7 +1,6 @@
 import React, {Suspense, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData from "../../../hooks/useFetchApiData";
-import useForm from "../../../hooks/useForm";
 import Heading from '../../../atoms/Heading/Heading';
 import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
@@ -19,26 +18,20 @@ function ColorIndex() {
     const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
     // APIから取得したデータを変数に格納
     const colors = data.colors? data.colors: null;
-    // 新規登録用フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData}] = useForm({'color_name': ''});
     // 選択されたカラーのIDをuseStateで管理
     const [editableForm, setEeditableForm] = useState(null);
-    // 編集用の入力値をuseStateで管理
-    const [editColor, setEditColor] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
     // notifyContextの呼び出し
     const confirm = useNotify();
 
-    const handleConfirmDelete = async (id) => {
+    const handleConfirmDelete = async () => {
         const result = await confirm({
             body : `選択カラーを本当に削除しますか？`,
             confirmBtnLabel : '削除'
         });
-        result && deleteData({ url:`/api/admin/colors/${id}` });
+        result && deleteData({ url:`/api/admin/colors/${editableForm}` });
     }
-
     
     return (
         <main>
@@ -49,10 +42,12 @@ function ColorIndex() {
                     <div className={styles.form_area}>
                         <FormWithBtn
                             name='color_name'
-                            value={formData.color_name}
-                            onChange={handleFormData}
                             placeholder='カラー名'
-                            createMethod={() => createData({ form: formData, url:'/api/admin/colors' }) }
+                            formInitialValue={{'color_name': ''}}
+                            validateScope={'admin'}
+                            validateConfigKey={'color_request'}
+                            requestUrl={'/api/admin/colors'}
+                            createMethod={createData}
                             className={styles.mb_24}
                         />
                         <div className={styles.master_form_area}>
@@ -61,22 +56,16 @@ function ColorIndex() {
                                 { color.id === editableForm ? (
                                     <FormWithBtn
                                         name='color_name'
-                                        value={color.color_name}
-                                        onChange={e => setEditColor(e.target.value)}
                                         placeholder='カラー名'
-                                        updateMethod={() => 
-                                            updateData({
-                                                form: {color_name: `${editColor}`},
-                                                url:`/api/admin/colors/${color.id}`
-                                            })
-                                        }
-                                        deleteMethod={() => handleConfirmDelete(color.id)}
+                                        formInitialValue={{'color_name': color.color_name}}
+                                        validateScope={'admin'}
+                                        validateConfigKey={'color_request'}
+                                        requestUrl={`/api/admin/colors/${editableForm}`}
+                                        updateMethod={updateData}
+                                        deleteMethod={handleConfirmDelete}
                                     />
                                 ) : (
-                                    <div className={styles.master_editable_text} onClick={() => {
-                                        setEditColor(color.color_name);
-                                        setEeditableForm(color.id);
-                                    }}>{color.color_name}</div>
+                                    <div className={styles.master_editable_text} onClick={() => setEeditableForm(color.id)}>{color.color_name}</div>
                                 )}
                             </div>
                         )}

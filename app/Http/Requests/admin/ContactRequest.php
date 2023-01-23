@@ -33,7 +33,7 @@ class ContactRequest extends FormRequest
     {
         return [
             'response_status' => '対応状況',
-            'memo' => '備考欄',
+            'memo' => '備考記入欄',
         ];
     }
 }

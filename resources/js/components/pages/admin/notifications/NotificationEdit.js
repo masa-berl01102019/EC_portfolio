@@ -14,6 +14,7 @@ import { menuAdminState } from '../../../store/menuState';
 import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useNotify from '../../../context/NotifyContext';
+import useValidation from '../../../hooks/useValidation';
 
 function NotificationEdit(props) {
     // urlの設定
@@ -24,11 +25,12 @@ function NotificationEdit(props) {
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, handleFormDate}] = useForm(data.notification);
+    // フロント用バリデーション
+    const {valid, setValid, validation} = useValidation(formData, 'admin', 'notification_request');
     // リダイレクト用の関数呼び出し
     const history = useHistory();
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
     const confirm = useNotify();
 
     const handleConfirmUpdate = async () => {
@@ -51,32 +53,40 @@ function NotificationEdit(props) {
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
-                            if(formData.is_published && formData.expired_at === null) {
-                                handleConfirmUpdate();
+                            if(validation.fails()) {
+                                setValid(true);
                             } else {
-                                updateData({
-                                    form: formData, 
-                                    url: `/api/admin/notifications/${props.match.params.id}`,
-                                    callback: () => history.push('/admin/notifications') 
-                                });
+                                if(formData.is_published && formData.expired_at === null) {
+                                    handleConfirmUpdate();
+                                } else {
+                                    updateData({
+                                        form: formData, 
+                                        url: `/api/admin/notifications/${props.match.params.id}`,
+                                        callback: () => history.push('/admin/notifications') 
+                                    });
+                                }
                             }
                         }}>
                             <FormInputText
                                 name={'title'}
-                                onBlur={handleFormData}
+                                onChange={handleFormData}
                                 value={formData.title}
                                 label={'タイトル'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 placeholder='タイトル名'
                                 className={styles.mb_16}
                             />
                             <FormInputTextarea
                                 name={'body'} 
                                 value={formData.body}
-                                onBlur={handleFormData} 
+                                onChange={handleFormData} 
                                 placeholder={'本文を入力'}
                                 label={'本文'}
                                 error={errorMessage}
+                                validation={validation}
+                                valid={valid}
                                 className={styles.mb_16}
                                 style={{'minHeight' : '250px'}}
                             />
@@ -88,6 +98,8 @@ function NotificationEdit(props) {
                                     onChange={handleFormData}
                                     label={'公開設定'}
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     className={[styles.flex_grow, styles.mr_24, styles.mb_16_sp].join(' ')}
                                 >
                                     <option value={0}>非公開</option>
@@ -100,6 +112,8 @@ function NotificationEdit(props) {
                                     label={'掲載終了日'} 
                                     className={styles.mb_10} 
                                     error={errorMessage}
+                                    validation={validation}
+                                    valid={valid}
                                     openTo="date"
                                 />
                             </div>

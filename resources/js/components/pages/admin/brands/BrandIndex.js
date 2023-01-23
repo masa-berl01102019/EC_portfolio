@@ -1,7 +1,6 @@
 import React, {Suspense, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
 import useFetchApiData from "../../../hooks/useFetchApiData";
-import useForm from "../../../hooks/useForm";
 import Heading from '../../../atoms/Heading/Heading';
 import styles from '../styles.module.css';
 import { useRecoilValue } from 'recoil';
@@ -19,24 +18,19 @@ function BrandIndex() {
     const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
     // APIから取得したデータを変数に格納
     const brands = data.brands? data.brands: null;
-    // 新規登録用フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData}] = useForm({'brand_name': ''});
     // 選択されたブランドのIDをuseStateで管理
     const [editableForm, setEeditableForm] = useState(null);
-    // 編集用の入力値をuseStateで管理
-    const [editBrand, setEditBrand] = useState(null);
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-
     // notifyContextの呼び出し
     const confirm = useNotify();
 
-    const handleConfirmDelete = async (id) => {
+    const handleConfirmDelete = async () => {
         const result = await confirm({
             body : `選択ブランドを本当に削除しますか？`,
             confirmBtnLabel : '削除'
         });
-        result && deleteData({ url:`/api/admin/brands/${id}` });
+        result && deleteData({ url:`/api/admin/brands/${editableForm}` });
     }
 
     return (
@@ -48,10 +42,12 @@ function BrandIndex() {
                     <div className={styles.form_area}>
                         <FormWithBtn
                             name='brand_name'
-                            value={formData.brand_name}
-                            onChange={handleFormData}
                             placeholder='ブランド名'
-                            createMethod={() => createData({ form: formData, url:'/api/admin/brands' }) }
+                            formInitialValue={{'brand_name': ''}}
+                            validateScope={'admin'}
+                            validateConfigKey={'brand_request'}
+                            requestUrl={'/api/admin/brands'}
+                            createMethod={createData}
                             className={styles.mb_24}
                         />
                         <div className={styles.master_form_area}>
@@ -60,22 +56,16 @@ function BrandIndex() {
                                 { brand.id === editableForm ? (
                                     <FormWithBtn
                                         name='brand_name'
-                                        value={brand.brand_name}
-                                        onChange={e => setEditBrand(e.target.value)}
                                         placeholder='ブランド名'
-                                        updateMethod={() => 
-                                            updateData({
-                                                form: {brand_name: `${editBrand}`},
-                                                url:`/api/admin/brands/${brand.id}`
-                                            })
-                                        }
-                                        deleteMethod={() => handleConfirmDelete(brand.id)}
+                                        formInitialValue={{'brand_name': brand.brand_name}}
+                                        validateScope={'admin'}
+                                        validateConfigKey={'brand_request'}
+                                        requestUrl={`/api/admin/brands/${editableForm}`}
+                                        updateMethod={updateData}
+                                        deleteMethod={handleConfirmDelete}
                                     />
                                 ) : (
-                                    <div className={styles.master_editable_text} onClick={() => {
-                                        setEditBrand(brand.brand_name);
-                                        setEeditableForm(brand.id);
-                                    }}>{brand.brand_name}</div>
+                                    <div className={styles.master_editable_text} onClick={() => setEeditableForm(brand.id)}>{brand.brand_name}</div>
                                 )}
                             </div>
                         )}

@@ -31,7 +31,7 @@ class ColorRequest extends FormRequest
     public function attributes()
     {
         return [
-            'color_name' => 'カラー',
+            'color_name' => 'カラー名',
         ];
     }
 }

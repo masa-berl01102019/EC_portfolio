@@ -26,13 +26,13 @@ class ContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'last_name' => 'required|string|max:25', 
-            'first_name' => 'required|string|max:25', 
-            'last_name_kana' => ['required','string','max:25', new Kana],
-            'first_name_kana' => ['required','string','max:25', new Kana],
-            'tel' => ['required','string', new JapanesePhoneNumber, 'max:15'], 
-            'email' => 'required|email:strict,dns,spoof|max:100', 
-            'title' => 'required|string|max:255', 
+            'last_name' => 'required|string|max:25',
+            'first_name' => 'required|string|max:25',
+            'last_name_kana' => ['nullable', 'string', 'max:25', new Kana],
+            'first_name_kana' => ['nullable', 'string', 'max:25', new Kana],
+            'tel' => ['required', 'string', new JapanesePhoneNumber, 'max:15'],
+            'email' => 'required|email:strict,dns,spoof|max:100',
+            'title' => 'required|string|max:255',
             'body' => 'required|string'
         ];
     }
@@ -40,14 +40,14 @@ class ContactRequest extends FormRequest
     public function attributes()
     {
         return [
-            'last_name' => '姓', 
-            'first_name' => '名', 
-            'last_name_kana' => '姓(カナ)', 
-            'first_name_kana' => '名(カナ)', 
-            'tel' => '電話番号', 
-            'email' => 'メールアドレス', 
-            'title' => 'タイトル', 
-            'body' => '本文', 
+            'last_name' => '姓',
+            'first_name' => '名',
+            'last_name_kana' => '姓(カナ)',
+            'first_name_kana' => '名(カナ)',
+            'tel' => '電話番号',
+            'email' => 'メールアドレス',
+            'title' => 'タイトル',
+            'body' => '本文',
         ];
     }
 }
