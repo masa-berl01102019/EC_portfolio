@@ -2,8 +2,9 @@ import React, {useEffect, Suspense, lazy} from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {CircularProgress} from "@material-ui/core";
 import {UserPrivateRoute, UserLoginRoute,AdminPrivateRoute, AdminLoginRoute} from './GuardRoute';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { authAdminState, authUserState } from './store/authState';
+import { langState } from './store/langState';
 import useAuth from './hooks/useAuth';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -91,6 +92,8 @@ function Router() {
     const auth = str !== 'admin' ? 'user': 'admin';
     // Auth hooksの呼び出し
     const {data, errorMessage} = useAuth(`/api/${auth}/auth`, auth);
+    // 言語が変更になった際に再レンダリング掛ける為に呼びだし
+    const lang = useRecoilValue(langState);
 
     useEffect(() => {
         // ログインしていればユーザー名が返却されて来るので

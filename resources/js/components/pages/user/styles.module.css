@@ -134,6 +134,13 @@
 .hide_toolbar { 
   display: none !important; 
 }
+.detail_info_list > .flex {
+  flex-direction: column;
+}
+.detail_info_list > .flex > .flex_basis_140p{
+  flex-basis: auto;
+  margin-bottom: 8px;
+}
 
 /* other */
 .time_zome_field {
@@ -195,9 +202,6 @@
 .flex_1 {
   flex: 1;
   min-width: 0;
-}
-.flex_basis_80p {
-  flex-basis: 80px;
 }
 .flex_wrap {
   flex-flow: wrap;
@@ -328,6 +332,13 @@
     .item_basic_info_area > p:first-child {
       font-size: 21px;
       font-weight: bold;
+    }
+    .detail_info_list > .flex {
+      flex-direction: row;
+    }
+    .detail_info_list > .flex > .flex_basis_140p {
+      flex-basis: 140px;
+      margin-bottom: 0px;
     }
 }
 

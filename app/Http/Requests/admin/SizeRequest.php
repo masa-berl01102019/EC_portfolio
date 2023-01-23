@@ -27,11 +27,4 @@ class SizeRequest extends FormRequest
             'size_name' => 'required|string|max:30',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'size_name' => 'サイズ名',
-        ];
-    }
 }

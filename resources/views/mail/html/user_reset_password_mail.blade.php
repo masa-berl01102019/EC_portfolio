@@ -2,47 +2,47 @@
 <html lang="ja">
 
 <body>
-  <p>{{ $user_name }} 様</p>
-  <h4>パスワード再設定について</h4>
-  <p>
-    平素は、当社のサービスをご利用いただき、誠にありがとうございます。<br>
-    パスワード再設定のリクエストを承りましたことをお知らせいたします。<br>
-  </p><br>
-
-  <p>以下のリンクをクリックしてパスワードを変更出来ます。</p>
-  <p style="width: 100%">
-    【パスワード再設定リンク】<br>
-    <a href="{{'http://homestead.test/user/change_password/'.$password_reset->uuid}}">パスワード再設定はこちらから</a><br>
-  </p>
-  <p style="width: 100%">
-    【パスワード再設定の有効期限】<br>
-    {{ $password_reset->expired_at->format('Y年m月d日 H時i分') }}<br>
-  </p>
-
-  <p>
-    もしあなたがパスワード再設定をリクエストしていない場合は、このメールを無視して下さい。<br>
-    上記リンクをクリックして新しいパスワードを作成しない限り、パスワードは変更されません。<br>
-    上記のリンクには有効期限がございます。<br>
-    有効期限を過ぎた場合は上記のリンクにアクセス出来なくなります。<br>
-    予めご了承のほど、何卒宜しくお願い申し上げます。<br>
-  </p>
+  <p>{{ __('mail.user.common.honorific', ['name' => $user_name]) }}</p>
   <br>
+  <p>{{ __('mail.user.common.thanks_greeting') }}</p>
+  <p>{{ __('mail.user.reset_password.p1') }}</p>
+  <p>{{ __('mail.user.reset_password.p2') }}</p>
+  <p style="width: 100%">
+    {{ __('mail.user.reset_password.p3') }}<br>
+    <a href="{{'http://homestead.test/user/change_password/'.$password_reset->uuid}}">
+      {{ __('mail.user.reset_password.p4') }}
+    </a>
+    <br>
+  </p>
+  <p style="width: 100%">
+    {{ __('mail.user.reset_password.p5') }}<br>
+    {{ $password_reset->expired_at->format('Y-m-d H:i') }}<br>
+  </p>
   <p>
-    ※このメールは自動送信です。<br>
-    返信いただいても回答できませんので、ご了承ください。<br>
-    なお、ご不明な点がございましたら、下記の運営会社までお問い合わせください。<br>
+    {{ __('mail.user.reset_password.p6') }}<br>
+    {{ __('mail.user.reset_password.p7') }}
+  </p>
+  <p>
+    {{ __('mail.user.reset_password.p8') }}<br>
+    {{ __('mail.user.reset_password.p9') }}<br>
+    {{ __('mail.user.reset_password.p10') }}
+  </p>
+  <p>
+    {{ __('mail.user.common.noreply_notice1') }}<br>
+    {{ __('mail.user.common.noreply_notice2') }}<br>
+    {{ __('mail.user.common.noreply_notice3') }}<br>
   </p>
   <br>
   <hr style="width: 440px;text-align: left;margin-left: 0">
   <p>
-    <span style="display: inline-block; width: 70px">運営会社</span>： XXXX運営株式会社<br>
-    <span style="display: inline-block; width: 70px">住所</span>： 〒XXX-XXXX テスト県テスト市テスト町1-2-3 テストビルディング 1F<br>
-    <span style="display: inline-block; width: 70px">TEL</span>： XX-XXXX-XXXX<br>
-    <span style="display: inline-block; width: 70px">E-MAIL</span>： test@example.com<br>
-    <span style="display: inline-block; width: 70px">URL</span>： <a href="http://homestead.test">http://homestead.test</a>
+    {{ __('mail.user.common.company') }} ： {{ __('mail.user.common.company_ex') }}<br>
+    {{ __('mail.user.common.address') }} ： {{ __('mail.user.common.address_ex') }}<br>
+    TEL ： XX-XXXX-XXXX<br>
+    EMAIL ： test@example.com<br>
+    URL ： <a href="http://homestead.test">http://homestead.test</a>
   </p>
   <hr style="width: 440px;text-align: left;margin-left: 0">
-  <p>(C) LARAVEL DEV CO., LTD. ALL RIGHT RESERVED.</p>
+  <p>(C) DEMO DEV CO., LTD. ALL RIGHT RESERVED.</p>
 </body>
 
 </html>

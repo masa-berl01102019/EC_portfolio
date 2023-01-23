@@ -23,8 +23,8 @@ class ContactResource extends JsonResource
     {
         if ($request->routeIs('admin.contacts.edit')) {
             return [
-                'title' => $this->title,
-                'body' => $this->body,
+                'subject' => $this->subject,
+                'message' => $this->message,
                 'full_name' => $this->full_name,
                 'full_name_kana' => $this->full_name_kana,
                 'tel' => $this->tel,
@@ -37,8 +37,8 @@ class ContactResource extends JsonResource
             return [
                 'id' => $this->id,
                 'user_id' => $this->user_id,
-                'title' => $this->title,
-                'body' => $this->body,
+                'subject' => $this->subject,
+                'message' => $this->message,
                 'full_name' => $this->full_name,
                 'full_name_kana' => $this->full_name_kana,
                 'tel' => $this->tel,

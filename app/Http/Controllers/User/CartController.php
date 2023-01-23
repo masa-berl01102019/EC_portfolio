@@ -30,7 +30,7 @@ class CartController extends Controller
             $search_cart = $search_cart->where('user_id', Auth::guard('user')->user()->id)
                 ->join('skus', 'carts.sku_id', '=', 'skus.id')
                 ->join('items', function ($join) {
-                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'))->where('items.deleted_at', null);
+                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published.open'))->where('items.deleted_at', null);
                 })
                 ->join('brands', 'items.brand_id', '=', 'brands.id')
                 ->select('carts.id', 'carts.quantity', 'carts.updated_at', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.price', 'items.brand_id', 'brands.brand_name')
@@ -42,7 +42,7 @@ class CartController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'カート商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.carts.get_err')], 500);
         }
     }
 
@@ -57,11 +57,11 @@ class CartController extends Controller
                 'quantity' => 1,
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カート商品の登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.carts.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カート商品の登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.carts.create_err')], 500);
         }
     }
 
@@ -74,11 +74,11 @@ class CartController extends Controller
                 'quantity' => $data['quantity']
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カート商品の編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.carts.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カート商品の編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.carts.update_err')], 500);
         }
     }
 
@@ -88,11 +88,11 @@ class CartController extends Controller
         try {
             $cart->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カート商品の削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.carts.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カート商品の削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.carts.delete_err')], 500);
         }
     }
 }

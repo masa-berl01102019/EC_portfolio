@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+ import React, {Suspense} from 'react';
 import {useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
@@ -22,73 +22,56 @@ import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import useNotify from '../../../context/NotifyContext';
 import useHelper from '../../../hooks/useHelper';
 import useValidation from '../../../hooks/useValidation';
+import useI18next from '../../../context/I18nextContext';
 
 // TODO プレビュー機能の実装
 
 function ItemEdit(props) {
-    // urlの設定
-    const baseUrl = `/api/admin/items/${props.match.params.id}/edit`;
-    // paramsの適用範囲を決めるscope名を定義
-    const model = 'ITEM';
-    // APIと接続して返り値を取得
-    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
-    // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData, handleFormCheckbox, handleFormCategory}] = useForm(data.item);
-    // フロント用バリデーション
-    const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'item_edit');
-    // 複数オブジェクト送信用にフォームのラッパー関数呼び出し
-    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData, createData);
-    // リダイレクト用の関数呼び出し
-    const history = useHistory();
-    // API接続の返却値を変数に格納
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const main_categories = data.main_categories? data.main_categories: null;
-    const sub_categories = data.sub_categories? data.sub_categories: null;
-    const sizes = data.sizes? data.sizes: null;
-    const colors = data.colors? data.colors: null;
-    const tags = data.tags? data.tags: null;
-    // menuの状態管理
-    const openAdminMenu = useRecoilValue(menuAdminState);
-    // notifyContextの呼び出し
-    const alert = useNotify();
 
+    const baseUrl = `/api/admin/items/${props.match.params.id}/edit`;
+    const model = 'ITEM';
+    const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
+    const [formData, {setFormData, handleFormData, handleFormCheckbox, handleFormCategory}] = useForm(data.item);
+    const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'item_edit');
+    const {handleSendObjectForm, handleInsertObjectForm, handleDeleteObjectForm, handleChangeObjectForm} = useObjectForm(formData, setFormData, createData);
+    const history = useHistory();
+    const {brands, gender_categories, main_categories, sub_categories, sizes, colors, tags } = data;
+    const openAdminMenu = useRecoilValue(menuAdminState);
+    const alert = useNotify();
     const {isDuplicated} = useHelper();
+    const i18next = useI18next();
 
     const handleFormSubmit = () => {
         if(validation.fails()) {
             setValid(true);
             return false;
         }
-        // 二次元配列から比較したい値を配列で抜き出す
         const skus_size = formData.skus.map(item => item.size_id);
         const skus_color = formData.skus.map(item => item.color_id);
         const measurements_size = formData.measurements.map(item => item.size_id);
         const images_color = formData.images.map(item => item.color_id);
         const arr = formData.skus.map(item => {
-            // 比較したい組合せのサイズとカラーのプロパティを分割代入
             const {size_id, color_id} = item;
-            // 文字列化して配列を生成
             return JSON.stringify({size:size_id, color:color_id});
         });
 
         if(isDuplicated(arr)) {
-            alert({body: 'SKUセクションで選択されてるカラーとサイズの組み合わせの一部が重複しております。', type: 'alert'});
+            alert({body: i18next.t('admin.item.alert-msg1'), type: 'alert'});
             return false;
         }
 
         if(isDuplicated(measurements_size)) {
-            alert({body: '寸法セクションで選択されてるサイズが重複がしております。', type: 'alert'});
+            alert({body: i18next.t('admin.item.alert-msg2'), type: 'alert'});
             return false;
         }
         
         if(skus_size.filter(el => !measurements_size.includes(el) ).length > 0 || measurements_size.filter(el => !skus_size.includes(el) ).length > 0) {
-            alert({body: 'SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。', type: 'alert'});
+            alert({body: i18next.t('admin.item.alert-msg3'), type: 'alert'});
             return false;
         }
 
         if(skus_color.filter(el => !images_color.includes(el)).length > 0 || images_color.filter(el => !skus_color.includes(el)).length > 0) {
-            alert({body: 'SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。', type: 'alert'});
+            alert({body: i18next.t('admin.item.alert-msg4'), type: 'alert'});
             return false;
         } 
 
@@ -102,12 +85,12 @@ function ItemEdit(props) {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>商品編集</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.item.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'1'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>基本情報</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.basic-info')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={[styles.flex, styles.flex_tb].join(' ')}>
@@ -116,22 +99,22 @@ function ItemEdit(props) {
                                         name={'product_number'}
                                         onChange={handleFormData}
                                         value={formData.product_number}
-                                        label={'品番'}
+                                        label={i18next.t('admin.item.product-number')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder='AS1003200'
+                                        placeholder={i18next.t('admin.item.product-number-ex')}
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
                                         name={'item_name'}
                                         onChange={handleFormData}
                                         value={formData.item_name}
-                                        label={'商品名'}
+                                        label={i18next.t('admin.item.item-name')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder='プリーツスカート'
+                                        placeholder={i18next.t('admin.item.item-name-ex')}
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
@@ -139,11 +122,11 @@ function ItemEdit(props) {
                                         type={'number'}
                                         onChange={handleFormData}
                                         value={formData.price}
-                                        label={'価格'}
+                                        label={i18next.t('admin.item.price')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder='3400'
+                                        placeholder={i18next.t('admin.item.price-ex')}
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
@@ -151,15 +134,15 @@ function ItemEdit(props) {
                                         type={'number'}
                                         onChange={handleFormData}
                                         value={formData.cost}
-                                        label={'原価'}
+                                        label={i18next.t('admin.item.cost')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder='1200'
+                                        placeholder={i18next.t('admin.item.cost-ex')}
                                         className={styles.mb_16}
                                     />
                                     <div className={styles.cost_rate}>
-                                        <Text>原価率</Text>
+                                        <Text>{i18next.t('admin.item.cost-rate')}</Text>
                                         <Text>
                                             { formData.cost && formData.price && 
                                                 Math.floor(formData.cost / formData.price * 10000) / 100 
@@ -170,20 +153,20 @@ function ItemEdit(props) {
                                         name={'made_in'}
                                         onChange={handleFormData}
                                         value={formData.made_in}
-                                        label={'生産国'}
+                                        label={i18next.t('admin.item.made-in')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder='中国'
+                                        placeholder={i18next.t('admin.item.made-in-ex')}
                                     />
                                 </div>
                                 <div className={styles.flex_basis_50}>
                                     <FormInputTextarea
                                         name={'mixture_ratio'} 
-                                        value={formData.mixture_ratio} 
+                                        value={formData.mixture_ratio}
+                                        label={i18next.t('admin.item.mixture-ratio')}
                                         onChange={handleFormData} 
-                                        placeholder={'綿100%'}
-                                        label={'混用率'}
+                                        placeholder={i18next.t('admin.item.mixture-ratio-ex')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
@@ -192,10 +175,10 @@ function ItemEdit(props) {
                                     />
                                     <FormInputTextarea
                                         name={'description'} 
-                                        value={formData.description} 
+                                        value={formData.description}
+                                        label={i18next.t('admin.item.description')}
                                         onChange={handleFormData} 
-                                        placeholder={'商品説明を入力'}
-                                        label={'商品説明'}
+                                        placeholder={i18next.t('admin.item.description-ex')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
@@ -209,46 +192,46 @@ function ItemEdit(props) {
                             <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb].join(' ')}>
                                 <div className={[styles.flex, styles.align_center, styles.mb_16].join(' ')}>
                                     <Badge text={'2'} type={'number'} className={styles.mr_8}/>
-                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>カテゴリ</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.category')}</Heading>
                                     <div className={styles.heading_border}></div>
                                 </div>
                                 <FormSelectbox
                                     name='brand_id'
                                     value={formData.brand_id}
                                     onChange={handleFormData}
-                                    label={'ブランド'}
+                                    label={i18next.t('admin.item.brand')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={styles.mb_16}
                                 >
-                                    <option value={''}>未設定</option>
+                                    <option value={''}>{i18next.t('admin.not-set')}</option>
                                     { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
                                 </FormSelectbox>
                                 <FormSelectbox
                                     name='gender_category'
                                     value={formData.gender_category}
                                     onChange={handleFormCategory}
-                                    label={'性別'}
+                                    label={i18next.t('admin.item.gender')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={styles.mb_16}
                                 >
-                                    <option value={''}>未設定</option>
+                                    <option value={''}>{i18next.t('admin.not-set')}</option>
                                     { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
                                 </FormSelectbox>
                                 <FormSelectbox
                                     name='main_category'
                                     value={formData.main_category}
                                     onChange={handleFormCategory}
-                                    label={'メイン'}
+                                    label={i18next.t('admin.item.main')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={styles.mb_16}
                                 >
-                                    <option value={''}>未設定</option>
+                                    <option value={''}>{i18next.t('admin.not-set')}</option>
                                     { main_categories && main_categories.filter((category) => Number(formData.gender_category) === category.parent_id).map((category) => (
                                         <option key={category.id} value={category.id}>{category.category_name}</option>
                                     ))}
@@ -257,12 +240,12 @@ function ItemEdit(props) {
                                     name='sub_category'
                                     value={formData.sub_category}
                                     onChange={handleFormCategory}
-                                    label={'サブ'}
+                                    label={i18next.t('admin.item.sub')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                 >
-                                    <option value={''}>未設定</option>
+                                    <option value={''}>{i18next.t('admin.not-set')}</option>
                                         {   sub_categories && sub_categories.filter((category) => Number(formData.main_category) === category.parent_id).map((category) => (
                                             <option key={category.id} value={category.id}>{category.category_name}</option>
                                         ))}
@@ -271,7 +254,7 @@ function ItemEdit(props) {
                             <div className={styles.flex_basis_50}>
                                 <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                     <Badge text={'3'} type={'number'} className={styles.mr_8}/>
-                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>タグ</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.tag')}</Heading>
                                     <div className={styles.heading_border}></div>
                                 </div>
                                 <div>
@@ -311,7 +294,7 @@ function ItemEdit(props) {
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'4'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>SKU</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.sku')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={styles.mb_16}>
@@ -347,14 +330,14 @@ function ItemEdit(props) {
                                 onClick={() => handleInsertObjectForm('skus',['item_id'])} 
                                 className={[styles.block, styles.ml_auto].join(' ')}
                             >
-                                フォーム追加
+                                {i18next.t('admin.item.add-form')}
                             </Button>
                         </div>
 
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'5'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>画像</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.image')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={styles.mb_16}>
@@ -389,14 +372,14 @@ function ItemEdit(props) {
                                 onClick={() => handleInsertObjectForm('images',['item_id'])} 
                                 className={[styles.block, styles.ml_auto].join(' ')}
                             >
-                                フォーム追加
+                                {i18next.t('admin.item.add-form')}
                             </Button>
                         </div>
 
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'6'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>寸法</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.measurement')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={styles.mb_16}>
@@ -431,7 +414,7 @@ function ItemEdit(props) {
                                 onClick={() => handleInsertObjectForm('measurements',['item_id'])} 
                                 className={[styles.block, styles.ml_auto].join(' ')}
                             >
-                                フォーム追加
+                                {i18next.t('admin.item.add-form')}
                             </Button>
                         </div>
 
@@ -439,19 +422,19 @@ function ItemEdit(props) {
                             name='is_published'
                             value={formData.is_published}
                             onChange={handleFormData}
-                            label={'公開設定'}
+                            label={i18next.t('admin.set-published-status')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
                             className={styles.mb_40}
                         >
-                            <option value={0}>非公開</option>
-                            <option value={1}>公開</option>
+                            <option value={0}>{i18next.t('admin.unpublished')}</option>
+                            <option value={1}>{i18next.t('admin.published')}</option>
                         </FormSelectbox>
 
                         <div className={[styles.flex, styles.justify_center].join(' ')}>
-                            <LinkBtn to={`/admin/items`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
-                            <Button size='l' color='primary' onClick={handleFormSubmit} className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
+                            <LinkBtn to={`/admin/items`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
+                            <Button size='l' color='primary' onClick={handleFormSubmit} className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
                         </div>
                     </div>
                 </div>

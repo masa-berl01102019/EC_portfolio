@@ -9,25 +9,20 @@ import Heading from '../../../atoms/Heading/Heading';
 import OrderedItemCard from '../../../molecules/Card/OrderedItemCard';
 import styles from '../styles.module.css';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
+import useI18next from '../../../context/I18nextContext';
 
 function OrderIndexPage() {
-    // urlの設定
+
     const baseUrl = `/api/user/orders`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'ORDER';
-    // URLパラメータ変更のフックの呼び出し
     const {handleCurrentPage} = useCreateParams(model);
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
     const orders = data.data? data.data: null;
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('ORDERにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 scope: model
@@ -38,7 +33,7 @@ function OrderIndexPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>購入履歴</Heading>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.order.index-title')}</Heading>
                 <div className={styles.main_contents_area}>
                 {   orders &&
                     <div className={[styles.flex, styles.flex_wrap, styles.mb_24].join(' ')}> 

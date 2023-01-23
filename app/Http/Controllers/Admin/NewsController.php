@@ -49,7 +49,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ニュースの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.get_err')], 500);
         }
     }
 
@@ -63,7 +63,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ニュースの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.get_err')], 500);
         }
     }
 
@@ -84,15 +84,15 @@ class NewsController extends Controller
                 'thumbnail' => $db_reserve_path,
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
-                'posted_at' => $data['is_published'] == config('define.is_published_r.open') ? Carbon::now() : null
+                'posted_at' => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : null
             ]);
             $news->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'ニュースの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.news.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'ニュースの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.create_err')], 500);
         }
     }
 
@@ -106,7 +106,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ニュースの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.get_err')], 500);
         }
     }
 
@@ -131,15 +131,15 @@ class NewsController extends Controller
                 'thumbnail' => $db_reserve_path ? $db_reserve_path : $data['thumbnail'],
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
-                $registered_date => $data['is_published'] == config('define.is_published_r.open') ? Carbon::now() : $date // don't update published date if is_published status close
+                $registered_date => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : $date // don't update published date if is_published status close
             ])->save();
             $news->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'ニュースの編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.news.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'ニュースの編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.update_err')], 500);
         }
     }
 
@@ -153,11 +153,11 @@ class NewsController extends Controller
                 $news->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'ニュースの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.news.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'ニュースの削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.delete_err')], 500);
         }
     }
 
@@ -183,11 +183,11 @@ class NewsController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '公開状況', 'タイトル', 'ブランド', 'カテゴリ', 'タグ', '最終更新者', '投稿日', '更新日'];
-            return csvExport($csv_body, $csv_header, 'ニュース情報.csv');
+            $csv_header = trans('api.admin.news.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.news.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ニュース情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.news.csv_err')], 500);
         }
     }
 }

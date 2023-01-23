@@ -10,20 +10,17 @@ import Heading from '../../../atoms/Heading/Heading';
 import Image from '../../../atoms/Image/Image';
 import styles from '../styles.module.css';
 import TopItemCard from '../../../molecules/Card/TopItemCard';
+import useI18next from '../../../context/I18nextContext';
 
 function BlogShowPage(props) {
-    // urlの設定 * propsで渡ってきたIDを初期URLにセット
+
     const baseUrl = `/api/user/blogs/${props.match.params.id}`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'BLOG';
-    // APIと接続して返り値を取得
     const {data, errorMessage} = useFetchApiData(baseUrl, model);
-    // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-    // 便利関数の呼び出し
     const {isJson} = useHelper();
-    // API接続の返却値を変数に格納
     const blog = data.blog;
+    const i18next = useI18next();
 
     
     useEffect(() => {
@@ -49,7 +46,7 @@ function BlogShowPage(props) {
                     <Text size='s' className={styles.mb_8}>
                         {blog.modified_at ? blog.modified_at : blog.posted_at}
                     </Text>
-                    <Image src={blog.thumbnail} type='blog_news' alt="ブログ画像" style={{'width' : '100%', 'marginBottom': '8px'}} />
+                    <Image src={blog.thumbnail} type='blog_news' alt="blog image" style={{'width' : '100%', 'marginBottom': '8px'}} />
                     <Editor
                         editorState={editorState}
                         readOnly={true}
@@ -65,7 +62,7 @@ function BlogShowPage(props) {
                         toolbarClassName={styles.hide_toolbar}
                     />
                     <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_8, styles.mt_40].join(' ')}>
-                        ブログ関連商品
+                        {i18next.t('user.blog.item')}
                     </Heading>
                     {   data.blog.items &&
                         <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

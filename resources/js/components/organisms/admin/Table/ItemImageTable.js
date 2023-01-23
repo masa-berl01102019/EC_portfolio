@@ -7,22 +7,23 @@ import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputImage from '../../../atoms/InputImage/InputImage';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
 const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFormMethod}) => {
 
-  // notifyContextの呼び出し
   const alert = useNotify();
+  const i18next = useI18next();
 
   return (
     <>
       <table className={[styles.table, className].join(' ')}>
         <thead>
           <Row>
-            <Th>削除</Th>
-            <Th>画像</Th>
-            <Th>画像種別</Th>
-            <Th>関連カラー</Th>
+            <Th>{i18next.t('admin.delete-btn')}</Th>
+            <Th>{i18next.t('admin.item.image')}</Th>
+            <Th>{i18next.t('admin.item.image-type')}</Th>
+            <Th>{i18next.t('admin.item.related-color')}</Th>
           </Row>
         </thead>
         <tbody>
@@ -36,14 +37,14 @@ const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFor
                             deleteMethod('images', index, list.id)
                           } else {
                             alert({
-                              body : '全ての行は削除出来ません。',
+                              body : i18next.t('admin.table-alert'),
                               type: 'alert'
                             });
                           }
                         }} 
-                        style={{'maxWidth': '50px'}}
+                        style={{'maxWidth': '65px'}}
                       >
-                        削除
+                        {i18next.t('admin.delete-btn')}
                       </Button>
                     </Td>
                     <Td>
@@ -57,15 +58,15 @@ const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFor
                     <Td>
                       <Selectbox name='image_category' value={list.image_category} onChange={ e => handleFormMethod('images', index, e) } className={styles.table_row_form}>
                           {/* フォーム追加以外未設定の表示を制限 */}
-                          { list.image_category === '' && <option value={''}>未設定</option>}
-                          <option value={0}>メイン画像</option>
-                          <option value={1}>サムネイル画像</option>
+                          { list.image_category === '' && <option value={''}>{i18next.t('admin.not-set')}</option>}
+                          <option value={0}>{i18next.t('admin.item.image-main')}</option>
+                          <option value={1}>{i18next.t('admin.item.image-sub')}</option>
                       </Selectbox>
                     </Td>
                     <Td>
                       <Selectbox name='color_id' value={list.color_id} onChange={ e => handleFormMethod('images', index, e) }  className={styles.table_row_form}>
                         {/* フォーム追加以外未設定の表示を制限 */}
-                        { list.color_id == '' && <option value={''}>未設定</option>}
+                        { list.color_id == '' && <option value={''}>{i18next.t('admin.not-set')}</option>}
                         { colors && colors.map((color) => (
                             <option key={color.id} value={color.id}>{color.color_name}</option>
                           ))

@@ -311,7 +311,7 @@ class Item extends Model
     public function topImage()
     {
         // 紐づくの画像の内、main画像を取得出来る
-        return $this->hasMany('App\Models\Image')->where('image_category', config('define.image_category_r.main'));
+        return $this->hasMany('App\Models\Image')->where('image_category', config('define.image_category.main'));
     }
 
     public function genderCategory()

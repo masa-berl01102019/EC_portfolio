@@ -9,22 +9,20 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
-const NotificationTable = memo(({notifications, className = '', deleteMethod, csvOutputMethod}) => {
+const NotificationTable = ({notifications, className = '', deleteMethod, csvOutputMethod}) => {
 
-  // テーブルのデータに対しての操作の関心を分ける
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
-
   const [checkItemAll, setCheckItemAll] = useState(false);
-
-  // notifyContextの呼び出し
   const confirm = useNotify();
+  const i18next = useI18next();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : `選択項目${checklist.length}件を削除しますか？`,
-          confirmBtnLabel : '削除'
+          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : i18next.t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/notifications`, form:checklist, callback: () => setChecklist([])});
   }
@@ -32,13 +30,13 @@ const NotificationTable = memo(({notifications, className = '', deleteMethod, cs
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/notifications/csv`, 
             form:checklist 
           }); 
-        }}>CSV出力</DownloadCsvBtn>
+        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -67,15 +65,15 @@ const NotificationTable = memo(({notifications, className = '', deleteMethod, cs
                   />
                 )}
               </Th>
-              <Th>ID</Th>
-              <Th>編集</Th>
-              <Th>公開状況</Th>
-              <Th>タイトル</Th>
-              <Th>本文</Th>
-              <Th>最終更新者</Th>
-              <Th>掲載終了日</Th>
-              <Th>投稿日</Th>
-              <Th>更新日</Th>
+              <Th>{i18next.t('admin.id')}</Th>
+              <Th>{i18next.t('admin.edit-link')}</Th>
+              <Th>{i18next.t('admin.published-status')}</Th>
+              <Th>{i18next.t('admin.notification.title')}</Th>
+              <Th>{i18next.t('admin.notification.body')}</Th>
+              <Th>{i18next.t('admin.last-updated-by')}</Th>
+              <Th>{i18next.t('admin.notification.expired-date')}</Th>
+              <Th>{i18next.t('admin.posted-date')}</Th>
+              <Th>{i18next.t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -83,7 +81,7 @@ const NotificationTable = memo(({notifications, className = '', deleteMethod, cs
               <Row key={notification.id} className={checklist.includes(notification.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={notification.id} checked={checklist.includes(notification.id)} className={styles.table_check}/></Td>
                 <Td>{notification.id}</Td>
-                <Td><EditLink to={`/admin/notifications/${notification.id}/edit`}>編集</EditLink></Td>
+                <Td><EditLink to={`/admin/notifications/${notification.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
                 <Td>{notification.is_published_text}</Td>
                 <Td>{notification.title}</Td>
                 <Td>{notification.body}</Td>
@@ -99,6 +97,6 @@ const NotificationTable = memo(({notifications, className = '', deleteMethod, cs
       </div>
     </>
   );
-});
+};
 
 export default NotificationTable;

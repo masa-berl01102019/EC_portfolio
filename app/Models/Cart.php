@@ -24,24 +24,27 @@ class Cart extends Model
 
     /** static method */
 
-    static function getUserCart($user_id) {
+    static function getUserCart($user_id)
+    {
         // userに紐づいてるカートを取得 *削除されてないかつ現在も公開されてる商品のsku_idの配列を返却
         return Self::where('user_id', $user_id)
             ->join('skus', 'carts.sku_id', '=', 'skus.id')
             ->join('items', function ($join) {
-                $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
+                $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published.open'));
             })
             ->pluck('sku_id')
             ->toArray();
     }
-    
+
     /** リレーション */
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function sku() {
+    public function sku()
+    {
         return $this->belongsTo('App\Models\Sku');
     }
 }

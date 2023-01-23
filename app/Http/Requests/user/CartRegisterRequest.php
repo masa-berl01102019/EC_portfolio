@@ -27,11 +27,4 @@ class CartRegisterRequest extends FormRequest
             'sku_id' => 'required|integer'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'sku_id' => 'SKU ID'
-        ];
-    }
 }

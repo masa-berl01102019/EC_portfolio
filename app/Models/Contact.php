@@ -45,21 +45,23 @@ class Contact extends Model
     /** アクセサ */
 
     // 配列内に含めたい独自の属性(カラム名)を定義
-    protected $appends = ['response_status_text', 'full_name', 'full_name_kana' ];
+    protected $appends = ['response_status_text', 'full_name', 'full_name_kana'];
 
     // 関数の返却値を独自の属性(カラム名)として設定
-    public function getResponseStatusTextAttribute() {
-        return isset($this->response_status) ? config('define.response_status')[$this->response_status]: '';
+    public function getResponseStatusTextAttribute()
+    {
+        return isset($this->response_status) ? trans('api.const.response_status')[$this->response_status] : '';
     }
 
     /** スコープ */
 
-    public function scopeFilterResponseStatus($query, $request) {
+    public function scopeFilterResponseStatus($query, $request)
+    {
         $filter = $request->input('f_response_status');
         $flag = $filter !== null ? true : false;
-        $query->when($flag, function($query) use($filter) {
+        $query->when($flag, function ($query) use ($filter) {
             // カンマ区切りで配列に変換
-            $status_arr = explode(',',$filter);
+            $status_arr = explode(',', $filter);
             // 配列内に該当する項目を絞り込み検索
             return $query->whereIn('response_status', $status_arr);
         });
@@ -67,12 +69,13 @@ class Contact extends Model
 
     /** リレーション */
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function admin() {
+    public function admin()
+    {
         return $this->belongsTo('App\Models\Admin');
     }
-
 }

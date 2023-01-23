@@ -7,24 +7,25 @@ import Heading from '../../../atoms/Heading/Heading';
 import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function UserChangePassword(props) {
 
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
         'uuid': props.match.params.uuid,
         'password': null
     });
-    // Auth hooksの呼び出し
     const {errorMessage, handleChangePassword } = useAuth('/api/user/auth', 'user');
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
+    const i18next = useI18next();
+
+    // TODO: auth関係のformバリデーションの修正 admin / user 両方
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    パスワード変更
+                    {i18next.t('user.auth.change-password')}
                 </Heading>
                 <div className={styles.login_area}>
                     <form onSubmit={ e => {
@@ -40,13 +41,13 @@ function UserChangePassword(props) {
                             type={'password'}
                             onChange={handleFormData}
                             value={formData.password}
-                            label={'パスワード'}
+                            label={i18next.t('user.auth.password')}
                             error={errorMessage}
-                            placeholder='半角英数字8文字以上'
+                            placeholder={i18next.t('user.auth.password-ex')}
                             className={styles.mb_16}
                         />
                         <Button size='l' color='primary' type="submit" className={styles.mb_8}>
-                            パスワード変更
+                            {i18next.t('user.auth.change-btn')}
                         </Button>
                     </form>
                 </div>

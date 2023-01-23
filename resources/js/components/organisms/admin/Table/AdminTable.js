@@ -9,22 +9,20 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
-const AdminTable = memo(({admins, className = '', deleteMethod, csvOutputMethod}) => {
+const AdminTable = ({admins, className = '', deleteMethod, csvOutputMethod}) => {
 
-  // テーブルのデータに対しての操作の関心を分ける
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
-
   const [checkItemAll, setCheckItemAll] = useState(false);
-
-  // notifyContextの呼び出し
   const confirm = useNotify();
+  const i18next = useI18next();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : `選択項目${checklist.length}件を削除しますか？`,
-          confirmBtnLabel : '削除'
+          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : i18next.t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/admins`, form:checklist, callback: () => setChecklist([])});
   }
@@ -32,13 +30,13 @@ const AdminTable = memo(({admins, className = '', deleteMethod, csvOutputMethod}
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/admins/csv`, 
             form:checklist 
           }); 
-        }}>CSV出力</DownloadCsvBtn>
+        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -67,14 +65,14 @@ const AdminTable = memo(({admins, className = '', deleteMethod, csvOutputMethod}
                   />
                 )}
               </Th>
-              <Th>ID</Th>
-              <Th>編集</Th>
-              <Th>氏名</Th>
-              <Th>氏名(カナ)</Th>
-              <Th>電話番号</Th>
-              <Th>メールアドレス</Th>
-              <Th>作成日時</Th>
-              <Th>更新日時</Th>
+              <Th>{i18next.t('admin.id')}</Th>
+              <Th>{i18next.t('admin.edit-link')}</Th>
+              <Th>{i18next.t('admin.admin.name')}</Th>
+              <Th>{i18next.t('admin.admin.name-kana')}</Th>
+              <Th>{i18next.t('admin.admin.tel')}</Th>
+              <Th>{i18next.t('admin.admin.email')}</Th>
+              <Th>{i18next.t('admin.created-date')}</Th>
+              <Th>{i18next.t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -82,7 +80,7 @@ const AdminTable = memo(({admins, className = '', deleteMethod, csvOutputMethod}
               <Row key={admin.id} className={checklist.includes(admin.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={admin.id} checked={checklist.includes(admin.id)} className={styles.table_check}/></Td>
                 <Td>{admin.id}</Td>
-                <Td><EditLink to={`/admin/admins/${admin.id}/edit`}>編集</EditLink></Td>
+                <Td><EditLink to={`/admin/admins/${admin.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
                 <Td>{admin.full_name}</Td>
                 <Td>{admin.full_name_kana}</Td>
                 <Td>{admin.tel}</Td>
@@ -97,6 +95,6 @@ const AdminTable = memo(({admins, className = '', deleteMethod, csvOutputMethod}
       </div>
     </>
   );
-});
+};
 
 export default AdminTable;

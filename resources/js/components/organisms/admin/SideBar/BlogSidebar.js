@@ -11,6 +11,7 @@ import styles from './styles.module.css';
 import CheckboxTab from '../../../molecules/Tab/CheckboxTab';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
 import Button from '../../../atoms/Button/Button';
+import useI18next from '../../../context/I18nextContext';
 
 const BlogSidebar = ({
         brands,
@@ -21,34 +22,33 @@ const BlogSidebar = ({
         onClick
     }) => {
 
-    // グローバルステート呼び出し
     const params = useRecoilValue(paramState(model));
-    // URLパラメータ変更のフックの呼び出し
     const {handleFilter, handleFilterCheckbox, handleSort} = useCreateParams(model);
+    const i18next = useI18next();
 
     return (
       <div className={styles.sidebar}>
         <div className={styles.container}>
 
-          <Text size='l' className={styles.sec_title}>フィルター条件</Text>
+          <Text size='l' className={styles.sec_title}>{i18next.t('admin.filter')}</Text>
 
           <div className={styles.mb_16}>
             <label htmlFor='search'>
-                <Text className={styles.mb_8}>キーワード検索</Text>
+                <Text className={styles.mb_8}>{i18next.t('admin.keyword')}</Text>
             </label>
             <InputText 
                 type='text' 
                 name='search' 
                 onBlur={handleFilter} 
                 value={params.filter.search} 
-                placeholder={'タイトルを検索'}
+                placeholder={i18next.t('admin.blog.keyword-ex')}
                 className={styles.w_100}
             />
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>ブランド</Text>
-            <CheckboxTab tabName='ブランドを追加'>
+            <Text className={styles.mb_8}>{i18next.t('admin.blog.brand')}</Text>
+            <CheckboxTab tabName={i18next.t('admin.blog.brand-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   brands &&
                     brands.map((brand) =>
@@ -80,9 +80,9 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>カテゴリ</Text>
+            <Text className={styles.mb_8}>{i18next.t('admin.blog.category')}</Text>
             {   gender_categories &&
-                  <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilter} defaultOption={'性別カテゴリを選択'}> 
+                  <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilter} defaultOption={i18next.t('admin.blog.gender-category-ex')}> 
                       {   gender_categories.map((category) => 
                               <option key={category.id} value={category.id}>{category.category_name}</option>
                           )
@@ -92,8 +92,8 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>関連品番</Text>
-            <CheckboxTab tabName='品番を追加'>
+            <Text className={styles.mb_8}>{i18next.t('admin.blog.related-item')}</Text>
+            <CheckboxTab tabName={i18next.t('admin.blog.related-item-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   items &&
                     items.map((item) =>
@@ -125,8 +125,8 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>関連タグ</Text>
-            <CheckboxTab tabName='タグを追加'>
+            <Text className={styles.mb_8}>{i18next.t('admin.blog.related-tag')}</Text>
+            <CheckboxTab tabName={i18next.t('admin.blog.related-tag-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   tags &&
                     tags.map((tag) =>
@@ -158,39 +158,39 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>公開状況</Text>
-            <Pulldown name='is_published' value={params.filter.is_published} onChange={handleFilter} > 
-                <option value={'0'}>非公開</option>
-                <option value={'1'}>公開中</option>
+            <Text className={styles.mb_8}>{i18next.t('admin.published-status')}</Text>
+            <Pulldown name='is_published' value={params.filter.is_published} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}> 
+                <option value={'0'}>{i18next.t('admin.unpublished')}</option>
+                <option value={'1'}>{i18next.t('admin.published')}</option>
             </Pulldown>
           </div>
 
           <div className={styles.mb_32}>
             <DateRangeFilter params={params.filter} model={model}>
-                <option value={'posted_at'}>投稿日</option>
-                <option value={'modified_at'}>更新日</option>
+                <option value={'posted_at'}>{i18next.t('admin.posted-date')}</option>
+                <option value={'modified_at'}>{i18next.t('admin.updated-date')}</option>
             </DateRangeFilter>
           </div>
 
-          <Text size='l' className={styles.sec_title}>ソート条件</Text>
+          <Text size='l' className={styles.sec_title}>{i18next.t('admin.sort')}</Text>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>投稿日</Text>
-            <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort}>
-                <option value={'desc'}>降順</option>
-                <option value={'asc'}>昇順</option>
+            <Text className={styles.mb_8}>{i18next.t('admin.posted-date')}</Text>
+            <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
             </Pulldown>
           </div>
 
           <div>
-            <Text className={styles.mb_8}>更新日</Text>
-            <Pulldown name='modified_at' value={params.sort.modified_at} onChange={handleSort}>
-                <option value={'desc'}>降順</option>
-                <option value={'asc'}>昇順</option>
+            <Text className={styles.mb_8}>{i18next.t('admin.updated-date')}</Text>
+            <Pulldown name='modified_at' value={params.sort.modified_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
             </Pulldown>
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick} >閉じる</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('admin.close-btn')}</Button>
         </div>
       </div>
     );

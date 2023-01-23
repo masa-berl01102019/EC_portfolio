@@ -13,32 +13,21 @@ import BlogSortModal from '../../../organisms/user/modal/BlogSortModal';
 import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
 import SortBtn from '../../../molecules/IconBtn/SortBtn';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function BlogIndexPage() {
-    // urlの設定
-    const baseUrl = `/api/user/blogs`;
-    // paramsの適用範囲を決めるscope名を定義
-    const model = 'BLOG';
-    // URLパラメータ変更のフックの呼び出し
-    const {handleCurrentPage} = useCreateParams(model);
-    // グローバルステート呼び出し
-    const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const blogs = data.data? data.data: null;
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const tags = data.tags? data.tags: null;
-    const items = data.items? data.items: null;
 
-    
+    const baseUrl = `/api/user/blogs`;
+    const model = 'BLOG';
+    const {handleCurrentPage} = useCreateParams(model);
+    const [params, setParams] = useRecoilState(paramState(model));
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
+    const {data:blogs, brands, gender_categories, tags, items} = data;
     const [popup, setPopup] = useState('');
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('BLOGにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'posted_at' : '' },
@@ -47,7 +36,6 @@ function BlogIndexPage() {
             });
         }
     },[]);
-
     
     return (
         <main className={styles.mt_40}>
@@ -69,14 +57,14 @@ function BlogIndexPage() {
                             model={model}
                         />
                     }
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>ブログ一覧</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.blog.index-title')}</Heading>
 
                     <div className={styles.form_contents_area}>
 
 
                         <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
-                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
+                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>{i18next.t('user.filter')}</FilterBtn>
+                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>{i18next.t('user.sort')}</SortBtn>
                         </div>
 
                         {   blogs &&

@@ -32,8 +32,8 @@ class UserChangePasswordMail extends Mailable
     {
         return $this->view('mail.html.user_change_password_mail')
             ->text('mail.text.user_change_password_mail')
-            ->from(config('define.user_email.from.address'), config('define.user_email.from.name'))
-            ->subject("パスワード変更完了のお知らせ")
+            ->from(config('define.user_email.from.address'), trans('mail.user.from.name'))
+            ->subject(trans('mail.user.change_password.subject'))
             ->with([
                 'user_name' => $this->user_name,
             ]);

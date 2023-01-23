@@ -9,26 +9,20 @@ import TopItemCard from '../../../molecules/Card/TopItemCard';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
 import Heading from '../../../atoms/Heading/Heading';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function ItemRankPage() {
-    // urlの設定
-    const baseUrl = `/api/user/items/rank`;
-    // paramsの適用範囲を決めるscope名を定義
-    const model = 'RANK';
-    // URLパラメータ変更のフックの呼び出し
-    const {handleCurrentPage} = useCreateParams(model);
-    // グローバルステート呼び出し
-    const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const items = data.data? data.data: null;
 
+    const baseUrl = `/api/user/items/rank`;
+    const model = 'RANK';
+    const {handleCurrentPage} = useCreateParams(model);
+    const [params, setParams] = useRecoilState(paramState(model));
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
+    const items = data.data? data.data: null;
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('RANKにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'price' : '', 'posted_at' : '' },
@@ -37,12 +31,11 @@ function ItemRankPage() {
             });
         }
     },[]);
-
     
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>ランキング一覧</Heading>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.item.rank-title')}</Heading>
                 <div className={styles.main_contents_area}>
                     {   items &&
                         <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

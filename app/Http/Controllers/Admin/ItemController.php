@@ -69,7 +69,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.get_err')], 500);
         }
     }
 
@@ -87,7 +87,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.get_err')], 500);
         }
     }
 
@@ -156,11 +156,11 @@ class ItemController extends Controller
                 ]);
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '商品の登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.items.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '商品の登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.create_err')], 500);
         }
     }
 
@@ -179,7 +179,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品の取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.get_err')], 500);
         }
     }
 
@@ -236,11 +236,11 @@ class ItemController extends Controller
                 ], $data['measurements'][$i]);
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '商品の編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.items.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '商品の編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.update_err')], 500);
         }
     }
 
@@ -254,11 +254,11 @@ class ItemController extends Controller
                 $item->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '商品の削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '商品の削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_err')], 500);
         }
     }
 
@@ -268,11 +268,11 @@ class ItemController extends Controller
         try {
             $measurement->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '商品サイズの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_size_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '商品サイズの削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_size_err')], 500);
         }
     }
 
@@ -282,11 +282,11 @@ class ItemController extends Controller
         try {
             $sku->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '商品SKUの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_sku_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '商品SKUの削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_sku_err')], 500);
         }
     }
 
@@ -296,11 +296,11 @@ class ItemController extends Controller
         try {
             $image->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => '商品画像の削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_img_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => '商品画像の削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_img_err')], 500);
         }
     }
 
@@ -335,11 +335,11 @@ class ItemController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '公開状況', '品番', '商品名', '価格', '原価', 'カラー展開', 'サイズ展開', '生産国', '混用率', 'ブランドカテゴリ', '性別カテゴリ', 'メインカテゴリ', 'サブカテゴリ', 'タグ', '最終更新者', '投稿日', '更新日'];
-            return csvExport($csv_body, $csv_header, '商品情報.csv');
+            $csv_header = trans('api.admin.items.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.items.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => '商品情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.items.csv_err')], 500);
         }
     }
 }

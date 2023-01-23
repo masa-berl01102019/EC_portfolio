@@ -1,27 +1,21 @@
-受注担当者 様
+{{ __('mail.admin.order.support_team') }}
 
-受注・決済完了のお知らせ
 
-{{ $order->user->full_name }} 様より
-下記の内容でご注文を承り、決済を確認したことをお知らせいたします。
-（ご注文金額の金額は、消費税総額表示です）
+{{ __('mail.admin.order.p1') }}
+{{ __('mail.admin.order.p2') }}
 
-【決済番号】 {{ $order->id }}
-　ご注文主のお名前　{{ $order->user->full_name }}
-　ご注文日　　　　　{{ $order->created_at->format('Y年m月d日') }}
-
-【ご注文金額】
-　決済合計金額　{{ $order->total_amount }}円　（クレジットカード）
-　（内　消費税　{{ $order->tax_amount }}円）
-
-【ご注文商品】
+{{ __('mail.admin.order.order_id') }} {{ $order->id }}
+{{ __('mail.admin.order.full_name') }} {{ $order->user->full_name }}
+{{ __('mail.admin.order.created_at') }} {{ $order->created_at->format('Y-m-d') }}
+{{ __('mail.admin.order.total_amount') }} ¥{{ $order->total_amount }} {{ __('mail.admin.order.tax_amount', ['tax' => $order->tax_amount]) }}
+{{ __('mail.admin.order.payment_method') }} {{ __('mail.admin.order.credit_card') }}
+{{ __('mail.admin.order.order_items') }}
 @foreach($order->orderDetails as $detail)
-　品番：　　{{ $detail->product_number }}
-　商品名：　{{ $detail->item_name }}
-　サイズ：　{{ $detail->order_size }}
-　カラー：　{{ $detail->order_color }}
-　数量：　　{{ $detail->order_quantity }}
-　価格：　　{{ $detail->order_price }}円 (税別)
+　{{ __('mail.admin.order.product_number') }} ： {{ $detail->product_number }}
+　{{ __('mail.admin.order.item_name') }} ： {{ $detail->item_name }}
+　{{ __('mail.admin.order.order_size') }} ： {{ $detail->order_size }}
+　{{ __('mail.admin.order.order_color') }} ： {{ $detail->order_color }}
+　{{ __('mail.admin.order.order_quantity') }} ： {{ $detail->order_quantity }}
+　{{ __('mail.admin.order.order_price') }} ： {{ $detail->order_price }} {{ __('mail.admin.order.tax_excluded') }}
 　　　
 @endforeach
-

@@ -8,65 +8,65 @@ import Text from '../../../atoms/Text/Text';
 import DateRangeFilter from '../../../molecules/DateRangeFilter/DateRangeFilter';
 import styles from './styles.module.css';
 import Button from '../../../atoms/Button/Button';
+import useI18next from '../../../context/I18nextContext';
 
 const AdminSidebar = ({model, onClick}) => {
 
-    // グローバルステート呼び出し
     const params = useRecoilValue(paramState(model));
-    // URLパラメータ変更のフックの呼び出し
     const{handleFilter, handleSort} = useCreateParams(model);
+    const i18next = useI18next();
 
     return (
       <div className={styles.sidebar}>
         <div className={styles.container}>
 
-          <Text size='l' className={styles.sec_title}>フィルター条件</Text>
+          <Text size='l' className={styles.sec_title}>{i18next.t('admin.filter')}</Text>
 
           <div className={styles.mb_16}>
               <label htmlFor='search'>
-                  <Text className={styles.mb_8}>キーワード検索</Text>
+                  <Text className={styles.mb_8}>{i18next.t('admin.keyword')}</Text>
               </label>
               <InputText
                   type='text' 
                   name='search' 
                   onBlur={handleFilter} 
                   value={params.filter.search} 
-                  placeholder={'名前を検索'}
+                  placeholder={i18next.t('admin.admin.keyword-ex')}
                   className={styles.w_100}
               />
           </div>
           <div className={styles.mb_32}>
               <DateRangeFilter params={params.filter} model={model}>
-                  <option value={'created_at'}>作成日時</option>
-                  <option value={'updated_at'}>更新日時</option>
+                  <option value={'created_at'}>{i18next.t('admin.created-date')}</option>
+                  <option value={'updated_at'}>{i18next.t('admin.updated-date')}</option>
               </DateRangeFilter>
           </div>
 
-          <Text size='l' className={styles.sec_title}>ソート条件</Text>
+          <Text size='l' className={styles.sec_title}>{i18next.t('admin.sort')}</Text>
 
           <div className={styles.mb_16}>
-              <Text className={styles.mb_8}>氏名(カナ)</Text>
-              <Pulldown name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+              <Text className={styles.mb_8}>{i18next.t('admin.admin.name-kana')}</Text>
+              <Pulldown name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                  <option value={'desc'}>{i18next.t('admin.desc-alpha')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-alpha')}</option>
               </Pulldown>
           </div>
           <div className={styles.mb_16}>
-              <Text className={styles.mb_8}>作成日時</Text>
-              <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort}>
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+              <Text className={styles.mb_8}>{i18next.t('admin.created-date')}</Text>
+              <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                  <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
               </Pulldown>
           </div>
           <div>
-              <Text className={styles.mb_8}>更新日時</Text>
-              <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+              <Text className={styles.mb_8}>{i18next.t('admin.updated-date')}</Text>
+              <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                  <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
               </Pulldown>
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick} >閉じる</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('admin.close-btn')}</Button>
         </div>
       </div>
     );

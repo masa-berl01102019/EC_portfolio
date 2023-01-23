@@ -1,13 +1,11 @@
-{{ $admin_name }} 様
-
-パスワード変更完了のお知らせ
-
-平素は、当社のサービスをご利用いただき、誠にありがとうございます。
-パスワード変更のリクエストを承りましたことをお知らせいたします。
+{{ __('mail.admin.change_password.honorific', ['name' => $admin_name]) }}
 
 
-この変更にお心当たりがない場合には、パスワードをリセットしてアカウントを保護してください。
-以下のリンクをクリックしてパスワードリセット出来ます。
+{{ __('mail.admin.change_password.p1') }}
 
-【パスワードリセットページ】
+{{ __('mail.admin.change_password.p2') }}
+
+{{ __('mail.admin.change_password.p3') }}
+
+{{ __('mail.admin.change_password.p4') }}
 　{{'http://homestead.test/admin/reset_password'}}

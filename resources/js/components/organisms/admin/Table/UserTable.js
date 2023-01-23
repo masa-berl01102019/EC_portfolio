@@ -9,22 +9,20 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 
-const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) => {
+const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
 
-  // テーブルのデータに対しての操作の関心を分ける
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
-
   const [checkItemAll, setCheckItemAll] = useState(false);
-
-  // notifyContextの呼び出し
   const confirm = useNotify();
+  const i18next = useI18next();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : `選択項目${checklist.length}件を削除しますか？`,
-          confirmBtnLabel : '削除'
+          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : i18next.t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/users`, form:checklist, callback: () => setChecklist([])});
   }
@@ -32,13 +30,13 @@ const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) 
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/users/csv`, 
             form:checklist 
           }); 
-        }}>CSV出力</DownloadCsvBtn>
+        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -67,21 +65,21 @@ const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) 
                   />
                 )}
               </Th>
-              <Th>ID</Th>
-              <Th>編集</Th>
-              <Th>氏名</Th>
-              <Th>氏名(カナ)</Th>
-              <Th>性別</Th>
-              <Th>生年月日</Th>
-              <Th>郵便番号</Th>
-              <Th>住所</Th>
-              <Th>配送先-郵便番号</Th>
-              <Th>配送先-住所</Th>
-              <Th>電話番号</Th>
-              <Th>メールアドレス</Th>
-              <Th>DM登録</Th>
-              <Th>作成日時</Th>
-              <Th>更新日時</Th>
+              <Th>{i18next.t('admin.id')}</Th>
+              <Th>{i18next.t('admin.edit-link')}</Th>
+              <Th>{i18next.t('admin.user.name')}</Th>
+              <Th>{i18next.t('admin.user.name-kana')}</Th>
+              <Th>{i18next.t('admin.user.gender')}</Th>
+              <Th>{i18next.t('admin.user.birthday')}</Th>
+              <Th>{i18next.t('admin.user.postcode')}</Th>
+              <Th>{i18next.t('admin.user.address')}</Th>
+              <Th>{i18next.t('admin.user.delivery-postcode')}</Th>
+              <Th>{i18next.t('admin.user.delivery-address')}</Th>
+              <Th>{i18next.t('admin.user.tel')}</Th>
+              <Th>{i18next.t('admin.user.email')}</Th>
+              <Th>{i18next.t('admin.user.dm-register')}</Th>
+              <Th>{i18next.t('admin.created-date')}</Th>
+              <Th>{i18next.t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -89,7 +87,7 @@ const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) 
               <Row key={user.id} className={checklist.includes(user.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={user.id} checked={checklist.includes(user.id)} className={styles.table_check}/></Td>
                 <Td>{user.id}</Td>
-                <Td><EditLink to={`/admin/users/${user.id}/edit`}>編集</EditLink></Td>
+                <Td><EditLink to={`/admin/users/${user.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
                 <Td>{user.full_name}</Td>
                 <Td>{user.full_name_kana}</Td>
                 <Td>{user.gender_text}</Td>
@@ -111,7 +109,7 @@ const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) 
       </div>
     </>
   );
-});
+};
 
 
 export default UserTable;

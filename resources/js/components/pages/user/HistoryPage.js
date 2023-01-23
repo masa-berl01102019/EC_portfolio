@@ -3,14 +3,16 @@ import { useCookies } from 'react-cookie';
 import Heading from '../../atoms/Heading/Heading';
 import TopItemCard from '../../molecules/Card/TopItemCard';
 import styles from './styles.module.css';
+import useI18next from '../../context/I18nextContext';
 
 function HistoryPage() {
-    // cookieを管理
+
     const [cookies, setCookie] = useCookies();
+    const i18next = useI18next();
 
     return (
         <main className={styles.mt_40}>
-            <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>閲覧履歴</Heading>
+            <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.view-record.index-title')}</Heading>
             <div className={styles.main_contents_area}>
                 {   JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&
                     <div className={[styles.flex, styles.flex_wrap].join(' ')}>

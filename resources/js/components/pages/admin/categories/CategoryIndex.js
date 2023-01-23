@@ -9,27 +9,23 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 function CategoryIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/categories`;
-    // modelの設定
     const model = 'CATEGORY';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
-    // APIから取得したデータを変数に格納
     const categories = data.categories? data.categories: null;
-    // 選択されたカテゴリーのIDをuseStateで管理
     const [editableForm, setEeditableForm] = useState(null);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-    // notifyContextの呼び出し
     const confirm = useNotify();
+    const i18next = useI18next();
 
     const handleConfirmDelete = async () => {
         const result = await confirm({
-            body : `選択カテゴリーを本当に削除しますか？`,
-            confirmBtnLabel : '削除'
+            body : i18next.t('admin.category.confirm-msg'),
+            confirmBtnLabel : i18next.t('admin.delete-btn')
         });
         result && deleteData({url:`/api/admin/categories/${editableForm}`});
     } 
@@ -38,7 +34,7 @@ function CategoryIndex() {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>カテゴリーマスタ</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.category.index-title')}</Heading>
                     { errorMessage && <Text role='error' size='s'>{errorMessage.category_name}</Text> }
                     { errorMessage && <Text role='error' size='s'>{errorMessage.parent_id}</Text> }
                     <div className={styles.form_area}>
@@ -49,7 +45,7 @@ function CategoryIndex() {
                                 { category.id === editableForm ? (
                                     <FormWithBtn
                                         name='category_name'
-                                        placeholder='ジェンダーカテゴリー名'
+                                        placeholder={i18next.t('admin.category.gender-category-ex')}
                                         formInitialValue={{'category_name': category.category_name}}
                                         validateScope={'admin'}
                                         validateConfigKey={'category_request'}
@@ -68,7 +64,7 @@ function CategoryIndex() {
                                             { child.id === editableForm ? (
                                                 <FormWithBtn
                                                     name='category_name'
-                                                    placeholder='メインカテゴリー名'
+                                                    placeholder={i18next.t('admin.category.main-category-ex')}
                                                     formInitialValue={{'category_name': child.category_name}}
                                                     validateScope={'admin'}
                                                     validateConfigKey={'category_request'}
@@ -94,7 +90,7 @@ function CategoryIndex() {
                                                     { grand_child.id === editableForm ? (
                                                         <FormWithBtn
                                                             name='category_name'
-                                                            placeholder='サブカテゴリー名'
+                                                            placeholder={i18next.t('admin.category.sub-category-ex')}
                                                             formInitialValue={{'category_name': grand_child.category_name}}
                                                             validateScope={'admin'}
                                                             validateConfigKey={'category_request'}
@@ -114,7 +110,7 @@ function CategoryIndex() {
                                                 <li className={[styles.flex, styles.pl_64, styles.mb_8].join(' ')}>
                                                     <FormWithBtn
                                                         name='category_name'
-                                                        placeholder='サブカテゴリー名'
+                                                        placeholder={i18next.t('admin.category.sub-category-ex')}
                                                         formInitialValue={{'category_name': '', 'parent_id': child.id}}
                                                         validateScope={'admin'}
                                                         validateConfigKey={'category_request'}
@@ -128,7 +124,7 @@ function CategoryIndex() {
                                     <li className={[styles.flex, styles.mb_8, styles.pl_32].join(' ')}>
                                         <FormWithBtn
                                             name='category_name'
-                                            placeholder='メインカテゴリー名'
+                                            placeholder={i18next.t('admin.category.main-category-ex')}
                                             formInitialValue={{'category_name': '', 'parent_id': category.id}}
                                             validateScope={'admin'}
                                             validateConfigKey={'category_request'}

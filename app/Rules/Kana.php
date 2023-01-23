@@ -35,6 +35,6 @@ class Kana implements Rule
      */
     public function message()
     {
-        return ':attributeはひらがなもしくはカタカナのみ有効です';
+        return trans('validation.kana');
     }
 }

@@ -1,43 +1,39 @@
-{{ $order->user->full_name }} 様
+{{ __('mail.user.common.honorific', ['name' => $order->user->full_name]) }}
 
-ご注文・決済完了のお知らせ
 
-平素は、当社のサービスをご利用いただき、誠にありがとうございます。
-下記の内容でご注文を承り、決済を確認したことをお知らせいたします。
-（ご注文金額の金額は、消費税総額表示です）
+{{ __('mail.user.common.thanks_greeting') }}
 
-【決済番号】 {{ $order->id }}
-　ご注文主のお名前　{{ $order->user->full_name }}
-　ご注文日　　　　　{{ $order->created_at->format('Y年m月d日') }}
+{{ __('mail.user.order.p1') }}
+{{ __('mail.user.order.p2') }}
 
-【ご注文金額】
-　決済合計金額　{{ $order->total_amount }}円　（クレジットカード）
-　（内　消費税　{{ $order->tax_amount }}円）
-
-【ご注文商品】
+{{ __('mail.user.order.order_id') }} {{ $order->id }}
+{{ __('mail.user.order.full_name') }} {{ $order->user->full_name }}
+{{ __('mail.user.order.created_at') }} {{ $order->created_at->format('Y-m-d') }}
+{{ __('mail.user.order.total_amount') }} ¥{{ $order->total_amount }} {{ __('mail.user.order.tax_amount', ['tax' => $order->tax_amount]) }}
+{{ __('mail.user.order.payment_method') }} {{ __('mail.user.order.credit_card') }}
+{{ __('mail.user.order.order_items') }}
 @foreach($order->orderDetails as $detail)
-　品番：　　{{ $detail->product_number }}
-　商品名：　{{ $detail->item_name }}
-　サイズ：　{{ $detail->order_size }}
-　カラー：　{{ $detail->order_color }}
-　数量：　　{{ $detail->order_quantity }}
-　価格：　　{{ $detail->order_price }}円 (税別)
+　{{ __('mail.user.order.product_number') }} ： {{ $detail->product_number }}
+　{{ __('mail.user.order.item_name') }} ： {{ $detail->item_name }}
+　{{ __('mail.user.order.order_size') }} ： {{ $detail->order_size }}
+　{{ __('mail.user.order.order_color') }} ： {{ $detail->order_color }}
+　{{ __('mail.user.order.order_quantity') }} ： {{ $detail->order_quantity }}
+　{{ __('mail.user.order.order_price') }} ： {{ $detail->order_price }} {{ __('mail.user.order.tax_excluded') }}
 　　　
 @endforeach
 
-※ご注文の決済完了と同時に手配をさせていただいておりますので、
-  当サイトを通じてご注文のキャンセル手続きはできません。
-  下記運営会社まで直接連絡をお願いいたします。
+{{ __('mail.user.order.notice1') }}
+{{ __('mail.user.order.notice2') }}
+{{ __('mail.user.order.notice3') }}
 
-※このメールは自動送信です。
-  返信いただいても回答できませんので、ご了承ください。
-  なお、ご不明な点がございましたら、下記の運営会社までお問い合わせください。
+{{ __('mail.user.common.noreply_notice1') }}
+{{ __('mail.user.common.noreply_notice2') }}
+{{ __('mail.user.common.noreply_notice3') }}
 
 
-【お問い合わせ先】
-　運営会社　： XXXXカンパニー
-　住所　　　： 〒XXX-XXXX テスト県テスト市テスト町1-2-3 テストビルディング 1F
-　TEL 　　　： XX-XXXX-XXXX
-　E-MAIL　　： test@example.com
-　URL 　　　： http://homestead.test
-
+{{ __('mail.user.common.contact') }}
+　{{ __('mail.user.common.company') }} ： {{ __('mail.user.common.company_ex') }}
+　{{ __('mail.user.common.address') }} ： {{ __('mail.user.common.address_ex') }}
+　TEL ： XX-XXXX-XXXX
+　EMAIL ： test@example.com
+　URL ： http://homestead.test

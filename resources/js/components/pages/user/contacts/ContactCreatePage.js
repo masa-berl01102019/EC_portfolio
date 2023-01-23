@@ -12,16 +12,13 @@ import styles from '../styles.module.css';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import LoadingPopup from '../../../molecules/Popup/LoadingPopup';
 import useValidation from '../../../hooks/useValidation';
-
+import useI18next from '../../../context/I18nextContext';
 
 function ContactCreatePage() {
-    // urlの設定
+
     const baseUrl = `/api/user/contacts`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'CONTACT';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
         'last_name': null, 
         'first_name': null, 
@@ -29,22 +26,20 @@ function ContactCreatePage() {
         'first_name_kana': null, 
         'tel': null, 
         'email': null, 
-        'title': null, 
-        'body': null, 
+        'subject': null, 
+        'message': null, 
     });
-    // フロント用バリデーション
     const {valid, setValid, validation} = useValidation(formData, 'user', 'contact_request');
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // ローディングステータスの状態管理
     const [isLoading, setIsLoading] = useState(false);
+    const i18next = useI18next();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                { isLoading && !errorMessage && <LoadingPopup isOpen={isLoading}>お問い合わせ中</LoadingPopup> }
+                { isLoading && !errorMessage && <LoadingPopup isOpen={isLoading}>{i18next.t('user.contact.loading-msg')}</LoadingPopup> }
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    お問い合わせ
+                    {i18next.t('user.contact.index-title')}
                 </Heading>
                 <div className={styles.form_contents_area}>
                     <form onSubmit={ e => {
@@ -60,7 +55,7 @@ function ContactCreatePage() {
                             });
                         }
                     }}>
-                        <Text className={styles.mb_8}>氏名</Text>
+                        <Text className={styles.mb_8}>{i18next.t('user.contact.name')}</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText
                                 name={'last_name'}
@@ -69,7 +64,7 @@ function ContactCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='山田'
+                                placeholder={i18next.t('user.contact.last-name-ex')}
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
@@ -79,11 +74,11 @@ function ContactCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='太郎'
+                                placeholder={i18next.t('user.contact.first-name-ex')}
                                 className={styles.flex_basis_50}
                             />
                         </div>
-                        <Text className={styles.mb_8}>氏名(カナ)</Text>
+                        <Text className={styles.mb_8}>{i18next.t('user.contact.name-kana')}</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText 
                                 name={'last_name_kana'} 
@@ -92,7 +87,7 @@ function ContactCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='ヤマダ'
+                                placeholder={i18next.t('user.contact.last-name-kana-ex')}
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
@@ -102,7 +97,7 @@ function ContactCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='タロウ'
+                                placeholder={i18next.t('user.contact.first-name-kana-ex')}
                                 className={styles.flex_basis_50}
                             />
                         </div>
@@ -111,11 +106,11 @@ function ContactCreatePage() {
                             type='tel'
                             onChange={handleFormData}
                             value={formData.tel}
-                            label={'電話番号'}
+                            label={i18next.t('user.contact.tel')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='080-1234-5678'
+                            placeholder={i18next.t('user.contact.tel-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -123,30 +118,30 @@ function ContactCreatePage() {
                             type={'email'}
                             onChange={handleFormData}
                             value={formData.email}
-                            label={'メールアドレス'}
+                            label={i18next.t('user.contact.email')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='test@example.com'
+                            placeholder={i18next.t('user.contact.email-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
-                            name={'title'}
+                            name={'subject'}
                             onChange={handleFormData}
-                            value={formData.title}
-                            label={'タイトル'}
+                            value={formData.subject}
+                            label={i18next.t('user.contact.subject')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='タイトルを入力'
+                            placeholder={i18next.t('user.contact.subject-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputTextarea
-                            name={'body'} 
-                            value={formData.body}
+                            name={'message'} 
+                            value={formData.message}
+                            label={i18next.t('user.contact.message')}
                             onChange={handleFormData} 
-                            placeholder={'本文を入力'}
-                            label={'本文'}
+                            placeholder={i18next.t('user.contact.message-ex')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
@@ -155,8 +150,8 @@ function ContactCreatePage() {
                         />
 
                         <div className={[styles.flex, styles.justify_center].join(' ')}>
-                            <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')} >キャンセル</LinkBtn>
-                            <Button color='primary' type="submit" className={[styles.ml_8, styles.btn_max].join(' ')}>お問い合わせ</Button>
+                            <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')}>{i18next.t('user.cancel-btn')}</LinkBtn>
+                            <Button color='primary' type="submit" className={[styles.ml_8, styles.btn_max].join(' ')}>{i18next.t('user.contact.contact-btn')}</Button>
                         </div>
                     </form>
                 </div>

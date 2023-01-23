@@ -12,30 +12,21 @@ import NewsSidebar from '../../../organisms/admin/SideBar/NewsSidebar';
 import CreateLink from '../../../molecules/IconLink/CreateLink';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
+import useI18next from '../../../context/I18nextContext';
 
 function NewsIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/news`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'NEWS';
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const news = data.data ? data.data: null;
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const tags = data.tags? data.tags: null;
-    // 検索タブのステータス
+    const {data:news, brands, gender_categories, tags} = data;
     const [open, setOpen] = useState(false);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('NEWSにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'posted_at' : '', 'modified_at' : '' },
@@ -63,11 +54,11 @@ function NewsIndex() {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                ニュース一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                                {i18next.t('admin.news.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
                             </Heading>
                             <div className={[styles.flex, styles.btn_area].join(' ')}>
-                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
-                                <CreateLink to="/admin/news/create">新規登録</CreateLink>
+                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{i18next.t('admin.detail-search')}</FilterSortBtn>
+                                <CreateLink to="/admin/news/create">{i18next.t('admin.add-new')}</CreateLink>
                             </div>
                         </div>
 

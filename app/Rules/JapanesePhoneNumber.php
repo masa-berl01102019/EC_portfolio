@@ -38,6 +38,6 @@ class JapanesePhoneNumber implements Rule
      */
     public function message()
     {
-        return ':attributeは国内の電話番号のみ有効です';
+        return trans('validation.japanese_phone_number');
     }
 }

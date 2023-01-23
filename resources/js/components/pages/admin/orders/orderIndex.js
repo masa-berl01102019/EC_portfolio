@@ -11,27 +11,21 @@ import { paramState } from '../../../store/paramState';
 import OrderSidebar from '../../../organisms/admin/SideBar/OrderSidebar';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
+import useI18next from '../../../context/I18nextContext';
 
 const OrderIndex = () => {
-    // urlの設定
+
     const baseUrl = `/api/admin/orders`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'ORDER';
-    // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
     const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
     const orders = data.data? data.data: null;
-    // 検索タブのステータス
     const [open, setOpen] = useState(false);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('SALESにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'total_amount' : '', 'created_at' : '', 'delivery_date' : '', 'updated_at' : ''},
@@ -51,9 +45,9 @@ const OrderIndex = () => {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                受注一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                                {i18next.t('admin.order.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
                             </Heading>
-                            <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
+                            <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{i18next.t('admin.detail-search')}</FilterSortBtn>
                         </div>
 
                         <OrderTable orders={orders} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />

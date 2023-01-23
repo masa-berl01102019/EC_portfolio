@@ -28,12 +28,4 @@ class ContactRequest extends FormRequest
             'memo' => 'nullable|string',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'response_status' => '対応状況',
-            'memo' => '備考記入欄',
-        ];
-    }
 }

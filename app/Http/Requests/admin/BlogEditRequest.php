@@ -35,19 +35,4 @@ class BlogEditRequest extends FormRequest
             'thumbnail' => 'required|string|max:255'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'title' => 'タイトル',
-            'body' => '本文',
-            'brand_id' => 'ブランドカテゴリ',
-            'category_id' => '性別カテゴリ',
-            'items_id.*' => '関連品番',
-            'tags_id.*' => 'タグ',
-            'is_published' => '公開設定',
-            'file' => 'サムネイル画像',
-            'thumbnail' => 'サムネイル画像'
-        ];
-    }
 }

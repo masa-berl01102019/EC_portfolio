@@ -18,15 +18,13 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import InputImage from '../../../atoms/InputImage/InputImage';
 import useValidation from '../../../hooks/useValidation';
+import useI18next from '../../../context/I18nextContext';
 
 function NewsCreate() {
-    // urlの設定
+
     const baseUrl = '/api/admin/news/create';
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'NEWS';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm({
         'title': '',
         'body': '',
@@ -36,20 +34,14 @@ function NewsCreate() {
         'is_published': 0, // 0: 非公開 1: 公開中
         'thumbnail': '/img/no_image.png'
     });
-    // フロント用バリデーション
     const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'news_create');
-    // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-    // file送信用にフォームのラッパー関数呼び出し
     const {handleSendObjectForm} = useObjectForm(formData, setFormData, createData);
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // API接続の返却値を変数に格納
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const tags = data.tags? data.tags: null;
-    // menuの状態管理
+    const {brands, gender_categories, tags, items} = data;
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
+
 
     const onEditorStateChange = (editorState) => {
         // 現在のeditorStateからcontentStateを取得 
@@ -69,7 +61,7 @@ function NewsCreate() {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>ニュース新規登録</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.news.create-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -88,15 +80,15 @@ function NewsCreate() {
                                         name={'title'}
                                         onChange={handleFormData}
                                         value={formData.title}
-                                        label={'タイトル'}
+                                        label={i18next.t('admin.news.title')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder='タイトル名'
+                                        placeholder={i18next.t('admin.news.title-ex')}
                                         className={styles.mb_16}
                                     />
                                     <div className={styles.flex_1}>
-                                        <Text className={styles.mb_8}>本文</Text>
+                                        <Text className={styles.mb_8}>{i18next.t('admin.news.body')}</Text>
                                         <div className={styles.edit_area}>
                                             <Editor
                                                 editorState={editorState}
@@ -117,26 +109,25 @@ function NewsCreate() {
                                 <div className={styles.sidebar_box}>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>公開設定</Text>
+                                            <Text size='l'>{i18next.t('admin.set-published-status')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox
                                                 name='is_published'
                                                 value={formData.is_published}
                                                 onChange={handleFormData}
-                                                label={'公開設定'}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                             >
-                                                <option value={0}>非公開</option>
-                                                <option value={1}>公開</option>
+                                                <option value={0}>{i18next.t('admin.unpublished')}</option>
+                                                <option value={1}>{i18next.t('admin.published')}</option>
                                             </FormSelectbox>
                                         </div>
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>サムネイル設定</Text>
+                                            <Text size='l'>{i18next.t('admin.news.thumbnail')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <InputImage
@@ -164,39 +155,39 @@ function NewsCreate() {
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>カテゴリ設定</Text>
+                                            <Text size='l'>{i18next.t('admin.news.category')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox
                                                 name='brand_id'
                                                 value={formData.brand_id}
                                                 onChange={handleFormData}
-                                                label={'ブランドカテゴリ'}
+                                                label={i18next.t('admin.news.brand-category')}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                                 className={styles.mb_16}
                                             >
-                                                <option value={''}>未設定</option>
+                                                <option value={''}>{i18next.t('admin.not-set')}</option>
                                                 { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
                                             </FormSelectbox>
                                             <FormSelectbox
                                                 name='category_id'
                                                 value={formData.category_id}
                                                 onChange={handleFormData}
-                                                label={'性別カテゴリ'}
+                                                label={i18next.t('admin.blog.gender-category')}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                             >
-                                                <option value={''}>未設定</option>
+                                                <option value={''}>{i18next.t('admin.not-set')}</option>
                                                 { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
                                             </FormSelectbox>
                                         </div>
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>タグの設定</Text>
+                                            <Text size='l'>{i18next.t('admin.news.related-tag')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <div className={styles.scroll_area}>
@@ -234,8 +225,8 @@ function NewsCreate() {
                             </div>
 
                             <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/news`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>新規登録</Button>
+                                <LinkBtn to={`/admin/news`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.register')}</Button>
                             </div>
                         </form>
                     </div>

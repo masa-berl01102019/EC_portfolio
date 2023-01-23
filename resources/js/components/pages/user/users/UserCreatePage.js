@@ -13,17 +13,14 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useValidation from '../../../hooks/useValidation';
+import useI18next from '../../../context/I18nextContext';
 
 function UserCreatePage() {
-    // urlの設定
+
     const baseUrl = '/api/user/users/create';
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'USER';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
-    // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
     const [open, setOpen] = useState(false);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, handleFormDate}] = useForm({
         'last_name': null,
         'first_name': null,
@@ -48,16 +45,15 @@ function UserCreatePage() {
         'password': null,
         'is_received': null, // 0: 受取NG 1: 受取OK
     });
-    // フロント用バリデーション
     const {valid, setValid, validation} = useValidation(formData, 'user', 'user_create');
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
+    const i18next = useI18next();
 
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    会員新規登録
+                    {i18next.t('user.user.create-title')}
                 </Heading>
                 <div className={styles.form_contents_area}>
                     <form onSubmit={ e => {
@@ -72,7 +68,7 @@ function UserCreatePage() {
                             });
                         }
                     }}>
-                        <Text className={styles.mb_8}>氏名</Text>
+                        <Text className={styles.mb_8}>{i18next.t('user.user.name')}</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText
                                 name={'last_name'}
@@ -81,7 +77,7 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='山田'
+                                placeholder={i18next.t('user.user.last-name-ex')}
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
@@ -91,11 +87,11 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='太郎'
+                                placeholder={i18next.t('user.user.first-name-ex')}
                                 className={styles.flex_basis_50}
                             />
                         </div>
-                        <Text className={styles.mb_8}>氏名(カナ)</Text>
+                        <Text className={styles.mb_8}>{i18next.t('user.user.name-kana')}</Text>
                         <div className={[styles.flex, styles.mb_16].join(' ')}>
                             <FormInputText 
                                 name={'last_name_kana'} 
@@ -104,7 +100,7 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='ヤマダ'
+                                placeholder={i18next.t('user.user.last-name-kana-ex')}
                                 className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                             />
                             <FormInputText
@@ -114,20 +110,20 @@ function UserCreatePage() {
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='タロウ'
+                                placeholder={i18next.t('user.user.first-name-kana-ex')}
                                 className={styles.flex_basis_50}
                             />
                         </div>
-                        <Text className={styles.mb_8}>性別</Text>
+                        <Text className={styles.mb_8}>{i18next.t('user.user.gender')}</Text>
                         <div className={styles.mb_16}>
-                            <div className={styles.flex}>
+                            <div className={[styles.flex, styles.flex_wrap].join(' ')}>
                                 <FormInputRadio
                                     name='gender' 
                                     value={0} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 0}
-                                    label='男性'
-                                    className={styles.mr_8}
+                                    label={i18next.t('user.user.gender-man')}
+                                    className={[styles.mr_8, styles.mb_8].join(' ')}
                                     error={errorMessage}
                                 />
                                 <FormInputRadio
@@ -135,8 +131,8 @@ function UserCreatePage() {
                                     value={1} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 1}
-                                    label='女性'
-                                    className={styles.mr_8}
+                                    label={i18next.t('user.user.gender-woman')}
+                                    className={[styles.mr_8, styles.mb_8].join(' ')}
                                     error={errorMessage}
                                 />
                                 <FormInputRadio
@@ -144,8 +140,8 @@ function UserCreatePage() {
                                     value={2} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 2}
-                                    label='その他'
-                                    className={styles.mr_8}
+                                    label={i18next.t('user.user.gender-other')}
+                                    className={[styles.mr_8, styles.mb_8].join(' ')}
                                     error={errorMessage}
                                 />
                                 <FormInputRadio
@@ -153,7 +149,8 @@ function UserCreatePage() {
                                     value={3} 
                                     onChange={handleFormData}
                                     checked={formData.gender == 3}
-                                    label='未回答'
+                                    label={i18next.t('user.user.gender-no-reply')}
+                                    className={styles.mb_8}
                                     error={errorMessage}
                                 />
                             </div>
@@ -168,7 +165,7 @@ function UserCreatePage() {
                             name={'birthday'} 
                             value={formData.birthday} 
                             onChange={handleFormDate} 
-                            label={'生年月日'} 
+                            label={i18next.t('user.user.birthday')}
                             className={styles.mb_16} 
                             error={errorMessage}
                             validation={validation}
@@ -179,71 +176,71 @@ function UserCreatePage() {
                             type={'number'}
                             onChange={handleFormData}
                             value={formData.post_code}
-                            label={'郵便番号'}
+                            label={i18next.t('user.user.postcode')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='1234567'
+                            placeholder={i18next.t('user.user.postcode-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'prefecture'}
                             onChange={handleFormData}
                             value={formData.prefecture}
-                            label={'都道府県'}
+                            label={i18next.t('user.user.prefecture')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='神奈川県'
+                            placeholder={i18next.t('user.user.prefecture-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'municipality'}
                             onChange={handleFormData}
                             value={formData.municipality}
-                            label={'市区町村郡'}
+                            label={i18next.t('user.user.municipality')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='川崎市麻生区'
+                            placeholder={i18next.t('user.user.municipality-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'street_name'}
                             onChange={handleFormData}
                             value={formData.street_name}
-                            label={'町名'}
+                            label={i18next.t('user.user.street-name')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='千代ヶ丘'
+                            placeholder={i18next.t('user.user.street-name-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'street_number'}
                             onChange={handleFormData}
                             value={formData.street_number}
-                            label={'丁目番地'}
+                            label={i18next.t('user.user.street-number')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='1-1-1'
+                            placeholder={i18next.t('user.user.street-number-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
                             name={'building'}
                             onChange={handleFormData}
                             value={formData.building}
-                            label={'建物名'}
+                            label={i18next.t('user.user.building')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='○☓△ビルディング 1F'
+                            placeholder={i18next.t('user.user.building-ex')}
                             className={styles.mb_16}
                         />
                         <label className={styles.delivery_address_check}>
                             <InputCheckbox onChange={() => { setOpen(!open)}} checked={open} />
-                            <Text className={styles.ml_8}>配送先に別の住所を指定する</Text>
+                            <Text className={[styles.ml_8, styles.text_nowrap].join(' ')}>{i18next.t('user.user.set-other-delivery-address')}</Text>
                         </label>
                         <div className={open? styles.block : styles.hidden}>
                             <FormInputText
@@ -251,66 +248,66 @@ function UserCreatePage() {
                                 type={'number'}
                                 onChange={handleFormData}
                                 value={formData.delivery_post_code}
-                                label={'郵便番号'}
+                                label={i18next.t('user.user.postcode')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='1234567'
+                                placeholder={i18next.t('user.user.postcode-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_prefecture'}
                                 onChange={handleFormData}
                                 value={formData.delivery_prefecture}
-                                label={'都道府県'}
+                                label={i18next.t('user.user.prefecture')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='神奈川県'
+                                placeholder={i18next.t('user.user.prefecture-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_municipality'}
                                 onChange={handleFormData}
                                 value={formData.delivery_municipality}
-                                label={'市区町村郡'}
+                                label={i18next.t('user.user.municipality')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='川崎市麻生区'
+                                placeholder={i18next.t('user.user.municipality-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_street_name'}
                                 onChange={handleFormData}
                                 value={formData.delivery_street_name}
-                                label={'町名'}
+                                label={i18next.t('user.user.street-name')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='千代ヶ丘'
+                                placeholder={i18next.t('user.user.street-name-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_street_number'}
                                 onChange={handleFormData}
                                 value={formData.delivery_street_number}
-                                label={'丁目番地'}
+                                label={i18next.t('user.user.street-number')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='1-1-1'
+                                placeholder={i18next.t('user.user.street-number-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'delivery_building'}
                                 onChange={handleFormData}
                                 value={formData.delivery_building}
-                                label={'建物名'}
+                                label={i18next.t('user.user.building')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='○☓△ビルディング 1F'
+                                placeholder={i18next.t('user.user.building-ex')}
                                 className={styles.mb_16}
                             />
                         </div>
@@ -319,11 +316,11 @@ function UserCreatePage() {
                             type='tel'
                             onChange={handleFormData}
                             value={formData.tel}
-                            label={'電話番号'}
+                            label={i18next.t('user.user.tel')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='080-1234-5678'
+                            placeholder={i18next.t('user.user.tel-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -331,11 +328,11 @@ function UserCreatePage() {
                             type={'email'}
                             onChange={handleFormData}
                             value={formData.email}
-                            label={'メールアドレス'}
+                            label={i18next.t('user.user.email')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='test@example.com'
+                            placeholder={i18next.t('user.user.email-ex')}
                             className={styles.mb_16}
                         />
                         <FormInputText
@@ -343,14 +340,14 @@ function UserCreatePage() {
                             type={'password'}
                             onChange={handleFormData}
                             value={formData.password}
-                            label={'パスワード'}
+                            label={i18next.t('user.user.password')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
-                            placeholder='半角英数字8文字以上'
+                            placeholder={i18next.t('user.user.password-ex')}
                             className={styles.mb_16}
                         />
-                        <Text className={styles.mb_8}>DM登録</Text>
+                        <Text className={styles.mb_8}>{i18next.t('user.user.dm-register')}</Text>
                         <div className={styles.mb_40}>
                             <div className={styles.flex}>
                                 <FormInputRadio
@@ -358,7 +355,7 @@ function UserCreatePage() {
                                     value={1} 
                                     onChange={handleFormData}
                                     checked={formData.is_received == 1}
-                                    label='登録する'
+                                    label={i18next.t('user.register')}
                                     error={errorMessage}
                                 />
                                 <FormInputRadio
@@ -366,7 +363,7 @@ function UserCreatePage() {
                                     value={0} 
                                     onChange={handleFormData}
                                     checked={formData.is_received == 0}
-                                    label='登録しない'
+                                    label={i18next.t('user.not-register')}
                                     className={styles.ml_32}
                                     error={errorMessage}
                                 />
@@ -379,8 +376,8 @@ function UserCreatePage() {
                             { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.is_received}</Text> }
                         </div>
                         <div className={[styles.flex, styles.justify_center].join(' ')}>
-                            <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')} >キャンセル</LinkBtn>
-                            <Button color='primary' type="submit" className={[styles.ml_8, styles.btn_max].join(' ')}>新規登録</Button>
+                            <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')}>{i18next.t('user.cancel-btn')}</LinkBtn>
+                            <Button color='primary' type="submit" className={[styles.ml_8, styles.btn_max].join(' ')}>{i18next.t('user.register')}</Button>
                         </div>
                     </form>
                 </div>

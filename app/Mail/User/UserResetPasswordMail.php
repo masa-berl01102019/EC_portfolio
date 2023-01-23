@@ -35,8 +35,8 @@ class UserResetPasswordMail extends Mailable
     {
         return $this->view('mail.html.user_reset_password_mail')
             ->text('mail.text.user_reset_password_mail')
-            ->from(config('define.user_email.from.address'), config('define.user_email.from.name'))
-            ->subject("パスワード再設定について")
+            ->from(config('define.user_email.from.address'), trans('mail.user.from.name'))
+            ->subject(trans('mail.user.reset_password.subject'))
             ->with([
                 'password_reset' => $this->password_reset,
                 'user_name' => $this->user_name,

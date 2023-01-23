@@ -15,7 +15,7 @@ use App\Http\Requests\User\ContactRequest;
 
 class ContactController extends Controller
 {
-    private $form_items = ['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'title', 'body'];
+    private $form_items = ['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'subject', 'message'];
 
     public function store(ContactRequest $request)
     {
@@ -30,17 +30,17 @@ class ContactController extends Controller
                 'first_name_kana' => $data['first_name_kana'],
                 'tel' => $data['tel'],
                 'email' => $data['email'],
-                'title' => $data['title'],
-                'body' => $data['body'],
+                'subject' => $data['subject'],
+                'message' => $data['message'],
             ]);
             Mail::to($contact->email)->send(new UserContactMail($contact));
             Mail::to(config('define.admin_email.to.support'))->send(new AdminContactMail($contact));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'お問い合わせの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.user.contacts.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'お問い合わせの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.user.contacts.create_err')], 500);
         }
     }
 }

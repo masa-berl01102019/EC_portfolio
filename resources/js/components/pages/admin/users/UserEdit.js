@@ -15,30 +15,25 @@ import { menuAdminState } from '../../../store/menuState';
 import FormInputRadio from '../../../molecules/Form/FormInputRadio';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useValidation from '../../../hooks/useValidation';
+import useI18next from '../../../context/I18nextContext';
 
 function UserEdit(props) {
-    // urlの設定 * propsで渡ってきたIDを初期URLにセット
+    
     const baseUrl = `/api/admin/users/${props.match.params.id}/edit`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'USER';
-    // APIと接続して返り値を取得
     const {data, errorMessage, updateData} = useFetchApiData(baseUrl, model);
-    // チェックボックスのclickイベントで配送先住所のフォームの表示と非表示を管理
     const [open, setOpen] = useState(false);
-    // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData, handleFormDate}] = useForm(data.user);
-    // フロント用バリデーション
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'user_edit');
-    // リダイレクト用の関数呼び出し
     const history = useHistory();
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
+    const i18next = useI18next();
     
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>会員編集</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.user.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -52,7 +47,7 @@ function UserEdit(props) {
                                 });
                             }
                         }}>
-                            <Text className={styles.mb_8}>氏名</Text>
+                            <Text className={styles.mb_8}>{i18next.t('admin.user.name')}</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText
                                     name={'last_name'}
@@ -61,7 +56,7 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='山田'
+                                    placeholder={i18next.t('admin.user.last-name-ex')}
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
@@ -71,11 +66,11 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='太郎'
+                                    placeholder={i18next.t('admin.user.first-name-ex')}
                                     className={styles.flex_basis_50}
                                 />
                             </div>
-                            <Text className={styles.mb_8}>氏名(カナ)</Text>
+                            <Text className={styles.mb_8}>{i18next.t('admin.user.name-kana')}</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText 
                                     name={'last_name_kana'} 
@@ -84,7 +79,7 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='ヤマダ'
+                                    placeholder={i18next.t('admin.user.last-name-kana-ex')}
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
@@ -94,20 +89,20 @@ function UserEdit(props) {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='タロウ'
+                                    placeholder={i18next.t('admin.user.first-name-kana-ex')}
                                     className={styles.flex_basis_50}
                                 />
                             </div>
-                            <Text className={styles.mb_8}>性別</Text>
+                            <Text className={styles.mb_8}>{i18next.t('admin.user.gender')}</Text>
                             <div className={styles.mb_16}>
-                                <div className={styles.flex}>
+                                <div className={[styles.flex, styles.flex_wrap].join(' ')}>
                                     <FormInputRadio
                                         name='gender' 
                                         value={0} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 0}
-                                        label='男性'
-                                        className={styles.mr_8}
+                                        label={i18next.t('admin.user.gender-man')}
+                                        className={[styles.mr_8, styles.mb_8].join(' ')}
                                         error={errorMessage}
                                     />
                                     <FormInputRadio
@@ -115,8 +110,8 @@ function UserEdit(props) {
                                         value={1} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 1}
-                                        label='女性'
-                                        className={styles.mr_8}
+                                        label={i18next.t('admin.user.gender-woman')}
+                                        className={[styles.mr_8, styles.mb_8].join(' ')}
                                         error={errorMessage}
                                     />
                                     <FormInputRadio
@@ -124,8 +119,8 @@ function UserEdit(props) {
                                         value={2} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 2}
-                                        label='その他'
-                                        className={styles.mr_8}
+                                        label={i18next.t('admin.user.gender-other')}
+                                        className={[styles.mr_8, styles.mb_8].join(' ')}
                                         error={errorMessage}
                                     />
                                     <FormInputRadio
@@ -133,7 +128,8 @@ function UserEdit(props) {
                                         value={3} 
                                         onChange={handleFormData}
                                         checked={formData.gender == 3}
-                                        label='未回答'
+                                        label={i18next.t('admin.user.gender-no-reply')}
+                                        className={styles.mb_8}
                                         error={errorMessage}
                                     />
                                 </div>
@@ -148,7 +144,7 @@ function UserEdit(props) {
                                 name={'birthday'} 
                                 value={formData.birthday} 
                                 onChange={handleFormDate} 
-                                label={'生年月日'} 
+                                label={i18next.t('admin.user.birthday')}
                                 className={styles.mb_16} 
                                 error={errorMessage}
                                 validation={validation}
@@ -159,71 +155,71 @@ function UserEdit(props) {
                                 type={'number'}
                                 onChange={handleFormData}
                                 value={formData.post_code}
-                                label={'郵便番号'}
+                                label={i18next.t('admin.user.postcode')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='1234567'
+                                placeholder={i18next.t('admin.user.postcode-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'prefecture'}
                                 onChange={handleFormData}
                                 value={formData.prefecture}
-                                label={'都道府県'}
+                                label={i18next.t('admin.user.prefecture')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='神奈川県'
+                                placeholder={i18next.t('admin.user.prefecture-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'municipality'}
                                 onChange={handleFormData}
                                 value={formData.municipality}
-                                label={'市区町村郡'}
+                                label={i18next.t('admin.user.municipality')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='川崎市麻生区'
+                                placeholder={i18next.t('admin.user.municipality-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'street_name'}
                                 onChange={handleFormData}
                                 value={formData.street_name}
-                                label={'町名'}
+                                label={i18next.t('admin.user.street-name')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='千代ヶ丘'
+                                placeholder={i18next.t('admin.user.street-name-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'street_number'}
                                 onChange={handleFormData}
                                 value={formData.street_number}
-                                label={'丁目番地'}
+                                label={i18next.t('admin.user.street-number')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='1-1-1'
+                                placeholder={i18next.t('admin.user.street-number-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
                                 name={'building'}
                                 onChange={handleFormData}
                                 value={formData.building}
-                                label={'建物名'}
+                                label={i18next.t('admin.user.building')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='○☓△ビルディング 1F'
+                                placeholder={i18next.t('admin.user.building-ex')}
                                 className={styles.mb_16}
                             />
                             <label className={styles.delivery_address_check}>
                                 <InputCheckbox onChange={() => { setOpen(!open)}} checked={open} />
-                                <Text className={styles.ml_8}>配送先に別の住所を指定する</Text>
+                                <Text className={[styles.ml_8, styles.text_nowrap].join(' ')}>{i18next.t('admin.user.set-other-delivery-address')}</Text>
                             </label>
                             <div className={open? styles.block : styles.hidden}>
                                 <FormInputText
@@ -231,66 +227,66 @@ function UserEdit(props) {
                                     type={'number'}
                                     onChange={handleFormData}
                                     value={formData.delivery_post_code}
-                                    label={'郵便番号'}
+                                    label={i18next.t('admin.user.postcode')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='1234567'
+                                    placeholder={i18next.t('admin.user.postcode-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_prefecture'}
                                     onChange={handleFormData}
                                     value={formData.delivery_prefecture}
-                                    label={'都道府県'}
+                                    label={i18next.t('admin.user.prefecture')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='神奈川県'
+                                    placeholder={i18next.t('admin.user.prefecture-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_municipality'}
                                     onChange={handleFormData}
                                     value={formData.delivery_municipality}
-                                    label={'市区町村郡'}
+                                    label={i18next.t('admin.user.municipality')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='川崎市麻生区'
+                                    placeholder={i18next.t('admin.user.municipality-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_street_name'}
                                     onChange={handleFormData}
                                     value={formData.delivery_street_name}
-                                    label={'町名'}
+                                    label={i18next.t('admin.user.street-name')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='千代ヶ丘'
+                                    placeholder={i18next.t('admin.user.street-name-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_street_number'}
                                     onChange={handleFormData}
                                     value={formData.delivery_street_number}
-                                    label={'丁目番地'}
+                                    label={i18next.t('admin.user.street-number')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='1-1-1'
+                                    placeholder={i18next.t('admin.user.street-number-ex')}
                                     className={styles.mb_16}
                                 />
                                 <FormInputText
                                     name={'delivery_building'}
                                     onChange={handleFormData}
                                     value={formData.delivery_building}
-                                    label={'建物名'}
+                                    label={i18next.t('admin.user.building')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder='○☓△ビルディング 1F'
+                                    placeholder={i18next.t('admin.user.building-ex')}
                                     className={styles.mb_16}
                                 />
                             </div>
@@ -299,11 +295,11 @@ function UserEdit(props) {
                                 type='tel'
                                 onChange={handleFormData}
                                 value={formData.tel}
-                                label={'電話番号'}
+                                label={i18next.t('admin.user.tel')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='080-1234-5678'
+                                placeholder={i18next.t('admin.user.tel-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
@@ -311,14 +307,14 @@ function UserEdit(props) {
                                 type={'email'}
                                 onChange={handleFormData}
                                 value={formData.email}
-                                label={'メールアドレス'}
+                                label={i18next.t('admin.user.email')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder='test@example.com'
+                                placeholder={i18next.t('admin.user.email-ex')}
                                 className={styles.mb_16}
                             />
-                            <Text className={styles.mb_8}>DM登録</Text>
+                            <Text className={styles.mb_8}>{i18next.t('admin.user.dm-register')}</Text>
                             <div className={styles.mb_40}>
                                 <div className={styles.flex}>
                                     <FormInputRadio
@@ -326,7 +322,7 @@ function UserEdit(props) {
                                         value={1} 
                                         onChange={handleFormData}
                                         checked={formData.is_received == 1}
-                                        label='登録する'
+                                        label={i18next.t('admin.register')}
                                         error={errorMessage}
                                     />
                                     <FormInputRadio
@@ -334,7 +330,7 @@ function UserEdit(props) {
                                         value={0} 
                                         onChange={handleFormData}
                                         checked={formData.is_received == 0}
-                                        label='登録しない'
+                                        label={i18next.t('admin.not-register')}
                                         className={styles.ml_32}
                                         error={errorMessage}
                                     />
@@ -346,10 +342,9 @@ function UserEdit(props) {
                                 }
                                 { errorMessage && <Text role='error' size='s' className={styles.mt_8}>{errorMessage.is_received}</Text> }
                             </div>
-
                             <div className={[styles.flex, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/users`} size='l' className={styles.mr_12} style={{'width': '100%'}} >一覧に戻る</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>更新する</Button>
+                                <LinkBtn to={`/admin/users`} size='l' className={styles.mr_12} style={{'width': '100%'}} >{i18next.t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
                             </div>
                         </form>
                     </div>

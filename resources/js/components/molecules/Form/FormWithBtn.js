@@ -5,6 +5,7 @@ import Text from '../../atoms/Text/Text';
 import useForm from '../../hooks/useForm';
 import useValidation from '../../hooks/useValidation';
 import styles from './styles.module.css';
+import useI18next from '../../context/I18nextContext';
 
 const FormWithBtn = ({
     name, 
@@ -26,6 +27,7 @@ const FormWithBtn = ({
     const {valid, setValid, validation, errorObject} = useValidation(formData, validateScope, validateConfigKey);
     // formの値をuseRefで管理
     const inputValue = useRef(undefined);
+    const i18next = useI18next();
 
   return (
     <div className={className}>
@@ -47,7 +49,7 @@ const FormWithBtn = ({
                 return false;
               }
               createMethod({form: formData, url: requestUrl});
-            }} size='s' color='primary'>追加</Button>
+            }} size='s' color='primary'>{i18next.t('admin.add-btn')}</Button>
           ) : (
             <>
               <Button onClick={() => {
@@ -57,8 +59,8 @@ const FormWithBtn = ({
                     return false;
                   }
                   updateMethod({form: formData, url: requestUrl});
-              }} size='s' color='primary' className={styles.mr_4}>編集</Button>
-              <Button onClick={deleteMethod} size='s'>削除</Button>
+              }} size='s' color='primary' className={styles.mr_4}>{i18next.t('admin.edit-link')}</Button>
+              <Button onClick={deleteMethod} size='s'>{i18next.t('admin.delete-btn')}</Button>
             </>
         )}
       </div>

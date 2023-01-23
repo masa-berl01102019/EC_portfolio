@@ -13,34 +13,21 @@ import ItemSortModal from '../../../organisms/user/modal/ItemSortModal';
 import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
 import SortBtn from '../../../molecules/IconBtn/SortBtn';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function ItemIndexPage() {
-    // urlの設定
-    const baseUrl = `/api/user/items`;
-    // paramsの適用範囲を決めるscope名を定義
-    const model = 'ITEM';
-    // URLパラメータ変更のフックの呼び出し
-    const {handleCurrentPage} = useCreateParams(model);
-    // グローバルステート呼び出し
-    const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const items = data.data? data.data: null;
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const main_categories = data.main_categories? data.main_categories: null;
-    const sub_categories = data.sub_categories? data.sub_categories: null;
-    const sizes = data.sizes? data.sizes: null;
-    const colors = data.colors? data.colors: null;
-    const tags = data.tags? data.tags: null;
 
+    const baseUrl = `/api/user/items`;
+    const model = 'ITEM';
+    const {handleCurrentPage} = useCreateParams(model);
+    const [params, setParams] = useRecoilState(paramState(model));
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
+    const {data:items, brands, gender_categories, main_categories, sub_categories, sizes, colors, tags} = data;
     const [popup, setPopup] = useState('');
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('ITEMにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'price' : '', 'posted_at' : '' },
@@ -74,12 +61,12 @@ function ItemIndexPage() {
                             model={model}
                         />
                     }
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>商品一覧</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.item.index-title')}</Heading>
 
                     <div className={styles.main_contents_area}>
                         <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
-                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
+                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>{i18next.t('user.filter')}</FilterBtn>
+                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>{i18next.t('user.sort')}</SortBtn>
                         </div>
                         {   items &&
                             <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

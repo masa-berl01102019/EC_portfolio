@@ -35,7 +35,7 @@ class ResetPasswordController extends Controller
             $admin = Admin::where('email', $data['email'])->first();
             // checking user existence
             if (!$admin) {
-                return response()->json(['status' => 9, 'message' => '該当のユーザーが存在しません'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.reset_passwords.send_err')], 400);
             }
             $password_reset = PasswordReset::create([
                 'admin_id' => $admin->id,
@@ -45,11 +45,11 @@ class ResetPasswordController extends Controller
             ]);
             Mail::to($admin->email)->send(new AdminResetPasswordMail($password_reset, $admin->full_name));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'パスワード再設定メールを送信しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.reset_passwords.send_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'パスワード再設定メールを送信に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.reset_passwords.send_err2')], 500);
         }
     }
 
@@ -61,29 +61,29 @@ class ResetPasswordController extends Controller
             $password_reset = PasswordReset::where('uuid', $data['uuid'])->first();
             // checking record existence
             if (!$password_reset) {
-                return response()->json(['status' => 9, 'message' => '該当のレコードが存在しません'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.reset_passwords.change_err')], 400);
             }
             $now = Carbon::now();
             $expired_at = Carbon::parse($password_reset->expired_at);
             // checking expired_at
             if ($now->gt($expired_at)) {
-                return response()->json(['status' => 9, 'message' => '有効期限が切れております'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.reset_passwords.change_err2')], 400);
             }
             $admin = Admin::find($password_reset->admin_id);
             // checking admin existence
             if (!$admin) {
-                return response()->json(['status' => 9, 'message' => '該当のユーザーが存在しません'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.reset_passwords.change_err3')], 400);
             }
             $admin->fill([
                 'password' => Hash::make($data['password'])
             ])->save();
             Mail::to($admin->email)->send(new AdminChangePasswordMail($admin->full_name));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'パスワード変更を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.reset_passwords.change_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'パスワード変更に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.reset_passwords.change_err4')], 500);
         }
     }
 }

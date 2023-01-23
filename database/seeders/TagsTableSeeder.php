@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -17,11 +18,12 @@ class TagsTableSeeder extends Seeder
 
         DB::table('tags')->truncate(); // テーブルごと削除して再構築
 
-        $tags = ['休日コーデ', '雨の日コーデ', 'アウトドア', 'キレイめ', 'カジュアル', '◯◯ブランドコラボ企画', 'アスレチック', '機能性素材', '吸水速乾',
-                 'UVカット', '形状記憶', '雑誌掲載', '簡単着回し', 'スタイリストコラボ', '今季イチオシ素材', 'インポート', 'デートにぴったり', '定番商品',
-                 'モード', '製品染め', '東京コレクション', '数量限定', 'web限定', 'セール商品'];
+        $tags = [
+            'Holiday Look', 'Rainy Day Outfits', 'Outdoor', 'Elegance', 'Casual', 'Collaborate with ◯◯ Brand', 'High-functional material', 'Quick-drying',
+            'UV protection', 'Vintage', '◯◯ fashion magazines', 'Cosy Fashion', 'Stylist Selection', '23SS LOOK', 'Import products', 'Date Outfits', 'Classic', 'Mode Fashion', 'Tokyo collection', 'Quantity Limited', 'WEB Limited', 'Sale'
+        ];
 
-        foreach($tags as $value) {
+        foreach ($tags as $value) {
             // データの挿入
             DB::table('tags')->insert([
                 'tag_name' => $value,

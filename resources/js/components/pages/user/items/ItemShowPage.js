@@ -19,30 +19,22 @@ import useItemCookies from '../../../hooks/useItemCookies';
 import useItemWebStorage from '../../../hooks/useItemWebStorage';
 import CartModal from '../../../organisms/user/modal/CartModal';
 import BookmarkModal from '../../../organisms/user/modal/BookmarkModal';
+import useI18next from '../../../context/I18nextContext';
 
 function ItemShowPage(props) {
-    // urlの設定
+
     const baseUrl = `/api/user/items/${props.match.params.id}`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'ITEM';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model);
-    // cookieを管理
     const [cookies, setCookie] = useCookies();
     const {handleViewItemCookie} = useItemCookies(cookies, setCookie);
     const {handleViewItemWebStorage} = useItemWebStorage();
-    // API接続の返却値を変数に格納
-    const item = data.item;
-    const sizes = data.sizes? data.sizes: null;
-    const related_items = data.related_items? data.related_items: null;
-    // login状態のステータスを取得
+    const {item, sizes, related_items} = data;
     const isUserLogin = useRecoilValue(authUserState);
-    // 商品詳細のタブ管理
     const [tab, setTab] = useState('1');
-    // お気に入り・カートのポップアップの状態管理
     const [popup, setPopup] = useState('');
-    // 選択された画僧のソース管理
     const [pickedPicture, setPickedPicture] = useState('');
+    const i18next = useI18next();
 
     useEffect(() => {
         if(item) {
@@ -51,6 +43,8 @@ function ItemShowPage(props) {
             handleViewItemWebStorage(item, cookies.item_info); 
         }
     },[baseUrl]);
+
+    // TODO: タグを表示する
     
     return (
         <main className={styles.mt_40}>
@@ -74,14 +68,14 @@ function ItemShowPage(props) {
                 <div className={styles.main_contents_area}>
                     <div className={styles.item_detail_area}>
                         <div className={styles.item_img_area}>
-                            <Image src={pickedPicture} alt="商品画像" className={styles.item_top_img}/>
+                            <Image src={pickedPicture} alt="item image" className={styles.item_top_img}/>
                             <div className={styles.item_thumbnail_area}>
                                 {   item.images &&
                                     item.images.map((list, index) =>
                                         <Image 
                                             key={index}
                                             src={list.image ? list.image : '/img/no_image.png'} 
-                                            alt="商品画像" 
+                                            alt="item image" 
                                             style={{'width' : '16%'}}
                                             onClick={() => {setPickedPicture(list.image)}}
                                         />
@@ -93,19 +87,19 @@ function ItemShowPage(props) {
                             <div className={styles.item_basic_info_area}>
                                 <Text className={styles.mb_8}>{item.brand_name}</Text>
                                 <Text className={styles.mb_8}>{item.item_name}</Text>
-                                <Text size='l'>{item.included_tax_price_text} (税込)</Text>
+                                <Text size='l'>{item.included_tax_price_text} ({i18next.t('user.tax-including')})</Text>
                             </div>
                             <div className={styles.show_item_btn_area}>
                                 <CartBtn size='l' onClick={() => setPopup('1')} className={styles.mb_16} disabled={!isUserLogin}>
-                                    カートに入れる
+                                    {i18next.t('user.item.cart-btn')}
                                 </CartBtn>
                                 <BookmarkBtn size='l' onClick={() => setPopup('2')} disabled={!isUserLogin}>
-                                    お気に入りに登録する
+                                    {i18next.t('user.item.bookmark-btn')}
                                 </BookmarkBtn>
                             </div>
                             {!isUserLogin && 
                                 <Text role='error' className={styles.mb_24}>
-                                    会員様はお気に入り機能とカート機能がご利用可能です。
+                                    {i18next.t('user.item.error-msg')}
                                 </Text>
                             }
                             <div className={[styles.flex, styles.mb_32].join(' ')}>
@@ -114,7 +108,7 @@ function ItemShowPage(props) {
                                     value={'1'} 
                                     onChange={e => setTab(e.target.value)} 
                                     checked={tab == '1'} 
-                                    label={'サイズ・詳細'}
+                                    label={i18next.t('user.item.size-detail')}
                                     style={{'flex' : '1'}}
                                 />
                                 <RadioBoxTab
@@ -122,46 +116,46 @@ function ItemShowPage(props) {
                                     value={'2'} 
                                     onChange={e => setTab(e.target.value)} 
                                     checked={tab == '2'} 
-                                    label={'商品説明'}
+                                    label={i18next.t('user.item.description')}
                                     style={{'flex' : '1'}}
                                 />
                             </div>
                             { tab == '1' ? (
                                 <div className={styles.mb_32}>
-                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>サイズ表</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.size-table')}</Heading>
                                     <MeasurementTable 
                                         measurements={item.measurements} 
                                         sizes={sizes} 
                                         className={styles.mb_24} 
                                     />
-                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>商品詳細</Heading>
-                                    <ul>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.detail')}</Heading>
+                                    <ul className={styles.detail_info_list}>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>カラー </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.color')} </Text>
                                             <Text className={styles.flex_1}>{item.color_variation.join(' / ') }</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>サイズ </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.size')} </Text>
                                             <Text className={styles.flex_1}>{item.size_variation.join(' / ') }</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>性別 </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.gender')} </Text>
                                             <Text className={styles.flex_1}>{item.gender_category}</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>カテゴリ </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.category')} </Text>
                                             <Text className={styles.flex_1}>{item.main_category + ' > ' + item.sub_category}</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>素材 </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.material')} </Text>
                                             <Text className={styles.flex_1}>{item.mixture_ratio}</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>生産国 </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.made-in')} </Text>
                                             <Text className={styles.flex_1}>{item.made_in}</Text>
                                         </li>
                                         <li className={styles.flex}>
-                                            <Text className={[styles.bold, styles.flex_basis_80p].join(' ')}>品番 </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.product-number')} </Text>
                                             <Text className={styles.flex_1}>{item.product_number}</Text>
                                         </li>
                                     </ul>
@@ -174,7 +168,7 @@ function ItemShowPage(props) {
                     <div className={styles.item_related_area}>
                         {   item.publishedBlogs &&
                             <>
-                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>関連ブログ</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.related-blog')}</Heading>
                                 <div className={styles.mb_32}>
                                     {
                                         item.publishedBlogs.map((blog) =>
@@ -194,7 +188,7 @@ function ItemShowPage(props) {
                         }  
                         {   related_items &&
                             <>
-                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>関連商品</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.related-item')}</Heading>
                                 <div className={[styles.show_card_area, styles.mb_32].join(' ')}>
                                     {   related_items.map((item) =>
                                             <TopItemCard 
@@ -213,12 +207,12 @@ function ItemShowPage(props) {
                         }
                         { JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&
                             <>
-                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>チェックした商品</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.view-record')}</Heading>
                                 <div className={[styles.flex, styles.scroll_x].join(' ')}>
                                 {   
                                     JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookies.item_info.includes(list.id)).map(list => (
                                         <Link to={`/items/${list.id}`} key={list.id}>
-                                            <Image src={list.top_image} alt="閲覧商品画像" className={styles.history_recodes}/> 
+                                            <Image src={list.top_image} alt="viewed item image" className={styles.history_recodes}/> 
                                         </Link>
                                     ))
                                 }

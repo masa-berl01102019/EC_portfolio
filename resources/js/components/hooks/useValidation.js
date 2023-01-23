@@ -1,24 +1,26 @@
 import React, {useState} from 'react';
 import * as Validator from 'validatorjs';
-import {validationConfig} from '../validation/config';
+import validationConfig from '../validation/config';
 
 const useValidation = (data, scope, config_key) => {
+  
+  const config = validationConfig();
 
   const [valid, setValid] = useState(false);
 
-  const validation = new Validator(data, validationConfig[scope][config_key].rules);
+  const validation = new Validator(data, config[scope][config_key].rules);
 
-  Validator.useLang('ja');
+  Validator.useLang(localStorage.getItem('lang') || 'ja');
 
-  validation.setAttributeNames(validationConfig[scope][config_key].attributes);
+  validation.setAttributeNames(config[scope][config_key].attributes);
 
   const errorObject = {};
 
   if(validation.fails()) {
     Object.entries(validation.errors.all()).forEach(([key, value]) => {
-      const correctKey = key.replace(/\d/, '*');
-      const correctAttribute = validationConfig[scope][config_key].attributes[correctKey];
-      const correctVlue = value.join('').replace(key.replace(/_/g, ' '), correctAttribute);
+      const correctKey = key.replace(/\d+/, '*');
+      const correctAttribute = config[scope][config_key].attributes[correctKey];
+      const correctVlue = value[0].replace(key.replace(/_/g, ' '), correctAttribute); // 同一キーで複数エラーがあったとしても1つのみ取得する
       errorObject[correctKey] = correctVlue;
     });
   }

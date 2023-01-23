@@ -11,17 +11,12 @@ import Image from '../../../atoms/Image/Image';
 import styles from '../styles.module.css';
 
 function NewsShowPage(props) {
-    // urlの設定
+
     const baseUrl = `/api/user/news/${props.match.params.id}`;
-    // paramsの適用範囲を決めるscope名を定義
     const model = 'NEWS';
-    // APIと接続して返り値を取得
     const {data, errorMessage} = useFetchApiData(baseUrl, model);
-    // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-    // 便利関数の呼び出し
     const {isJson} = useHelper();
-    // API接続の返却値を変数に格納
     const news = data.news;
 
     useEffect(() => {
@@ -35,7 +30,6 @@ function NewsShowPage(props) {
             setEditorState(editorState);
         }
     },[]);
-
     
     return (
         <main className={styles.mt_40}>
@@ -48,7 +42,7 @@ function NewsShowPage(props) {
                     <Text size='s' className={styles.mb_8}>
                         {news.modified_at ? news.modified_at : news.posted_at}
                     </Text>
-                    <Image src={news.thumbnail} type='blog_news' alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
+                    <Image src={news.thumbnail} type='blog_news' alt="blog image" className={[styles.w_100, styles.mb_8].join(' ')}/>
                     <Editor
                         editorState={editorState}
                         readOnly={true}

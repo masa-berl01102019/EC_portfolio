@@ -7,81 +7,81 @@ import Text from '../../../atoms/Text/Text';
 import DateRangeFilter from '../../../molecules/DateRangeFilter/DateRangeFilter';
 import styles from './styles.module.css';
 import Button from '../../../atoms/Button/Button';
+import useI18next from '../../../context/I18nextContext';
 
 const OrderSidebar = ({model, onClick}) => {
 
-    // グローバルステート呼び出し
     const params = useRecoilValue(paramState(model));
-    // URLパラメータ変更のフックの呼び出し
     const{handleFilter, handleSort} = useCreateParams(model);
+    const i18next = useI18next();
 
     return (
       <div className={styles.sidebar}>
         <div className={styles.container}>
 
-          <Text size='l' className={styles.sec_title}>フィルター条件</Text>
+          <Text size='l' className={styles.sec_title}>{i18next.t('admin.filter')}</Text>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>支払方法</Text>
-            <Pulldown name='payment_method' value={params.filter.payment_method} onChange={handleFilter} > 
-                <option value={'0'}>クレジットカード</option>
-                <option value={'1'}>代引き</option>
+            <Text className={styles.mb_8}>{i18next.t('admin.order.payment-method')}</Text>
+            <Pulldown name='payment_method' value={params.filter.payment_method} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}> 
+                <option value={'0'}>{i18next.t('admin.order.payment-credit')}</option>
+                <option value={'1'}>{i18next.t('admin.order.payment-cache')}</option>
             </Pulldown>
           </div>
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>入金状況</Text>
-            <Pulldown name='is_paid' value={params.filter.is_paid} onChange={handleFilter} > 
-                <option value={'0'}>未入金</option>
-                <option value={'1'}>入金済</option>
+            <Text className={styles.mb_8}>{i18next.t('admin.order.payment-status')}</Text>
+            <Pulldown name='is_paid' value={params.filter.is_paid} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}> 
+                <option value={'0'}>{i18next.t('admin.order.not-paid')}</option>
+                <option value={'1'}>{i18next.t('admin.order.paid')}</option>
             </Pulldown>
           </div>
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>出荷状況</Text>
-            <Pulldown name='is_shipped' value={params.filter.is_shipped} onChange={handleFilter} >
-                <option value={'0'}>未配送</option>
-                <option value={'1'}>配送済</option>
+            <Text className={styles.mb_8}>{i18next.t('admin.order.delivery-status')}</Text>
+            <Pulldown name='is_shipped' value={params.filter.is_shipped} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}>
+                <option value={'0'}>{i18next.t('admin.order.not-delivered')}</option>
+                <option value={'1'}>{i18next.t('admin.order.delivered')}</option>
             </Pulldown>
           </div>
           <div className={styles.mb_32}>
               <DateRangeFilter params={params.filter} model={model}>
-                <option value={'created_at'}>購入日</option>
-                <option value={'delivery_date'}>配達希望日</option>
-                <option value={'updated_at'}>ステータス更新日</option>
+                <option value={'created_at'}>{i18next.t('admin.order.purchase-date')}</option>
+                <option value={'delivery_date'}>{i18next.t('admin.order.preferred-delivery-day')}</option>
+                <option value={'updated_at'}>{i18next.t('admin.updated-date')}</option>
               </DateRangeFilter>
           </div>
 
-          <Text size='l' className={styles.sec_title}>ソート条件</Text>
+          <Text size='l' className={styles.sec_title}>{i18next.t('admin.sort')}</Text>
 
           <div className={styles.mb_16}>
-              <Text className={styles.mb_8}>合計金額</Text>
-              <Pulldown name='total_amount' value={params.sort.total_amount} onChange={handleSort} >
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+              <Text className={styles.mb_8}>{i18next.t('admin.order.purchase-amount')}</Text>
+              <Pulldown name='total_amount' value={params.sort.total_amount} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                  <option value={'desc'}>{i18next.t('admin.desc-num')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-num')}</option>
               </Pulldown>
           </div>
           <div className={styles.mb_16}>
-              <Text className={styles.mb_8}>購入日</Text>
-              <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort} > 
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+              <Text className={styles.mb_8}>{i18next.t('admin.order.purchase-date')}</Text>
+              <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}> 
+                  <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
               </Pulldown>
           </div>
           <div className={styles.mb_16}>
-              <Text className={styles.mb_8}>配達希望日</Text>
-              <Pulldown name='delivery_date' value={params.sort.delivery_date} onChange={handleSort} >
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+              <Text className={styles.mb_8}>{i18next.t('admin.order.preferred-delivery-day')}</Text>
+              <Pulldown name='delivery_date' value={params.sort.delivery_date} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                  <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
               </Pulldown>
           </div>
-          <div>
-              <Text className={styles.mb_8}>ステータス更新日</Text>
-              <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort} >
-                  <option value={'desc'}>降順</option>
-                  <option value={'asc'}>昇順</option>
+          <div>                                      
+              <Text className={styles.mb_8}>{i18next.t('admin.updated-date')}</Text>
+              <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
+                  <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
+                  <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
               </Pulldown>
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick} >閉じる</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('admin.close-btn')}</Button>
 
         </div>
       </div>

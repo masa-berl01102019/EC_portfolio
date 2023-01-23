@@ -27,11 +27,4 @@ class CategoryEditRequest extends FormRequest
             'category_name' => 'required|string|max:50',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'category_name' => 'カテゴリー名',
-        ];
-    }
 }

@@ -8,27 +8,23 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
 import useNotify from '../../../context/NotifyContext';
+import useI18next from '../../../context/I18nextContext';
 
 function ColorIndex() {
-    // urlの設定
+
     const baseUrl = `/api/admin/colors`;
-    // modelの設定
     const model = 'COLOR';
-    // APIと接続して返り値を取得
     const {data, errorMessage, createData, deleteData, updateData} = useFetchApiData(baseUrl, model);
-    // APIから取得したデータを変数に格納
     const colors = data.colors? data.colors: null;
-    // 選択されたカラーのIDをuseStateで管理
     const [editableForm, setEeditableForm] = useState(null);
-    // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
-    // notifyContextの呼び出し
     const confirm = useNotify();
+    const i18next = useI18next();
 
     const handleConfirmDelete = async () => {
         const result = await confirm({
-            body : `選択カラーを本当に削除しますか？`,
-            confirmBtnLabel : '削除'
+            body : i18next.t('admin.color.confirm-msg'),
+            confirmBtnLabel : i18next.t('admin.delete-btn')
         });
         result && deleteData({ url:`/api/admin/colors/${editableForm}` });
     }
@@ -37,12 +33,12 @@ function ColorIndex() {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>カラーマスタ</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.color.index-title')}</Heading>
                     { errorMessage && <Text role='error' size='s'>{errorMessage.color_name}</Text> }
                     <div className={styles.form_area}>
                         <FormWithBtn
                             name='color_name'
-                            placeholder='カラー名'
+                            placeholder={i18next.t('admin.color.color-ex')}
                             formInitialValue={{'color_name': ''}}
                             validateScope={'admin'}
                             validateConfigKey={'color_request'}
@@ -56,7 +52,7 @@ function ColorIndex() {
                                 { color.id === editableForm ? (
                                     <FormWithBtn
                                         name='color_name'
-                                        placeholder='カラー名'
+                                        placeholder={i18next.t('admin.color.color-ex')}
                                         formInitialValue={{'color_name': color.color_name}}
                                         validateScope={'admin'}
                                         validateConfigKey={'color_request'}

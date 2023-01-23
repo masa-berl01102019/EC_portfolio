@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         } else if ($exception instanceof AuthenticationException) {
             // 認証エラー
-            return response()->json(['errCode' => 'Unauthorized', 'message' => '認証エラーが発生しました'], 401);
+            return response()->json(['message' => trans('api.error.401')], 401);
         } else if ($exception instanceof ValidationException) {
             // バリデーションエラー
             return response()->json(new ErrorResource($exception), 422);
@@ -74,31 +74,31 @@ class Handler extends ExceptionHandler
             $err_code = $exception->getStatusCode();
             switch ($err_code) {
                 case 403 || 404:
-                    return response()->json(['errCode' => 'Not Found', 'message' => 'リソースが存在しません'], 404);
+                    return response()->json(['message' => trans('api.error.404')], 404);
                     break;
                 case 405:
-                    return response()->json(['errCode' => 'Method Not Allowed', 'message' => '未許可のメソッドが実行されております'], 405);
+                    return response()->json(['message' => trans('api.error.405')], 405);
                     break;
                 case 408:
-                    return response()->json(['errCode' => 'Request Timeout', 'message' => 'リクエストが時間内に完了出来ませんでした'], 408);
+                    return response()->json(['message' => trans('api.error.408')], 408);
                     break;
                 case 414:
-                    return response()->json(['errCode' => 'URI Too Long', 'message' => 'URIの長さがサーバーの上限を超えてます'], 414);
+                    return response()->json(['message' => trans('api.error.414')], 414);
                     break;
                 case 415:
-                    return response()->json(['errCode' => 'Unsupported Media Type', 'message' => 'メディア形式が正しくありません'], 414);
+                    return response()->json(['message' => trans('api.error.415')], 415);
                     break;
                 case 429:
-                    return response()->json(['errCode' => 'Too Many Requests', 'message' => 'APIの利用上限を超過しています'], 429);
+                    return response()->json(['message' => trans('api.error.429')], 429);
                     break;
                 case $err_code >= 400 && $err_code < 500:
-                    return response()->json(['errCode' => 'Bad Request', 'message' => '無効なリクエストです'], 400);
+                    return response()->json(['message' => trans('api.error.400')], 400);
                     break;
                 case 503:
-                    return response()->json(['errCode' => 'Service Unavailable', 'message' => '一時的にAPIアクセスが出来ません'], 503);
+                    return response()->json(['message' => trans('api.error.503')], 503);
                     break;
                 case $err_code >= 500 && $err_code < 600:
-                    return response()->json(['errCode' => 'Internal Server Error', 'message' => 'サーバーで何らかの異常が発生しました'], 500);
+                    return response()->json(['message' => trans('api.error.500')], 500);
                     break;
             }
         } else {

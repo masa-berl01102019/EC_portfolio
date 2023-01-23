@@ -6,6 +6,7 @@ import Button from '../../../atoms/Button/Button';
 import styles from './styles.module.css';
 import CartBtn from '../../../molecules/IconBtn/CartBtn';
 import CompletePopup from '../../../molecules/Popup/CompletePopup';
+import useI18next from '../../../context/I18nextContext';
 
 const CartModal = ({
     item,
@@ -16,6 +17,7 @@ const CartModal = ({
   }) => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const i18next = useI18next();
 
     return (
       <Mask>
@@ -26,7 +28,7 @@ const CartModal = ({
                 <div className={styles.img_area}>
                     <Image 
                         src={sku.img ? sku.img : '/img/no_image.png'} 
-                        alt="商品画像" 
+                        alt="item image" 
                         style={{'width' : '50px', 'marginRight': '8px'}} 
                     />
                     <Text>{sku.color_name}</Text>
@@ -38,7 +40,7 @@ const CartModal = ({
                             { sizes.filter((size) => size.id == sku_item.size_id).map(el => (
                                 <Text tag='span' key={el.id} className={[styles.text_height, styles.mr_8].join(' ')}>{el.size_name}</Text>
                             ))}
-                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? '在庫有り': '在庫無し'}</Text>
+                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? i18next.t('user.in-stock') : i18next.t('user.sold-out')}</Text>
                         </span>
                         <CartBtn 
                             onClick={() => {
@@ -51,17 +53,17 @@ const CartModal = ({
                             }}
                             disabled={item.cart_items.includes(sku_item.id) || sku_item.quantity < 1}
                         >
-                          {item.cart_items.includes(sku_item.id) ? 'カート登録済' : 'カートに追加'}
+                          {item.cart_items.includes(sku_item.id) ? i18next.t('user.cart.registered') : i18next.t('user.cart.register')}
                         </CartBtn>
                     </li>
                   )}
                 </ul>
               </div>
             )}
-            <Button className={styles.close_btn} onClick={closeMethod} >閉じる</Button>
+            <Button className={styles.close_btn} onClick={closeMethod} >{i18next.t('user.close-btn')}</Button>
           </div>
       ) : (
-        <CompletePopup isOpen={true}>カートに追加しました</CompletePopup>
+        <CompletePopup isOpen={true}>{i18next.t('user.cart.done')}</CompletePopup>
       )}
       </Mask>
     );

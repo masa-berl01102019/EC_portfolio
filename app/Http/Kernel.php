@@ -48,6 +48,7 @@ class Kernel extends HttpKernel
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // sanctum SPA認証用
             'throttle:60,1', // 1分間に60回まで
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\CheckLocale::class, // 多言語化対応
         ],
     ];
 

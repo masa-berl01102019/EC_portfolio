@@ -52,7 +52,7 @@ class BlogController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ブログの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.get_err')], 500);
         }
     }
 
@@ -67,7 +67,7 @@ class BlogController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ブログの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.get_err')], 500);
         }
     }
 
@@ -88,16 +88,16 @@ class BlogController extends Controller
                 'thumbnail' => $db_reserve_path,
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
-                'posted_at' => $data['is_published'] == config('define.is_published_r.open') ? Carbon::now() : null
+                'posted_at' => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : null
             ]);
             $blog->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             $blog->items()->sync(!empty($data['items_id']) ? $data['items_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'ブログの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.blogs.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'ブログの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.create_err')], 500);
         }
     }
 
@@ -112,7 +112,7 @@ class BlogController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ブログの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.get_err')], 500);
         }
     }
 
@@ -142,11 +142,11 @@ class BlogController extends Controller
             $blog->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             $blog->items()->sync(!empty($data['items_id']) ? $data['items_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'ブログの編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.blogs.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'ブログの編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.update_err')], 500);
         }
     }
 
@@ -160,11 +160,11 @@ class BlogController extends Controller
                 $blog->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'ブログの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.blogs.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'ブログの削除に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.delete_err')], 500);
         }
     }
 
@@ -191,11 +191,11 @@ class BlogController extends Controller
                 ];
                 $num++;
             }
-            $csv_header = ['No', 'ID', '公開状況', 'タイトル', 'ブランド', 'カテゴリ', '関連品番', 'タグ', '最終更新者', '投稿日', '更新日'];
-            return csvExport($csv_body, $csv_header, 'ブログ情報.csv');
+            $csv_header = trans('api.admin.blogs.csv_header');
+            return csvExport($csv_body, $csv_header, trans('api.admin.blogs.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'ブログ情報CSVの出力に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.csv_err')], 500);
         }
     }
 }

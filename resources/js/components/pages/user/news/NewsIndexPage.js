@@ -13,30 +13,21 @@ import NewsSortModal from '../../../organisms/user/modal/NewsSortModal';
 import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
 import SortBtn from '../../../molecules/IconBtn/SortBtn';
 import styles from '../styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 function NewsIndexPage() {
-    // urlの設定
-    const baseUrl = `/api/user/news`;
-    // paramsの適用範囲を決めるscope名を定義
-    const model = 'NEWS';
-    // URLパラメータ変更のフックの呼び出し
-    const {handleCurrentPage} = useCreateParams(model);
-    // グローバルステート呼び出し
-    const [params, setParams] = useRecoilState(paramState(model));
-    // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
-    // APIから取得したデータを変数に格納
-    const news = data.data ? data.data: null;
-    const brands = data.brands? data.brands: null;
-    const gender_categories = data.gender_categories? data.gender_categories: null;
-    const tags = data.tags? data.tags: null;
 
+    const baseUrl = `/api/user/news`;
+    const model = 'NEWS';
+    const {handleCurrentPage} = useCreateParams(model);
+    const [params, setParams] = useRecoilState(paramState(model));
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
+    const {data:news, brands, gender_categories, tags} = data;
     const [popup, setPopup] = useState('');
+    const i18next = useI18next();
 
     useEffect(() => {
-        // paramsのデフォルト値と適用範囲を設定
         if(params.scope === null) {
-            console.log('NEWSにてparamsの初期値をセット');
             setParams({
                 paginate: {},
                 sort: { 'posted_at' : '' },
@@ -65,11 +56,11 @@ function NewsIndexPage() {
                         model={model}
                     />
                 }
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>ニュース一覧</Heading>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.news.index-title')}</Heading>
                 <div className={styles.form_contents_area}> 
                     <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                        <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
-                        <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
+                        <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>{i18next.t('user.filter')}</FilterBtn>
+                        <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>{i18next.t('user.sort')}</SortBtn>
                     </div>
                     {   news &&
                         <div className={styles.mb_24}> 

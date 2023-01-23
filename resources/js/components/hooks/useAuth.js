@@ -3,6 +3,7 @@ import axios from "axios";
 import useSetErrorMsg from "./useSetErrorMsg";
 
 const useAuth = (url, auth) => {
+    const locale = {'X-Request-Locale': localStorage.getItem('lang') || 'en'};
     // error ハンドリング
     const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
     // Appのreact-queryのプロバイダーで渡したqueryClientを取得 * keyを指定してデータを再取得 / キャッシュを取得 / キャッシュを更新 等を行える
@@ -17,7 +18,7 @@ const useAuth = (url, auth) => {
         async () => {
             setErrorMessage(null);
             await initialCSRF();
-            return await axios({ method: 'get', url: url });
+            return await axios({ method: 'get', url: url, headers: locale });
         },
         { 
             onSuccess: (res) => console.log('success', res.data),
@@ -29,8 +30,8 @@ const useAuth = (url, auth) => {
         async ({url, form, headers}) => {
             setErrorMessage(null);
             await initialCSRF();
-            console.log('ログイン処理が呼ばれた', url, form, headers);
-            return await axios({ method: 'post', url: url, data: form, headers: headers });
+            console.log('ログイン処理が呼ばれた', url, form, {...headers, ...locale});
+            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
         },
         { 
             onSuccess: (res, obj) => {
@@ -48,8 +49,8 @@ const useAuth = (url, auth) => {
         async ({url, form, headers}) => {
             setErrorMessage(null);
             await initialCSRF();
-            console.log('ログアウト処理が呼ばれた', url, form, headers);
-            return await axios({ method: 'post', url: url, data: form, headers: headers });
+            console.log('ログアウト処理が呼ばれた', url, form, {...headers, ...locale});
+            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
         },
         { 
             onSuccess: (res, obj) => {
@@ -67,8 +68,8 @@ const useAuth = (url, auth) => {
         async ({url, form, headers}) => {
             setErrorMessage(null);
             await initialCSRF();
-            console.log('パスワード再設定メール送信', url, form, headers);
-            return await axios({ method: 'post', url: url, data: form, headers: headers });
+            console.log('パスワード再設定メール送信', url, form, {...headers, ...locale});
+            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
         },
         { 
             onSuccess: (res, obj) => {
@@ -86,8 +87,8 @@ const useAuth = (url, auth) => {
         async ({url, form, headers}) => {
             setErrorMessage(null);
             await initialCSRF();
-            console.log('パスワード変更処理が呼ばれた', url, form, headers);
-            return await axios({ method: 'post', url: url, data: form, headers: headers });
+            console.log('パスワード変更処理が呼ばれた', url, form, {...headers, ...locale});
+            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
         },
         { 
             onSuccess: (res, obj) => {

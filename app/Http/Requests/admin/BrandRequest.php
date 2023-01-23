@@ -27,11 +27,4 @@ class BrandRequest extends FormRequest
             'brand_name' => 'required|string|max:255',
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'brand_name' => 'ブランド名',
-        ];
-    }
 }

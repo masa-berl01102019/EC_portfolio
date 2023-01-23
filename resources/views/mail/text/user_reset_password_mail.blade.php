@@ -1,34 +1,33 @@
-{{ $user_name }} 様
-
-パスワード再設定について
-
-平素は、当社のサービスをご利用いただき、誠にありがとうございます。
-パスワード再設定のリクエストを承りましたことをお知らせいたします。
+{{ __('mail.user.common.honorific', ['name' => $user_name]) }}
 
 
-以下のリンクをクリックしてパスワードを変更出来ます。
+{{ __('mail.user.common.thanks_greeting') }}
 
-【パスワード再設定リンク】
+{{ __('mail.user.reset_password.p1') }}
+
+{{ __('mail.user.reset_password.p2') }}
+
+{{ __('mail.user.reset_password.p3') }}
 　{{'http://homestead.test/user/change_password/'.$password_reset->uuid}}
 
-【パスワード再設定の有効期限】
-　{{ $password_reset->expired_at->format('Y年m月d日 H時i分') }}
+{{ __('mail.user.reset_password.p5') }}
+　{{ $password_reset->expired_at->format('Y-m-d H:i') }}
 
-もしあなたがパスワード再設定をリクエストしていない場合は、このメールを無視して下さい。
-上記リンクをクリックして新しいパスワードを作成しない限り、パスワードは変更されません。
-上記のリンクには有効期限がございます。
-有効期限を過ぎた場合は上記のリンクにアクセス出来なくなります。
-予めご了承のほど、何卒宜しくお願い申し上げます。
+{{ __('mail.user.reset_password.p6') }}
+{{ __('mail.user.reset_password.p7') }}
+
+{{ __('mail.user.reset_password.p8') }}
+{{ __('mail.user.reset_password.p9') }}
+{{ __('mail.user.reset_password.p10') }}
+
+{{ __('mail.user.common.noreply_notice1') }}
+{{ __('mail.user.common.noreply_notice2') }}
+{{ __('mail.user.common.noreply_notice3') }}
 
 
-※このメールは自動送信です。
-返信いただいても回答できませんので、ご了承ください。
-なお、ご不明な点がございましたら、下記の運営会社までお問い合わせください。
-
-
-【お問い合わせ先】
-　運営会社　： XXXXカンパニー
-　住所　　　： 〒XXX-XXXX テスト県テスト市テスト町1-2-3 テストビルディング 1F
-　TEL 　　　： XX-XXXX-XXXX
-　E-MAIL　　： test@example.com
-　URL 　　　： http://homestead.test
+{{ __('mail.user.common.contact') }}
+　{{ __('mail.user.common.company') }} ： {{ __('mail.user.common.company_ex') }}
+　{{ __('mail.user.common.address') }} ： {{ __('mail.user.common.address_ex') }}
+　TEL ： XX-XXXX-XXXX
+　EMAIL ： test@example.com
+　URL ： http://homestead.test

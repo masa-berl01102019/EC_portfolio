@@ -3,8 +3,12 @@ import {Link} from 'react-router-dom';
 import Icon from '../../../atoms/Icon/Icon';
 import Text from '../../../atoms/Text/Text';
 import styles from './styles.module.css';
+import useI18next from '../../../context/I18nextContext';
 
 export const Footer = ({className, ...props}) => {
+
+    const i18next = useI18next();
+
     return (
         <footer className={[styles.footer, className].join('')} {...props}>
             <div className={styles.mb_24}>
@@ -21,37 +25,27 @@ export const Footer = ({className, ...props}) => {
             <ul className={styles.footer_menu_area}>
                 <li className={styles.mb_16}>
                     <Link to="/">
-                        <Text tag='span'>利用ガイド</Text>
-                    </Link>
-                </li>
-                <li className={styles.mb_16}>
-                    <Link to="/contacts">
-                        <Text tag='span'>お問い合わせ</Text>
+                        <Text tag='span'>{i18next.t('user.footer-menu.company-info')}</Text>
                     </Link>
                 </li>
                 <li className={styles.mb_16}>
                     <Link to="/">
-                        <Text tag='span'>会社概要</Text>
+                        <Text tag='span'>{i18next.t('user.footer-menu.terms-of-service')}</Text>
                     </Link>
                 </li>
                 <li className={styles.mb_16}>
                     <Link to="/">
-                        <Text tag='span'>利用規約</Text>
-                    </Link>
-                </li>
-                <li className={styles.mb_16}>
-                    <Link to="/">
-                        <Text tag='span'>プライバシーポリシー</Text>
+                        <Text tag='span'>{i18next.t('user.footer-menu.privacy-policy')}</Text>
                     </Link>
                 </li>
                 <li>
                     <Link to="/">
-                        <Text tag='span'>特定商取引法に基づく表記</Text>
+                        <Text tag='span'>{i18next.t('user.footer-menu.rule')}</Text>
                     </Link>
                 </li>
             </ul>
-            <Text size='s' className={styles.text_center}>
-                &copy; LARAVEL  DEV CO., LTD. ALL RIGHT RESERVED.
+            <Text size='s' className={styles.copy_right}>
+                &copy; DEMO DEV CO., LTD. ALL RIGHT RESERVED.
             </Text>
         </footer>
     );

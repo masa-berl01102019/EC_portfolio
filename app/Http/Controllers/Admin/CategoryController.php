@@ -27,7 +27,7 @@ class CategoryController extends Controller
             return response()->json(['categories' => $categories]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => 'カテゴリーマスタの取得に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.get_err')], 500);
         }
     }
 
@@ -41,11 +41,11 @@ class CategoryController extends Controller
                 'parent_id' => $data['parent_id'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カテゴリーマスタの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.categories.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カテゴリーマスタの登録に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.create_err')], 500);
         }
     }
 
@@ -56,11 +56,11 @@ class CategoryController extends Controller
             $data = $request->only($this->form_items);
             $category->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カテゴリーマスタの編集を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.categories.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カテゴリーマスタの編集に失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.update_err')], 500);
         }
     }
 
@@ -69,19 +69,19 @@ class CategoryController extends Controller
         DB::beginTransaction();
         try {
             if (!$category->items->isEmpty() || !$category->news->isEmpty() || !$category->blogs->isEmpty()) {
-                return response()->json(['status' => 9, 'message' => '選択カテゴリーが商品・ニュース・ブログ等で使用されおります'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.categories.delete_err2')], 400);
             }
             if (!$category->children->isEmpty() || !$category->grandChildren->isEmpty()) {
-                return response()->json(['status' => 9, 'message' => '先に選択カテゴリに紐づく子カテゴリを削除する必要があります'], 400);
+                return response()->json(['status' => 9, 'message' => trans('api.admin.categories.delete_err3')], 400);
             }
             $category->items()->sync([]);
             $category->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => 'カテゴリーマスタの削除を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => trans('api.admin.categories.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => 'カテゴリーマスタの削除を失敗しました'], 500);
+            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.delete_err')], 500);
         }
     }
 }

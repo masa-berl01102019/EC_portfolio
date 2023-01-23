@@ -41,7 +41,7 @@
 }
 .tag_area {
   overflow-y: scroll;
-  height: 260px;
+  max-height: 260px;
 }
 /* blog create / edit */
 .sidebar_box {
@@ -58,6 +58,7 @@
   text-align: center;
   line-height: 32px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .scroll_area {
   overflow-y: scroll;
@@ -196,6 +197,9 @@
 .w_100 {
   min-width: auto;
   width: 100%;
+}
+.text_nowrap {
+  white-space: nowrap;
 }
 .block {
   display: block;
