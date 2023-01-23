@@ -3,8 +3,19 @@
   text-align: center;
   margin: 32px auto 24px;
 }
+.general_error {
+  width: 90%;
+  margin: 90px auto;
+  text-align: center;
+}
 .mt_40 {
   margin-top: 40px;
+}
+.mb_32 {
+  margin-bottom: 32px;
+}
+.mb_24 {
+  margin-bottom: 24px;
 }
 .text_center {
   text-align:  center;

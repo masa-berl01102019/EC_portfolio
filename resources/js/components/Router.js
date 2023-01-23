@@ -6,13 +6,13 @@ import { useSetRecoilState } from 'recoil';
 import { authAdminState, authUserState } from './store/authState';
 import useAuth from './hooks/useAuth';
 import ErrorBoundary from './ErrorBoundary';
+import ApplicationError from './pages/error/ApplicationError';
 
 // Fixed routes
 import {Header as AdminHeader} from "./organisms/admin/Header/Header";
 import {Header as UserHeader} from "./organisms/user/Header/Header";
 import {Footer as AdminFooter} from "./organisms/admin/Footer/Footer";
 import {Footer as UserFooter} from "./organisms/user/Footer/Footer";
-import Text from './atoms/Text/Text';
 
 // Page component for user
 const TopPage = lazy(() => import( "./pages/user/TopPage" ));
@@ -113,8 +113,7 @@ function Router() {
                     <UserHeader style={{ 'position': 'fixed', 'left' : '0', 'top' : '0', 'right' : '0', 'zIndex' : '999999' }} /> : 
                     <AdminHeader style={{ 'position': 'fixed', 'left' : '0', 'top' : '0', 'right' : '0', 'zIndex' : '999999' }} />
                 }
-                {/* TODO: Create and embed Error message to fallback UI for production mode */}
-                <ErrorBoundary>
+                <ErrorBoundary fallback={<ApplicationError/>}>
                     <Suspense fallback={<CircularProgress disableShrink style={{'margin': '120px auto'}}/>}>
                         <Switch>
                             {/* USER ROUTING */}

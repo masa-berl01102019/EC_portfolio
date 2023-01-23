@@ -689,11 +689,17 @@
     "tax-including" : "Tax included"
   },
   "error" : {
-    "not-found-status" : "404 Not Found",
-    "not-found-msg" : "We couldn't find page you searched.",
-    "app" : "Application error",
-    "reason" : "There might be cause of below message.",
-    "reload" : "Please reload your browser again."
+    "404" : {
+      "status" : "404 Not Found",
+      "message" : "We couldn't find page you searched."
+    },
+    "general" : {
+      "title" : "Application error",
+      "message" : "Sorry there was a problem loading the application.",
+      "reload" : "Please reload your browser again.",
+      "contact" : "If it doesn't work at all, please contact us.",
+      "contact2" : "【CONTACT INFO】"
+    }
   },
   "common" : {
     "lang-en" : "English",

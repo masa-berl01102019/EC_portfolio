@@ -35,6 +35,7 @@ class ErrorBoundary extends React.Component {
                 return this.props.fallback;
             } else {
                 return(
+                    // For development
                     <div style={{'width': '90%', 'margin': '90px auto', 'textAlign': 'center'}}>
                         <Heading tag='h1' tag_style='h1' style={{'marginBottom': '32px'}}>
                             Application error

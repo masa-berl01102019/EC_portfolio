@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { NotifyProvider } from './context/NotifyContext';
 import { ToastifyProvider } from './context/ToastifyContext';
 import './i18n';
+import ApplicationError from './pages/error/ApplicationError';
 
 
 // React Query will consider cached data as stale. Stale queries are re-fetched automatically in the background when:
@@ -34,8 +35,7 @@ const queryClient = new QueryClient({
 
 function App() {
     return (
-        // TODO: Create and embed Error Page to fallback
-        <ErrorBoundary>
+        <ErrorBoundary fallback={<ApplicationError/>}>
             <RecoilRoot>
                 <CookiesProvider>
                     <StripeProvider>

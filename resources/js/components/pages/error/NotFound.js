@@ -10,8 +10,8 @@ function NotFound() {
 
     return (
         <main className={styles.mt_40}>
-            <Heading tag='h1' tag_style='h1' className={styles.section_title}>{t('error.not-found-status')}</Heading>
-            <Text size='l' role='title' className={styles.text_center}>{t('error.not-found-msg')}</Text>
+            <Heading tag='h1' tag_style='h1' className={styles.section_title}>{t('error.404.status')}</Heading>
+            <Text size='l' role='title' className={styles.text_center}>{t('error.404.message')}</Text>
         </main>
     );
 }
