@@ -75,8 +75,29 @@ const DataFetchApi = (initialUrl, initialMethod, initialData) => {
                 await axios({ method: state.method, url: state.url, data: state.data
                 }).then(response => {
                     console.log('取得成功したデータは',response.data);
-                    // ユーザー情報をセット
-                    setData(response.data);
+                    // CSVダウンロード時には再描画を走らせたくないので
+                    if(response.headers['content-type'].includes('text/csv')) { // responseヘッダのcontent-typeの形式がCSVか条件分岐
+                        console.log('yes');
+                        //ダウンロードするCSVファイル名を指定する
+                        const filename = '顧客情報出力.csv';
+                        //BOMを付与する（Excelでの文字化け対策）
+                        const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+                        //Blobでデータを作成する
+                        const blob = new Blob([bom, response.data], { type: "text/csv" });
+                        //ダウンロード用にリンクを作成する
+                        const link = document.createElement('a');
+                        //BlobからオブジェクトURLを作成してリンク先に指定する
+                        link.href = window.URL.createObjectURL(blob);
+                        //download属性にファイル名を指定する
+                        link.download = filename;
+                        //作成したリンクをクリックしてダウンロードを実行する
+                        link.click();
+                        //createObjectURLで作成したオブジェクトURLを開放する
+                        window.URL.revokeObjectURL(link.href);
+                    } else {
+                        // ユーザー情報をセット
+                        setData(response.data);
+                    }
                 }).catch( error => {
                     // エラーに関しては文言も含めて別のコンポーネントに後でまとめる
                     // エラーを格納する配列の初期化

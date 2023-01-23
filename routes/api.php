@@ -33,6 +33,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::get('/users/{user}/edit', 'UserController@edit')->name('users.edit');
         Route::put('/users/{user}', 'UserController@update')->name('users.update');
         Route::delete('/users/delete', 'UserController@destroy')->name('users.destroy'); // 一括削除
+        Route::post('/users/csv', 'UserController@csvExport')->name('users.csvExport'); // 一括CSV出力
 
     });
 

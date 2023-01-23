@@ -112,4 +112,54 @@ class UserController extends Controller
         return response()->json(['delete' => true]);
     }
 
+    public function csvExport(Request $request)
+    {
+        // 複数のIDが渡ってくるので全て取得する
+        $id = $request->all();
+        // 該当のIDのユーザーを取得
+        $users = User::select(['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'gender', 'birthday', 'post_code', 'prefecture', 'municipality', 'street_name', 'street_number', 'building', 'delivery_post_code', 'delivery_prefecture', 'delivery_municipality', 'delivery_street_name', 'delivery_street_number', 'delivery_building', 'tel', 'email' ])
+            ->whereIn('id', $id)->cursor();
+
+        // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
+        return response()->streamDownload(function () use ($users) {
+            // CSVのヘッダー作成
+            $csv_header = ['姓', '名', '姓（カナ）', '名（カナ）', '性別', '誕生日', '郵便番号', '都道府県', '市区町村郡', '町名', '丁目番地', '建物名', '配達先-郵便番号', '配達先-都道府県', '配達先-市区町村郡', '配達先-町名', '配達先-丁目番地', '配達先-建物名', '電話番号', 'メールアドレス'];
+            //　SplFileObjectのインスタンスを生成
+            $file = new \SplFileObject('php://output', 'w');
+            // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
+            $file->fwrite(pack('C*',0xEF,0xBB,0xBF));
+            // ヘッダーの読み込み
+            $file->fputcsv($csv_header);
+            // 一行ずつ連想配列から値を取り出して配列に格納
+            foreach ($users as $user){
+                $file->fputcsv([
+                    $user->last_name,              // 姓
+                    $user->first_name,             // 名
+                    $user->last_name_kana,         // 姓（カナ）
+                    $user->first_name_kana,        // 名（カナ）
+                    $user->gender,                 // 性別
+                    $user->birthday,               // 誕生日
+                    $user->post_code,              // 郵便番号
+                    $user->prefecture,             // 都道府県
+                    $user->municipality,           // 市区町村郡
+                    $user->street_name,            // 町名
+                    $user->street_number,          // 丁目番地
+                    $user->building,               // 建物名
+                    $user->delivery_post_code,     // 配達先　郵便番号
+                    $user->delivery_prefecture,    // 配達先　都道府県
+                    $user->delivery_municipality,  // 配達先　市区町村番地
+                    $user->delivery_street_name,   // 配達先　町名
+                    $user->delivery_street_number, // 配達先　丁目番地
+                    $user->delivery_building,      // 配達先　建物名
+                    $user->tel,                    // 電話番号
+                    $user->email,                  // メールアドレス
+                ]);
+            }
+
+        }, '顧客情報出力.csv', [
+            'Content-Type' => 'text/csv',
+        ]);
+    }
+
+
 }

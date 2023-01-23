@@ -1,4 +1,4 @@
-import React,{useEffect,useState, useRef} from 'react';
+import React,{useEffect,useState} from 'react';
 import { Link } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 import Pagination from 'react-js-pagination'; // パラメータ https://www.npmjs.com/package/react-js-pagination
@@ -6,7 +6,6 @@ import DataFetchApi from "./DataFetchApi";
 
 // TODO 性別とDM送付の出力形式を変更
 // TODO 誕生日/郵便番号/電話番号の入出力の仕方を決める
-// TODO CSV出力の実装
 // TODO 絞り込み機能の実装
 // TODO 表示順序の変更
 
@@ -30,12 +29,8 @@ function UserIndex() {
     const [{isLoading, errorMessage, data}, dispatch] = DataFetchApi(`/api/admin/users?perPage=${paginate.per_page}`, 'get', []);
     // APIから取得したデータを変数に格納
     const users = data.users? data.users.data: null;
-    // useRefで一括操作用のボタンを取得
-    const checkAllBtn = useRef(null);
 
     useEffect(() => {
-        console.log('IDは',list);
-        console.log('データは',data);
         // ユーザー削除に成功した場合にdelete:trueが帰ってくるので条件分岐
         if(data.delete && data.delete === true) {
             // ページネーションの設定を保持して再度読み込み
@@ -55,15 +50,11 @@ function UserIndex() {
         }
     },[data]);
 
-    const handlePageChange = (pageNumber) => {
-        // 各ページネーションをクリックすると数字が渡ってくるのでパラメータをつけてリクエストを飛ばす
-        dispatch({type: 'READ', url: `/api/admin/users?page=${pageNumber}&perPage=${paginate.per_page}` });
-    };
+    // 各ページネーションをクリックすると数字が渡ってくるのでパラメータをつけてリクエストを飛ばす
+    const handlePageChange = (pageNumber) => dispatch({type: 'READ', url: `/api/admin/users?page=${pageNumber}&perPage=${paginate.per_page}` });
 
-    const handleTableRow = (e) => {
-        //　行数の指定をした場合にパラメータを渡して１ページ当たりの取得件数を変更してリクエストを飛ばす
-        dispatch({type: 'READ', url: `/api/admin/users?page=${paginate.current_page}&perPage=${e.target.value}`});
-    };
+    //　行数の指定をした場合にパラメータを渡して１ページ当たりの取得件数を変更してリクエストを飛ばす
+    const handleTableRow = (e) => dispatch({type: 'READ', url: `/api/admin/users?page=${paginate.current_page}&perPage=${e.target.value}`});
 
     const handleCheckbox = (e) => {
         // APIから渡ってくるデータは数値型だが、e.target.valueで値を取得する際はstringに型変換されて渡ってくるので数値型にキャストする
@@ -81,31 +72,23 @@ function UserIndex() {
     const handleCheckAll = () => {
         // 配列の初期化
         const arr = [];
-        // useRefで取得したボタンのテキストをチェックして条件分岐
-        if(checkAllBtn.current.textContent === '全解除')  {
-            // ステートの配列を初期化
-            setList([]);
-            // ボタンの表示を変更
-            checkAllBtn.current.textContent = '全選択'
-
-        } else {
-            // APIから取得したデータはusersに格納されてるのでfor文で展開
-            for(let i = 0; i < users.length; i++ ) {
-                // 取得した各ユーザーのIDがステートに含まれていないかチェックしてtrueの時にarrに代入していく
-                if(!list.includes(users[i].id)) {
-                    arr.push(users[i].id);
-                }
+        // APIから取得したデータはusersに格納されてるのでfor文で展開
+        for(let i = 0; i < users.length; i++ ) {
+            // 取得した各ユーザーのIDがステートに含まれていないかチェックしてtrueの時にarrに代入していく
+            if(!list.includes(users[i].id)) {
+                arr.push(users[i].id);
             }
-            // arrに含まれてるIDを分割代入で展開してステートを更新することで再描画が走るのでcheckboxがチェックされた状態で再描画される
-            setList([...list, ...arr] );
-            // ボタンの表示を変更
-            checkAllBtn.current.textContent = '全解除'
         }
+        // arrに含まれてるIDを分割代入で展開してステートを更新することで再描画が走るのでcheckboxがチェックされた状態で再描画される
+        setList([...list, ...arr] );
     }
+
+    // ステートの配列を初期化
+    const handleUnCheckAll = () => setList([]);
 
     // 描画のみを担当
     return (
-        <div style={{'overflowX': 'scroll', 'width': '90%', 'margin': '0 auto'}}>
+        <div style={{'overflowX': 'hidden', 'width': '90%', 'margin': '0 auto'}}>
             <h1>User一覧</h1>
             { errorMessage &&
             <ul style={{'color': 'red', 'listStyle': 'none'}}>
@@ -120,16 +103,21 @@ function UserIndex() {
                 <CircularProgress disableShrink />
             ):(
                 <>
+                    <button onClick={() => {
+                        let answer = confirm(`選択項目${list.length}件を解除しますか？`);
+                        answer && handleUnCheckAll();
+                    }}>選択解除</button>
                     <button onClick={ () => {
                         let answer = confirm(`選択項目${list.length}件を削除しますか？`);
-                        if(answer) {
-                            dispatch({type:'DELETE', url:`/api/admin/users/delete`, data:list })
-                        }
+                        answer && dispatch({type:'DELETE', url:`/api/admin/users/delete`, data:list });
                     }}>一括削除</button>
-                    <table border="1" style={{'borderCollapse': 'collapse', 'whiteSpace': 'nowrap'}}>
+                    <button onClick={ () => {
+                            dispatch({ type:'CREATE', url:`/api/admin/users/csv`, form:list })
+                    }}>CSV出力</button>
+                    <table border="1" style={{'display': 'block', 'overflowX': 'scroll', 'borderCollapse': 'collapse', 'whiteSpace': 'nowrap'}}>
                         <thead>
                         <tr>
-                            <th><button ref={checkAllBtn} onClick={handleCheckAll}>全選択</button></th>
+                            <th><button onClick={handleCheckAll}>全選択</button></th>
                             <th>ID</th>
                             <th>編集</th>
                             <th>氏名</th>
