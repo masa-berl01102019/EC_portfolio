@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
@@ -9,9 +10,7 @@ class AuthController extends Controller
 {
     public function auth()
     {
-        // ログインしているかチェック
         if (Auth::guard('user')->check()) {
-            // ログインしていればユーザー名を返却
             return response()->json(Auth::guard('user')->user()->full_name);
         }
 
@@ -26,29 +25,21 @@ class AuthController extends Controller
         ]);
 
         if (Auth::guard('user')->attempt($credentials)) {
-            // セッションIDの再発行
             $request->session()->regenerate();
-            // 認証成功時にTRUEを返却
-            return response()->json(['success' => true, 'message' => 'ログインに成功しました'], 200);
+            return response()->json(['status' => 1, 'message' => 'ログインに成功しました'], 200);
         }
-        // 認証失敗時にFALSEを返却
-        return response()->json(['success' => false, 'message' => 'ログインに失敗しました'], 401);
+
+        return response()->json(['status' => 9, 'message' => 'ログインに失敗しました'], 401);
     }
 
     public function logout(Request $request)
     {
-        // ユーザーがログインしてるかチェック
-        if(Auth::guard('user')->check()) {
-            // ユーザーのログアウト
+        if (Auth::guard('user')->check()) {
             Auth::guard('user')->logout();
-            // セッションIDの再発行
             $request->session()->regenerate();
-            // ログアウト成功時にTRUEを返却
-            return response()->json(['success' => true, 'message' => 'ログアウトに成功しました'], 200);
+            return response()->json(['status' => 1, 'message' => 'ログアウトに成功しました'], 200);
         }
-        // 認証失敗時にFALSEを返却
-        return response()->json(['success' => false, 'message' => 'ログアウトに失敗しました'], 401);
+
+        return response()->json(['status' => 9, 'message' => 'ログアウトに失敗しました'], 401);
     }
-
-
 }

@@ -17,15 +17,16 @@ const OrderedItemCard = ({
     cart_status,
     created_at, 
     create_method, 
+    is_published,
+    delete_status,
     className = '',
     ...props
   }) => {
 
   return (
-    <div {...props} className={[styles.flex, styles.mb_16, styles.ordered_item_card].join(' ')}>
-      <Link to={to}>
+    <div {...props} className={[styles.flex, styles.mb_32, styles.ordered_item_card].join(' ')}>
+      <Link to={to} className={stock_status === 0 ? styles.sold_out : ''}>
         <Image src={src} alt="商品画像" className={[styles.ordered_item_img].join(' ')} />
-        { stock_status === 0 && <Text role='error'>在庫なし</Text>}
       </Link>
       <div className={styles.ordered_item_text_contents}>
         <Text className={[styles.card_text].join(' ')}>{brand_name}</Text>
@@ -33,8 +34,8 @@ const OrderedItemCard = ({
         <Text className={[styles.card_text].join(' ')}>{price} (税込)</Text>
         <Text className={[styles.card_text].join(' ')}>{color_name} / {size_name}</Text>
         <Text className={[styles.card_text].join(' ')}>{created_at}</Text>
-        <CartBtn size='s' onClick={ () => create_method() } disabled={cart_status !== 0} style={{'width': '172px'}}>
-          {cart_status === 0 ? 'カートに追加' : 'カート登録済'}
+        <CartBtn size='s' color='reverse' onClick={ () => create_method() } disabled={cart_status !== 0 || stock_status === 0 || is_published !== 1 || delete_status === 1} style={{'width': '172px'}}>
+          再購入する
         </CartBtn>
       </div>
     </div>

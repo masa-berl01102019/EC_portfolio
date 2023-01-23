@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-
-// TODO 403/405/413...それぞれのエラーメッセージを設定する
+import useToastify from '../context/ToastifyContext';
 
 const useSetErrorMsg = (initialValue) => {
+
+    const toastify =useToastify();
 
     // error message管理
     const [errorMessage, setErrorMessage] = useState(initialValue);
 
     // API接続時のサーバー側で発生したエラーをハンドリングする関数
     const handleApiErrorMessage = (error) => {
-        console.log('handleErrorMessage');
+        console.log('handleErrorMessage', error.response.status, error.response.data);
         // エラーを格納する配列の初期化
         let arrayErrors = {};
         // 422 バリデーションエラー時は複数エラーメッセージが返ってくるので条件分岐
@@ -23,7 +24,7 @@ const useSetErrorMsg = (initialValue) => {
             }
         } else {
             // オブジェクトに格納
-            arrayErrors.httpRequestError = `${error.response.data.errMessage}`;
+            toastify({message: error.response.data.message, type: 'error'});
         }
         // エラーメッセージをセット
         setErrorMessage({...arrayErrors});

@@ -1,51 +1,107 @@
-import React from 'react';
+import {useQuery, useMutation, useQueryClient} from 'react-query';
 import axios from "axios";
 import useSetErrorMsg from "./useSetErrorMsg";
-import { authAdminState, authUserState } from '../store/authState';
-import { useSetRecoilState } from 'recoil';
 
-const useAuth = (auth) => {
-    // グローバルステートの呼び出し
-    const setIsUserLogin = useSetRecoilState(authUserState);
-    const setIsAdminLogin = useSetRecoilState(authAdminState);
-    // 非同期通信のエラーハンドリング用 hooksの呼び出し
-    const [errorMessage, {handleApiErrorMessage}] = useSetErrorMsg(null);
+const useAuth = (url, auth) => {
+    // error ハンドリング
+    const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
+    // Appのreact-queryのプロバイダーで渡したqueryClientを取得 * keyを指定してデータを再取得 / キャッシュを取得 / キャッシュを更新 等を行える
+    const queryClient = useQueryClient();
 
-    const handleLogin = async (formData) => {
+    // CSRF初期化の関数
+    const initialCSRF = () => axios({ method: 'get', url: '/sanctum/csrf-cookie' }).then(res => console.log('CSRF初期化 成功', res.data)).catch(err => console.log('CSRF初期化 失敗', err));
 
-        // CSRFトークンの初期化してからログイン処理
-        await axios({method: 'get', url: '/sanctum/csrf-cookie'}).then(res => {
-            // ログイン処理
-            axios.post(`/api/${auth}/login`, formData).then(res => {
-                // 渡ってきたauth名を判定してログインステータス変更 * ログイン成功時にサーバーからtrueが返ってくるのでsetIsLogin()にtrueをセット
-                if(auth === 'user') {
-                    setIsUserLogin(res.data.success);
-                } else {
-                    setIsAdminLogin(res.data.success);
-                }
-            }).catch( error => {
-                handleApiErrorMessage(error);
-            });
-        }).catch( error => {
-            handleApiErrorMessage(error);
-        });
-    }
+    // Login check
+    const {data : {data}} = useQuery(
+        [auth, url],
+        async () => {
+            setErrorMessage(null);
+            await initialCSRF();
+            return await axios({ method: 'get', url: url });
+        },
+        { 
+            onSuccess: (res) => console.log('success', res.data),
+            onError: (err) =>  handleApiErrorMessage(err)
+        }
+    );
+    // Login method
+    const {mutate: handleLogin} = useMutation(
+        async ({url, form, headers}) => {
+            setErrorMessage(null);
+            await initialCSRF();
+            console.log('ログイン処理が呼ばれた', url, form, headers);
+            return await axios({ method: 'post', url: url, data: form, headers: headers });
+        },
+        { 
+            onSuccess: (res, obj) => {
+                console.log('success', res.data)
+                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                const {callback} = obj;
+                callback !== undefined && callback();
+                queryClient.invalidateQueries(auth);
+            },
+            onError: (err) => handleApiErrorMessage(err),
+        }
+    );
+    // Logout method
+    const {mutate: handleLogout} = useMutation(
+        async ({url, form, headers}) => {
+            setErrorMessage(null);
+            await initialCSRF();
+            console.log('ログアウト処理が呼ばれた', url, form, headers);
+            return await axios({ method: 'post', url: url, data: form, headers: headers });
+        },
+        { 
+            onSuccess: (res, obj) => {
+                console.log('success', res.data)
+                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                const {callback} = obj;
+                callback !== undefined && callback();
+                queryClient.invalidateQueries(auth);
+            },
+            onError: (err) => handleApiErrorMessage(err),
+        }
+    );
+    // send ResetPasswordEmail method
+    const {mutate: handleResetPasswordEmail} = useMutation(
+        async ({url, form, headers}) => {
+            setErrorMessage(null);
+            await initialCSRF();
+            console.log('パスワード再設定メール送信', url, form, headers);
+            return await axios({ method: 'post', url: url, data: form, headers: headers });
+        },
+        { 
+            onSuccess: (res, obj) => {
+                console.log('success', res.data)
+                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                const {callback} = obj;
+                callback !== undefined && callback();
+                queryClient.invalidateQueries(auth);
+            },
+            onError: (err) => handleApiErrorMessage(err),
+        }
+    );
+    // change Password method
+    const {mutate: handleChangePassword} = useMutation(
+        async ({url, form, headers}) => {
+            setErrorMessage(null);
+            await initialCSRF();
+            console.log('パスワード変更処理が呼ばれた', url, form, headers);
+            return await axios({ method: 'post', url: url, data: form, headers: headers });
+        },
+        { 
+            onSuccess: (res, obj) => {
+                console.log('success', res.data)
+                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                const {callback} = obj;
+                callback !== undefined && callback();
+                queryClient.invalidateQueries(auth);
+            },
+            onError: (err) => handleApiErrorMessage(err),
+        }
+    );
 
-    const handleLogout = async () => {
-
-        await axios.post(`/api/${auth}/logout`).then(res => {
-            // 渡ってきたauth名を判定してログインステータス変更 * ログアウト成功時にサーバーからtrueが返ってくるのでsetIsLogin()にfalseをセット
-            if(auth === 'user') {
-                setIsUserLogin(!res.data.success);
-            } else {
-                setIsAdminLogin(!res.data.success);
-            }
-        }).catch( error => {
-            handleApiErrorMessage(error);
-        });
-    }
-
-    return {errorMessage, handleLogin, handleLogout};
+    return {data, errorMessage, handleLogin, handleLogout, handleResetPasswordEmail, handleChangePassword};
 };
 
 export default useAuth;

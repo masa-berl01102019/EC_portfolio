@@ -27,7 +27,6 @@ const BookmarkSortModal = ({
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>商品名</Text>
             <Pulldown name='item_name' value={params.sort.item_name} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>
@@ -36,7 +35,6 @@ const BookmarkSortModal = ({
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>価格</Text>
             <Pulldown name='price' value={params.sort.price} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>
@@ -45,7 +43,6 @@ const BookmarkSortModal = ({
           <div>
             <Text className={styles.mb_8}>登録日</Text>
             <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>

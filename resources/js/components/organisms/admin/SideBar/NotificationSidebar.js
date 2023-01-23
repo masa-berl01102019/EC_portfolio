@@ -38,14 +38,12 @@ const NotificationSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>公開状況</Text>
             <Pulldown name='is_published' value={params.filter.is_published} onChange={handleFilter} > 
-                <option value={''}>未設定</option>
                 <option value={'0'}>非公開</option>
                 <option value={'1'}>公開中</option>
             </Pulldown>
           </div>
           <div className={styles.mb_32}>
             <DateRangeFilter params={params.filter} model={model}>
-                <option value={''}>フィールド選択</option>
                 <option value={'expired_at'}>掲載終了日</option>
                 <option value={'posted_at'}>投稿日</option>
                 <option value={'modified_at'}>更新日</option>
@@ -57,7 +55,6 @@ const NotificationSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>掲載終了日</Text>
             <Pulldown name='expired_at' value={params.sort.expired_at} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>
@@ -65,7 +62,6 @@ const NotificationSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>投稿日</Text>
             <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>
@@ -73,7 +69,6 @@ const NotificationSidebar = ({model, onClick}) => {
           <div>
             <Text className={styles.mb_8}>更新日</Text>
             <Pulldown name='modified_at' value={params.sort.modified_at} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>

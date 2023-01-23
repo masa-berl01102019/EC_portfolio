@@ -1,21 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\AuthenticationException;
 
 class AuthController extends Controller
 {
     public function auth()
     {
-        // ログインしているかチェック
         if (Auth::guard('admin')->check()) {
-            // ログインしていればユーザー名を返却
             return response()->json(Auth::guard('admin')->user()->full_name);
         }
-
         return false;
     }
 
@@ -27,29 +24,21 @@ class AuthController extends Controller
         ]);
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            // セッションIDの再発行
             $request->session()->regenerate();
-            // 認証成功時にTRUEを返却
-            return response()->json(['success' => true, 'message' => 'ログインに成功しました'], 200);
+            return response()->json(['status' => 1, 'message' => 'ログインに成功しました'], 200);
         }
-        // 認証失敗時にFALSEを返却
-        return throw new AuthenticationException('ログインに失敗しました');
+
+        return response()->json(['status' => 9, 'message' => 'ログインに失敗しました'], 401);
     }
 
     public function logout(Request $request)
     {
-        // ユーザーがログインしてるかチェック
-        if(Auth::guard('admin')->check()) {
-            // ユーザーのログアウト
+        if (Auth::guard('admin')->check()) {
             Auth::guard('admin')->logout();
-            // セッションIDの再発行
             $request->session()->regenerate();
-            // ログアウト成功時にTRUEを返却
-            return response()->json(['success' => true, 'message' => 'ログアウトに成功しました'], 200);
+            return response()->json(['status' => 1, 'message' => 'ログアウトに成功しました'], 200);
         }
-        // 認証失敗時にFALSEを返却
-        return throw new AuthenticationException('ログアウトに失敗しました');
+
+        return response()->json(['status' => 9, 'message' => 'ログアウトに失敗しました'], 401);
     }
-
-
 }

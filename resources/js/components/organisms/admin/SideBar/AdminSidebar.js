@@ -37,7 +37,6 @@ const AdminSidebar = ({model, onClick}) => {
           </div>
           <div className={styles.mb_32}>
               <DateRangeFilter params={params.filter} model={model}>
-                  <option value={''}>フィールド選択</option>
                   <option value={'created_at'}>作成日時</option>
                   <option value={'updated_at'}>更新日時</option>
               </DateRangeFilter>
@@ -48,7 +47,6 @@ const AdminSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>氏名(カナ)</Text>
               <Pulldown name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -56,7 +54,6 @@ const AdminSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>作成日時</Text>
               <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -64,7 +61,6 @@ const AdminSidebar = ({model, onClick}) => {
           <div>
               <Text className={styles.mb_8}>更新日時</Text>
               <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>

@@ -4,34 +4,32 @@ import useForm from '../../../hooks/useForm';
 import { authAdminState } from '../../../store/authState';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
-import useAuth2 from "../../../hooks/useAuth2";
+import useAuth from "../../../hooks/useAuth";
 import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
-import FormInputText from '../../../molecules/FormInputText/FormInputText';
+import FormInputText from '../../../molecules/Form/FormInputText';
 import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
+import {Link} from "react-router-dom";
 
 function AdminLogin() {
     // グローバルステートの呼び出し
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     // フォーム項目の初期値をuseStateで管理
     const [formData, {handleFormData}] = useForm({
-        'email': 'msakamoto@example.net', 
+        'email': 'pnishinosono@example.org', 
         'password': 'abc12345', 
     });
     // Auth hooksの呼び出し
-    const {errorMessage, handleLogin} = useAuth2('/api/admin/auth', 'admin');
+    const {errorMessage, handleLogin} = useAuth('/api/admin/auth', 'admin');
     // menuの状態管理
     const openAdminMenu = useRecoilValue(menuAdminState);
 
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-
-                    { errorMessage && errorMessage.httpRequestError && <Text role='error'>{errorMessage.httpRequestError}</Text> }
-
-                    <div className={styles.form_area}>
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
+                    <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
                             管理者ログイン
                         </Heading>
@@ -43,29 +41,32 @@ function AdminLogin() {
                                 callback: () => setIsAdminLogin(true)
                             });
                         }}>
-                            <div className={styles.mb_16}>
-                                <FormInputText
-                                    name={'email'}
-                                    type='email'
-                                    onBlur={handleFormData}
-                                    value={formData.email}
-                                    label={'メールアドレス'}
-                                    error={errorMessage}
-                                    placeholder='080-1234-5678'
-                                />
-                            </div>
-                            <div className={styles.mb_24}>
-                                <FormInputText
-                                    name={'password'}
-                                    type='password'
-                                    onBlur={handleFormData}
-                                    value={formData.password}
-                                    label={'パスワード'}
-                                    error={errorMessage}
-                                    placeholder='半角英数字8文字以上'
-                                />
-                            </div>
+                            <FormInputText
+                                name={'email'}
+                                type='email'
+                                onBlur={handleFormData}
+                                value={formData.email}
+                                label={'メールアドレス'}
+                                error={errorMessage}
+                                placeholder='080-1234-5678'
+                                className={styles.mb_16}
+                            />
+                            <FormInputText
+                                name={'password'}
+                                type='password'
+                                onBlur={handleFormData}
+                                value={formData.password}
+                                label={'パスワード'}
+                                error={errorMessage}
+                                placeholder='半角英数字8文字以上'
+                                className={styles.mb_24}
+                            />
                             <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>ログイン</Button>
+                            <Link to={'/admin/reset_password'}>
+                                <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
+                                    パスワードをお忘れの方
+                                </Text>
+                            </Link>
                         </form>
                     </div>
                 </div>

@@ -9,6 +9,9 @@
 .info_list {
   aspect-ratio: 1/1;
 }
+.blog_news {
+  aspect-ratio: 3/2;
+}
 
 /* 呼び出し元に任せる */
 /* @media screen and (min-width: 768px) {

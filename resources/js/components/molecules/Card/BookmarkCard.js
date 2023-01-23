@@ -23,10 +23,9 @@ const BookmarkCard = ({
   }) => {
 
   return (
-    <div {...props} className={[styles.flex, styles.mb_16, styles.bookmark_card].join(' ')}>
-        <Link to={to}>
+    <div {...props} className={[styles.flex, styles.mb_32, styles.bookmark_card].join(' ')}>
+        <Link to={to} className={stock_status === 0 ? styles.sold_out : ''}>
           <Image src={src} alt="商品画像" className={[styles.bookmark_img].join(' ')} />
-          { stock_status === 0 && <Text role='error'>在庫なし</Text>}
         </Link>
         <div className={styles.bookmark_text_contents}>
           <Text className={[styles.mb_8, styles.card_text].join(' ')}>{brand_name}</Text>
@@ -34,7 +33,7 @@ const BookmarkCard = ({
           <Text className={[styles.mb_8, styles.card_text].join(' ')}>{price} (税込)</Text>
           <Text className={[styles.mb_4, styles.card_text].join(' ')}>{color_name} / {size_name}</Text>
           <div className={styles.flex}>
-            <CartBtn size='s' onClick={ () => create_method() } disabled={cart_status !== 0} className={styles.mr_4} style={{'width': '114px'}}>
+            <CartBtn size='s' onClick={ () => create_method() } disabled={cart_status !== 0 || stock_status === 0} className={styles.mr_4} style={{'width': '114px'}}>
                 {cart_status === 0 ? 'カートに追加' : 'カート登録済'}
             </CartBtn>
             <DeleteBtn size='s' onClick={ () => delete_method() } style={{'width': '71px'}}>削除</DeleteBtn>

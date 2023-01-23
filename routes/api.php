@@ -12,16 +12,20 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// TODO 実行ログ用のmiddleware作成
+// TODO: 実行ログ用のmiddleware作成
 
-Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
+Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
     Route::post('/login', 'AuthController@login')->name('login');
     Route::post('/logout', 'AuthController@logout')->name('logout');
     Route::get('/auth', 'AuthController@auth')->name('auth');
 
+    // パスワード変更
+    Route::post('/resetPasswords/send', 'ResetPasswordController@send')->name('resetPasswords.send');
+    Route::post('/resetPasswords/change', 'ResetPasswordController@change')->name('resetPasswords.change');
+
     // ログイン認証後
-    Route::middleware('auth:sanctum')->group(function() {
+    Route::middleware('auth:sanctum')->group(function () {
 
         // 会員情報のCRUD
         Route::get('/users', 'UserController@index')->name('users.index');
@@ -61,9 +65,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::get('/items/{item}/edit', 'ItemController@edit')->name('items.edit');
         Route::post('/items/{item}', 'ItemController@update')->name('items.update')->where('item', '[0-9]+');; // ファイルはPOSTでしか受け取れない
         Route::delete('/items', 'ItemController@destroy')->name('items.destroy'); // 一括削除
-        Route::delete('/items/measurements/{measurement}', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
-        Route::delete('/items/skus/{sku}', 'ItemController@destroySku')->name('items.destroySku');
-        Route::delete('/items/images/{image}', 'ItemController@destroyImage')->name('items.destroyImage');
+        Route::post('/items/measurements/{measurement}', 'ItemController@destroyMeasurement')->name('items.destroyMeasurement');
+        Route::post('/items/skus/{sku}', 'ItemController@destroySku')->name('items.destroySku');
+        Route::post('/items/images/{image}', 'ItemController@destroyImage')->name('items.destroyImage');
         Route::post('/items/csv', 'ItemController@csvExport')->name('items.csvExport'); // 一括CSV出力
 
         // ブログ情報のCRUD
@@ -94,41 +98,44 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         // カラーマスタのCRUD
         Route::get('/colors', 'ColorController@index')->name('colors.index');
         Route::post('/colors', 'ColorController@store')->name('colors.store');
-        Route::put('/colors/{color}', 'ColorController@update')->name('colors.update'); 
+        Route::put('/colors/{color}', 'ColorController@update')->name('colors.update');
         Route::delete('/colors/{color}', 'ColorController@destroy')->name('colors.destroy');
 
         // ブランドマスタのCRUD
         Route::get('/brands', 'BrandController@index')->name('brands.index');
         Route::post('/brands', 'BrandController@store')->name('brands.store');
-        Route::put('/brands/{brand}', 'BrandController@update')->name('brands.update'); 
+        Route::put('/brands/{brand}', 'BrandController@update')->name('brands.update');
         Route::delete('/brands/{brand}', 'BrandController@destroy')->name('brands.destroy');
 
         // タグマスタのCRUD
         Route::get('/tags', 'TagController@index')->name('tags.index');
         Route::post('/tags', 'TagController@store')->name('tags.store');
-        Route::put('/tags/{tag}', 'TagController@update')->name('tags.update'); 
+        Route::put('/tags/{tag}', 'TagController@update')->name('tags.update');
         Route::delete('/tags/{tag}', 'TagController@destroy')->name('tags.destroy');
 
         // カテゴリーマスタのCRUD
         Route::get('/categories', 'CategoryController@index')->name('categories.index');
         Route::post('/categories', 'CategoryController@store')->name('categories.store');
-        Route::put('/categories/{category}', 'CategoryController@update')->name('categories.update'); 
+        Route::put('/categories/{category}', 'CategoryController@update')->name('categories.update');
         Route::delete('/categories/{category}', 'CategoryController@destroy')->name('categories.destroy');
 
         // サイズマスタのCRUD
         Route::get('/sizes', 'SizeController@index')->name('sizes.index');
         Route::post('/sizes', 'SizeController@store')->name('sizes.store');
-        Route::put('/sizes/{size}', 'SizeController@update')->name('sizes.update'); 
+        Route::put('/sizes/{size}', 'SizeController@update')->name('sizes.update');
         Route::delete('/sizes/{size}', 'SizeController@destroy')->name('sizes.destroy');
     });
+});
 
-}); 
-
-Route::namespace('User')->prefix('user')->name('user.')->group(function() {
+Route::namespace('User')->prefix('user')->name('user.')->group(function () {
 
     Route::post('/login', 'AuthController@login')->name('login');
     Route::post('/logout', 'AuthController@logout')->name('logout');
     Route::get('/auth', 'AuthController@auth')->name('auth');
+
+    // パスワード変更
+    Route::post('/resetPasswords/send', 'ResetPasswordController@send')->name('resetPasswords.send');
+    Route::post('/resetPasswords/change', 'ResetPasswordController@change')->name('resetPasswords.change');
 
     // TOP画面
     Route::get('/home', 'HomeController@index')->name('home.index');
@@ -136,6 +143,7 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function() {
     Route::get('/items', 'ItemController@index')->name('items.index');
     Route::get('/items/rank', 'ItemController@rank')->name('items.rank');
     Route::get('/items/recommend', 'ItemController@recommend')->name('items.recommend');
+    Route::get('/items/new', 'ItemController@new')->name('items.new');
     Route::get('/items/option', 'ItemController@option')->name('items.option');
     Route::get('/items/{item}', 'ItemController@show')->name('items.show')->where('item', '[0-9]+');;
     // ブログ一覧・詳細
@@ -153,7 +161,7 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function() {
 
 
     // ログイン認証後
-    Route::middleware('auth:sanctum')->group(function() {
+    Route::middleware('auth:sanctum')->group(function () {
         // カート一覧
         Route::get('/carts', 'CartController@index')->name('carts.index');
         Route::post('/carts', 'CartController@store')->name('carts.store');
@@ -171,5 +179,4 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function() {
         Route::put('/users/{user}', 'UserController@update')->name('users.update');
         Route::delete('/users/{user}', 'UserController@destroy')->name('users.destroy');
     });
-
 });

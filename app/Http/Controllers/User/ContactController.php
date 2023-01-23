@@ -15,18 +15,13 @@ use App\Http\Requests\User\ContactRequest;
 
 class ContactController extends Controller
 {
-    // 該当のカラム以外を扱わないようにホワイトリスト作成
-    private $form_items = [ 'last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'title', 'body' ];
-
+    private $form_items = ['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'tel', 'email', 'title', 'body'];
 
     public function store(ContactRequest $request)
     {
-        // 項目制限
-        $data = $request->only($this->form_items);
-
         DB::beginTransaction();
         try {
-            // 編集項目をDBに保存
+            $data = $request->only($this->form_items);
             $contact = Contact::create([
                 'user_id' => Auth::guard('user')->check() ? Auth::guard('user')->user()->id : null,
                 'last_name' => $data['last_name'],
@@ -38,20 +33,14 @@ class ContactController extends Controller
                 'title' => $data['title'],
                 'body' => $data['body'],
             ]);
-
-            // メール配信
             Mail::to($contact->email)->send(new UserContactMail($contact));
             Mail::to(config('define.admin_email.to.support'))->send(new AdminContactMail($contact));
-
             DB::commit();
-            return response()->json(['create' => true, 'message' => 'お問い合わせの登録を完了しました'], 200);
+            return response()->json(['status' => 1, 'message' => 'お問い合わせの登録を完了しました'], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['create' => false, 'message' => 'お問い合わせの登録に失敗しました'], 200);
+            return response()->json(['status' => 9, 'message' => 'お問い合わせの登録に失敗しました'], 500);
         }
-
-
     }
-
 }

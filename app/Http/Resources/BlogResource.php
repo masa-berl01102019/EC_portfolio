@@ -22,7 +22,7 @@ class BlogResource extends JsonResource
     public function toArray($request)
     {
         // 受信リクエストが名前付きルートに一致するかを判定
-        if($request->routeIs('user.blogs.index') || $request->routeIs('user.home.index') || $request->routeIs('user.items.show')) {
+        if ($request->routeIs('user.blogs.index') || $request->routeIs('user.home.index') || $request->routeIs('user.items.show')) {
             return [
                 'id' => $this->id,
                 'title' => $this->title,
@@ -37,7 +37,8 @@ class BlogResource extends JsonResource
                 'body' => $this->body,
                 'thumbnail' => $this->thumbnail,
                 'posted_at' => $this->posted_at !== null ? $this->posted_at->format('Y/m/d H:i') : null,
-                'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null
+                'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null,
+                'items' => ItemResource::collection($this->publishedItems)
             ];
         } else if ($request->routeIs('admin.blogs.edit')) {
             return [
@@ -66,6 +67,5 @@ class BlogResource extends JsonResource
                 'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null
             ];
         }
-    } 
-    
+    }
 }

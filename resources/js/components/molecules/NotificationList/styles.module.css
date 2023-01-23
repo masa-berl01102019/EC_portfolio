@@ -1,6 +1,7 @@
 .container {
   border: 1px solid #D4D4D4;
-  margin-bottom: 24px
+  margin-bottom: 24px;
+  cursor: pointer;
 }
 .title_area {
   background: #D4D4D4;

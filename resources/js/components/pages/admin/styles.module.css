@@ -59,10 +59,6 @@
   line-height: 32px;
   box-sizing: border-box;
 }
-.insert_img {
-  width: 100px;
-  height: 100px;
-}
 .scroll_area {
   overflow-y: scroll;
   height: 126px;
@@ -89,6 +85,10 @@
   border-bottom: 1px solid #666;
 }
 
+/* Login */
+.login_max_content {
+  max-width: 520px;
+}
 
 
 /* contact  edit */
@@ -183,6 +183,9 @@
 .scroll_x {
   overflow-x: scroll;
 }
+.text_underline {
+  text-decoration: underline;
+}
 .text_center {
   text-align:  center;
 }
@@ -205,6 +208,14 @@
 }
 .hidden {
   display: none;
+}
+
+/* USER EDIT / CREATE */
+.delivery_address_check {
+  width: 206px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 /* flex プロパティ */

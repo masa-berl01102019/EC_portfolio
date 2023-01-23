@@ -15,6 +15,19 @@ const Pulldown = ({children, name, value, onChange, className = '', defaultOptio
       </div>
       { open == true &&
         <ul className={styles.ul}>
+          <li>
+            <label className={styles.label}>
+              <input 
+                type='radio' 
+                name={name} 
+                value='' 
+                onClick={e => {onChange(e); setOpen(false)}} 
+                className={styles.hidden}
+                defaultChecked={value === ''}
+              />
+              未設定
+            </label>
+          </li>
           { Array.isArray(children) ? (
               children.map((child, index) => (
                 <li key={index} className={styles.list}>

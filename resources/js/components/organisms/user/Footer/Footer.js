@@ -7,17 +7,16 @@ import styles from './styles.module.css';
 export const Footer = ({className, ...props}) => {
     return (
         <footer className={[styles.footer, className].join('')} {...props}>
-            {/* TODO: SNSリンクはる */}
             <div className={styles.mb_24}>
-                <Link to="/" style={{ 'width': '34px', 'height': '34px', 'display': 'inline-block', 'marginRight': '16px'}}>
+                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" style={{ 'width': '34px', 'height': '34px', 'display': 'inline-block', 'marginRight': '16px'}}>
                     <Icon src={'/img/facebook_icon.svg'} className={styles.social_icon} />
-                </Link>
-                <Link to="/" style={{ 'width': '34px', 'height': '34px', 'display': 'inline-block', 'marginRight': '16px'}}>
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={{ 'width': '34px', 'height': '34px', 'display': 'inline-block', 'marginRight': '16px'}}>
                     <Icon src={'/img/twitter_icon.svg'} className={styles.social_icon} />
-                </Link>
-                <Link to="/" style={{ 'width': '34px', 'height': '34px', 'display': 'inline-block'}}>
+                </a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" style={{ 'width': '34px', 'height': '34px', 'display': 'inline-block'}}>
                     <Icon src={'/img/instagram_icon.svg'} className={styles.social_icon} />
-                </Link>
+                </a>
             </div>
             <ul className={styles.footer_menu_area}>
                 <li className={styles.mb_16}>

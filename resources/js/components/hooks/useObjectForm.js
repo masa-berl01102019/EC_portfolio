@@ -1,4 +1,3 @@
-import React from 'react';
 import useHelper from "./useHelper";
 
  // オブジェクトを送信するラッパー関数
@@ -42,9 +41,11 @@ const useObjectForm = (formData, setFormData, dispatch) => {
         form: params, 
         url: sendUrl, 
         headers: {'content-type': 'multipart/form-data'}, 
-        callback: () => callback 
+        callback: callback 
     });
   }
+
+ // 以下のメソッドは管理画面の商品の新規作成・編集でのみしか使われてない
 
   // オブジェクトFormの追加
   const handleInsertObjectForm = (table_name, exceptInitilizeColumns = []) => {
@@ -69,28 +70,33 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     }
   }
  
-  // オブジェクトFormの削除
+  // オブジェクトFormの削除 ＊アイテム以外でも使う場合はURLを引数で受け取るような形で修正必要
   const handleDeleteObjectForm = (table_name, index, id) => {
     console.log('handleDeleteObjectForm');
     if(formData[table_name].length > 1) {
-        let answer = confirm(`選択項目を削除しますか？`);
-        if(answer) {
-            // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
-            if(id) {
-                // 削除のリクエスト送信
-                dispatch({type:'DELETE', url:`/api/admin/items/${table_name}/${id}`});
-            } else {
-                // 配列からindex番目のオブジェクトを1個削除
-                formData[table_name].splice(index,1);
-                // ステートを更新して再描画走らせる
-                setFormData({
-                    ...formData
-                });
-            }
+        // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
+        if(id) {
+            // 削除のリクエスト送信
+            dispatch({
+                url: `/api/admin/items/${table_name}/${id}`, 
+                callback: () => {
+                    // 配列からindex番目のオブジェクトを1個削除
+                    formData[table_name].splice(index,1);
+                    // ステートを更新して再描画走らせる
+                    setFormData({
+                        ...formData
+                    });
+                } 
+            });
+        } else {
+            // 配列からindex番目のオブジェクトを1個削除
+            formData[table_name].splice(index,1);
+            // ステートを更新して再描画走らせる
+            setFormData({
+                ...formData
+            });
         }
-    } else {
-        alert('全ての行は削除出来ません。');
-    }
+    } 
   }
 
   // オブジェクトFormのカラムの値の更新
@@ -104,7 +110,6 @@ const useObjectForm = (formData, setFormData, dispatch) => {
       recode[name] = imageUrl; // 配列のindex番目のオブジェクトの特定カラムを更新 *画像プレビューのセット用
       recode['file'] = file; // fileというカラム名を追加してfileオブジェクトを格納
     } else {
-      // TODO 値が勝手にキャストされる点をどうするか検討
       // e.target.valueで渡って来るとき数値も文字列でキャストされた状態で渡って来る
       // 現時点では更新する値は数値のみなので数値にキャストしてる
       recode[name] = e.target.value !== '' ? Number(e.target.value): ''; // 配列のindex番目のオブジェクトの特定カラムを更新

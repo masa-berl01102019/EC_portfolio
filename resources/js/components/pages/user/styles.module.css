@@ -30,11 +30,8 @@
 }
 
 /* TOP */
-.card_area {
-  display: flex;
-  flex-flow: wrap;
-  justify-content: space-between;
-  margin-bottom: 40px;
+.view_all_btn {
+  margin: 0 auto 40px;
 }
 
 .item_card {
@@ -65,23 +62,27 @@
   display: block;
   color: #666
 }
+/* USER EDIT / CREATE */
+.delivery_address_check {
+  width: 206px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
 
-/* USER delete */
 .paragraph {
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.8;
 }
 /* filter sort btn */
 .filter_sort_btn {
   width: calc(145 / 300 * 100%);
 }
-/* item index / rank / recommend */
+/* TOP / item index / rank / recommend / new */
 .search_item_area {
   display: flex;
   flex-flow: wrap;
-  /* justify-content: space-evenly; */
-  margin-bottom: 24px;
 }
 /* auth */
 .login_area {
@@ -123,7 +124,9 @@
   margin-bottom: 24px;
 }
 
-
+.hide_toolbar { 
+  display: none !important; 
+}
 
 /* other */
 .time_zome_field {
@@ -353,7 +356,10 @@
     justify-content: space-evenly;
     margin-top: 60px;
   }
-  .cart_btn_area > a, button{
+  .cart_btn_area > a{
+    max-width: 300px;
+  }
+  .cart_btn_area > button{
     max-width: 300px;
   }
   .show_card_area .item_card{

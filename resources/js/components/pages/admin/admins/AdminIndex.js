@@ -1,6 +1,6 @@
 import React, {Suspense, useEffect, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import Pagination from '../../../molecules/Pagination/Pagination';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -22,7 +22,7 @@ function AdminIndex() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage, deleteData, getCSVData} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage, deleteData, getCSVData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const admins = data.data? data.data: null;
     // 検索タブのステータス
@@ -46,31 +46,25 @@ function AdminIndex() {
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div className={ openAdminMenu ? [styles.container_open_menu, styles.flex].join(' ') : [styles.container, styles.flex].join(' ') }>
-                        { open && <AdminSidebar model={model} onClick={() => setOpen(false)} /> }
-                        <div className={open ? [styles.open_sidebar, styles.flex_1].join(' ') : styles.flex_1}>
+                <div className={ openAdminMenu ? [styles.container_open_menu, styles.flex].join(' ') : [styles.container, styles.flex].join(' ') }>
+                    { open && <AdminSidebar model={model} onClick={() => setOpen(false)} /> }
+                    <div className={open ? [styles.open_sidebar, styles.flex_1].join(' ') : styles.flex_1}>
 
-                            <div className={styles.index_title}>
-                                <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                    管理者一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
-                                </Heading>
-                                <div className={[styles.flex, styles.btn_area].join(' ')}>
-                                    <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
-                                    <CreateLink to="/admin/admins/create">新規登録</CreateLink>
-                                </div>
+                        <div className={styles.index_title}>
+                            <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
+                                管理者一覧 { data.meta && ` ( ${data.meta.total} 件 )`}
+                            </Heading>
+                            <div className={[styles.flex, styles.btn_area].join(' ')}>
+                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>詳細検索</FilterSortBtn>
+                                <CreateLink to="/admin/admins/create">新規登録</CreateLink>
                             </div>
-
-                            <AdminTable admins={admins} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />
-                            
-                            <Pagination meta={data.meta} model={model} />
                         </div>
+
+                        <AdminTable admins={admins} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />
+                        
+                        <Pagination meta={data.meta} model={model} />
                     </div>
-                )
-            }
+                </div>
             </Suspense>
         </main>
     );

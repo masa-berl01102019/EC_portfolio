@@ -1,9 +1,11 @@
 import React from 'react';
+import Heading from './atoms/Heading/Heading';
+import Text from './atoms/Text/Text';
 
 // Reactのデフォルトではエラー発生時は全てのコンポーネントが強制的にアンマウントされるため画面が真っ白になる
 // Error Boundaryはコンポーネントでエラーが発生した場合にフォールバック(代替表示)を提供する仕組み
 // Error Boundaryはクラスコンポーネントとして実装される ＊現時点ではHooks未対応
-//
+
 class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +27,7 @@ class ErrorBoundary extends React.Component {
 
     componentDidCatch(error, errorInfo) {
         // エラーメッセージとエラーの詳細情報をセット
-        this.setState({error, errorInfo})
+        this.setState({error, errorInfo});
     }
 
     render() {
@@ -36,16 +38,15 @@ class ErrorBoundary extends React.Component {
                 return this.props.fallback;
             } else {
                 return(
-                    // 本番用のエラーメッセージ
-                    // <div style={{'color': 'red', 'textAlign': 'center'}}>アプリケーションエラーにより表示できません。時間を置いて、再度更新してください。</div>
-    
-                    // 開発環境用のメッセージ
-                    <div style={{'width': '300px', 'margin': '0 auto'}}>
-                        <h3>JavaScriptの致命的エラー</h3>
-                        <p style={{'margin': '0'}}>{this.state.error?.message}</p>
-                        <pre style={{'fontFamily': 'monospace'}}>
-                        {this.state.errorInfo?.componentStack}
-                        </pre>
+                    <div style={{'width': '90%', 'margin': '90px auto', 'textAlign': 'center'}}>
+                        <Heading tag='h1' tag_style='h1' style={{'marginBottom': '32px'}}>
+                            アプリケーションエラー
+                        </Heading>
+                        <Text size='l'style={{'marginBottom': '24px'}}>以下の原因が挙げられます</Text>
+                        <Text style={{'marginBottom': '24px'}}>
+                            ・{(this.state.error?.response?.data?.message) ? this.state.error?.response?.data?.message : this.state.error?.message}
+                        </Text>
+                        <Text size='l'>ブラウザの再読み込みを行ってください</Text>
                     </div>
                 );
             }

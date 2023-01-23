@@ -1,11 +1,10 @@
 import React, {Suspense, useEffect, useState} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import useCreateParams from "../../../hooks/useCreateParams";
 import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import { useRecoilState } from 'recoil';
 import { paramState } from '../../../store/paramState';
-import Text from '../../../atoms/Text/Text';
 import Heading from '../../../atoms/Heading/Heading';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
 import BookmarkCard from '../../../molecules/Card/BookmarkCard';
@@ -25,7 +24,7 @@ function BookmarkIndexPage() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage, createData, deleteData} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage, createData, deleteData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const bookmarks = data.data? data.data: null;
     const sizes = data.sizes? data.sizes: null;
@@ -51,64 +50,58 @@ function BookmarkIndexPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <div>
-                        {   popup == '1' && 
-                            <BookmarkFilterModal
-                                brands={brands}
-                                sizes={sizes}
-                                colors={colors}
-                                onClick={() => setPopup('')}
-                                model={model}
-                            />
-                        }
-                        {   popup == '2' && 
-                            <BookmarkSortModal
-                                onClick={() => setPopup('')}
-                                model={model}
-                            />
-                        }
-                        <div className={styles.main_contents_area}>
+                <div>
+                    {   popup == '1' && 
+                        <BookmarkFilterModal
+                            brands={brands}
+                            sizes={sizes}
+                            colors={colors}
+                            onClick={() => setPopup('')}
+                            model={model}
+                        />
+                    }
+                    {   popup == '2' && 
+                        <BookmarkSortModal
+                            onClick={() => setPopup('')}
+                            model={model}
+                        />
+                    }
+                    <div className={styles.main_contents_area}>
 
-                            <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>お気に入り一覧</Heading>
+                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>お気に入り一覧</Heading>
 
-                            <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                                <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
-                                <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
-                            </div>
-
-                            {   bookmarks &&
-                                <div className={[styles.mb_24 , styles.flex , styles.flex_wrap].join(' ')}> 
-                                    {                        
-                                        bookmarks.map((bookmark) =>
-                                            <BookmarkCard
-                                                key={bookmark.id}
-                                                src={bookmark.top_image}
-                                                to={`/items/${bookmark.item_id}`}
-                                                brand_name={bookmark.brand_name}
-                                                item_name={bookmark.item_name}
-                                                price={bookmark.included_tax_price_text}
-                                                color_name={bookmark.color_name}
-                                                size_name={bookmark.size_name}
-                                                stock_status={bookmark.stock_status}
-                                                cart_status={bookmark.cart_status}
-                                                create_method={() => createData({ form: {sku_id: `${bookmark.sku_id}`}, url:`/api/user/carts` })}
-                                                delete_method={() => deleteData({ url:`/api/user/bookmarks/${bookmark.id}` })}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            }
-                            
-                            <PaginationList meta={data.meta} onChange={handleCurrentPage} />
-
+                        <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
+                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>絞り込み</FilterBtn>
+                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>並び替え</SortBtn>
                         </div>
+
+                        {   bookmarks &&
+                            <div className={[styles.mb_24 , styles.flex , styles.flex_wrap].join(' ')}> 
+                                {                        
+                                    bookmarks.map((bookmark) =>
+                                        <BookmarkCard
+                                            key={bookmark.id}
+                                            src={bookmark.top_image}
+                                            to={`/items/${bookmark.item_id}`}
+                                            brand_name={bookmark.brand_name}
+                                            item_name={bookmark.item_name}
+                                            price={bookmark.included_tax_price_text}
+                                            color_name={bookmark.color_name}
+                                            size_name={bookmark.size_name}
+                                            stock_status={bookmark.stock_status}
+                                            cart_status={bookmark.cart_status}
+                                            create_method={() => createData({ form: {sku_id: `${bookmark.sku_id}`}, url:`/api/user/carts` })}
+                                            delete_method={() => deleteData({ url:`/api/user/bookmarks/${bookmark.id}` })}
+                                        />
+                                    )
+                                }
+                            </div>
+                        }
+                        
+                        <PaginationList meta={data.meta} onChange={handleCurrentPage} />
+
                     </div>
-                )
-            }
+                </div>
             </Suspense>
         </main>
     );

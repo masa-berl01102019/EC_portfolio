@@ -75,14 +75,12 @@ const UserSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>DM登録状況</Text>
               <Pulldown name='is_received' value={params.filter.is_received} onChange={handleFilter}>
-                  <option value={''}>未設定</option>
                   <option value={'0'}>未登録</option>
                   <option value={'1'}>登録済</option>
               </Pulldown>
           </div>
           <div className={styles.mb_32}>
               <DateRangeFilter params={params.filter} model={model}>
-                  <option value={''}>フィールド選択</option>
                   <option value={'birthday'}>生年月日</option>
                   <option value={'created_at'}>作成日</option>
                   <option value={'updated_at'}>更新日</option>
@@ -94,7 +92,6 @@ const UserSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>氏名(カナ)</Text>
               <Pulldown name='last_name_kana' value={params.sort.last_name_kana} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -102,7 +99,6 @@ const UserSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>生年月日</Text>
               <Pulldown name='birthday' value={params.sort.birthday} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -110,7 +106,6 @@ const UserSidebar = ({model, onClick}) => {
           <div className={styles.mb_16}>
               <Text className={styles.mb_8}>作成日時</Text>
               <Pulldown name='created_at' value={params.sort.created_at} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>
@@ -118,7 +113,6 @@ const UserSidebar = ({model, onClick}) => {
           <div>
               <Text className={styles.mb_8}>更新日時</Text>
               <Pulldown name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
-                  <option value={''}>未設定</option>
                   <option value={'desc'}>降順</option>
                   <option value={'asc'}>昇順</option>
               </Pulldown>

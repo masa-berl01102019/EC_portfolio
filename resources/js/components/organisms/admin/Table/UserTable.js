@@ -8,6 +8,7 @@ import EditLink from '../../../molecules/IconLink/EditLink';
 import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
+import useNotify from '../../../context/NotifyContext';
 
 
 const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) => {
@@ -17,13 +18,21 @@ const UserTable = memo(({users, className = '', deleteMethod, csvOutputMethod}) 
 
   const [checkItemAll, setCheckItemAll] = useState(false);
 
+  // notifyContextの呼び出し
+  const confirm = useNotify();
+
+  const handleConfirmDelete = async () => {
+      const result = await confirm({
+          body : `選択項目${checklist.length}件を削除しますか？`,
+          confirmBtnLabel : '削除'
+      });
+      result && deleteMethod({url:`/api/admin/users`, form:checklist, callback: () => setChecklist([])});
+  }
+
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={() => {
-            let answer = confirm(`選択項目${checklist.length}件を削除しますか？`);
-            answer && deleteMethod({url:`/api/admin/users`, form:checklist, callback: () => setChecklist([])});
-        }} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/users/csv`, 

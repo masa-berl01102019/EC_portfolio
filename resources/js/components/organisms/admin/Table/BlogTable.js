@@ -9,6 +9,7 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import Image from '../../../atoms/Image/Image';
+import useNotify from '../../../context/NotifyContext';
 
 
 const BlogTable = memo(({blogs, className = '', deleteMethod, csvOutputMethod}) => {
@@ -18,13 +19,21 @@ const BlogTable = memo(({blogs, className = '', deleteMethod, csvOutputMethod}) 
 
   const [checkItemAll, setCheckItemAll] = useState(false);
 
+  // notifyContextの呼び出し
+  const confirm = useNotify();
+
+  const handleConfirmDelete = async () => {
+      const result = await confirm({
+          body : `選択項目${checklist.length}件を削除しますか？`,
+          confirmBtnLabel : '削除'
+      });
+      result && deleteMethod({url:`/api/admin/blogs`, form:checklist, callback: () => setChecklist([])});
+  }
+
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={() => {
-            let answer = confirm(`選択項目${checklist.length}件を削除しますか？`);
-            answer && deleteMethod({url:`/api/admin/blogs`, form:checklist, callback: () => setChecklist([])});
-        }} className={styles.mr}>一括削除</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>一括削除</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/blogs/csv`, 
@@ -80,7 +89,7 @@ const BlogTable = memo(({blogs, className = '', deleteMethod, csvOutputMethod}) 
                 <Td>{blog.id}</Td>
                 <Td><EditLink to={`/admin/blogs/${blog.id}/edit`}>編集</EditLink></Td>
                 <Td>{blog.is_published_text}</Td>
-                <Td><Image src={blog.thumbnail} type='info_list' width='40px' /></Td>
+                <Td><Image src={blog.thumbnail} type='blog_news' width='60px' /></Td>
                 <Td>{blog.title}</Td>
                 <Td>{blog.brand_name}</Td>
                 <Td>{blog.gender_category_text}</Td>

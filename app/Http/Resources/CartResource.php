@@ -27,6 +27,7 @@ class CartResource extends JsonResource
             'id' => $this->id,
             'sku_id' => $this->sku_id,
             'stock_status' => $this->sku->quantity > 0 ? 1 : 0, // 在庫状況
+            'stock' => $this->sku->quantity, // 在庫数
             'item_id' => $this->item_id,
             'size_name' => Size::where('id', $this->size_id)->first()->size_name,
             'color_name' => Color::where('id', $this->color_id)->first()->color_name,
@@ -37,6 +38,5 @@ class CartResource extends JsonResource
             'top_image' => $this->sku->item->topImage->first()->image,
             'brand_name' => $this->sku->item->brand->brand_name,
         ];
-    } 
-    
+    }
 }

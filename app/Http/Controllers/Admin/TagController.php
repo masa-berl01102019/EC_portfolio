@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Throwable;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\TagResource;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -12,58 +13,72 @@ use App\Http\Requests\admin\TagRequest;
 
 class TagController extends Controller
 {
-    // 該当のカラム以外を扱わないようにホワイトリスト作成
-    private $form_items = [ 'id', 'tag_name' ];
+    private $form_items = ['id', 'tag_name'];
 
     public function __construct()
     {
-        // Auth認証
         $this->middleware('auth:admin');
     }
 
     public function index(Request $request)
     {
-        // レスポンスを返却
-        return response()->json(['tags' => TagResource::collection(Tag::all())],200);
+        try {
+            return response()->json(['tags' => TagResource::collection(Tag::all())]);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            return response()->json(['status' => 9, 'message' => 'タグマスタの取得に失敗しました'], 500);
+        }
     }
 
     public function store(TagRequest $request)
     {
-        // 不正な入力値の制御
-        $data = $request->only($this->form_items);
-        // DBに登録
-        Tag::create([
-            'tag_name' => $data['tag_name'],
-        ]);
-        // レスポンスを返却
-        return response()->json(['create' => true, 'message' => 'タグの新規登録を完了しました'], 200);
+        DB::beginTransaction();
+        try {
+            $data = $request->only($this->form_items);
+            Tag::create([
+                'tag_name' => $data['tag_name'],
+            ]);
+            DB::commit();
+            return response()->json(['status' => 1, 'message' => 'タグマスタの登録を完了しました'], 200);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['status' => 9, 'message' => 'タグマスタの登録に失敗しました'], 500);
+        }
     }
 
     public function update(TagRequest $request, Tag $tag)
     {
-        // 項目制限
-        $data = $request->only($this->form_items);
-        // 編集項目をDBに保存
-        $tag->fill($data)->save();
-        // レスポンスを返却
-        return response()->json(['update' => true, 'message' => 'タグの編集を完了しました'], 200);
+        DB::beginTransaction();
+        try {
+            $data = $request->only($this->form_items);
+            $tag->fill($data)->save();
+            DB::commit();
+            return response()->json(['status' => 1, 'message' => 'タグマスタの編集を完了しました'], 200);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['status' => 9, 'message' => 'タグマスタの編集に失敗しました'], 500);
+        }
     }
 
     public function destroy(Tag $tag)
     {
+        DB::beginTransaction();
         try {
-            // 関連の中間テーブルの削除
+            if (!$tag->items->isEmpty() || !$tag->blogs->isEmpty() || !$tag->blogs->isEmpty()) {
+                return response()->json(['status' => 9, 'message' => '選択タグが商品・ニュース・ブログ等で使用されております'], 400);
+            }
             $tag->items()->sync([]);
             $tag->blogs()->sync([]);
             $tag->news()->sync([]);
-            // タグの削除
             $tag->delete();
-            // レスポンスを返却
-            return response()->json(['delete' => true, 'message' => 'タグの削除を完了しました'], 200);
+            DB::commit();
+            return response()->json(['status' => 1, 'message' => 'タグマスタの削除を完了しました'], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            // レスポンスを返却
-            return response()->json(['delete' => false, 'message' => 'タグの削除を失敗しました。'], 405);
+            DB::rollBack();
+            return response()->json(['status' => 9, 'message' => 'タグマスタの削除を失敗しました'], 500);
         }
     }
 }

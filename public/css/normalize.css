@@ -378,19 +378,19 @@ input[type="number"]::-webkit-inner-spin-button {
 } 
 
 /* scrollbar customs */
-/* ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+::-webkit-scrollbar {
+  width: 3px;
+  height: 4px;
 }
   
-::-webkit-scrollbar-track {
+/* ::-webkit-scrollbar-track {
   background-color: #00000008;
-}
+} */
   
 ::-webkit-scrollbar-thumb {
   background: #f9c40380;
   border-radius: 25px;
-} */
+}
 
 
 /* 暫定スタイル */

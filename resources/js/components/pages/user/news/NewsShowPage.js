@@ -2,7 +2,7 @@ import React, {Suspense, useEffect, useState} from 'react';
 import {EditorState, convertFromRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import {stateFromHTML} from 'draft-js-import-html';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useHelper from "../../../hooks/useHelper";
 import Text from '../../../atoms/Text/Text';
@@ -16,7 +16,7 @@ function NewsShowPage(props) {
     // paramsの適用範囲を決めるscope名を定義
     const model = 'NEWS';
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(baseUrl, model);
+    const {data, errorMessage} = useFetchApiData(baseUrl, model);
     // draft-js用のステート管理
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     // 便利関数の呼び出し
@@ -40,37 +40,30 @@ function NewsShowPage(props) {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <>
-                        {   news &&
-                            <div className={styles.blog_news_contents_area}>
-                                <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
-                                    {news.title}
-                                </Heading>
-                                <Text size='s' className={styles.mb_8}>
-                                    {news.modified_at ? news.modified_at : news.posted_at}
-                                </Text>
-                                <Image src={news.thumbnail} alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
-                                <Editor
-                                    editorState={editorState}
-                                    readOnly={true}
-                                    toolbar={{
-                                        options: [],
-                                        inline: {
-                                        options: [],
-                                        },
-                                        list: {
-                                        options: [],
-                                        }
-                                    }}
-                                />
-                            </div>
-                        }
-                    </>
-                )
+            {   news &&
+                <div className={styles.blog_news_contents_area}>
+                    <Heading tag={'h1'} tag_style={'h1'} className={[styles.title, styles.mb_8, styles.mt_8].join(' ')}>
+                        {news.title}
+                    </Heading>
+                    <Text size='s' className={styles.mb_8}>
+                        {news.modified_at ? news.modified_at : news.posted_at}
+                    </Text>
+                    <Image src={news.thumbnail} type='blog_news' alt="ブログ画像" className={[styles.w_100, styles.mb_8].join(' ')}/>
+                    <Editor
+                        editorState={editorState}
+                        readOnly={true}
+                        toolbar={{
+                            options: [],
+                            inline: {
+                            options: [],
+                            },
+                            list: {
+                            options: [],
+                            }
+                        }}
+                        toolbarClassName={styles.hide_toolbar}
+                    />
+                </div>
             }
             </Suspense>
         </main>

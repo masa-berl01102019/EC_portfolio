@@ -1,6 +1,6 @@
 import React, {Suspense, useEffect} from 'react';
 import {CircularProgress} from '@material-ui/core';
-import useFetchApiData2 from "../../../hooks/useFetchApiData2";
+import useFetchApiData from "../../../hooks/useFetchApiData";
 import useCreateParams from "../../../hooks/useCreateParams";
 import { useRecoilState } from 'recoil';
 import { paramState } from '../../../store/paramState';
@@ -8,7 +8,6 @@ import {useCreateUrl} from "../../../hooks/useCreateUrl";
 import TopItemCard from '../../../molecules/Card/TopItemCard';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
 import Heading from '../../../atoms/Heading/Heading';
-import Text from '../../../atoms/Text/Text';
 import styles from '../styles.module.css';
 
 function ItemRecommendPage() {
@@ -21,7 +20,7 @@ function ItemRecommendPage() {
     // グローバルステート呼び出し
     const [params, setParams] = useRecoilState(paramState(model));
     // APIと接続して返り値を取得
-    const {data, errorMessage} = useFetchApiData2(useCreateUrl(baseUrl, params), model);
+    const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     // APIから取得したデータを変数に格納
     const items = data.data? data.data: null;
 
@@ -43,35 +42,27 @@ function ItemRecommendPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-            {
-                errorMessage && errorMessage.httpRequestError ? (
-                    <Text role='error'>{errorMessage.httpRequestError}</Text>
-                ) : (
-                    <>
-                        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>おすすめ一覧</Heading>
-                        <div className={styles.main_contents_area}>
-                            {   items &&
-                                <div className={styles.search_item_area}>
-                                    {                        
-                                        items.map((item) =>
-                                            <TopItemCard 
-                                                key={item.id}
-                                                src={item.top_image}
-                                                to={`/items/${item.id}`}
-                                                brand_name={item.brand_name}
-                                                item_name={item.item_name}
-                                                price={item.included_tax_price_text}
-                                                className={styles.item_card}
-                                            />
-                                        )
-                                    }
-                                </div>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>おすすめ一覧</Heading>
+                <div className={styles.main_contents_area}>
+                    {   items &&
+                        <div className={[styles.search_item_area, styles.mb_24].join(' ')}>
+                            {                        
+                                items.map((item) =>
+                                    <TopItemCard 
+                                        key={item.id}
+                                        src={item.top_image}
+                                        to={`/items/${item.id}`}
+                                        brand_name={item.brand_name}
+                                        item_name={item.item_name}
+                                        price={item.included_tax_price_text}
+                                        className={styles.item_card}
+                                    />
+                                )
                             }
-                            <PaginationList meta={data.meta} onChange={handleCurrentPage} />
                         </div>
-                    </>
-                )
-            }
+                    }
+                    <PaginationList meta={data.meta} onChange={handleCurrentPage} />
+                </div>
             </Suspense>
         </main>
     );

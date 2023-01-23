@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use Throwable;
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\UserResource;
@@ -13,73 +16,83 @@ use App\Http\Requests\user\CartRegisterRequest;
 
 class CartController extends Controller
 {
-    // 該当のカラム以外を扱わないようにホワイトリスト作成
-    private $form_items = [ 'sku_id', 'quantity' ];
+    private $form_items = ['sku_id', 'quantity'];
 
     public function __construct()
     {
-        // Auth認証
         $this->middleware('auth:user');
     }
 
     public function index(Request $request)
     {
-        $search_cart = Cart::query();
-
-        $search_cart = $search_cart->where('user_id', Auth::guard('user')->user()->id)
-            ->join('skus', 'carts.sku_id', '=', 'skus.id')
-            ->join('items', function ($join) {
-                $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'));
-            })
-            ->join('brands', 'items.brand_id', '=', 'brands.id')
-            ->select('carts.id','carts.quantity','carts.updated_at', 'carts.sku_id','skus.item_id','skus.size_id','skus.color_id','items.item_name','items.price','items.brand_id','brands.brand_name');
-        // * Resouce内でjoinしてないリレーションを呼び出す為にはきちんとselectでリレーション通りに外部キーを渡す必要がある
-        // * Bookmark ModelでAccessorPriceTraitを読み込んでるので、上記のselectで該当の元カラム(price)を指定しておけばResouce内で$this->price_textで呼び出せる
-
-        // ページネーション
-        $carts = $search_cart->get();
-        
-        // レスポンスを返却
-        return (CartResource::collection($carts))->additional([
-            // 各種選択肢をmeta情報としてトップレベルに追加
-            'user' => new UserResource(Auth::guard('user')->user())
-        ]);
+        try {
+            $search_cart = Cart::query();
+            $search_cart = $search_cart->where('user_id', Auth::guard('user')->user()->id)
+                ->join('skus', 'carts.sku_id', '=', 'skus.id')
+                ->join('items', function ($join) {
+                    $join->on('items.id', '=', 'skus.item_id')->where('is_published', config('define.is_published_r.open'))->where('items.deleted_at', null);
+                })
+                ->join('brands', 'items.brand_id', '=', 'brands.id')
+                ->select('carts.id', 'carts.quantity', 'carts.updated_at', 'carts.sku_id', 'skus.item_id', 'skus.size_id', 'skus.color_id', 'items.item_name', 'items.price', 'items.brand_id', 'brands.brand_name')
+                ->get();
+            // I need pass foreign key at select func when I use join func so that I can call model which has relation at API Resources 
+            // I can use Accessor (ex $this->price_text) at API Resources as long as I pass price at select func
+            return (CartResource::collection($search_cart))->additional([
+                'user' => new UserResource(Auth::guard('user')->user())
+            ]);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            return response()->json(['status' => 9, 'message' => 'カート商品の取得に失敗しました'], 500);
+        }
     }
 
     public function store(CartRegisterRequest $request)
     {
-        // 不正な入力値の制御
-        $data = $request->only($this->form_items);
-        // DBに登録
-        Cart::create([
-            'user_id' => Auth::guard('user')->user()->id,
-            'sku_id' => $data['sku_id'],
-            'quantity' => 1,
-        ]);
-
-        // レスポンスを返却
-        return response()->json(['create' => true, 'message' => 'カートの新規登録を完了しました'], 200);
+        DB::beginTransaction();
+        try {
+            $data = $request->only($this->form_items);
+            Cart::create([
+                'user_id' => Auth::guard('user')->user()->id,
+                'sku_id' => $data['sku_id'],
+                'quantity' => 1,
+            ]);
+            DB::commit();
+            return response()->json(['status' => 1, 'message' => 'カート商品の登録を完了しました'], 200);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['status' => 9, 'message' => 'カート商品の登録に失敗しました'], 500);
+        }
     }
 
     public function update(CartEditRequest $request, Cart $cart)
     {
-        // 項目制限
-        $data = $request->only($this->form_items);
-        // 基本情報をDBに保存
-        $cart->fill([
-            'quantity' => $data['quantity']
-        ])->save();
-
-        // レスポンスを返却
-        return response()->json(['update' => true, 'message' => 'カートの編集を完了しました'], 200);
+        DB::beginTransaction();
+        try {
+            $data = $request->only($this->form_items);
+            $cart->fill([
+                'quantity' => $data['quantity']
+            ])->save();
+            DB::commit();
+            return response()->json(['status' => 1, 'message' => 'カート商品の編集を完了しました'], 200);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['status' => 9, 'message' => 'カート商品の編集に失敗しました'], 500);
+        }
     }
 
     public function destroy(Cart $cart)
     {
-        $cart->delete();
-
-        // レスポンスを返却
-        return response()->json(['delete' => true, 'message' => 'カートの削除を完了しました'], 200);
+        DB::beginTransaction();
+        try {
+            $cart->delete();
+            DB::commit();
+            return response()->json(['status' => 1, 'message' => 'カート商品の削除を完了しました'], 200);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['status' => 9, 'message' => 'カート商品の削除に失敗しました'], 500);
+        }
     }
-
 }

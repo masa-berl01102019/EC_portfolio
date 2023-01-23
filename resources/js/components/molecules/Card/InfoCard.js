@@ -20,7 +20,7 @@ const InfoCard = ({
     <div className={styles.info_card} {...props}>
         <Link to={to} className={[styles.link_fill, styles.flex].join(' ')}>
             <div className={[styles.mr_8, styles.img_contents].join(' ')}>
-              <Image src={src} type='info_list' alt="サムネイル画像" className={styles.info_img} />
+              <Image src={src} type='blog_news' alt="サムネイル画像" className={styles.info_img} />
             </div>
             <div className={[styles.text_contents].join(' ')}>
               <Text size='l' className={[styles.mb_8, styles.card_text].join(' ')}>{title}</Text>

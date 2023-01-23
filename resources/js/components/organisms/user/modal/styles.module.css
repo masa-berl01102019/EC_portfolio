@@ -9,13 +9,34 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  padding: 16px 8px;
+  padding: 24px 16px;
   box-sizing: border-box
 }
 .scroll_area {
   overflow-y: scroll;
   max-height: 200px;
   border: 1px solid #E6E7E9;
+}
+
+/* bookmark / cart modal */
+.max_width {
+  max-width: 420px !important;
+}
+.img_area {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.stock_area {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.text_height {
+  line-height: 30px;
+}
+.bookmark_btn_width {
+  width: 155px !important;
 }
 
 /* button override */
@@ -30,6 +51,9 @@
 }
 
 /* 配置 */
+.ma {
+  margin: 0 4px;
+}
 .mb_8 {
   margin-bottom: 8px;
 }
@@ -62,5 +86,6 @@
 .justify_center {
   justify-content: center;
 }
-
-
+.align_center {
+  align-items: center;
+}

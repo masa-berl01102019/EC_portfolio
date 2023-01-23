@@ -27,7 +27,6 @@ const BlogSortModal = ({
           <div className={styles.mb_16}>
             <Text className={styles.mb_8}>投稿日</Text>
             <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort}>
-                <option value={''}>未設定</option>
                 <option value={'desc'}>降順</option>
                 <option value={'asc'}>昇順</option>
             </Pulldown>
