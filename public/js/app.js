@@ -106211,7 +106211,9 @@ function AdminHeader(props) {
     to: "/admin/contacts"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u304A\u554F\u3044\u5408\u308F\u305B\u4E00\u89A7")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
     to: "/admin/colors"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30AB\u30E9\u30FC\u30DE\u30B9\u30BF")))));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30AB\u30E9\u30FC\u30DE\u30B9\u30BF")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
+    to: "/admin/brands"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, "\u30D6\u30E9\u30F3\u30C9\u30DE\u30B9\u30BF")))));
 
   if (!isAdminLogin) {
     return BeforeLoginHeader;
@@ -106526,94 +106528,97 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  // user用 各ページコンポーネント
 
 var Top = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return __webpack_require__.e(/*! import() */ 32).then(__webpack_require__.bind(null, /*! ./pages/user/Top */ "./resources/js/components/pages/user/Top.js"));
+  return __webpack_require__.e(/*! import() */ 33).then(__webpack_require__.bind(null, /*! ./pages/user/Top */ "./resources/js/components/pages/user/Top.js"));
 });
 var UserLogin = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return __webpack_require__.e(/*! import() */ 33).then(__webpack_require__.bind(null, /*! ./pages/user/auth/UserLogin */ "./resources/js/components/pages/user/auth/UserLogin.js"));
+  return __webpack_require__.e(/*! import() */ 34).then(__webpack_require__.bind(null, /*! ./pages/user/auth/UserLogin */ "./resources/js/components/pages/user/auth/UserLogin.js"));
 }); // マルチ認証Test用 コンポーネント
 
 var TestUserIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(34)]).then(__webpack_require__.bind(null, /*! ./pages/user/users/TestUserIndex */ "./resources/js/components/pages/user/users/TestUserIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(35)]).then(__webpack_require__.bind(null, /*! ./pages/user/users/TestUserIndex */ "./resources/js/components/pages/user/users/TestUserIndex.js"));
 }); // admin用 各ページコンポーネント
 
 var AdminLogin = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return __webpack_require__.e(/*! import() */ 22).then(__webpack_require__.bind(null, /*! ./pages/admin/auth/AdminLogin */ "./resources/js/components/pages/admin/auth/AdminLogin.js"));
+  return __webpack_require__.e(/*! import() */ 23).then(__webpack_require__.bind(null, /*! ./pages/admin/auth/AdminLogin */ "./resources/js/components/pages/admin/auth/AdminLogin.js"));
 });
 var Dashboard = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return __webpack_require__.e(/*! import() */ 25).then(__webpack_require__.bind(null, /*! ./pages/admin/dashboard/Dashboard */ "./resources/js/components/pages/admin/dashboard/Dashboard.js"));
+  return __webpack_require__.e(/*! import() */ 26).then(__webpack_require__.bind(null, /*! ./pages/admin/dashboard/Dashboard */ "./resources/js/components/pages/admin/dashboard/Dashboard.js"));
 });
 var UserIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(30)]).then(__webpack_require__.bind(null, /*! ./pages/admin/users/UserIndex */ "./resources/js/components/pages/admin/users/UserIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(31)]).then(__webpack_require__.bind(null, /*! ./pages/admin/users/UserIndex */ "./resources/js/components/pages/admin/users/UserIndex.js"));
 });
 var UserEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(8)]).then(__webpack_require__.bind(null, /*! ./pages/admin/users/UserEdit */ "./resources/js/components/pages/admin/users/UserEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/admin/users/UserEdit */ "./resources/js/components/pages/admin/users/UserEdit.js"));
 });
 var UserCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/admin/users/UserCreate */ "./resources/js/components/pages/admin/users/UserCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./pages/admin/users/UserCreate */ "./resources/js/components/pages/admin/users/UserCreate.js"));
 });
 var AdminIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(21)]).then(__webpack_require__.bind(null, /*! ./pages/admin/admins/AdminIndex */ "./resources/js/components/pages/admin/admins/AdminIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(22)]).then(__webpack_require__.bind(null, /*! ./pages/admin/admins/AdminIndex */ "./resources/js/components/pages/admin/admins/AdminIndex.js"));
 });
 var AdminEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, /*! ./pages/admin/admins/AdminEdit */ "./resources/js/components/pages/admin/admins/AdminEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./pages/admin/admins/AdminEdit */ "./resources/js/components/pages/admin/admins/AdminEdit.js"));
 });
 var AdminCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./pages/admin/admins/AdminCreate */ "./resources/js/components/pages/admin/admins/AdminCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(8)]).then(__webpack_require__.bind(null, /*! ./pages/admin/admins/AdminCreate */ "./resources/js/components/pages/admin/admins/AdminCreate.js"));
 });
 var NotificationIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(28)]).then(__webpack_require__.bind(null, /*! ./pages/admin/notifications/NotificationIndex */ "./resources/js/components/pages/admin/notifications/NotificationIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(29)]).then(__webpack_require__.bind(null, /*! ./pages/admin/notifications/NotificationIndex */ "./resources/js/components/pages/admin/notifications/NotificationIndex.js"));
 });
 var NotificationCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(18)]).then(__webpack_require__.bind(null, /*! ./pages/admin/notifications/NotificationCreate */ "./resources/js/components/pages/admin/notifications/NotificationCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(19)]).then(__webpack_require__.bind(null, /*! ./pages/admin/notifications/NotificationCreate */ "./resources/js/components/pages/admin/notifications/NotificationCreate.js"));
 });
 var NotificationEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(19)]).then(__webpack_require__.bind(null, /*! ./pages/admin/notifications/NotificationEdit */ "./resources/js/components/pages/admin/notifications/NotificationEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(20)]).then(__webpack_require__.bind(null, /*! ./pages/admin/notifications/NotificationEdit */ "./resources/js/components/pages/admin/notifications/NotificationEdit.js"));
 });
 var ContactIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(24)]).then(__webpack_require__.bind(null, /*! ./pages/admin/contacts/ContactIndex */ "./resources/js/components/pages/admin/contacts/ContactIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(25)]).then(__webpack_require__.bind(null, /*! ./pages/admin/contacts/ContactIndex */ "./resources/js/components/pages/admin/contacts/ContactIndex.js"));
 });
 var ContactEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(13)]).then(__webpack_require__.bind(null, /*! ./pages/admin/contacts/ContactEdit */ "./resources/js/components/pages/admin/contacts/ContactEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(0), __webpack_require__.e(14)]).then(__webpack_require__.bind(null, /*! ./pages/admin/contacts/ContactEdit */ "./resources/js/components/pages/admin/contacts/ContactEdit.js"));
 });
 var ItemIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(26)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemIndex */ "./resources/js/components/pages/admin/items/ItemIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(27)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemIndex */ "./resources/js/components/pages/admin/items/ItemIndex.js"));
 });
 var ItemCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(14)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemCreate */ "./resources/js/components/pages/admin/items/ItemCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(15)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemCreate */ "./resources/js/components/pages/admin/items/ItemCreate.js"));
 });
 var ItemEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(15)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemEdit */ "./resources/js/components/pages/admin/items/ItemEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(16)]).then(__webpack_require__.bind(null, /*! ./pages/admin/items/ItemEdit */ "./resources/js/components/pages/admin/items/ItemEdit.js"));
 });
 var BlogIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(23)]).then(__webpack_require__.bind(null, /*! ./pages/admin/blogs/BlogIndex */ "./resources/js/components/pages/admin/blogs/BlogIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(24)]).then(__webpack_require__.bind(null, /*! ./pages/admin/blogs/BlogIndex */ "./resources/js/components/pages/admin/blogs/BlogIndex.js"));
 });
 var BlogCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(0), __webpack_require__.e(11)]).then(__webpack_require__.bind(null, /*! ./pages/admin/blogs/BlogCreate */ "./resources/js/components/pages/admin/blogs/BlogCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(0), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, /*! ./pages/admin/blogs/BlogCreate */ "./resources/js/components/pages/admin/blogs/BlogCreate.js"));
 });
 var BlogEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(5), __webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, /*! ./pages/admin/blogs/BlogEdit */ "./resources/js/components/pages/admin/blogs/BlogEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(5), __webpack_require__.e(0), __webpack_require__.e(11)]).then(__webpack_require__.bind(null, /*! ./pages/admin/blogs/BlogEdit */ "./resources/js/components/pages/admin/blogs/BlogEdit.js"));
 });
 var NewsIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(27)]).then(__webpack_require__.bind(null, /*! ./pages/admin/news/NewsIndex */ "./resources/js/components/pages/admin/news/NewsIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(28)]).then(__webpack_require__.bind(null, /*! ./pages/admin/news/NewsIndex */ "./resources/js/components/pages/admin/news/NewsIndex.js"));
 });
 var NewsCreate = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(0), __webpack_require__.e(16)]).then(__webpack_require__.bind(null, /*! ./pages/admin/news/NewsCreate */ "./resources/js/components/pages/admin/news/NewsCreate.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(0), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, /*! ./pages/admin/news/NewsCreate */ "./resources/js/components/pages/admin/news/NewsCreate.js"));
 });
 var NewsEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(5), __webpack_require__.e(0), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, /*! ./pages/admin/news/NewsEdit */ "./resources/js/components/pages/admin/news/NewsEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(4), __webpack_require__.e(5), __webpack_require__.e(0), __webpack_require__.e(18)]).then(__webpack_require__.bind(null, /*! ./pages/admin/news/NewsEdit */ "./resources/js/components/pages/admin/news/NewsEdit.js"));
 });
 var OrderIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(29)]).then(__webpack_require__.bind(null, /*! ./pages/admin/orders/OrderIndex */ "./resources/js/components/pages/admin/orders/OrderIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(30)]).then(__webpack_require__.bind(null, /*! ./pages/admin/orders/OrderIndex */ "./resources/js/components/pages/admin/orders/OrderIndex.js"));
 });
 var OrderEdit = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(20)]).then(__webpack_require__.bind(null, /*! ./pages/admin/orders/OrderEdit */ "./resources/js/components/pages/admin/orders/OrderEdit.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(21)]).then(__webpack_require__.bind(null, /*! ./pages/admin/orders/OrderEdit */ "./resources/js/components/pages/admin/orders/OrderEdit.js"));
 });
 var ColorIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./pages/admin/colors/ColorIndex */ "./resources/js/components/pages/admin/colors/ColorIndex.js"));
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(13)]).then(__webpack_require__.bind(null, /*! ./pages/admin/colors/ColorIndex */ "./resources/js/components/pages/admin/colors/ColorIndex.js"));
+});
+var BrandIndex = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
+  return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, /*! ./pages/admin/brands/BrandIndex */ "./resources/js/components/pages/admin/brands/BrandIndex.js"));
 }); // エラーページ用 コンポーネント
 
 var NotFound = /*#__PURE__*/Object(react__WEBPACK_IMPORTED_MODULE_0__["lazy"])(function () {
-  return __webpack_require__.e(/*! import() */ 31).then(__webpack_require__.bind(null, /*! ./pages/error/NotFound */ "./resources/js/components/pages/error/NotFound.js"));
+  return __webpack_require__.e(/*! import() */ 32).then(__webpack_require__.bind(null, /*! ./pages/error/NotFound */ "./resources/js/components/pages/error/NotFound.js"));
 });
 
 function Router() {
@@ -106781,6 +106786,10 @@ function Router() {
     path: "/admin/colors",
     exact: true,
     component: ColorIndex
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GuardRoute__WEBPACK_IMPORTED_MODULE_5__["AdminPrivateRoute"], {
+    path: "/admin/brands",
+    exact: true,
+    component: BrandIndex
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     component: NotFound
   })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Footer__WEBPACK_IMPORTED_MODULE_8__["default"], null));
