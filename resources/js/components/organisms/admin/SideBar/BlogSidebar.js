@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 import CheckboxTab from '../../../molecules/Tab/CheckboxTab';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
 import Button from '../../../atoms/Button/Button';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const BlogSidebar = ({
         brands,
@@ -24,31 +24,31 @@ const BlogSidebar = ({
 
     const params = useRecoilValue(paramState(model));
     const {handleFilter, handleFilterCheckbox, handleSort} = useCreateParams(model);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
       <div className={styles.sidebar}>
         <div className={styles.container}>
 
-          <Text size='l' className={styles.sec_title}>{i18next.t('admin.filter')}</Text>
+          <Text size='l' className={styles.sec_title}>{t('admin.filter')}</Text>
 
           <div className={styles.mb_16}>
             <label htmlFor='search'>
-                <Text className={styles.mb_8}>{i18next.t('admin.keyword')}</Text>
+                <Text className={styles.mb_8}>{t('admin.keyword')}</Text>
             </label>
             <InputText 
                 type='text' 
                 name='search' 
                 onBlur={handleFilter} 
                 value={params.filter.search} 
-                placeholder={i18next.t('admin.blog.keyword-ex')}
+                placeholder={t('admin.blog.keyword-ex')}
                 className={styles.w_100}
             />
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('admin.blog.brand')}</Text>
-            <CheckboxTab tabName={i18next.t('admin.blog.brand-ex')}>
+            <Text className={styles.mb_8}>{t('admin.blog.brand')}</Text>
+            <CheckboxTab tabName={t('admin.blog.brand-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   brands &&
                     brands.map((brand) =>
@@ -80,9 +80,9 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('admin.blog.category')}</Text>
+            <Text className={styles.mb_8}>{t('admin.blog.category')}</Text>
             {   gender_categories &&
-                  <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilter} defaultOption={i18next.t('admin.blog.gender-category-ex')}> 
+                  <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilter} defaultOption={t('admin.blog.gender-category-ex')}> 
                       {   gender_categories.map((category) => 
                               <option key={category.id} value={category.id}>{category.category_name}</option>
                           )
@@ -92,8 +92,8 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('admin.blog.related-item')}</Text>
-            <CheckboxTab tabName={i18next.t('admin.blog.related-item-ex')}>
+            <Text className={styles.mb_8}>{t('admin.blog.related-item')}</Text>
+            <CheckboxTab tabName={t('admin.blog.related-item-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   items &&
                     items.map((item) =>
@@ -125,8 +125,8 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('admin.blog.related-tag')}</Text>
-            <CheckboxTab tabName={i18next.t('admin.blog.related-tag-ex')}>
+            <Text className={styles.mb_8}>{t('admin.blog.related-tag')}</Text>
+            <CheckboxTab tabName={t('admin.blog.related-tag-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   tags &&
                     tags.map((tag) =>
@@ -158,39 +158,39 @@ const BlogSidebar = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('admin.published-status')}</Text>
-            <Pulldown name='is_published' value={params.filter.is_published} onChange={handleFilter} defaultOption={i18next.t('admin.not-set')}> 
-                <option value={'0'}>{i18next.t('admin.unpublished')}</option>
-                <option value={'1'}>{i18next.t('admin.published')}</option>
+            <Text className={styles.mb_8}>{t('admin.published-status')}</Text>
+            <Pulldown name='is_published' value={params.filter.is_published} onChange={handleFilter} defaultOption={t('admin.not-set')}> 
+                <option value={'0'}>{t('admin.unpublished')}</option>
+                <option value={'1'}>{t('admin.published')}</option>
             </Pulldown>
           </div>
 
           <div className={styles.mb_32}>
             <DateRangeFilter params={params.filter} model={model}>
-                <option value={'posted_at'}>{i18next.t('admin.posted-date')}</option>
-                <option value={'modified_at'}>{i18next.t('admin.updated-date')}</option>
+                <option value={'posted_at'}>{t('admin.posted-date')}</option>
+                <option value={'modified_at'}>{t('admin.updated-date')}</option>
             </DateRangeFilter>
           </div>
 
-          <Text size='l' className={styles.sec_title}>{i18next.t('admin.sort')}</Text>
+          <Text size='l' className={styles.sec_title}>{t('admin.sort')}</Text>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('admin.posted-date')}</Text>
-            <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
-                <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
-                <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
+            <Text className={styles.mb_8}>{t('admin.posted-date')}</Text>
+            <Pulldown name='posted_at' value={params.sort.posted_at} onChange={handleSort} defaultOption={t('admin.not-set')}>
+                <option value={'desc'}>{t('admin.desc-date')}</option>
+                <option value={'asc'}>{t('admin.asc-date')}</option>
             </Pulldown>
           </div>
 
           <div>
-            <Text className={styles.mb_8}>{i18next.t('admin.updated-date')}</Text>
-            <Pulldown name='modified_at' value={params.sort.modified_at} onChange={handleSort} defaultOption={i18next.t('admin.not-set')}>
-                <option value={'desc'}>{i18next.t('admin.desc-date')}</option>
-                <option value={'asc'}>{i18next.t('admin.asc-date')}</option>
+            <Text className={styles.mb_8}>{t('admin.updated-date')}</Text>
+            <Pulldown name='modified_at' value={params.sort.modified_at} onChange={handleSort} defaultOption={t('admin.not-set')}>
+                <option value={'desc'}>{t('admin.desc-date')}</option>
+                <option value={'asc'}>{t('admin.asc-date')}</option>
             </Pulldown>
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('admin.close-btn')}</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{t('admin.close-btn')}</Button>
         </div>
       </div>
     );

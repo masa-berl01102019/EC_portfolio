@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class BrandResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -21,10 +20,9 @@ class BrandResource extends JsonResource
      */
     public function toArray($request)
     {
-            return [
-                'id' => $this->id,
-                'brand_name' => $this->brand_name
-            ];
-    } 
-    
+        return [
+            'id' => $this->id,
+            'brand_name' => $this->brand_name
+        ];
+    }
 }

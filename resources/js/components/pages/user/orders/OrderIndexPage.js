@@ -9,7 +9,7 @@ import Heading from '../../../atoms/Heading/Heading';
 import OrderedItemCard from '../../../molecules/Card/OrderedItemCard';
 import styles from '../styles.module.css';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function OrderIndexPage() {
 
@@ -19,7 +19,7 @@ function OrderIndexPage() {
     const [params, setParams] = useRecoilState(paramState(model));
     const {data, errorMessage, createData} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     const orders = data.data? data.data: null;
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
@@ -33,7 +33,7 @@ function OrderIndexPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.order.index-title')}</Heading>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{t('user.order.index-title')}</Heading>
                 <div className={styles.main_contents_area}>
                 {   orders &&
                     <div className={[styles.flex, styles.flex_wrap, styles.mb_24].join(' ')}> 

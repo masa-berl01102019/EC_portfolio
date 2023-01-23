@@ -18,9 +18,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Admin extends Authenticatable
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    use Notifiable; // 通知(使うか未定)
-    use SoftDeletes; // 論理削除
+    use HasFactory; // It has to be call at models in order to use factory function in Laravel 8
+    use Notifiable; // It's not used yet
+    use SoftDeletes;
     use AccessorNameTrait;
     use OrderByNameScopeTrait;
     use OrderByCreatedAtScopeTrait;
@@ -30,44 +30,45 @@ class Admin extends Authenticatable
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    // モデルからシリアライズ時に非表示にするカラムの設定
+    /** Serializing */
+
+    // Setting columns to hide
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['full_name', 'full_name_kana'];
 
-    /** リレーション */
+    /** Relationships */
 
-    public function news() {
+    public function news()
+    {
         return $this->hasMany('App\Models\News');
     }
 
-    public function blogs() {
+    public function blogs()
+    {
         return $this->hasMany('App\Models\Blog');
     }
 
-    public function items() {
+    public function items()
+    {
         return $this->hasMany('App\Models\Item');
     }
 
-    public function notifications() {
+    public function notifications()
+    {
         return $this->hasMany('App\Models\Notification');
     }
 
-    public function contacts() {
+    public function contacts()
+    {
         return $this->hasMany('App\Models\Contact');
     }
-
-
 }

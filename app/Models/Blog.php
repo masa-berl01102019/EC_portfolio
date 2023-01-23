@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Blog extends Model
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    use SoftDeletes; // 論理削除
+    use HasFactory;
+    use SoftDeletes;
     use AccessorNameTrait;
     use AccessorPublishTrait;
     use AccessorGenderCategoryTrait;
@@ -37,28 +37,26 @@ class Blog extends Model
     use GetPublishedScopeTrait;
     use CustomPaginateScopeTrait;
 
-    // timestamp無効にしないとデータ挿入時にエラーになる
+    // An error will occur when inserting data in case that isn't defined timestamps() in migration files
     public $timestamps = false;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    // モデルからシリアライズ時の日付形式の設定
+    /** Serializing */
+
+    // Setting the date format
     protected $casts = [
         'posted_at' => 'date:Y/m/d H:i',
         'modified_at' => 'date:Y/m/d H:i',
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['full_name', 'full_name_kana', 'is_published_text', 'gender_category_text'];
 
-    /** スコープ */
+    /** Query scopes */
 
     public function scopeFilterItem($query, $request)
     {
@@ -66,15 +64,13 @@ class Blog extends Model
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
             $query->whereHas('items', function ($query) use ($filter) {
-                // カンマ区切りで配列に変換
                 $receiver_arr = explode(',', $filter);
-                // 配列内に該当する項目を絞り込み検索
                 return $query->whereIn('items.id', $receiver_arr);
             });
         });
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function brand()
     {
@@ -101,11 +97,11 @@ class Blog extends Model
         return $this->belongsTo('App\Models\Category');
     }
 
-    /** 条件付きリレーション * withでリレーション組んで静的に呼び出せる */
+    /** Conditional Relationships */
 
     public function publishedItems()
     {
-        // 紐づく商品の内、公開ステータスが公開の商品のみを取得
+        // Get items which is published
         return $this->belongsToMany('App\Models\Item')->getPublished();
     }
 }

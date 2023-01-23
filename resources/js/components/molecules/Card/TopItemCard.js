@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import Image from '../../atoms/Image/Image';
 import Text from '../../atoms/Text/Text';
 import styles from './styles.module.css';
-import useI18next from '../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const TopItemCard = ({
     src,
@@ -15,7 +15,7 @@ const TopItemCard = ({
     ...props
   }) => {
 
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   return (
     <div className={className} {...props}>
@@ -25,7 +25,7 @@ const TopItemCard = ({
             </div>
             <Text size='s' className={[styles.mb_4, styles.card_text, styles.font_bold].join(' ')}>{brand_name}</Text>
             <Text className={[styles.mb_4, styles.card_text].join(' ')}>{item_name}</Text>
-            <Text className={[styles.card_text].join(' ')}>{price} ({i18next.t('user.tax-including')})</Text>
+            <Text className={[styles.card_text].join(' ')}>{price} ({t('user.tax-including')})</Text>
         </Link>
     </div>
   );

@@ -20,57 +20,47 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import InputImage from '../../../atoms/InputImage/InputImage';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
+
+// TODO: Add preview fuction
 
 function NewsEdit(props) {
 
     const baseUrl = `/api/admin/news/${props.match.params.id}/edit`;
     const model = 'NEWS';
     const {data, errorMessage, createData} = useFetchApiData(baseUrl, model)
-    const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm({
-        'title': '',
-        'body': '',
-        'brand_id': '',
-        'category_id': '',
-        'tags_id': [],
-        'is_published': 0, // 0: 非公開 1: 公開中
-        'thumbnail': '/img/no_image.png'
-    });
+    const {news, brands, gender_categories, tags} = data;
+    const [formData, {handleFormData, setFormData, handleFormCheckbox, handleFormFile}] = useForm(news);
     const {valid, setValid, validation, errorObject} = useValidation(formData, 'admin', 'news_edit');
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const {isJson} = useHelper();
     const {handleSendObjectForm} = useObjectForm(formData, setFormData, createData);
     const history = useHistory();
-    const {news, brands, gender_categories, tags} = data;
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
-
+    const { t } = useTranslation();
 
     useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にnewsが入ってこない場合があるので条件分岐してあげる
         if(news) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...news});
-            // newsの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
+            // Convert the body of news which is stored as JSON into contentState * Judge if it's HTML or JSON because demo data is stored as HTML
             const contentState = isJson(news.body) ? convertFromRaw(JSON.parse(news.body)) : stateFromHTML(news.body);
-            // contentStateをeditorStateに変換
+            // Convert contentState into editorState
             const editorState = EditorState.createWithContent(contentState);
-            // editorStateをdraft.jsにセット
+            // Set editorState to draft.js
             setEditorState(editorState);
         }
     },[]);
 
     const onEditorStateChange = (editorState) => {
-        // 現在のeditorStateからcontentStateを取得 
+        // Get contentState from editorState
         const contentState = editorState.getCurrentContent();
-        // HTMLに変換して保存すると一部のスタイルが消えてしまうのでcontentStateをJSON形式で保存
+        // ContentState has to be store as JSON because some of styles don't be stored correctly if it's stored after converting HTML
         const content = JSON.stringify(convertToRaw(contentState));
-        // formDataのbodyに保存
+        // Store contect variable to formData
         setFormData({
             ...formData,
             body : content
         });
-        // editorStateを更新
+        // Update editorState
         setEditorState(editorState);
     };
 
@@ -78,7 +68,7 @@ function NewsEdit(props) {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.news.edit-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.news.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -97,16 +87,16 @@ function NewsEdit(props) {
                                         name={'title'}
                                         onChange={handleFormData}
                                         value={formData.title}
-                                        label={i18next.t('admin.news.title')}
+                                        label={t('admin.news.title')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.news.title-ex')}
+                                        placeholder={t('admin.news.title-ex')}
                                         className={styles.mb_16}
                                     />
                                     <div className={styles.flex_1}>
-                                        <Text className={styles.mb_8}>{i18next.t('admin.news.body')}</Text>
-                                        <div className={styles.edit_area}>
+                                        <Text className={styles.mb_8}>{t('admin.news.body')}</Text>
+                                        <div className={styles.news_edit_area}>
                                             <Editor
                                                 editorState={editorState}
                                                 toolbarClassName="toolbarClassName"
@@ -126,7 +116,7 @@ function NewsEdit(props) {
                                 <div className={styles.sidebar_box}>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.set-published-status')}</Text>
+                                            <Text size='l'>{t('admin.set-published-status')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox
@@ -137,14 +127,14 @@ function NewsEdit(props) {
                                                 validation={validation}
                                                 valid={valid}
                                             >
-                                                <option value={0}>{i18next.t('admin.unpublished')}</option>
-                                                <option value={1}>{i18next.t('admin.published')}</option>
+                                                <option value={0}>{t('admin.unpublished')}</option>
+                                                <option value={1}>{t('admin.published')}</option>
                                             </FormSelectbox>
                                         </div>
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                        <Text size='l'>{i18next.t('admin.news.thumbnail')}</Text>
+                                        <Text size='l'>{t('admin.news.thumbnail')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <InputImage
@@ -163,39 +153,39 @@ function NewsEdit(props) {
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.news.category')}</Text>
+                                            <Text size='l'>{t('admin.news.category')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <FormSelectbox
                                                 name='brand_id'
                                                 value={formData.brand_id}
                                                 onChange={handleFormData}
-                                                label={i18next.t('admin.news.brand-category')}
+                                                label={t('admin.news.brand-category')}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                                 className={styles.mb_16}
                                             >
-                                                <option value={''}>{i18next.t('admin.not-set')}</option>
+                                                <option value={''}>{t('admin.not-set')}</option>
                                                 { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
                                             </FormSelectbox>
                                             <FormSelectbox
                                                 name='category_id'
                                                 value={formData.category_id}
                                                 onChange={handleFormData}
-                                                label={i18next.t('admin.blog.gender-category')}
+                                                label={t('admin.blog.gender-category')}
                                                 error={errorMessage}
                                                 validation={validation}
                                                 valid={valid}
                                             >
-                                                <option value={''}>{i18next.t('admin.not-set')}</option>
+                                                <option value={''}>{t('admin.not-set')}</option>
                                                 { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
                                             </FormSelectbox>
                                         </div>
                                     </div>
                                     <div className={styles.sidebar_card}>
                                         <div className={styles.title_box}>
-                                            <Text size='l'>{i18next.t('admin.news.related-tag')}</Text>
+                                            <Text size='l'>{t('admin.news.related-tag')}</Text>
                                         </div>
                                         <div className={styles.pa_16}>
                                             <div className={styles.scroll_area}>
@@ -233,8 +223,8 @@ function NewsEdit(props) {
                             </div>
 
                             <div className={[styles.flex, styles.align_center, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/news`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
+                                <LinkBtn to={`/admin/news`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{t('admin.update')}</Button>
                             </div>
                         </form>
                     </div>

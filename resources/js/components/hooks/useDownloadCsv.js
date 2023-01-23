@@ -1,30 +1,28 @@
 import React from 'react';
 
 export const useDownloadCsv = (data, fileName) => {
-    //ダウンロードするCSVファイル名を指定する
-    const filename = fileName;
-    //BOMを付与する（Excelでの文字化け対策）
+    // Attach BOM （Not to garble in Excel）
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    //Blobでデータを作成する
+    // Create data by Blob
     const blob = new Blob([bom, data], { type: "text/csv" });
-    //ダウンロード用にリンクを作成する
+    // Create link for download 
     const link = document.createElement('a');
-    //BlobからオブジェクトURLを作成してリンク先に指定する
+    // Create an ObjectURL from Blob and assign it to link.
     link.href = window.URL.createObjectURL(blob);
-    //download属性にファイル名を指定する
-    link.download = filename;
-    //作成したリンクをクリックしてダウンロードを実行する
+    // Assign file name to download attribute
+    link.download = fileName;
+    // Click created URL and execute download 
     link.click();
-    //createObjectURLで作成したオブジェクトURLを開放する
+    // Release ObjectURL 
     window.URL.revokeObjectURL(link.href);
 };
 
 export const getFileName = (contentDisposition) => {
-    // 「attachment; filename=.csv; filename*=utf-8''URIエンコードされたファイル名.csv」の形でHTTPレスポンスヘッダーのcontent-dispositionに格納されてるので引数で取得
-    // indexOf()でファイル名の開始位置を取得してsubstring()で開始位置以降の文字列を取得
+    // File name is stored like 'attachment; filename=.csv; filename*=utf-8''file name which is URI encoded.csv' in HTTP response header
+    // Get the file name from argument
     let fileName = contentDisposition.substring(contentDisposition.indexOf("''") + 2);
-    // エンコードされたファイル名をdecodeURI()でデコード ＊デコードの際にスペースが"+"になるのでスペースへ置換して変数に格納
+    // Decode encoded file name ＊ replace '+' with space because space will be '+' when decode it 
     fileName = decodeURI(fileName).replace(/\+/g, " ");
-    // ファイル名を返却
+    // return file name
     return fileName;
 }

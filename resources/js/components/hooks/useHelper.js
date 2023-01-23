@@ -2,7 +2,7 @@ import React from 'react';
 
 const useHelper = () => {
 
-  // JSON判定用の関数
+  // Function for Checking if it is JSON 
   const isJson = (data) => {
     try {
         JSON.parse(data);
@@ -12,7 +12,7 @@ const useHelper = () => {
     return true;
   }
 
-  // objecy判定用の関数
+  // Function for Checking if it is object 
   const isObject = (val) => {
       if( val !== null && typeof(val) === 'object' && val.constructor === Object ) {
           return true;
@@ -20,7 +20,7 @@ const useHelper = () => {
       return false;
   }
 
-  // checking whether there is duplicate value
+  // Checking whether there is duplicate value in Array
   const isDuplicated  = (arr) => {
     const new_arr = new Set(arr);
     return new_arr.size != arr.length;

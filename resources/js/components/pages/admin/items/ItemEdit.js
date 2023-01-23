@@ -22,9 +22,7 @@ import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import useNotify from '../../../context/NotifyContext';
 import useHelper from '../../../hooks/useHelper';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
-
-// TODO プレビュー機能の実装
+import { useTranslation } from 'react-i18next';
 
 function ItemEdit(props) {
 
@@ -39,7 +37,7 @@ function ItemEdit(props) {
     const openAdminMenu = useRecoilValue(menuAdminState);
     const alert = useNotify();
     const {isDuplicated} = useHelper();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     const handleFormSubmit = () => {
         if(validation.fails()) {
@@ -56,22 +54,22 @@ function ItemEdit(props) {
         });
 
         if(isDuplicated(arr)) {
-            alert({body: i18next.t('admin.item.alert-msg1'), type: 'alert'});
+            alert({body: t('admin.item.alert-msg1'), type: 'alert'});
             return false;
         }
 
         if(isDuplicated(measurements_size)) {
-            alert({body: i18next.t('admin.item.alert-msg2'), type: 'alert'});
+            alert({body: t('admin.item.alert-msg2'), type: 'alert'});
             return false;
         }
         
         if(skus_size.filter(el => !measurements_size.includes(el) ).length > 0 || measurements_size.filter(el => !skus_size.includes(el) ).length > 0) {
-            alert({body: i18next.t('admin.item.alert-msg3'), type: 'alert'});
+            alert({body: t('admin.item.alert-msg3'), type: 'alert'});
             return false;
         }
 
         if(skus_color.filter(el => !images_color.includes(el)).length > 0 || images_color.filter(el => !skus_color.includes(el)).length > 0) {
-            alert({body: i18next.t('admin.item.alert-msg4'), type: 'alert'});
+            alert({body: t('admin.item.alert-msg4'), type: 'alert'});
             return false;
         } 
 
@@ -85,12 +83,12 @@ function ItemEdit(props) {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.item.edit-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.item.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'1'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.basic-info')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{t('admin.item.basic-info')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={[styles.flex, styles.flex_tb].join(' ')}>
@@ -99,22 +97,22 @@ function ItemEdit(props) {
                                         name={'product_number'}
                                         onChange={handleFormData}
                                         value={formData.product_number}
-                                        label={i18next.t('admin.item.product-number')}
+                                        label={t('admin.item.product-number')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.item.product-number-ex')}
+                                        placeholder={t('admin.item.product-number-ex')}
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
                                         name={'item_name'}
                                         onChange={handleFormData}
                                         value={formData.item_name}
-                                        label={i18next.t('admin.item.item-name')}
+                                        label={t('admin.item.item-name')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.item.item-name-ex')}
+                                        placeholder={t('admin.item.item-name-ex')}
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
@@ -122,11 +120,11 @@ function ItemEdit(props) {
                                         type={'number'}
                                         onChange={handleFormData}
                                         value={formData.price}
-                                        label={i18next.t('admin.item.price')}
+                                        label={t('admin.item.price')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.item.price-ex')}
+                                        placeholder={t('admin.item.price-ex')}
                                         className={styles.mb_16}
                                     />
                                     <FormInputText
@@ -134,15 +132,15 @@ function ItemEdit(props) {
                                         type={'number'}
                                         onChange={handleFormData}
                                         value={formData.cost}
-                                        label={i18next.t('admin.item.cost')}
+                                        label={t('admin.item.cost')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.item.cost-ex')}
+                                        placeholder={t('admin.item.cost-ex')}
                                         className={styles.mb_16}
                                     />
                                     <div className={styles.cost_rate}>
-                                        <Text>{i18next.t('admin.item.cost-rate')}</Text>
+                                        <Text>{t('admin.item.cost-rate')}</Text>
                                         <Text>
                                             { formData.cost && formData.price && 
                                                 Math.floor(formData.cost / formData.price * 10000) / 100 
@@ -153,20 +151,20 @@ function ItemEdit(props) {
                                         name={'made_in'}
                                         onChange={handleFormData}
                                         value={formData.made_in}
-                                        label={i18next.t('admin.item.made-in')}
+                                        label={t('admin.item.made-in')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
-                                        placeholder={i18next.t('admin.item.made-in-ex')}
+                                        placeholder={t('admin.item.made-in-ex')}
                                     />
                                 </div>
                                 <div className={styles.flex_basis_50}>
                                     <FormInputTextarea
                                         name={'mixture_ratio'} 
                                         value={formData.mixture_ratio}
-                                        label={i18next.t('admin.item.mixture-ratio')}
+                                        label={t('admin.item.mixture-ratio')}
                                         onChange={handleFormData} 
-                                        placeholder={i18next.t('admin.item.mixture-ratio-ex')}
+                                        placeholder={t('admin.item.mixture-ratio-ex')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
@@ -176,9 +174,9 @@ function ItemEdit(props) {
                                     <FormInputTextarea
                                         name={'description'} 
                                         value={formData.description}
-                                        label={i18next.t('admin.item.description')}
+                                        label={t('admin.item.description')}
                                         onChange={handleFormData} 
-                                        placeholder={i18next.t('admin.item.description-ex')}
+                                        placeholder={t('admin.item.description-ex')}
                                         error={errorMessage}
                                         validation={validation}
                                         valid={valid}
@@ -192,46 +190,46 @@ function ItemEdit(props) {
                             <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb].join(' ')}>
                                 <div className={[styles.flex, styles.align_center, styles.mb_16].join(' ')}>
                                     <Badge text={'2'} type={'number'} className={styles.mr_8}/>
-                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.category')}</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{t('admin.item.category')}</Heading>
                                     <div className={styles.heading_border}></div>
                                 </div>
                                 <FormSelectbox
                                     name='brand_id'
                                     value={formData.brand_id}
                                     onChange={handleFormData}
-                                    label={i18next.t('admin.item.brand')}
+                                    label={t('admin.item.brand')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={styles.mb_16}
                                 >
-                                    <option value={''}>{i18next.t('admin.not-set')}</option>
+                                    <option value={''}>{t('admin.not-set')}</option>
                                     { brands && brands.map( brand => ( <option key={brand.id} value={brand.id}>{brand.brand_name}</option>))}
                                 </FormSelectbox>
                                 <FormSelectbox
                                     name='gender_category'
                                     value={formData.gender_category}
                                     onChange={handleFormCategory}
-                                    label={i18next.t('admin.item.gender')}
+                                    label={t('admin.item.gender')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={styles.mb_16}
                                 >
-                                    <option value={''}>{i18next.t('admin.not-set')}</option>
+                                    <option value={''}>{t('admin.not-set')}</option>
                                     { gender_categories && gender_categories.map((category) => <option key={category.id} value={category.id}>{category.category_name}</option> )}
                                 </FormSelectbox>
                                 <FormSelectbox
                                     name='main_category'
                                     value={formData.main_category}
                                     onChange={handleFormCategory}
-                                    label={i18next.t('admin.item.main')}
+                                    label={t('admin.item.main')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={styles.mb_16}
                                 >
-                                    <option value={''}>{i18next.t('admin.not-set')}</option>
+                                    <option value={''}>{t('admin.not-set')}</option>
                                     { main_categories && main_categories.filter((category) => Number(formData.gender_category) === category.parent_id).map((category) => (
                                         <option key={category.id} value={category.id}>{category.category_name}</option>
                                     ))}
@@ -240,12 +238,12 @@ function ItemEdit(props) {
                                     name='sub_category'
                                     value={formData.sub_category}
                                     onChange={handleFormCategory}
-                                    label={i18next.t('admin.item.sub')}
+                                    label={t('admin.item.sub')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                 >
-                                    <option value={''}>{i18next.t('admin.not-set')}</option>
+                                    <option value={''}>{t('admin.not-set')}</option>
                                         {   sub_categories && sub_categories.filter((category) => Number(formData.main_category) === category.parent_id).map((category) => (
                                             <option key={category.id} value={category.id}>{category.category_name}</option>
                                         ))}
@@ -254,7 +252,7 @@ function ItemEdit(props) {
                             <div className={styles.flex_basis_50}>
                                 <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                     <Badge text={'3'} type={'number'} className={styles.mr_8}/>
-                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.tag')}</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{t('admin.item.tag')}</Heading>
                                     <div className={styles.heading_border}></div>
                                 </div>
                                 <div>
@@ -294,7 +292,7 @@ function ItemEdit(props) {
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'4'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.sku')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{t('admin.item.sku')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={styles.mb_16}>
@@ -330,14 +328,14 @@ function ItemEdit(props) {
                                 onClick={() => handleInsertObjectForm('skus',['item_id'])} 
                                 className={[styles.block, styles.ml_auto].join(' ')}
                             >
-                                {i18next.t('admin.item.add-form')}
+                                {t('admin.item.add-form')}
                             </Button>
                         </div>
 
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'5'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.image')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{t('admin.item.image')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={styles.mb_16}>
@@ -372,14 +370,14 @@ function ItemEdit(props) {
                                 onClick={() => handleInsertObjectForm('images',['item_id'])} 
                                 className={[styles.block, styles.ml_auto].join(' ')}
                             >
-                                {i18next.t('admin.item.add-form')}
+                                {t('admin.item.add-form')}
                             </Button>
                         </div>
 
                         <div className={styles.mb_32}>
                             <div className={[styles.flex, styles.align_center, styles.mb_16 ].join(' ')}>
                                 <Badge text={'6'} type={'number'} className={styles.mr_8}/>
-                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{i18next.t('admin.item.measurement')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={styles.item_heading}>{t('admin.item.measurement')}</Heading>
                                 <div className={styles.heading_border}></div>
                             </div>
                             <div className={styles.mb_16}>
@@ -414,7 +412,7 @@ function ItemEdit(props) {
                                 onClick={() => handleInsertObjectForm('measurements',['item_id'])} 
                                 className={[styles.block, styles.ml_auto].join(' ')}
                             >
-                                {i18next.t('admin.item.add-form')}
+                                {t('admin.item.add-form')}
                             </Button>
                         </div>
 
@@ -422,19 +420,19 @@ function ItemEdit(props) {
                             name='is_published'
                             value={formData.is_published}
                             onChange={handleFormData}
-                            label={i18next.t('admin.set-published-status')}
+                            label={t('admin.set-published-status')}
                             error={errorMessage}
                             validation={validation}
                             valid={valid}
                             className={styles.mb_40}
                         >
-                            <option value={0}>{i18next.t('admin.unpublished')}</option>
-                            <option value={1}>{i18next.t('admin.published')}</option>
+                            <option value={0}>{t('admin.unpublished')}</option>
+                            <option value={1}>{t('admin.published')}</option>
                         </FormSelectbox>
 
                         <div className={[styles.flex, styles.justify_center].join(' ')}>
-                            <LinkBtn to={`/admin/items`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
-                            <Button size='l' color='primary' onClick={handleFormSubmit} className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
+                            <LinkBtn to={`/admin/items`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{t('admin.back-btn')}</LinkBtn>
+                            <Button size='l' color='primary' onClick={handleFormSubmit} className={[styles.ml_12, styles.w_100].join(' ')}>{t('admin.update')}</Button>
                         </div>
                     </div>
                 </div>

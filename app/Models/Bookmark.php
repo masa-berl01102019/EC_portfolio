@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Bookmark extends Model
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    // use SoftDeletes; // 論理削除
+    use HasFactory;
+    // use SoftDeletes;
     use AccessorPriceTrait;
     use OrderByCreatedAtScopeTrait;
     use OrderByUpdatedAtScopeTrait;
@@ -31,18 +31,16 @@ class Bookmark extends Model
     use FilterSizeScopeTrait;
     use CustomPaginateScopeTrait;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** static method */
+    /** Static method */
 
     static function getUserBookmark($user_id)
     {
-        // userに紐づいてるブックマークを取得 *削除されてないかつ現在も公開されてる商品のsku_idの配列を返却
+        // Get bookmarks related with user ID which will be passed * Return an array includes sku ID of item which is published and not deleted
         return Self::where('user_id', $user_id)
             ->join('skus', 'bookmarks.sku_id', '=', 'skus.id')
             ->join('items', function ($join) {
@@ -52,7 +50,7 @@ class Bookmark extends Model
             ->toArray();
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function user()
     {

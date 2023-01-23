@@ -6,21 +6,17 @@ import Text from '../../../atoms/Text/Text';
 import Mask from '../../../atoms/Mask/Mask';
 import GlobalMenu from '../GlobalMenu/GlobalMenu';
 import ItemSearchModal from '../modal/ItemSearchModal';
-import { useRecoilState } from 'recoil';
-import { langState } from '../../../store/langState';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 export const Header = ({...props}) => {
 
     const [openMenu, setOpenMenu] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [openPulldown, setOpenPulldown] = useState(false);
-    const i18next = useI18next();
-    const [lang, setLang] = useRecoilState(langState);
+    const { t, i18n } = useTranslation();
 
     const handleChangeLanguage = e => {
-        setLang(e);
-        i18next.changeLanguage(e);
+        i18n.changeLanguage(e);
         localStorage.setItem('lang', e);
         setOpenPulldown(!openPulldown);
     }
@@ -35,11 +31,11 @@ export const Header = ({...props}) => {
                             <Link to="/"><Text size='xl' className={styles.bold}>EC APP</Text></Link>
                         </div>
                         <div className={styles.relative}>
-                            <Text className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{lang.toUpperCase()}</Text>
+                            <Text className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{localStorage.getItem('lang').toUpperCase()}</Text>
                             {   openPulldown && 
                                 <ul className={styles.pulldown}>
-                                    <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('en')}>{i18next.t('common.lang-en')}</li>
-                                    <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('ja')}>{i18next.t('common.lang-ja')}</li>
+                                    <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('en')}>{t('common.lang-en')}</li>
+                                    <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('ja')}>{t('common.lang-ja')}</li>
                                 </ul>
                             }
                         </div>

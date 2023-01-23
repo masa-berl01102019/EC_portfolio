@@ -16,7 +16,7 @@ const CompletePopup = ({
       <Mask>
         <div className={styles.content} {...props}>
           <Image src='/img/complete_icon.svg' type='info_list' className={styles.img} />
-          <Text size='xl' role='reverse' className={styles.nowrap}>{children}</Text>
+          <Text size='xl' role='reverse' className={[styles.nowrap, styles.text_center].join(' ')}>{children}</Text>
         </div>
       </Mask>
     );

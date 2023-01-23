@@ -11,7 +11,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class BookmarkResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -25,14 +24,13 @@ class BookmarkResource extends JsonResource
      */
     public function toArray($request)
     {
-        // 同一ユーザーのカート商品のSKUのIDを配列で取得
         $cart_item_arr = Cart::getUserCart(optional(Auth::guard('user')->user())->id);
 
         return [
             'id' => $this->id,
             'sku_id' => $this->sku_id,
-            'cart_status' => in_array($this->sku_id, $cart_item_arr) ? 1 : 0, // cartにも入ってるか？
-            'stock_status' => $this->sku->quantity > 0 ? 1 : 0, // 在庫状況
+            'cart_status' => in_array($this->sku_id, $cart_item_arr) ? 1 : 0, // check if it's in cart
+            'stock_status' => $this->sku->quantity > 0 ? 1 : 0,
             'item_id' => $this->item_id,
             'size_name' => Size::where('id', $this->size_id)->first()->size_name,
             'color_name' => Color::where('id', $this->color_id)->first()->color_name,
@@ -41,6 +39,5 @@ class BookmarkResource extends JsonResource
             'brand_name' => $this->brand_name,
             'top_image' => $this->sku->item->topImage->first()->image,
         ];
-    } 
-    
+    }
 }

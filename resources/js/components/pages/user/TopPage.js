@@ -15,8 +15,9 @@ import RadioBoxTab from '../../atoms/RadioboxTab/RadioBoxTab';
 import Image from '../../atoms/Image/Image';
 import styles from './styles.module.css';
 import LinkBtn from '../../atoms/LinkButton/LinkBtn';
-import useI18next from '../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
+// TODO: Create carousel UI to show the thumbnails of blogs and news to want to promote 
 
 function TopPage() {
 
@@ -27,7 +28,7 @@ function TopPage() {
     const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     const [cookies, setCookie] = useCookies();
     const {data:items, blogs, news, notifications, ranked_items, recommend_items} = data;
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
@@ -70,10 +71,10 @@ function TopPage() {
                     />
                 </div>
 
-                <Image src={'https://via.placeholder.com/640x480.png/003333?text=BLOG+et'} type='demo' className={styles.top_img} alt="TOP IMAGE" />
+                <Image src='/img/top_image.jpg' type='demo' className={styles.top_img} alt="TOP IMAGE" />
                 
                 {   notifications &&
-                    <div className={styles.mb_40}> 
+                    <div className={styles.mb_56}> 
                         {                        
                             notifications.map((notification) =>
                                 <NotificationList
@@ -90,7 +91,7 @@ function TopPage() {
 
                 <div className={styles.main_contents_area}>
 
-                    <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>{i18next.t('user.top.new-arrivals')}</Heading>
+                    <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>{t('user.top.new-arrivals')}</Heading>
                     {
                         items &&
                         <div className={styles.search_item_area}> 
@@ -109,9 +110,9 @@ function TopPage() {
                             }
                         </div>
                     }
-                    <LinkBtn to={'/items/new'} color='link' className={styles.view_all_btn}>{i18next.t('user.top.view-all')}</LinkBtn>
+                    <LinkBtn to={'/items/new'} color='link' className={styles.view_all_btn}>{t('user.top.view-all')}</LinkBtn>
     
-                    <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>{i18next.t('user.top.recommend-item')}</Heading>
+                    <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>{t('user.top.recommend-item')}</Heading>
                     {
                         recommend_items && 
                         <div className={styles.search_item_area}> 
@@ -130,9 +131,9 @@ function TopPage() {
                             }
                         </div>
                     }
-                    <LinkBtn to={'/items/recommend'} color='link' className={styles.view_all_btn}>{i18next.t('user.top.view-all')}</LinkBtn>
+                    <LinkBtn to={'/items/recommend'} color='link' className={styles.view_all_btn}>{t('user.top.view-all')}</LinkBtn>
     
-                    <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>{i18next.t('user.top.ranking')}</Heading>
+                    <Heading tag={'h2'} tag_style={'h1'} className={[styles.mb_16, styles.text_center, styles.title].join(' ')}>{t('user.top.ranking')}</Heading>
                     {
                         ranked_items &&
                         <div className={styles.search_item_area}>
@@ -151,17 +152,17 @@ function TopPage() {
                         }
                         </div>
                     }
-                    <LinkBtn to={'/items/rank'} color='link' className={styles.view_all_btn}>{i18next.t('user.top.view-all')}</LinkBtn>
+                    <LinkBtn to={'/items/rank'} color='link' className={styles.view_all_btn}>{t('user.top.view-all')}</LinkBtn>
 
                     <div className={styles.blog_news_wrap}>
                         <div className={styles.news_wrap}>
                             <div className={[styles.mb_16, styles.flex, styles.align_center, styles.justify_between].join(' ')}>
-                                <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>{i18next.t('user.top.news')}</Heading>
-                                <Link to="/news">{i18next.t('user.top.to-list-page')}</Link>
+                                <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>{t('user.top.news')}</Heading>
+                                <Link to="/news">{t('user.top.to-list-page')}</Link>
                             </div>
                             {
                                 news &&
-                                <div className={styles.mb_40}> 
+                                <div className={styles.mb_56}> 
                                     {                        
                                         news.map((item) =>
                                             <InfoCard
@@ -180,12 +181,12 @@ function TopPage() {
                         </div>
                         <div className={styles.blog_wrap}>
                             <div className={[styles.mb_16, styles.flex, styles.align_center, styles.justify_between].join(' ')}>
-                                <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>{i18next.t('user.top.blog')}</Heading>
-                                <Link to="/blogs">{i18next.t('user.top.to-list-page')}</Link>
+                                <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>{t('user.top.blog')}</Heading>
+                                <Link to="/blogs">{t('user.top.to-list-page')}</Link>
                             </div>
                             {
                                 blogs &&
-                                <div className={styles.mb_40}>
+                                <div className={styles.mb_56}>
                                     {                        
                                         blogs.map((blog) =>
                                             <InfoCard
@@ -205,7 +206,7 @@ function TopPage() {
                     </div>
 
                     <div className={styles.mb_16}>
-                        <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>{i18next.t('user.top.view-record')}</Heading>
+                        <Heading tag={'h2'} tag_style={'h1'} className={styles.title}>{t('user.top.view-record')}</Heading>
                     </div>
                     <div className={[styles.flex, styles.scroll_x].join(' ')}>
                     { JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&

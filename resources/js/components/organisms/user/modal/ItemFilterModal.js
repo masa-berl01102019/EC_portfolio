@@ -11,7 +11,7 @@ import Mask from '../../../atoms/Mask/Mask';
 import Button from '../../../atoms/Button/Button';
 import CheckboxTab from '../../../molecules/Tab/CheckboxTab';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const ItemFilterModal = ({
       brands,
@@ -27,31 +27,31 @@ const ItemFilterModal = ({
 
     const params = useRecoilValue(paramState(model));
     const {handleFilter, handleFilterCheckbox, handleFilterCategory, handleSort} = useCreateParams(model);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
       <Mask>
         <div className={styles.container}>
 
-          <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>{i18next.t('user.set-filter')}</Text>
+          <Text size='l' className={[styles.mb_24, styles.text_center].join(' ')}>{t('user.set-filter')}</Text>
 
           <div className={styles.mb_16}>
             <label htmlFor='search'>
-                <Text className={styles.mb_8}>{i18next.t('user.keyword')}</Text>
+                <Text className={styles.mb_8}>{t('user.keyword')}</Text>
             </label>
             <InputText 
                 type='text' 
                 name='search' 
                 onBlur={handleFilter} 
                 value={params.filter.search} 
-                placeholder={i18next.t('user.item.keyword-ex')}
+                placeholder={t('user.item.keyword-ex')}
                 className={styles.w_100}
             />
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.item.brand')}</Text>
-            <CheckboxTab tabName={i18next.t('user.item.brand-ex')}>
+            <Text className={styles.mb_8}>{t('user.item.brand')}</Text>
+            <CheckboxTab tabName={t('user.item.brand-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   brands &&
                     brands.map((brand) =>
@@ -83,11 +83,11 @@ const ItemFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.item.category')}</Text>
+            <Text className={styles.mb_8}>{t('user.item.category')}</Text>
             {   gender_categories && main_categories && sub_categories && 
                 <div className={styles.flex}>
                     <div className={styles.mb_8}>
-                        <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilterCategory} defaultOption={i18next.t('user.item.gender-category-ex')}> 
+                        <Pulldown name='gender_category' value={params.filter.gender_category} onChange={handleFilterCategory} defaultOption={t('user.item.gender-category-ex')}> 
                             {   gender_categories.map((category) => 
                                     <option key={category.id} value={category.id}>{category.category_name}</option>
                                 )
@@ -95,7 +95,7 @@ const ItemFilterModal = ({
                         </Pulldown>
                     </div>
                     <div className={styles.mb_8}>
-                        <Pulldown name='main_category' value={params.filter.main_category} onChange={handleFilterCategory} defaultOption={i18next.t('user.item.main-category-ex')}> 
+                        <Pulldown name='main_category' value={params.filter.main_category} onChange={handleFilterCategory} defaultOption={t('user.item.main-category-ex')}> 
                             {   main_categories.filter((category) => Number(params.filter.gender_category) === category.parent_id).map((category) => (
                                     <option key={category.id} value={category.id}>{category.category_name}</option>
                                 ))
@@ -103,7 +103,7 @@ const ItemFilterModal = ({
                         </Pulldown>
                     </div>
                     <div>
-                        <Pulldown name='sub_category' value={params.filter.sub_category} onChange={handleFilterCategory} defaultOption={i18next.t('user.item.sub-category-ex')}> 
+                        <Pulldown name='sub_category' value={params.filter.sub_category} onChange={handleFilterCategory} defaultOption={t('user.item.sub-category-ex')}> 
                             {   sub_categories.filter((category) => Number(params.filter.main_category) === category.parent_id).map((category) => (
                                     <option key={category.id} value={category.id}>{category.category_name}</option>
                                 ))
@@ -115,8 +115,8 @@ const ItemFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.item.size')}</Text>
-            <CheckboxTab tabName={i18next.t('user.item.size-ex')}>
+            <Text className={styles.mb_8}>{t('user.item.size')}</Text>
+            <CheckboxTab tabName={t('user.item.size-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   sizes &&
                     sizes.map((size) =>
@@ -148,8 +148,8 @@ const ItemFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.item.color')}</Text>
-            <CheckboxTab tabName={i18next.t('user.item.color-ex')}>
+            <Text className={styles.mb_8}>{t('user.item.color')}</Text>
+            <CheckboxTab tabName={t('user.item.color-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   colors &&
                     colors.map((color) =>
@@ -181,8 +181,8 @@ const ItemFilterModal = ({
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.item.tag')}</Text>
-            <CheckboxTab tabName={i18next.t('user.item.tag-ex')}>
+            <Text className={styles.mb_8}>{t('user.item.tag')}</Text>
+            <CheckboxTab tabName={t('user.item.tag-ex')}>
               <div className={[styles.flex_column, styles.scroll_area].join(' ')}>
                 {   tags &&
                     tags.map((tag) =>
@@ -215,7 +215,7 @@ const ItemFilterModal = ({
 
           <div className={styles.mb_16}>
             <label htmlFor='price_from'>
-              <Text className={styles.mb_8}>{i18next.t('user.item.price-range')}</Text>
+              <Text className={styles.mb_8}>{t('user.item.price-range')}</Text>
             </label>
             <div className={[styles.flex_row, styles.align_center].join(' ')}>
               <InputText 
@@ -223,7 +223,7 @@ const ItemFilterModal = ({
                   name='price_from' 
                   onBlur={handleFilter} 
                   value={params.filter.price_from} 
-                  placeholder={i18next.t('user.item.price-low-ex')}
+                  placeholder={t('user.item.price-low-ex')}
                   className={styles.w_100}
               />
               <Text className={styles.ma}>~</Text>
@@ -232,21 +232,21 @@ const ItemFilterModal = ({
                   name='price_to' 
                   onBlur={handleFilter} 
                   value={params.filter.price_to} 
-                  placeholder={i18next.t('user.item.price-high-ex')}
+                  placeholder={t('user.item.price-high-ex')}
                   className={styles.w_100}
               />
             </div>
           </div>
 
           <div className={styles.mb_16}>
-            <Text className={styles.mb_8}>{i18next.t('user.item.stock-status')}</Text>
-            <Pulldown name='stock_status' value={params.filter.stock_status} onChange={handleFilter} defaultOption={i18next.t('user.not-set')}>
-                <option value={'0'}>{i18next.t('user.item.all')}</option>
-                <option value={'1'}>{i18next.t('user.item.stock-only')}</option>
+            <Text className={styles.mb_8}>{t('user.item.stock-status')}</Text>
+            <Pulldown name='stock_status' value={params.filter.stock_status} onChange={handleFilter} defaultOption={t('user.not-set')}>
+                <option value={'0'}>{t('user.item.all')}</option>
+                <option value={'1'}>{t('user.item.stock-only')}</option>
             </Pulldown>
           </div>
 
-          <Button className={styles.close_btn} onClick={onClick}>{i18next.t('user.close-btn')}</Button>
+          <Button className={styles.close_btn} onClick={onClick}>{t('user.close-btn')}</Button>
 
         </div>
       </Mask>

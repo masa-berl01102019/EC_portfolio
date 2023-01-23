@@ -20,8 +20,8 @@ class CreateCartsTable extends Migration
             $table->unsignedInteger('sku_id');
             $table->foreign('sku_id')->references('id')->on('skus');
             $table->integer('quantity');
-            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
-            $table->softDeletes(); // 論理削除
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

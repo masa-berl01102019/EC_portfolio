@@ -14,25 +14,25 @@ class CartFactory extends Factory
 
     public function definition()
     {
-        // ランダムに会員インスタンスを取得
+        // Get the instance of user randomly
         $user = User::inRandomOrder()->first();
 
-        if($user->gender == 0 || $user->gender == 1) { // 0:man 1:woman 2:others 3:no answer
-            // 会員が男性か女性を判定して性別カテゴリのIDをセット * 1 => 'メンズ', 2 => 'レディース'
+        if ($user->gender == 0 || $user->gender == 1) { // 0:man 1:woman 2:others 3:no answer
+            // Set gender category ID after checking if user is man or woman  * 1:men  2:women
             $gender_category = $user->gender == 0 ? 1 : 2;
-            // 該当の性別カテゴリの商品IDを配列に格納
+            // Store item ID of gender category which is correspond with user's gender in array
             $items_id_arr = Item::with('categories')->whereHas('categories', function ($query) use ($gender_category) {
                 return $query->where('categories.id', $gender_category);
             })->pluck('id')->toArray();
-            // ランダムに商品IDを取り出し該当のSKUの中からさらにランダムに1つインスタンスを取得
+            // Get random item ID from an array, and get an instance of sku which is related with this item id randomly
             $sku = Sku::where('item_id', $this->faker->randomElement($items_id_arr))->inRandomOrder()->first();
         } else {
-            // ランダムにSKUインスタンスを取得
+            // Get the instance of sku randomly
             $sku = Sku::inRandomOrder()->first();
         }
 
-        // 商品が登録されてないもしくはユーザーが登録さてない状態ではブックマーク出来ないので、作成日を比較して最新の日時を取得
-        $created_date = ($user->created_at > $sku->created_at)? $user->created_at: $sku->created_at;
+        // Get the latest date compare with created date of user and sku
+        $created_date = ($user->created_at > $sku->created_at) ? $user->created_at : $sku->created_at;
 
         return [
             'user_id' => $user->id,

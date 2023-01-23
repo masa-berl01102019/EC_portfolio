@@ -15,22 +15,22 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('brand_id'); // 外部キー
-            $table->foreign('brand_id')->references('id')->on('brands'); // 外部キー
-            $table->unsignedInteger('admin_id'); // 外部キー
-            $table->foreign('admin_id')->references('id')->on('admins'); // 外部キー
+            $table->unsignedInteger('brand_id');
+            $table->foreign('brand_id')->references('id')->on('brands');
+            $table->unsignedInteger('admin_id');
+            $table->foreign('admin_id')->references('id')->on('admins');
             $table->string('item_name', 100);
             $table->string('product_number', 50);
             $table->unsignedInteger('price');
-            // 価格テーブルを分けて複数付けられる形(割引も含めて)か割引テーブルを作ってそれを設定する形にするか要検討
+            // TODO: Create price table or create discount table
             $table->unsignedInteger('cost');
             $table->text('description');
             $table->string('mixture_ratio', 255);
             $table->string('made_in', 80);
-            $table->boolean('is_published'); // 0: 未公開 1: 公開
+            $table->boolean('is_published'); // 0: Unpublished 1: Published
             $table->dateTime('posted_at')->nullable();
             $table->dateTime('modified_at')->nullable();
-            $table->softDeletes(); // 論理削除
+            $table->softDeletes();
         });
     }
 

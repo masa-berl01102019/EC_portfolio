@@ -10,6 +10,10 @@ import Heading from '../../../atoms/Heading/Heading';
 import Image from '../../../atoms/Image/Image';
 import styles from '../styles.module.css';
 
+// TODO: Create breadcrumb lists
+// TODO: Add related tag lists
+// TODO: Add browser history lists
+
 function NewsShowPage(props) {
 
     const baseUrl = `/api/user/news/${props.match.params.id}`;
@@ -20,13 +24,12 @@ function NewsShowPage(props) {
     const news = data.news;
 
     useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にnewsが入ってこない場合があるので条件分岐してあげる
         if(news) {
-            // newsの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
+            // Convert the body of news which is stored as JSON into contentState * Judge if it's HTML or JSON because demo data is stored as HTML 
             const contentState = isJson(news.body) ? convertFromRaw(JSON.parse(news.body)) : stateFromHTML(news.body);
-            // contentStateをeditorStateに変換
+            // Convert contentState into editorState
             const editorState = EditorState.createWithContent(contentState);
-            // editorStateをdraft.jsにセット
+            // Set editorState to draft.js
             setEditorState(editorState);
         }
     },[]);

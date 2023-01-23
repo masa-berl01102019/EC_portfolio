@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Blog;
@@ -15,26 +16,22 @@ class BlogTagTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('blog_tag')->truncate(); // テーブルごと削除して再構築
+        DB::table('blog_tag')->truncate();
 
-        // ブログを全件取得
         $blogs = Blog::all();
 
-        // 配列の初期化
         $blog_tag = [];
 
-        // タグIDをすべて配列で取得
         $tags_id = Tag::pluck('id')->all();
 
-        // for文で展開
-        foreach($blogs as $blog) {
+        foreach ($blogs as $blog) {
 
-            // 2~6個のランダムなタグIDの配列を生成
-            $random_tag_arr = array_rand($tags_id, rand(2,6));
+            // Generate an array which stored tag ID from 2 to 6 randomly
+            $random_tag_arr = array_rand($tags_id, rand(2, 6));
 
-            for($n = 0; $n < count($random_tag_arr); $n++) {
+            for ($n = 0; $n < count($random_tag_arr); $n++) {
                 $blog_tag[] = [
                     'blog_id' => $blog->id,
                     'tag_id' => $random_tag_arr[$n],
@@ -42,8 +39,8 @@ class BlogTagTableSeeder extends Seeder
             }
         }
 
-        DB::table('blog_tag')->insert($blog_tag); // データの挿入
+        DB::table('blog_tag')->insert($blog_tag);
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

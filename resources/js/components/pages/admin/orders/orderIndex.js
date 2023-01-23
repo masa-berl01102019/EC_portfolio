@@ -11,7 +11,7 @@ import { paramState } from '../../../store/paramState';
 import OrderSidebar from '../../../organisms/admin/SideBar/OrderSidebar';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const OrderIndex = () => {
 
@@ -22,14 +22,14 @@ const OrderIndex = () => {
     const orders = data.data? data.data: null;
     const [open, setOpen] = useState(false);
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
             setParams({
                 paginate: {},
                 sort: { 'total_amount' : '', 'created_at' : '', 'delivery_date' : '', 'updated_at' : ''},
-                filter: { 'payment_method' : '', 'is_paid' : '', 'is_shipped' : '', 'target_span' : '', 'from' : null, 'to' : null},
+                filter: { 'search' : '', 'payment_method' : '', 'is_paid' : '', 'is_shipped' : '', 'target_span' : '', 'from' : null, 'to' : null},
                 scope: model
             });
         }
@@ -45,9 +45,9 @@ const OrderIndex = () => {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                {i18next.t('admin.order.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
+                                {t('admin.order.index-title')} { data.meta && ` ( ${data.meta.total} ${t('admin.hits')} )`}
                             </Heading>
-                            <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{i18next.t('admin.detail-search')}</FilterSortBtn>
+                            <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{t('admin.detail-search')}</FilterSortBtn>
                         </div>
 
                         <OrderTable orders={orders} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />

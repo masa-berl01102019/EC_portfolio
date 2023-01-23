@@ -39,17 +39,14 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        // すでにログイン済みかどうかのチェックしてリダイレクトするミドルウェアを適用
         $this->middleware('auth:user');
     }
 
-    // Guardの認証方法を指定
     protected function guard()
     {
         return Auth::guard('user');
     }
 
-    // 新規登録画面の表示
     public function showRegistrationForm()
     {
         return view('user.auth.register');

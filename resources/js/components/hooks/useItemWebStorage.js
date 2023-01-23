@@ -4,14 +4,13 @@ const useItemWebStorage = () => {
 
     const handleViewItemWebStorage = (item, cookie_id_arr = []) => {
         
-        //  local_storageの商品情報をdecodeして変数に格納 
+        //  Decode item info from local storage and assign it to variable
         const local_storage = JSON.parse(localStorage.getItem('viewed_items'));
-        //  cookieが消えてもlocalStrageは残り続けてしまうのでcookieと同期
+        //  Synchronize localStrage with cookie because value which is stored in localStorage leave permanently.
         const storage_arr = local_storage && local_storage.length > 0 ? local_storage.filter(list => cookie_id_arr.includes(list.id)) : [];
-        // local_storageの商品情報からIDのみを配列で抜き出す;
+        // Pull item ID out from localStorage
         const storage_id_arr = storage_arr.length > 0 ? storage_arr.map(list => list.id) : [];
 
-        // オブジェクトの生成
         const storage_info = {
             'id' : item.id,
             'brand_name' : item.brand_name,
@@ -21,11 +20,11 @@ const useItemWebStorage = () => {
             'url' : window.location.href,
         };
 
-        // localStorageに保存されてる商品IDと渡ってきたIDが一致しないもしくは空の場合
+        // Check if item ID which is stored in localStorage correspond with item ID passed by argument , or arrays is empty
         if(!storage_id_arr.includes(item.id) || storage_arr.length == 0) {
-            // 配列の先頭に追加
+            // Added item ID to arrays
             storage_arr.unshift(storage_info);
-            // local storageに保存
+            // Store item ID in localStorage
             localStorage.setItem('viewed_items', JSON.stringify(storage_arr));
         }
 

@@ -15,7 +15,7 @@ import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import FormDatePicker from '../../../molecules/Form/FormDatePicker';
 import useNotify from '../../../context/NotifyContext';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 
 function NotificationEdit(props) {
@@ -28,12 +28,12 @@ function NotificationEdit(props) {
     const history = useHistory();
     const openAdminMenu = useRecoilValue(menuAdminState);
     const confirm = useNotify();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     const handleConfirmUpdate = async () => {
         const result = await confirm({
-            body : i18next.t('admin.notification.confirm-msg'),
-            confirmBtnLabel : i18next.t('admin.yes-btn')
+            body : t('admin.notification.confirm-msg'),
+            confirmBtnLabel : t('admin.yes-btn')
         });
         result && updateData({
             form: formData, 
@@ -46,7 +46,7 @@ function NotificationEdit(props) {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.notification.edit-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.notification.edit-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -68,22 +68,22 @@ function NotificationEdit(props) {
                                 name={'title'}
                                 onChange={handleFormData}
                                 value={formData.title}
-                                label={i18next.t('admin.notification.title')}
+                                label={t('admin.notification.title')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.notification.title-ex')}
+                                placeholder={t('admin.notification.title-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputTextarea
                                 name={'body'} 
                                 value={formData.body}
                                 onChange={handleFormData} 
-                                label={i18next.t('admin.notification.body')}
+                                label={t('admin.notification.body')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.notification.body-ex')}
+                                placeholder={t('admin.notification.body-ex')}
                                 className={styles.mb_16}
                                 style={{'minHeight' : '250px'}}
                             />
@@ -93,20 +93,20 @@ function NotificationEdit(props) {
                                     name='is_published'
                                     value={formData.is_published}
                                     onChange={handleFormData}
-                                    label={i18next.t('admin.set-published-status')}
+                                    label={t('admin.set-published-status')}
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
                                     className={[styles.flex_grow, styles.mr_24, styles.mb_16_sp].join(' ')}
                                 >
-                                    <option value={0}>{i18next.t('admin.unpublished')}</option>
-                                    <option value={1}>{i18next.t('admin.published')}</option>
+                                    <option value={0}>{t('admin.unpublished')}</option>
+                                    <option value={1}>{t('admin.published')}</option>
                                 </FormSelectbox>
                                 <FormDatePicker
                                     name={'expired_at'} 
                                     value={formData.expired_at} 
                                     onChange={handleFormDate} 
-                                    label={i18next.t('admin.notification.expired-date')}
+                                    label={t('admin.notification.expired-date')}
                                     className={styles.mb_10} 
                                     error={errorMessage}
                                     validation={validation}
@@ -116,8 +116,8 @@ function NotificationEdit(props) {
                             </div>
                             
                             <div className={[styles.flex, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/notifications`} size='l' className={styles.mr_12} style={{'width': '100%'}} >{i18next.t('admin.back-btn')}</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.update')}</Button>
+                                <LinkBtn to={`/admin/notifications`} size='l' className={styles.mr_12} style={{'width': '100%'}} >{t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{t('admin.update')}</Button>
                             </div>
                         </form>
                     </div>

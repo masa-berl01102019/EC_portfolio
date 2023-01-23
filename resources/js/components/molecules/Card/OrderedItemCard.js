@@ -4,7 +4,7 @@ import Image from '../../atoms/Image/Image';
 import Text from '../../atoms/Text/Text';
 import styles from './styles.module.css';
 import CartBtn from '../IconBtn/CartBtn';
-import useI18next from '../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const OrderedItemCard = ({
     src,
@@ -24,7 +24,7 @@ const OrderedItemCard = ({
     ...props
   }) => {
 
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   return (
     <div {...props} className={[styles.flex, styles.mb_32, styles.ordered_item_card].join(' ')}>
@@ -34,11 +34,11 @@ const OrderedItemCard = ({
       <div className={styles.ordered_item_text_contents}>
         <Text className={[styles.card_text].join(' ')}>{brand_name}</Text>
         <Text className={[styles.card_text].join(' ')}>{item_name}</Text>
-        <Text className={[styles.card_text].join(' ')}>{price} ({i18next.t('user.tax-including')})</Text>
+        <Text className={[styles.card_text].join(' ')}>{price} ({t('user.tax-including')})</Text>
         <Text className={[styles.card_text].join(' ')}>{color_name} / {size_name}</Text>
         <Text className={[styles.card_text].join(' ')}>{created_at}</Text>
         <CartBtn size='s' color='reverse' onClick={ () => create_method() } disabled={cart_status !== 0 || stock_status === 0 || is_published !== 1 || delete_status === 1} style={{'width': '172px'}}>
-          {i18next.t('user.order.repurchase-btn')}
+          {t('user.order.repurchase-btn')}
         </CartBtn>
       </div>
     </div>

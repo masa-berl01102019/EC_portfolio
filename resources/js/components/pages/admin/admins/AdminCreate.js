@@ -12,7 +12,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function AdminCreate() {
 
@@ -31,13 +31,13 @@ function AdminCreate() {
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'admin_create');
     const history = useHistory();
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.admin.create-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.admin.create-title')}</Heading>
                     <div className={styles.form_area}>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -51,7 +51,7 @@ function AdminCreate() {
                                 });
                             }
                         }}>
-                            <Text className={styles.mb_8}>{i18next.t('admin.admin.name')}</Text>
+                            <Text className={styles.mb_8}>{t('admin.admin.name')}</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText
                                     name={'last_name'}
@@ -60,7 +60,7 @@ function AdminCreate() {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.admin.last-name-ex')}
+                                    placeholder={t('admin.admin.last-name-ex')}
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
@@ -70,11 +70,11 @@ function AdminCreate() {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.admin.first-name-ex')}
+                                    placeholder={t('admin.admin.first-name-ex')}
                                     className={styles.flex_basis_50}
                                 />
                             </div>
-                            <Text className={styles.mb_8}>{i18next.t('admin.admin.name-kana')}</Text>
+                            <Text className={styles.mb_8}>{t('admin.admin.name-kana')}</Text>
                             <div className={[styles.flex, styles.mb_16].join(' ')}>
                                 <FormInputText 
                                     name={'last_name_kana'} 
@@ -83,7 +83,7 @@ function AdminCreate() {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.admin.last-name-kana-ex')}
+                                    placeholder={t('admin.admin.last-name-kana-ex')}
                                     className={[styles.mr_24, styles.flex_basis_50].join(' ')}
                                 />
                                 <FormInputText
@@ -93,7 +93,7 @@ function AdminCreate() {
                                     error={errorMessage}
                                     validation={validation}
                                     valid={valid}
-                                    placeholder={i18next.t('admin.admin.first-name-kana-ex')}
+                                    placeholder={t('admin.admin.first-name-kana-ex')}
                                     className={styles.flex_basis_50}
                                 />
                             </div>
@@ -102,11 +102,11 @@ function AdminCreate() {
                                 type='tel'
                                 onChange={handleFormData}
                                 value={formData.tel}
-                                label={i18next.t('admin.admin.tel')}
+                                label={t('admin.admin.tel')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.admin.tel-ex')}
+                                placeholder={t('admin.admin.tel-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
@@ -114,11 +114,11 @@ function AdminCreate() {
                                 type={'email'}
                                 onChange={handleFormData}
                                 value={formData.email}
-                                label={i18next.t('admin.admin.email')}
+                                label={t('admin.admin.email')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.admin.email-ex')}
+                                placeholder={t('admin.admin.email-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
@@ -126,16 +126,16 @@ function AdminCreate() {
                                 type={'password'}
                                 onChange={handleFormData}
                                 value={formData.password}
-                                label={i18next.t('admin.admin.password')}
+                                label={t('admin.admin.password')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.admin.password-ex')}
+                                placeholder={t('admin.admin.password-ex')}
                                 className={styles.mb_40}
                             />
                             <div className={[styles.flex, styles.justify_center].join(' ')}>
-                                <LinkBtn to={`/admin/admins`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{i18next.t('admin.back-btn')}</LinkBtn>
-                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{i18next.t('admin.register')}</Button>
+                                <LinkBtn to={`/admin/admins`} size='l' className={styles.mr_12} style={{'width': '100%'}}>{t('admin.back-btn')}</LinkBtn>
+                                <Button size='l' color='primary' type="submit" className={[styles.ml_12, styles.w_100].join(' ')}>{t('admin.register')}</Button>
                             </div>
                         </form>
                     </div>

@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class UserResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -44,7 +43,7 @@ class UserResource extends JsonResource
                 'delivery_building' =>  $this->delivery_building,
                 'tel' =>  $this->tel,
                 'email' =>  $this->email,
-                // 'password' =>  $this->password, TODO: パスワードの変更時の要件を整理して実装する
+                // 'password' =>  $this->password, TODO: Implement it after organizing the requirement
                 'is_received' =>  $this->is_received,
             ];
         } else {
@@ -65,7 +64,5 @@ class UserResource extends JsonResource
                 'updated_at' => $this->updated_at->format('Y/m/d H:i'),
             ];
         }
-
-    } 
-    
+    }
 }

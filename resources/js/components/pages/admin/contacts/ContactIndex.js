@@ -11,7 +11,7 @@ import ContactTable from '../../../organisms/admin/Table/ContactTable';
 import ContactSidebar from '../../../organisms/admin/SideBar/ContactSidebar';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function ContactIndex() {
 
@@ -22,7 +22,7 @@ function ContactIndex() {
     const contacts = data.data? data.data: null;
     const [open, setOpen] = useState(false);
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
@@ -45,9 +45,9 @@ function ContactIndex() {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                {i18next.t('admin.contact.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
+                                {t('admin.contact.index-title')} { data.meta && ` ( ${data.meta.total} ${t('admin.hits')} )`}
                             </Heading>
-                            <FilterSortBtn onClick={() => setOpen(!open)}>{i18next.t('admin.detail-search')}</FilterSortBtn>
+                            <FilterSortBtn onClick={() => setOpen(!open)}>{t('admin.detail-search')}</FilterSortBtn>
                         </div>
 
                         <ContactTable contacts={contacts} deleteMethod={deleteData} csvOutputMethod={getCSVData} className={[styles.mb_16, styles.table_scroll_area].join(' ')} />

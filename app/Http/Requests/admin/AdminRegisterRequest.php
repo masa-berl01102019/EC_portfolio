@@ -31,8 +31,8 @@ class AdminRegisterRequest extends FormRequest
             'last_name_kana' => ['nullable', 'string', 'max:25', new Kana],
             'first_name_kana' => ['nullable', 'string', 'max:25', new Kana],
             'tel' => ['required', 'string', new JapanesePhoneNumber, 'max:15'],
-            'email' => 'required|email:strict,dns,spoof|max:100|unique:admins', // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
-            'password' => 'required|string|alpha_num|min:8|max:100', // hash::make()してても入力時100字以内ならバリデーション通る
+            'email' => 'required|email:strict,dns,spoof|max:100|unique:admins',
+            'password' => 'required|string|alpha_num|min:8|max:100'
         ];
     }
 }

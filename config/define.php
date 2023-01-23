@@ -3,6 +3,7 @@
 return [
     // DB const 
     'is_published' => ['close' => 0, 'open' => 1],
+    'gender_category' => ['men' => 1, 'women' => 2],
     'image_category' => ['main' => 0, 'thumbnail' => 1],
     'payment_status' => ['faile' => 0, 'success' => 1],
     'is_paid' => ['not_paid' => 0, 'paid' => 1],
@@ -10,16 +11,16 @@ return [
     // Mail
     'user_email' => [
         'from' => [
-            "address" => "no-reply@example.com",  // メール送信元アドレス
+            "address" => "no-reply@example.com",
         ],
     ],
     'admin_email' => [
         'from' => [
-            "address" => "test@example.com",  // メール送信元アドレス
+            "address" => "test@example.com",
         ],
         'to' => [
-            "sales_report" => "sales_report@example.com",  // 運営会社メールアドレス【注文連絡】
-            "support" => "support@example.com",  // 運営会社メールアドレス【サポート先】
+            "sales_report" => "sales_report@example.com",  // Operation company Email address 【For order】
+            "support" => "support@example.com",  // Operation company Email address 【For contact】
         ],
     ],
     'main_category' => [
@@ -62,7 +63,7 @@ return [
         // ladies one piece
         37013 => 110, 36893 => 111
     ],
-    // stripe決済手数料
+    // stripe commision fee
     'stripe_commision_fee' => 0.036,
     // API status
     'api_status' => ['success' => 1, 'error' => 9],

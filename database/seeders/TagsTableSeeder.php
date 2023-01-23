@@ -14,9 +14,9 @@ class TagsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('tags')->truncate(); // テーブルごと削除して再構築
+        DB::table('tags')->truncate();
 
         $tags = [
             'Holiday Look', 'Rainy Day Outfits', 'Outdoor', 'Elegance', 'Casual', 'Collaborate with ◯◯ Brand', 'High-functional material', 'Quick-drying',
@@ -24,7 +24,6 @@ class TagsTableSeeder extends Seeder
         ];
 
         foreach ($tags as $value) {
-            // データの挿入
             DB::table('tags')->insert([
                 'tag_name' => $value,
                 'created_at' => '2010-04-01 00:00:00',
@@ -32,6 +31,6 @@ class TagsTableSeeder extends Seeder
             ]);
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

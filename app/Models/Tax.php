@@ -7,20 +7,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tax extends Model
 {
-    use SoftDeletes; // 論理削除
+    use SoftDeletes;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** static method */
+    /** Static method */
 
-    static function getTaxRate() {
+    static function getTaxRate()
+    {
         $tax_rate = Self::where('from', '<', now())->where('to', '>', now())->first()->percentage;
         return $tax_rate / 100;
     }
-
 }

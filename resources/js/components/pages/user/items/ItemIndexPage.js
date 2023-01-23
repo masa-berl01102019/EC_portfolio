@@ -13,7 +13,7 @@ import ItemSortModal from '../../../organisms/user/modal/ItemSortModal';
 import FilterBtn from '../../../molecules/IconBtn/FilterBtn';
 import SortBtn from '../../../molecules/IconBtn/SortBtn';
 import styles from '../styles.module.css';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function ItemIndexPage() {
 
@@ -24,7 +24,7 @@ function ItemIndexPage() {
     const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     const {data:items, brands, gender_categories, main_categories, sub_categories, sizes, colors, tags} = data;
     const [popup, setPopup] = useState('');
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
@@ -61,12 +61,12 @@ function ItemIndexPage() {
                             model={model}
                         />
                     }
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.item.index-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{t('user.item.index-title')}</Heading>
 
                     <div className={styles.main_contents_area}>
                         <div className={[styles.flex, styles.justify_between, styles.mb_16].join(' ')}>
-                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>{i18next.t('user.filter')}</FilterBtn>
-                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>{i18next.t('user.sort')}</SortBtn>
+                            <FilterBtn onClick={() => setPopup('1')} className={styles.filter_sort_btn}>{t('user.filter')}</FilterBtn>
+                            <SortBtn onClick={() => setPopup('2')} className={styles.filter_sort_btn}>{t('user.sort')}</SortBtn>
                         </div>
                         {   items &&
                             <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

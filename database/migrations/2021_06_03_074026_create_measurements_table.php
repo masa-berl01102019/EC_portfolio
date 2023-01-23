@@ -17,24 +17,24 @@ class CreateMeasurementsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('item_id');
             $table->foreign('item_id')->references('id')->on('items');
-            $table->unsignedInteger('size_id'); // 外部キー
-            $table->foreign('size_id')->references('id')->on('sizes'); // 外部キー
-            $table->unsignedInteger('width')->nullable(); // 身幅
-            $table->unsignedInteger('shoulder_width')->nullable(); // 肩幅
-            $table->unsignedInteger('raglan_sleeve_length')->nullable(); // 裄丈
-            $table->unsignedInteger('sleeve_length')->nullable(); // 袖丈
-            $table->unsignedInteger('length')->nullable(); // 着丈
-            $table->unsignedInteger('waist')->nullable(); // ウエスト
-            $table->unsignedInteger('hip')->nullable(); // ヒップ
-            $table->unsignedInteger('rise')->nullable(); // 股上
-            $table->unsignedInteger('inseam')->nullable(); // 股下
-            $table->unsignedInteger('thigh_width')->nullable(); // わたり(もも幅)
-            $table->unsignedInteger('outseam')->nullable(); // パンツ総丈
-            $table->unsignedInteger('sk_length')->nullable(); // スカート丈
-            $table->unsignedInteger('hem_width')->nullable(); // 裾幅
-            $table->unsignedInteger('weight')->nullable(); // 重量
-            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
-            $table->softDeletes(); // 論理削除
+            $table->unsignedInteger('size_id');
+            $table->foreign('size_id')->references('id')->on('sizes');
+            $table->unsignedInteger('width')->nullable();
+            $table->unsignedInteger('shoulder_width')->nullable();
+            $table->unsignedInteger('raglan_sleeve_length')->nullable();
+            $table->unsignedInteger('sleeve_length')->nullable();
+            $table->unsignedInteger('length')->nullable();
+            $table->unsignedInteger('waist')->nullable();
+            $table->unsignedInteger('hip')->nullable();
+            $table->unsignedInteger('rise')->nullable();
+            $table->unsignedInteger('inseam')->nullable();
+            $table->unsignedInteger('thigh_width')->nullable();
+            $table->unsignedInteger('outseam')->nullable();
+            $table->unsignedInteger('sk_length')->nullable();
+            $table->unsignedInteger('hem_width')->nullable();
+            $table->unsignedInteger('weight')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -1,29 +1,26 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, memo } from 'react';
 import {Link} from 'react-router-dom';
 import styles from './styles.module.css'
 import Icon from '../../../atoms/Icon/Icon';
 import { useRecoilState } from 'recoil';
 import { authAdminState } from '../../../store/authState';
 import { menuAdminState } from '../../../store/menuState';
-import { langState } from '../../../store/langState';
 import GlobalMenu from '../GlobalMenu/GlobalMenu'
 import useAuth from '../../../hooks/useAuth';
 import { CircularProgress } from '@material-ui/core';
 import Text from '../../../atoms/Text/Text';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
-export const Header = ({...props}) => {
+export const Header = memo(({...props}) => {
     
     const [isAdminLogin, setIsAdminLogin] = useRecoilState(authAdminState);
     const [openAdminMenu, setOpenAdminMenu] = useRecoilState(menuAdminState);
     const {data, errorMessage, handleLogout} = useAuth(`/api/admin/auth`, 'admin');
-    const i18next = useI18next();
     const [openPulldown, setOpenPulldown] = useState(false);
-    const [lang, setLang] = useRecoilState(langState);
+    const { t, i18n } = useTranslation();
 
     const handleChangeLanguage = e => {
-        setLang(e);
-        i18next.changeLanguage(e);
+        i18n.changeLanguage(e);
         localStorage.setItem('lang', e);
         setOpenPulldown(!openPulldown);
     }
@@ -47,11 +44,11 @@ export const Header = ({...props}) => {
                                     </>
                                 }
                                 <div className={styles.relative}>
-                                    <Text role='reverse' className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{lang.toUpperCase()}</Text>
+                                    <Text role='reverse' className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{localStorage.getItem('lang').toUpperCase()}</Text>
                                     {   openPulldown && 
                                         <ul className={styles.pulldown}>
-                                            <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('en')}>{i18next.t('common.lang-en')}</li>
-                                            <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('ja')}>{i18next.t('common.lang-ja')}</li>
+                                            <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('en')}>{t('common.lang-en')}</li>
+                                            <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('ja')}>{t('common.lang-ja')}</li>
                                         </ul>
                                     }
                                 </div>
@@ -61,19 +58,19 @@ export const Header = ({...props}) => {
                                             url: `/api/admin/logout`, 
                                             callback: () => setIsAdminLogin(false) 
                                         })
-                                    }} className={[styles.text, styles.ml].join(' ')}>{i18next.t('admin.header.logout')}</li>
+                                    }} className={[styles.text, styles.ml].join(' ')}>{t('admin.header.logout')}</li>
                                 ) : (
                                     <Link to="/admin/login" className={[styles.text, styles.ml].join(' ')}>
-                                        <li>{i18next.t('admin.header.login')}</li>
+                                        <li>{t('admin.header.login')}</li>
                                     </Link>
                                 )}
                             </ul>
                         </nav>
                     </header>
-                    { openAdminMenu && <GlobalMenu className={styles.global_menu} /> }
+                    { openAdminMenu && <GlobalMenu className={styles.global_menu} closeMethod={() => {setOpenAdminMenu(false)}}/> }
                 </>
             )
         }
         </Suspense>
     );
-}
+});

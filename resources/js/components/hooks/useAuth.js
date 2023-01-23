@@ -2,26 +2,27 @@ import {useQuery, useMutation, useQueryClient} from 'react-query';
 import axios from "axios";
 import useSetErrorMsg from "./useSetErrorMsg";
 
-const useAuth = (url, auth) => {
-    const locale = {'X-Request-Locale': localStorage.getItem('lang') || 'en'};
-    // error ハンドリング
-    const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
-    // Appのreact-queryのプロバイダーで渡したqueryClientを取得 * keyを指定してデータを再取得 / キャッシュを取得 / キャッシュを更新 等を行える
-    const queryClient = useQueryClient();
 
-    // CSRF初期化の関数
-    const initialCSRF = () => axios({ method: 'get', url: '/sanctum/csrf-cookie' }).then(res => console.log('CSRF初期化 成功', res.data)).catch(err => console.log('CSRF初期化 失敗', err));
+const useAuth = (url, auth) => {
+    // Get lang which has been used in browser from localStorage or assign default lang
+    const locale = {'X-Request-Locale': localStorage.getItem('lang') || 'en'};
+    // Call Error handling custom hook
+    const [errorMessage, {setErrorMessage, handleApiErrorMessage}] = useSetErrorMsg(null);
+    // Get queryClient which is passed by react-query provider in App.js
+    // * It can refetch data / get cache / update cache etc to designate key
+    const queryClient = useQueryClient();
+    // Function to initialize CSRF
+    const initialCSRF = (func) => axios({ method: 'get', url: '/sanctum/csrf-cookie' }).then(res => func());
 
     // Login check
     const {data : {data}} = useQuery(
         [auth, url],
         async () => {
             setErrorMessage(null);
-            await initialCSRF();
-            return await axios({ method: 'get', url: url, headers: locale });
+            return await initialCSRF(() => axios({ method: 'get', url: url, headers: locale }));
         },
         { 
-            onSuccess: (res) => console.log('success', res.data),
+            // onSuccess: (res) => console.log('success', res.data),
             onError: (err) =>  handleApiErrorMessage(err)
         }
     );
@@ -29,14 +30,13 @@ const useAuth = (url, auth) => {
     const {mutate: handleLogin} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
-            console.log('ログイン処理が呼ばれた', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            // console.log('Login', url, form, {...headers, ...locale});
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
-                console.log('success', res.data)
-                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                // console.log('success', res.data)
+                // Catch callback function as argument and execute if there is it, after API request is done successfully.
                 const {callback} = obj;
                 callback !== undefined && callback();
                 queryClient.invalidateQueries(auth);
@@ -48,14 +48,12 @@ const useAuth = (url, auth) => {
     const {mutate: handleLogout} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
-            console.log('ログアウト処理が呼ばれた', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            // console.log('Logout', url, form, {...headers, ...locale});
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
-                console.log('success', res.data)
-                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                // console.log('success', res.data)
                 const {callback} = obj;
                 callback !== undefined && callback();
                 queryClient.invalidateQueries(auth);
@@ -67,14 +65,12 @@ const useAuth = (url, auth) => {
     const {mutate: handleResetPasswordEmail} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
-            console.log('パスワード再設定メール送信', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            // console.log('send ResetPasswordEmail', url, form, {...headers, ...locale});
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
-                console.log('success', res.data)
-                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                // console.log('success', res.data)
                 const {callback} = obj;
                 callback !== undefined && callback();
                 queryClient.invalidateQueries(auth);
@@ -86,14 +82,12 @@ const useAuth = (url, auth) => {
     const {mutate: handleChangePassword} = useMutation(
         async ({url, form, headers}) => {
             setErrorMessage(null);
-            await initialCSRF();
-            console.log('パスワード変更処理が呼ばれた', url, form, {...headers, ...locale});
-            return await axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} });
+            // console.log('change Password', url, form, {...headers, ...locale});
+            return await initialCSRF(() => axios({ method: 'post', url: url, data: form, headers: {...headers, ...locale} }));
         },
         { 
             onSuccess: (res, obj) => {
-                console.log('success', res.data)
-                // 成功後のアクションをcallback関数として引数で受け取りあれば実行
+                // console.log('success', res.data)
                 const {callback} = obj;
                 callback !== undefined && callback();
                 queryClient.invalidateQueries(auth);

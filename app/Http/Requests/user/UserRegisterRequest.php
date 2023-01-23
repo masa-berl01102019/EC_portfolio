@@ -47,9 +47,9 @@ class UserRegisterRequest extends FormRequest
             'delivery_street_number' => 'nullable|string|max:50',
             'delivery_building' => 'nullable|string|max:50',
             'tel' => ['required', 'string', new JapanesePhoneNumber, 'max:15'],
-            'email' => 'required|email:strict,dns,spoof|max:100|unique:users', // unique:table名でテーブル内での値がユニークかチェック * dns:ドメインが存在するアドレスか? / strict: RFCに違反するアドレスか? / spoof: なりすましメールか?チェック
-            'password' => 'required|string|alpha_num|min:8|max:100', // hash::make()してても入力時100字以内ならバリデーション通る
-            'is_received' => 'required|integer|min:0|max:1',
+            'email' => 'required|email:strict,dns,spoof|max:100|unique:users',
+            'password' => 'required|string|alpha_num|min:8|max:100',
+            'is_received' => 'required|integer|min:0|max:1'
         ];
     }
 }

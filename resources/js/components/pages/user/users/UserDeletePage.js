@@ -10,7 +10,7 @@ import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import { useSetRecoilState } from 'recoil';
 import { authUserState } from '../../../store/authState';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function UserDeletePage() {
 
@@ -20,12 +20,12 @@ function UserDeletePage() {
     const {handleLogout} = useAuth('/api/user/auth', 'user');
     const setIsUserLogin = useSetRecoilState(authUserState);
     const confirm = useNotify();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     const handleConfirmDelete = async (id) => {
         const result = await confirm({
-            body : i18next.t('user.user.delete.confirm'),
-            confirmBtnLabel : i18next.t('user.yes-btn')
+            body : t('user.user.delete.confirm'),
+            confirmBtnLabel : t('user.yes-btn')
         });
         result && deleteData({
             url:`/api/user/users/${id}`,
@@ -40,20 +40,20 @@ function UserDeletePage() {
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-                    {i18next.t('user.user.delete.title')}
+                    {t('user.user.delete.title')}
                 </Heading>
                 <div className={styles.form_contents_area}>
                     <Text className={[styles.paragraph, styles.mb_16].join(' ')}>
-                        {i18next.t('user.user.delete.p1')}<br/>
-                        {i18next.t('user.user.delete.p2')}<br/>
-                        {i18next.t('user.user.delete.p3')}
+                        {t('user.user.delete.p1')}<br/>
+                        {t('user.user.delete.p2')}<br/>
+                        {t('user.user.delete.p3')}
                     </Text>
                     <Text role='error' className={[styles.paragraph, styles.mb_8].join(' ')}>
-                        {i18next.t('user.user.delete.p4')}
+                        {t('user.user.delete.p4')}
                     </Text>
                     <Text role='error'  className={[styles.paragraph, styles.mb_32].join(' ')}>
-                        {i18next.t('user.user.delete.p5')}<br/>
-                        {i18next.t('user.user.delete.p6')}
+                        {t('user.user.delete.p5')}<br/>
+                        {t('user.user.delete.p6')}
                     </Text>
                     <div className={[styles.flex, styles.flex_column, styles.align_center].join(' ')}>
                         <Button 
@@ -62,9 +62,9 @@ function UserDeletePage() {
                             onClick={() => handleConfirmDelete(data.user.id)}
                             className={[styles.mb_16, styles.btn_max].join(' ')}
                         >
-                            {i18next.t('user.user.delete.btn')}
+                            {t('user.user.delete.btn')}
                         </Button>
-                        <LinkBtn size='l' to={`/`} className={styles.btn_max}>{i18next.t('user.cancel-btn')}</LinkBtn>
+                        <LinkBtn size='l' to={`/`} className={styles.btn_max}>{t('user.cancel-btn')}</LinkBtn>
                     </div>
                 </div>
             </Suspense>

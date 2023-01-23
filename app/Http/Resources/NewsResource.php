@@ -8,7 +8,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class NewsResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -22,8 +21,7 @@ class NewsResource extends JsonResource
      */
     public function toArray($request)
     {
-        // 受信リクエストが名前付きルートに一致するかを判定
-        if($request->routeIs('user.news.index') || $request->routeIs('user.home.index')) {
+        if ($request->routeIs('user.news.index') || $request->routeIs('user.home.index')) {
             return [
                 'id' => $this->id,
                 'title' => $this->title,
@@ -65,7 +63,5 @@ class NewsResource extends JsonResource
                 'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null
             ];
         }
-
-    } 
-    
+    }
 }

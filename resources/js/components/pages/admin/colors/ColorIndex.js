@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { menuAdminState } from '../../../store/menuState';
 import FormWithBtn from '../../../molecules/Form/FormWithBtn';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function ColorIndex() {
 
@@ -19,12 +19,12 @@ function ColorIndex() {
     const [editableForm, setEeditableForm] = useState(null);
     const openAdminMenu = useRecoilValue(menuAdminState);
     const confirm = useNotify();
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     const handleConfirmDelete = async () => {
         const result = await confirm({
-            body : i18next.t('admin.color.confirm-msg'),
-            confirmBtnLabel : i18next.t('admin.delete-btn')
+            body : t('admin.color.confirm-msg'),
+            confirmBtnLabel : t('admin.delete-btn')
         });
         result && deleteData({ url:`/api/admin/colors/${editableForm}` });
     }
@@ -33,12 +33,12 @@ function ColorIndex() {
         <main>
             <Suspense fallback={<CircularProgress disableShrink />}>
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.max_content].join(' ') : [styles.container, styles.max_content].join(' ') }>
-                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{i18next.t('admin.color.index-title')}</Heading>
+                    <Heading tag={'h1'} tag_style={'h1'} className={styles.mb_16}>{t('admin.color.index-title')}</Heading>
                     { errorMessage && <Text role='error' size='s'>{errorMessage.color_name}</Text> }
                     <div className={styles.form_area}>
                         <FormWithBtn
                             name='color_name'
-                            placeholder={i18next.t('admin.color.color-ex')}
+                            placeholder={t('admin.color.color-ex')}
                             formInitialValue={{'color_name': ''}}
                             validateScope={'admin'}
                             validateConfigKey={'color_request'}
@@ -52,7 +52,7 @@ function ColorIndex() {
                                 { color.id === editableForm ? (
                                     <FormWithBtn
                                         name='color_name'
-                                        placeholder={i18next.t('admin.color.color-ex')}
+                                        placeholder={t('admin.color.color-ex')}
                                         formInitialValue={{'color_name': color.color_name}}
                                         validateScope={'admin'}
                                         validateConfigKey={'color_request'}

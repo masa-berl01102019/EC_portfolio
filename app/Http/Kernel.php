@@ -14,7 +14,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \Fruitcake\Cors\HandleCors::class, // cors設定追加
+        \Fruitcake\Cors\HandleCors::class, // Add setting of cors
         \App\Http\Middleware\TrustProxies::class,
         \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
@@ -28,11 +28,10 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
-        // web.phpで定義したルートはデフォルトでCSRF保護などの機能が有効になっており、api.phpで定義したルートはデフォルトでCSRF保護などの機能が有効になっていない
-        // その為、デフォルトのapi.phpだと外部からもアクセスできてしまう
-        // web.phpとapi.phpのデフォルトでの動作の違いはapp/Http/Kernel.phpにそれぞれの設定がミドルウェアとして下記に組み込まれている
-        // 通常フロントとサーバーサイドのAPIを分けて作る場合は別サーバーで作成するため、CSRFでの認証はかけられず、IP制御やその他の認証で外からのアクセスを制御するので
-        // 今回のように同サーバ内であればデフォルトのweb.php(下記)の設定をapi側にも読み込ませてあげればAuthもCSRFを有効に出来る
+        // CSRF protection are enabled by default in web.php but it's not in api.php, that's why routes defined in api.php can access from outside by default
+        // The differnce between web.php and api.php depends on middleware in app/Http/Kernel.php
+        // Normally, when front and server side APIs are created separately, they are created on separate servers, so CSRF authentication cannot be applied, and access from outside is controlled by IP control and other authentication
+        // In this time, front and server side APIs are on the same server so CSRF and Auth guard can be enable by loading the same setting on the following api side as well
 
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
@@ -45,10 +44,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // sanctum SPA認証用
-            'throttle:60,1', // 1分間に60回まで
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // For sanctum SPA Authentication
+            'throttle:60,1', // limit by 60 times per minutes
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\CheckLocale::class, // 多言語化対応
+            \App\Http\Middleware\CheckLocale::class, // For Multilingualization
         ],
     ];
 

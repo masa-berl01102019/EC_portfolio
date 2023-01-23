@@ -12,19 +12,19 @@ import Button from '../../../atoms/Button/Button';
 import styles from '../styles.module.css';
 import {Link} from "react-router-dom";
 import useValidation from '../../../hooks/useValidation';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function AdminLogin() {
 
     const setIsAdminLogin = useSetRecoilState(authAdminState);
     const [formData, {handleFormData}] = useForm({
-        'email': 'jun61@example.org', 
+        'email': 'admin@test.com', 
         'password': 'abc12345', 
     });
     const {valid, setValid, validation} = useValidation(formData, 'admin', 'login_request');
     const {errorMessage, handleLogin} = useAuth('/api/admin/auth', 'admin');
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
         <main>
@@ -32,7 +32,7 @@ function AdminLogin() {
                 <div className={ openAdminMenu ? [styles.container_open_menu, styles.login_max_content].join(' ') : [styles.container, styles.login_max_content].join(' ') }>
                     <div className={styles.form_area} style={{'marginTop' : '140px'}}>
                         <Heading tag={'h1'} tag_style={'h1'} className={[styles.mb_24, styles.text_center].join(' ')}>
-                            {i18next.t('admin.auth.admin-login')}
+                            {t('admin.auth.admin-login')}
                         </Heading>
                         <form onSubmit={ e => {
                             e.preventDefault();
@@ -51,11 +51,11 @@ function AdminLogin() {
                                 type='email'
                                 onChange={handleFormData}
                                 value={formData.email}
-                                label={i18next.t('admin.auth.email')}
+                                label={t('admin.auth.email')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.auth.email-ex')}
+                                placeholder={t('admin.auth.email-ex')}
                                 className={styles.mb_16}
                             />
                             <FormInputText
@@ -63,17 +63,17 @@ function AdminLogin() {
                                 type='password'
                                 onChange={handleFormData}
                                 value={formData.password}
-                                label={i18next.t('admin.auth.password')}
+                                label={t('admin.auth.password')}
                                 error={errorMessage}
                                 validation={validation}
                                 valid={valid}
-                                placeholder={i18next.t('admin.auth.password-ex')}
+                                placeholder={t('admin.auth.password-ex')}
                                 className={styles.mb_24}
                             />
-                            <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>{i18next.t('admin.auth.login')}</Button>
+                            <Button size='l' color='primary' type="submit" className={[styles.mb_8, styles.w_100].join(' ')}>{t('admin.auth.login')}</Button>
                             <Link to={'/admin/reset_password'}>
                                 <Text size='s' className={[styles.text_underline, styles.mb_32].join(' ')}>
-                                    {i18next.t('admin.auth.reset-link')}
+                                    {t('admin.auth.reset-link')}
                                 </Text>
                             </Link>
                         </form>

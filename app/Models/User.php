@@ -19,9 +19,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    use Notifiable; // 通知(使うか未定)
-    use SoftDeletes; // 論理削除
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
     use AccessorNameTrait;
     use OrderByNameScopeTrait;
     use OrderByCreatedAtScopeTrait;
@@ -30,31 +30,30 @@ class User extends Authenticatable
     use FilterDateRangeScopeTrait;
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;
-    use Billable; // leravel stripe 用
+    use Billable; // For leravel stripe
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    // モデルからシリアライズ時に非表示にするカラムの設定
+    /** Serializing */
+
+    // Setting columns to hide
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    // モデルからシリアライズ時の日付形式の設定 Datetime型用
+    // Setting the date format
     protected $casts = [
         'birthday' => 'date:Y/m/d'
     ];
 
-    /** アクセサ */
-
-    // 配列内に含めたい独自の属性(カラム名)を定義
+    // Your own attributes (column names) which you want to include
     protected $appends = ['post_code_text', 'delivery_post_code_text', 'full_delivery_address', 'full_address', 'gender_text', 'is_received_text', 'full_name', 'full_name_kana'];
 
-    // 関数の返却値を独自の属性(カラム名)として設定
+    /** Accessors */
+
     public function getGenderTextAttribute()
     {
         return isset($this->gender) ? trans('api.const.gender')[$this->gender] : '';
@@ -85,16 +84,14 @@ class User extends Authenticatable
         return !empty($this->delivery_post_code) ? '〒' . substr_replace($this->delivery_post_code, "-", 3, 0) : '';
     }
 
-    /** スコープ */
+    /** Query scopes */
 
     public function scopeFilterGender($query, $request)
     {
         $filter = $request->input('f_gender');
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
-            // カンマ区切りで配列に変換
             $gender_arr = explode(',', $filter);
-            // 配列内に該当する項目を絞り込み検索
             return $query->whereIn('gender', $gender_arr);
         });
     }
@@ -104,9 +101,7 @@ class User extends Authenticatable
         $filter = $request->input('f_is_received');
         $flag = $filter !== null ? true : false;
         $query->when($flag, function ($query) use ($filter) {
-            // カンマ区切りで配列に変換
             $receiver_arr = explode(',', $filter);
-            // 配列内に該当する項目を絞り込み検索
             return $query->whereIn('is_received', $receiver_arr);
         });
     }
@@ -119,11 +114,11 @@ class User extends Authenticatable
         });
     }
 
-    /** static method */
+    /** Static method */
 
     public static function getUserOrderedItemId()
     {
-        // 購入履歴のあるユーザーと購入商品IDを取得
+        // Get user ID which has order history and order item ID
         $users = Self::select(['users.id', 'items.id as order_item_id'])
             ->join('orders', 'users.id', '=', 'orders.user_id')
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
@@ -134,16 +129,16 @@ class User extends Authenticatable
             })
             ->groupBy('users.id', 'order_item_id')
             ->get()->toArray();
-        // 配列の初期化
+
         $order_recodes = [];
-        // ユーザーID単位で注文した商品IDを配列に格納
+        // Store order item ID in an array for each user ID
         foreach ($users as $value) {
             $order_recodes[$value['id']][] = $value['order_item_id'];
         }
         return $order_recodes;
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function bookmarks()
     {

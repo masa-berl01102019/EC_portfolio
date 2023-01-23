@@ -1,4 +1,4 @@
-/* 全体 */
+/* total */
 .container {
   width : 100vw;
   margin: 40px auto 64px;
@@ -38,7 +38,7 @@
 
 /* TOP */
 .view_all_btn {
-  margin: 0 auto 40px;
+  margin: 0 auto 64px;
 }
 
 .item_card {
@@ -195,7 +195,7 @@
 }
 
 
-/* flex プロパティ */
+/* flex */
 .flex {
   display: flex;
 }
@@ -242,7 +242,7 @@
   padding: 0 8px;
 }
 
-/* 位置指定 */
+/* margin */
 .mt_8 {
   margin-top: 8px;
 }
@@ -269,6 +269,9 @@
 }
 .mb_40 {
   margin-bottom: 40px;
+}
+.mb_56 {
+  margin-bottom: 56px;
 }
 .mr_4 {
   margin-right: 4px;

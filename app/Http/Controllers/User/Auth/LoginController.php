@@ -39,19 +39,16 @@ class LoginController extends Controller
         $this->middleware('guest:user')->except('logout');
     }
 
-    // Guardの認証方法を指定
     protected function guard()
     {
         return Auth::guard('user');
     }
 
-    // ログイン画面の表示
     public function showLoginForm()
     {
         return view('user.auth.login');
     }
 
-    // ログアウト処理
     public function logout()
     {
         Auth::guard('user')->logout();

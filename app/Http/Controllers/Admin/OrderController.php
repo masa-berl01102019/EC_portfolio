@@ -24,6 +24,7 @@ class OrderController extends Controller
     {
         try {
             $search_order = Order::where('payment_status', config('define.payment_status.success'))->with('user');
+            $search_order->filterKeyword($request, ['payment_token']);
             $search_order->filterDateRange($request);
             $search_order->filterPaymentMethod($request);
             $search_order->filterIsPaid($request);
@@ -72,7 +73,7 @@ class OrderController extends Controller
         }
     }
 
-    // TODO: 返金処理や在庫の戻し処理を追加する必要があり、APIのインターフェイスは残しておくがフロントからは削除出来ない様に制御
+    // TODO: Need to implement process of refund and return stock
     public function destroy(Request $request)
     {
         DB::beginTransaction();
@@ -105,6 +106,7 @@ class OrderController extends Controller
                     $item->created_at,
                     $item->total_amount_text,
                     $item->payment_method_text,
+                    $item->payment_token,
                     $item->delivery_date,
                     $item->delivery_time,
                     $item->is_paid_text,

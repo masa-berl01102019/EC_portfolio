@@ -9,7 +9,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NotifyProvider } from './context/NotifyContext';
 import { ToastifyProvider } from './context/ToastifyContext';
-import { I18nextProvider } from './context/I18nextContext';
+import './i18n';
+import ApplicationError from './pages/error/ApplicationError';
 
 
 // React Query will consider cached data as stale. Stale queries are re-fetched automatically in the background when:
@@ -34,22 +35,20 @@ const queryClient = new QueryClient({
 
 function App() {
     return (
-        <ErrorBoundary>
+        <ErrorBoundary fallback={<ApplicationError/>}>
             <RecoilRoot>
-                <I18nextProvider>
-                    <CookiesProvider>
-                        <StripeProvider>
-                            <NotifyProvider>
-                                <ToastifyProvider>
-                                    <QueryClientProvider client={queryClient}>
-                                        <Router />
-                                        <ReactQueryDevtools initialIsOpen={false} />
-                                    </QueryClientProvider>
-                                </ToastifyProvider>
-                            </NotifyProvider>
-                        </StripeProvider>
-                    </CookiesProvider>
-                </I18nextProvider>
+                <CookiesProvider>
+                    <StripeProvider>
+                        <NotifyProvider>
+                            <ToastifyProvider>
+                                <QueryClientProvider client={queryClient}>
+                                    <Router />
+                                    <ReactQueryDevtools initialIsOpen={false} />
+                                </QueryClientProvider>
+                            </ToastifyProvider>
+                        </NotifyProvider>
+                    </StripeProvider>
+                </CookiesProvider>
             </RecoilRoot>
         </ErrorBoundary>
     )

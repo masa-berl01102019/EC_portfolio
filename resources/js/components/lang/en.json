@@ -191,6 +191,7 @@
       "price-low-ex" : "Minimum price",
       "price-high-ex" : "Maximum price",
       "table-alert" : "You can't delete all of rows.",
+      "table-alert-img" : "Only one main image can be selected.",
       "alert-msg1" : "Some combinations of color and size you selected at SKU section is duplicated.",
       "alert-msg2" : "Size you selected at measurements section is duplicated.",
       "alert-msg3" : "It doesn't match size at sku section and size at measurement section.",
@@ -251,6 +252,8 @@
       "total-amount" : "Total amount",
       "purchase-amount" : "Purchase amount",
       "payment-method" : "Payment method",
+      "payment-token" : "Payment token",
+      "keyword-ex" : "Payment token",
       "payment-credit" : "Credit card",
       "payment-cache" : "Cache",
       "payment-status" : "Payment status",
@@ -484,7 +487,7 @@
       "payment-credit" : "Credit card",
       "registered" : "Done",
       "register" : "Cart",
-      "done" : "Added cart",
+      "done" : "ADDED TO CART",
       "index" : {
         "title" : "SHIPPING",
         "error1" : "There are items which are run out already.",
@@ -529,7 +532,7 @@
       "register-date" : "Register date",
       "registered" : "Done",
       "register" : "Bookmark",
-      "done" : "Added bookmark"
+      "done" : "ADDED TO BOOKMARK"
     },
     "view-record" : {
       "index-title" : "BROWSING HISTORY"
@@ -686,11 +689,17 @@
     "tax-including" : "Tax included"
   },
   "error" : {
-    "not-found-status" : "404 Not Found",
-    "not-found-msg" : "We couldn't find page you searched.",
-    "app" : "Application error",
-    "reason" : "There might be cause of below message.",
-    "reload" : "Please reload your browser again."
+    "404" : {
+      "status" : "404 Not Found",
+      "message" : "We couldn't find page you searched."
+    },
+    "general" : {
+      "title" : "Application error",
+      "message" : "Sorry there was a problem loading the application.",
+      "reload" : "Please reload your browser again.",
+      "contact" : "If it doesn't work at all, please contact us.",
+      "contact2" : "【CONTACT INFO】"
+    }
   },
   "common" : {
     "lang-en" : "English",

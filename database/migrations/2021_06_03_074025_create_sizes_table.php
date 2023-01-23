@@ -15,9 +15,9 @@ class CreateSizesTable extends Migration
     {
         Schema::create('sizes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('size_name',30);
-            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
-            $table->softDeletes(); // 論理削除
+            $table->string('size_name', 30);
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

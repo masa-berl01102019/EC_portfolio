@@ -15,15 +15,15 @@ class CreateNotificationsTable extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('admin_id'); // 外部キー
-            $table->foreign('admin_id')->references('id')->on('admins'); // 外部キー
-            $table->string('title',255);
+            $table->unsignedInteger('admin_id');
+            $table->foreign('admin_id')->references('id')->on('admins');
+            $table->string('title', 255);
             $table->text('body');
-            $table->boolean('is_published'); // 0: 未公開　1: 公開
+            $table->boolean('is_published'); // 0: Unpublished 1: Published
             $table->dateTime('expired_at')->nullable();
             $table->dateTime('posted_at')->nullable();
             $table->dateTime('modified_at')->nullable();
-            $table->softDeletes(); // 論理削除
+            $table->softDeletes();
         });
     }
 

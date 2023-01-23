@@ -6,7 +6,7 @@ import Button from '../../../atoms/Button/Button';
 import styles from './styles.module.css';
 import CartBtn from '../../../molecules/IconBtn/CartBtn';
 import CompletePopup from '../../../molecules/Popup/CompletePopup';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const CartModal = ({
     item,
@@ -17,7 +17,7 @@ const CartModal = ({
   }) => {
 
     const [isOpen, setIsOpen] = useState(false);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
       <Mask>
@@ -40,7 +40,7 @@ const CartModal = ({
                             { sizes.filter((size) => size.id == sku_item.size_id).map(el => (
                                 <Text tag='span' key={el.id} className={[styles.text_height, styles.mr_8].join(' ')}>{el.size_name}</Text>
                             ))}
-                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? i18next.t('user.in-stock') : i18next.t('user.sold-out')}</Text>
+                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? t('user.in-stock') : t('user.sold-out')}</Text>
                         </span>
                         <CartBtn 
                             onClick={() => {
@@ -53,17 +53,17 @@ const CartModal = ({
                             }}
                             disabled={item.cart_items.includes(sku_item.id) || sku_item.quantity < 1}
                         >
-                          {item.cart_items.includes(sku_item.id) ? i18next.t('user.cart.registered') : i18next.t('user.cart.register')}
+                          {item.cart_items.includes(sku_item.id) ? t('user.cart.registered') : t('user.cart.register')}
                         </CartBtn>
                     </li>
                   )}
                 </ul>
               </div>
             )}
-            <Button className={styles.close_btn} onClick={closeMethod} >{i18next.t('user.close-btn')}</Button>
+            <Button className={styles.close_btn} onClick={closeMethod} >{t('user.close-btn')}</Button>
           </div>
       ) : (
-        <CompletePopup isOpen={true}>{i18next.t('user.cart.done')}</CompletePopup>
+        <CompletePopup isOpen={true}>{t('user.cart.done')}</CompletePopup>
       )}
       </Mask>
     );

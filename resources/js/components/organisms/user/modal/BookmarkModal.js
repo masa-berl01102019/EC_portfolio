@@ -6,7 +6,7 @@ import Button from '../../../atoms/Button/Button';
 import BookmarkBtn from '../../../molecules/IconBtn/BookmarkBtn';
 import styles from './styles.module.css';
 import CompletePopup from '../../../molecules/Popup/CompletePopup';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const BookmarkModal = ({
     item,
@@ -17,7 +17,7 @@ const BookmarkModal = ({
   }) => {
 
     const [isOpen, setIsOpen] = useState(false);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     return (
       <Mask>
@@ -40,7 +40,7 @@ const BookmarkModal = ({
                             { sizes.filter((size) => size.id == sku_item.size_id).map(el => (
                                 <Text tag='span' key={el.id} className={[styles.text_height, styles.mr_8].join(' ')}>{el.size_name}</Text>
                             ))}
-                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? i18next.t('user.in-stock') : i18next.t('user.sold-out')}</Text>
+                            <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? t('user.in-stock') : t('user.sold-out')}</Text>
                         </span>
                         <BookmarkBtn 
                           onClick={() => {
@@ -54,17 +54,17 @@ const BookmarkModal = ({
                           disabled={item.bookmark_items.includes(sku_item.id)}
                           className={styles.bookmark_btn_width}
                         >
-                          {item.bookmark_items.includes(sku_item.id) ? i18next.t('user.bookmark.registered') : i18next.t('user.bookmark.register')}
+                          {item.bookmark_items.includes(sku_item.id) ? t('user.bookmark.registered') : t('user.bookmark.register')}
                         </BookmarkBtn>
                     </li>
                   )}
                 </ul>
               </div>
             )}
-            <Button className={styles.close_btn} onClick={closeMethod} >{i18next.t('user.close-btn')}</Button>
+            <Button className={styles.close_btn} onClick={closeMethod} >{t('user.close-btn')}</Button>
           </div>
       ) : (
-        <CompletePopup isOpen={true}>{i18next.t('user.bookmark.done')}</CompletePopup>
+        <CompletePopup isOpen={true}>{t('user.bookmark.done')}</CompletePopup>
       )}
       </Mask>
     );

@@ -9,7 +9,7 @@ import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 
 const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
@@ -17,12 +17,12 @@ const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
   const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   const handleConfirmDelete = async () => {
       const result = await confirm({
-          body : i18next.t('admin.delete-confirm', {count: checklist.length}),
-          confirmBtnLabel : i18next.t('admin.delete-btn')
+          body : t('admin.delete-confirm', {count: checklist.length}),
+          confirmBtnLabel : t('admin.delete-btn')
       });
       result && deleteMethod({url:`/api/admin/users`, form:checklist, callback: () => setChecklist([])});
   }
@@ -30,13 +30,13 @@ const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
   return (
     <>
       <div style={{'display': 'flex', 'marginBottom': '16px'}}>
-        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{i18next.t('admin.delete-all-btn')}</DeleteBtn>
+        <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{t('admin.delete-all-btn')}</DeleteBtn>
         <DownloadCsvBtn onClick={() => { 
           csvOutputMethod({ 
             url:`/api/admin/users/csv`, 
             form:checklist 
           }); 
-        }}>{i18next.t('admin.csv-output')}</DownloadCsvBtn>
+        }}>{t('admin.csv-output')}</DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
@@ -65,21 +65,21 @@ const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
                   />
                 )}
               </Th>
-              <Th>{i18next.t('admin.id')}</Th>
-              <Th>{i18next.t('admin.edit-link')}</Th>
-              <Th>{i18next.t('admin.user.name')}</Th>
-              <Th>{i18next.t('admin.user.name-kana')}</Th>
-              <Th>{i18next.t('admin.user.gender')}</Th>
-              <Th>{i18next.t('admin.user.birthday')}</Th>
-              <Th>{i18next.t('admin.user.postcode')}</Th>
-              <Th>{i18next.t('admin.user.address')}</Th>
-              <Th>{i18next.t('admin.user.delivery-postcode')}</Th>
-              <Th>{i18next.t('admin.user.delivery-address')}</Th>
-              <Th>{i18next.t('admin.user.tel')}</Th>
-              <Th>{i18next.t('admin.user.email')}</Th>
-              <Th>{i18next.t('admin.user.dm-register')}</Th>
-              <Th>{i18next.t('admin.created-date')}</Th>
-              <Th>{i18next.t('admin.updated-date')}</Th>
+              <Th>{t('admin.id')}</Th>
+              <Th>{t('admin.edit-link')}</Th>
+              <Th>{t('admin.user.name')}</Th>
+              <Th>{t('admin.user.name-kana')}</Th>
+              <Th>{t('admin.user.gender')}</Th>
+              <Th>{t('admin.user.birthday')}</Th>
+              <Th>{t('admin.user.postcode')}</Th>
+              <Th>{t('admin.user.address')}</Th>
+              <Th>{t('admin.user.delivery-postcode')}</Th>
+              <Th>{t('admin.user.delivery-address')}</Th>
+              <Th>{t('admin.user.tel')}</Th>
+              <Th>{t('admin.user.email')}</Th>
+              <Th>{t('admin.user.dm-register')}</Th>
+              <Th>{t('admin.created-date')}</Th>
+              <Th>{t('admin.updated-date')}</Th>
             </Row>
           </thead>
           <tbody>
@@ -87,7 +87,7 @@ const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
               <Row key={user.id} className={checklist.includes(user.id) ? styles.checked_row: ''}>
                 <Td><InputCheckbox onChange={handleCheck} value={user.id} checked={checklist.includes(user.id)} className={styles.table_check}/></Td>
                 <Td>{user.id}</Td>
-                <Td><EditLink to={`/admin/users/${user.id}/edit`}>{i18next.t('admin.edit-link')}</EditLink></Td>
+                <Td><EditLink to={`/admin/users/${user.id}/edit`}>{t('admin.edit-link')}</EditLink></Td>
                 <Td>{user.full_name}</Td>
                 <Td>{user.full_name_kana}</Td>
                 <Td>{user.gender_text}</Td>

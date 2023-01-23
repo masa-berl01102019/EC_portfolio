@@ -29,11 +29,11 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    // 商品デモデータ作成用
+    // For creating demo data of item
     'yahoo' => [
         'app_id' => env('YAHOO_APP_ID'),
     ],
-    // stripe決済用
+    // For stripe payment
     'stripe' => [
         'public_key' => env('STRIPE_KEY'),
         'secret_key' => env('STRIPE_SECRET'),

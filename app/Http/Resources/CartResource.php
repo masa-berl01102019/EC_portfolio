@@ -9,7 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class CartResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -26,8 +25,8 @@ class CartResource extends JsonResource
         return [
             'id' => $this->id,
             'sku_id' => $this->sku_id,
-            'stock_status' => $this->sku->quantity > 0 ? 1 : 0, // 在庫状況
-            'stock' => $this->sku->quantity, // 在庫数
+            'stock_status' => $this->sku->quantity > 0 ? 1 : 0,
+            'stock' => $this->sku->quantity,
             'item_id' => $this->item_id,
             'size_name' => Size::where('id', $this->size_id)->first()->size_name,
             'color_name' => Color::where('id', $this->color_id)->first()->color_name,

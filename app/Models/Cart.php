@@ -10,23 +10,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Cart extends Model
 {
-    use HasFactory; // laravel8 factory関数使用する為
-    // use SoftDeletes; // 論理削除
+    use HasFactory;
+    // use SoftDeletes;
     use AccessorPriceTrait;
     use CustomPaginateScopeTrait;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** static method */
+    /** Static method */
 
     static function getUserCart($user_id)
     {
-        // userに紐づいてるカートを取得 *削除されてないかつ現在も公開されてる商品のsku_idの配列を返却
+        // Get carts related with user ID which will be passed * Return an array includes sku ID of item which is published and not deleted
         return Self::where('user_id', $user_id)
             ->join('skus', 'carts.sku_id', '=', 'skus.id')
             ->join('items', function ($join) {
@@ -36,7 +34,7 @@ class Cart extends Model
             ->toArray();
     }
 
-    /** リレーション */
+    /** Relationships */
 
     public function user()
     {

@@ -7,23 +7,23 @@ import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
 import InputImage from '../../../atoms/InputImage/InputImage';
 import useNotify from '../../../context/NotifyContext';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 
 const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFormMethod}) => {
 
   const alert = useNotify();
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   return (
     <>
       <table className={[styles.table, className].join(' ')}>
         <thead>
           <Row>
-            <Th>{i18next.t('admin.delete-btn')}</Th>
-            <Th>{i18next.t('admin.item.image')}</Th>
-            <Th>{i18next.t('admin.item.image-type')}</Th>
-            <Th>{i18next.t('admin.item.related-color')}</Th>
+            <Th>{t('admin.delete-btn')}</Th>
+            <Th>{t('admin.item.image')}</Th>
+            <Th>{t('admin.item.image-type')}</Th>
+            <Th>{t('admin.item.related-color')}</Th>
           </Row>
         </thead>
         <tbody>
@@ -37,14 +37,14 @@ const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFor
                             deleteMethod('images', index, list.id)
                           } else {
                             alert({
-                              body : i18next.t('admin.table-alert'),
+                              body : t('admin.table-alert'),
                               type: 'alert'
                             });
                           }
                         }} 
                         style={{'maxWidth': '65px'}}
                       >
-                        {i18next.t('admin.delete-btn')}
+                        {t('admin.delete-btn')}
                       </Button>
                     </Td>
                     <Td>
@@ -56,17 +56,29 @@ const ItemImageTable = ({images, colors, className = '', deleteMethod, handleFor
                         />
                     </Td>
                     <Td>
-                      <Selectbox name='image_category' value={list.image_category} onChange={ e => handleFormMethod('images', index, e) } className={styles.table_row_form}>
-                          {/* フォーム追加以外未設定の表示を制限 */}
-                          { list.image_category === '' && <option value={''}>{i18next.t('admin.not-set')}</option>}
-                          <option value={0}>{i18next.t('admin.item.image-main')}</option>
-                          <option value={1}>{i18next.t('admin.item.image-sub')}</option>
+                      <Selectbox 
+                        name='image_category' 
+                        value={list.image_category} 
+                        onChange={ e => {
+                          if(images.map(img => img.image_category).includes(0) && Number(e.target.value) === 0) {
+                            alert({
+                              body : t('admin.item.table-alert-img'),
+                              type: 'alert'
+                            });
+                          } else {
+                            handleFormMethod('images', index, e);
+                          }
+                        }} 
+                        className={styles.table_row_form}
+                        >
+                          { list.image_category === '' && <option value={''}>{t('admin.not-set')}</option>}
+                          <option value={0}>{t('admin.item.image-main')}</option>
+                          <option value={1}>{t('admin.item.image-sub')}</option>
                       </Selectbox>
                     </Td>
                     <Td>
                       <Selectbox name='color_id' value={list.color_id} onChange={ e => handleFormMethod('images', index, e) }  className={styles.table_row_form}>
-                        {/* フォーム追加以外未設定の表示を制限 */}
-                        { list.color_id == '' && <option value={''}>{i18next.t('admin.not-set')}</option>}
+                        { list.color_id == '' && <option value={''}>{t('admin.not-set')}</option>}
                         { colors && colors.map((color) => (
                             <option key={color.id} value={color.id}>{color.color_name}</option>
                           ))

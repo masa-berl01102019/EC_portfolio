@@ -15,20 +15,21 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id'); // 外部キー
-            $table->foreign('user_id')->references('id')->on('users'); // 外部キー
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedInteger('sub_total');
             $table->unsignedInteger('tax_amount');
             $table->unsignedInteger('total_amount');
             $table->unsignedInteger('commission_fee');
-            $table->unsignedTinyInteger('payment_method'); // 0~255 0: クレジットカード 1: 代引き
-            $table->unsignedTinyInteger('payment_status'); // 0~255 0: 未決済 1: 決済済
-            $table->date('delivery_date'); // 配送希望日
-            $table->string('delivery_time',30); // 配達希望時間帯
-            $table->boolean('is_paid'); // 0: 入金無し 1: 入金有り
-            $table->boolean('is_shipped'); // 0: 未配送 1: 配送済
-            $table->timestamps(); // dateTime型の作成日時と更新日時を生成
-            $table->softDeletes(); // 論理削除
+            $table->unsignedTinyInteger('payment_method'); // 0~255 0: Credit card 1: Cache
+            $table->unsignedTinyInteger('payment_status'); // 0~255 0: Unsettled 1: Settled
+            $table->string('payment_token', 255)->nullable(); // stripe ID
+            $table->date('delivery_date');
+            $table->string('delivery_time', 30);
+            $table->boolean('is_paid'); // 0: Not paid 1: Paid
+            $table->boolean('is_shipped'); // 0: Not delivered 1: Delivered
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

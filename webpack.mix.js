@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 require('laravel-mix-react-css-modules');
+require('mix-env-file');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,6 +12,7 @@ require('laravel-mix-react-css-modules');
  | file for the application as well as bundling up all the JS files.
  |
  */
+ mix.env(process.env.ENV_FILE);
 
  mix.react('resources/js/app.js', 'public/js')
  .reactCSSModules()

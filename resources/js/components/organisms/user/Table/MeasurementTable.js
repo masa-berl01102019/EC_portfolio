@@ -3,32 +3,32 @@ import styles from './styles.module.css';
 import {TableHeadCell as Th} from '../../../atoms/TableHeadCell/TableHeadCell';
 import {TableBodyCell as Td} from '../../../atoms/TableBodyCell/TableBodyCell';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 const MeasurementTable = ({measurements, sizes, className = '', ...props}) => {
 
-  const i18next = useI18next();
+  const { t } = useTranslation();
 
   return (
     <div {...props}>
       <table className={[styles.table, className].join(' ')}>
         <thead>
           <Row>
-            <Th className={styles.th}>{i18next.t('user.item.size')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.width')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.shoulder-width')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.raglan-sleeve-length')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.sleeve-length')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.length')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.waist')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.hip')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.rise')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.inseam')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.thigh-width')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.outseam')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.sk-length')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.hem-width')}</Th>
-            <Th className={styles.th}>{i18next.t('user.item.weight')}</Th>
+            <Th className={styles.th}>{t('user.item.size')}</Th>
+            <Th className={styles.th}>{t('user.item.width')}</Th>
+            <Th className={styles.th}>{t('user.item.shoulder-width')}</Th>
+            <Th className={styles.th}>{t('user.item.raglan-sleeve-length')}</Th>
+            <Th className={styles.th}>{t('user.item.sleeve-length')}</Th>
+            <Th className={styles.th}>{t('user.item.length')}</Th>
+            <Th className={styles.th}>{t('user.item.waist')}</Th>
+            <Th className={styles.th}>{t('user.item.hip')}</Th>
+            <Th className={styles.th}>{t('user.item.rise')}</Th>
+            <Th className={styles.th}>{t('user.item.inseam')}</Th>
+            <Th className={styles.th}>{t('user.item.thigh-width')}</Th>
+            <Th className={styles.th}>{t('user.item.outseam')}</Th>
+            <Th className={styles.th}>{t('user.item.sk-length')}</Th>
+            <Th className={styles.th}>{t('user.item.hem-width')}</Th>
+            <Th className={styles.th}>{t('user.item.weight')}</Th>
           </Row>
         </thead>
         <tbody>

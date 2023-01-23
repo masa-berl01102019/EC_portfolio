@@ -16,9 +16,9 @@ class CreateItemTagTable extends Migration
         Schema::create('item_tag', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('item_id');
-            $table ->foreign('item_id')->references('id')->on('items'); // 外部キー
+            $table->foreign('item_id')->references('id')->on('items');
             $table->unsignedInteger('tag_id');
-            $table ->foreign('tag_id')->references('id')->on('tags'); // 外部キー
+            $table->foreign('tag_id')->references('id')->on('tags');
         });
     }
 

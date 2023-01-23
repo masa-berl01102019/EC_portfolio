@@ -1,37 +1,36 @@
-<?php 
+<?php
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * CSVダウンロード
+ * Download CSV
  * @param array $csv_body
  * @param array $csv_header
  * @param string $filename
  */
 function csvExport($csv_body, $csv_header, $filename)
 {
-    // SplFileObjectのインスタンスを生成
+    // create an instace of the SplFileObject class
     $file = new \SplFileObject('php://output', 'w');
-    // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
-    $file->fwrite(pack('C*',0xEF,0xBB,0xBF));
-    // ヘッダーの読み込み
+    // Attach BOM （Not to garble in Excel）* EXCEL is shift-JIS by default
+    $file->fwrite(pack('C*', 0xEF, 0xBB, 0xBF));
+    // Read header line of CSV
     $file->fputcsv($csv_header);
-    // 一行ずつ連想配列から値を取り出して配列に格納
-    for($i = 0; $i < count($csv_body); $i++){
+    // Retrieve values from an associative array row by row and store them in the array
+    for ($i = 0; $i < count($csv_body); $i++) {
         $file->fputcsv($csv_body[$i]);
     }
-    // headerの設定 * フィル名の文字化け対策
+    // Set request header
     $headers = array(
-      'Content-Type' => 'text/csv',
-      'Content-Disposition' => 'attachment; filename*=UTF-8\'\''.rawurlencode($filename)
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename*=UTF-8\'\'' . rawurlencode($filename)
     );
     return response()->make($file, 200, $headers);
 }
 
 /**
- * 重複を排除して配列を整形する関数
- *  重複の削除後に配列の連番を振り直さないとフロント側で受け取る際にオブジェクトに勝手に変換されてしまうので
+ * Removes duplicate values and creates a new array
  * @param array $arr
  */
 function uniqueArray($arr)
@@ -40,28 +39,28 @@ function uniqueArray($arr)
 }
 
 /**
- * 画像の保存・更新する関数
+ * Store / update images
  * @param object $file
  * @param string $old_img_url
  */
 function saveImage($file, $old_img_url = null)
 {
-    // ランダムなファイル名を生成してstorage/app/public/img配下に保存
+    // Store the file which is generated random file name under 'storage/app/public/img'
     $path_as = Storage::putFile('public/img', $file);
-    // 画像を呼び出す場合は/storage/img/ファイル名で呼び出す必要があるのでDB保存用にpathを変更
+    // Change path of the file which is stored in order to call from front-end
     $db_reserve_path = str_replace('public/img/', '/storage/img/', $path_as);
-    // 第二引数に既にDBに保存されている画像のURLが渡された場合は以下の処理
-    if($old_img_url !== null) {
-        // 変更時はブログの古いサムネイル画像を削除する必要があるのでパスを取得して変換
+    // Check whether there is an old image url which want to change
+    if ($old_img_url !== null) {
+        // Change path of the old file which is gotten from DB
         $old_img = str_replace('/storage/img/', 'public/img/', $old_img_url);
-        // fileの存在をチェックして削除
-        if(Storage::exists($old_img)) Storage::delete($old_img);
+        // Delete the file after checking its existence
+        if (Storage::exists($old_img)) Storage::delete($old_img);
     }
     return $db_reserve_path;
 }
 
 /**
- * 商品に紐づくタグを配列で取得する関数
+ * Get an array assigned tag IDs related with item ID which will be passed
  * @param int $item_id
  * @return array
  */
@@ -71,7 +70,7 @@ function getRelatedTagId($item_id)
 }
 
 /**
- * 商品に紐づくカテゴリを配列で取得する関数
+ * Get an array assigned catwgoey IDs related with item ID which will be passed
  * @param int $item_id
  * @return array
  */

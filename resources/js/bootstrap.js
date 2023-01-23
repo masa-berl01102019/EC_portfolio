@@ -6,7 +6,7 @@ window._ = require('lodash');
  * code may be modified to fit the specific needs of your application.
  */
 
-// 不要なjQueryやbootstrapを読み込まないようにコメントアウト
+// Comment out not to read unnecessary jQuery and bootstrap
 // try {
     // window.Popper = require('popper.js').default;
     // window.$ = window.jQuery = require('jquery');

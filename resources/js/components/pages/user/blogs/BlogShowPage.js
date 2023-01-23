@@ -10,7 +10,11 @@ import Heading from '../../../atoms/Heading/Heading';
 import Image from '../../../atoms/Image/Image';
 import styles from '../styles.module.css';
 import TopItemCard from '../../../molecules/Card/TopItemCard';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
+
+// TODO: Create breadcrumb lists
+// TODO: Add related tag lists
+// TODO: Add browser history lists
 
 function BlogShowPage(props) {
 
@@ -20,17 +24,16 @@ function BlogShowPage(props) {
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const {isJson} = useHelper();
     const blog = data.blog;
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     
     useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にblogが入ってこない場合があるので条件分岐してあげる
         if(blog) {
-            // blogの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
+            // Convert the body of blog which is stored as JSON into contentState * Judge if it's HTML or JSON because demo data is stored as HTML 
             const contentState = isJson(blog.body) ? convertFromRaw(JSON.parse(blog.body)) : stateFromHTML(blog.body);
-            // contentStateをeditorStateに変換
+            // Convert contentState into editorState
             const editorState = EditorState.createWithContent(contentState);
-            // editorStateをdraft.jsにセット
+            // Set editorState to draft.js
             setEditorState(editorState);
         }
     },[]);
@@ -62,7 +65,7 @@ function BlogShowPage(props) {
                         toolbarClassName={styles.hide_toolbar}
                     />
                     <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_8, styles.mt_40].join(' ')}>
-                        {i18next.t('user.blog.item')}
+                        {t('user.blog.item')}
                     </Heading>
                     {   data.blog.items &&
                         <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

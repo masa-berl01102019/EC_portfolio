@@ -2,8 +2,6 @@
 
 namespace App\Mail\User;
 
-use Carbon\Carbon;
-use App\Models\Order;
 use App\Models\Contact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

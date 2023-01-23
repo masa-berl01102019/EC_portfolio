@@ -12,7 +12,7 @@ import CreateLink from '../../../molecules/IconLink/CreateLink';
 import UserSidebar from '../../../organisms/admin/SideBar/UserSidebar';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function UserIndex() {
 
@@ -23,7 +23,7 @@ function UserIndex() {
     const users = data.data ? data.data : null;
     const [open, setOpen] = useState(false);
     const openAdminMenu = useRecoilValue(menuAdminState);
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
@@ -46,11 +46,11 @@ function UserIndex() {
 
                         <div className={styles.index_title}>
                             <Heading tag={'h1'} tag_style={'h1'} className={styles.mr_auto}>
-                                {i18next.t('admin.user.index-title')} { data.meta && ` ( ${data.meta.total} ${i18next.t('admin.hits')} )`}
+                                {t('admin.user.index-title')} { data.meta && ` ( ${data.meta.total} ${t('admin.hits')} )`}
                             </Heading>
                             <div className={[styles.flex, styles.btn_area].join(' ')}>
-                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{i18next.t('admin.detail-search')}</FilterSortBtn>
-                                <CreateLink to="/admin/users/create">{i18next.t('admin.add-new')}</CreateLink>
+                                <FilterSortBtn onClick={() => setOpen(!open)} className={styles.mr_16}>{t('admin.detail-search')}</FilterSortBtn>
+                                <CreateLink to="/admin/users/create">{t('admin.add-new')}</CreateLink>
                             </div>
                         </div>
 

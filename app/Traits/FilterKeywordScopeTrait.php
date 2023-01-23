@@ -14,18 +14,17 @@ trait FilterKeywordScopeTrait
 
         $query->when($flag, function ($query) use ($filter, $columns) {
 
-            // 全角スペースを半角スペースに変換
+            // Convert full-width to half-width by using mb_convert_kana function
             $keyword = mb_convert_kana($filter, 's', 'UTF-8');
-            // 前後のスペース削除（trimの対象半角スペースのみなので半角スペースに変換後行う）
+            // Delete white space in back and fort （trim() can use against half-width white space）
             $keyword = trim($keyword);
-            // 連続する半角スペースを半角スペースカンマに変換
+            // Convert white space between characters into comma
             $keyword = preg_replace('/\s+/', ',', $keyword);
-            // カンマ区切りで配列に変換
+            // Convert it into array
             $keywords = explode(',', $keyword);
-            // キーワード検索で渡ってきた値と部分一致するアイテムに絞りこみ * DBのカラムが分かれてるのでスペースなしでフルネームで検索されると表示されない！！
+            // Get data which is partially matched by the value of keywords
             return $query->where(function ($query) use ($keywords, $columns) {
                 foreach ($keywords as $keyword) {
-                    // 複数のkeywordを検索
                     for ($i = 0; $i < count($columns); $i++) {
                         $query->orWhere($columns[$i], 'like', "%{$keyword}%");
                     }

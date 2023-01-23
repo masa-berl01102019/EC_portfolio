@@ -19,7 +19,12 @@ import useItemCookies from '../../../hooks/useItemCookies';
 import useItemWebStorage from '../../../hooks/useItemWebStorage';
 import CartModal from '../../../organisms/user/modal/CartModal';
 import BookmarkModal from '../../../organisms/user/modal/BookmarkModal';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
+
+// TODO: Create breadcrumb lists
+// TODO: Modify related tag lists design and add link
+// TODO: Create carousel UI to show item image.
+
 
 function ItemShowPage(props) {
 
@@ -29,12 +34,12 @@ function ItemShowPage(props) {
     const [cookies, setCookie] = useCookies();
     const {handleViewItemCookie} = useItemCookies(cookies, setCookie);
     const {handleViewItemWebStorage} = useItemWebStorage();
-    const {item, sizes, related_items} = data;
+    const {item, sizes, related_items, related_tags} = data;
     const isUserLogin = useRecoilValue(authUserState);
     const [tab, setTab] = useState('1');
     const [popup, setPopup] = useState('');
     const [pickedPicture, setPickedPicture] = useState('');
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(item) {
@@ -44,8 +49,6 @@ function ItemShowPage(props) {
         }
     },[baseUrl]);
 
-    // TODO: タグを表示する
-    
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
@@ -87,19 +90,19 @@ function ItemShowPage(props) {
                             <div className={styles.item_basic_info_area}>
                                 <Text className={styles.mb_8}>{item.brand_name}</Text>
                                 <Text className={styles.mb_8}>{item.item_name}</Text>
-                                <Text size='l'>{item.included_tax_price_text} ({i18next.t('user.tax-including')})</Text>
+                                <Text size='l'>{item.included_tax_price_text} ({t('user.tax-including')})</Text>
                             </div>
                             <div className={styles.show_item_btn_area}>
                                 <CartBtn size='l' onClick={() => setPopup('1')} className={styles.mb_16} disabled={!isUserLogin}>
-                                    {i18next.t('user.item.cart-btn')}
+                                    {t('user.item.cart-btn')}
                                 </CartBtn>
                                 <BookmarkBtn size='l' onClick={() => setPopup('2')} disabled={!isUserLogin}>
-                                    {i18next.t('user.item.bookmark-btn')}
+                                    {t('user.item.bookmark-btn')}
                                 </BookmarkBtn>
                             </div>
                             {!isUserLogin && 
                                 <Text role='error' className={styles.mb_24}>
-                                    {i18next.t('user.item.error-msg')}
+                                    {t('user.item.error-msg')}
                                 </Text>
                             }
                             <div className={[styles.flex, styles.mb_32].join(' ')}>
@@ -108,7 +111,7 @@ function ItemShowPage(props) {
                                     value={'1'} 
                                     onChange={e => setTab(e.target.value)} 
                                     checked={tab == '1'} 
-                                    label={i18next.t('user.item.size-detail')}
+                                    label={t('user.item.size-detail')}
                                     style={{'flex' : '1'}}
                                 />
                                 <RadioBoxTab
@@ -116,47 +119,51 @@ function ItemShowPage(props) {
                                     value={'2'} 
                                     onChange={e => setTab(e.target.value)} 
                                     checked={tab == '2'} 
-                                    label={i18next.t('user.item.description')}
+                                    label={t('user.item.description')}
                                     style={{'flex' : '1'}}
                                 />
                             </div>
                             { tab == '1' ? (
                                 <div className={styles.mb_32}>
-                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.size-table')}</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{t('user.item.size-table')}</Heading>
                                     <MeasurementTable 
                                         measurements={item.measurements} 
                                         sizes={sizes} 
                                         className={styles.mb_24} 
                                     />
-                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.detail')}</Heading>
+                                    <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{t('user.item.detail')}</Heading>
                                     <ul className={styles.detail_info_list}>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.color')} </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.color')} </Text>
                                             <Text className={styles.flex_1}>{item.color_variation.join(' / ') }</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.size')} </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.size')} </Text>
                                             <Text className={styles.flex_1}>{item.size_variation.join(' / ') }</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.gender')} </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.gender')} </Text>
                                             <Text className={styles.flex_1}>{item.gender_category}</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.category')} </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.category')} </Text>
                                             <Text className={styles.flex_1}>{item.main_category + ' > ' + item.sub_category}</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.material')} </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.material')} </Text>
                                             <Text className={styles.flex_1}>{item.mixture_ratio}</Text>
                                         </li>
                                         <li className={[styles.flex, styles.mb_8].join(' ')}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.made-in')} </Text>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.made-in')} </Text>
                                             <Text className={styles.flex_1}>{item.made_in}</Text>
                                         </li>
-                                        <li className={styles.flex}>
-                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{i18next.t('user.item.product-number')} </Text>
+                                        <li className={[styles.flex, styles.mb_8].join(' ')}>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.product-number')} </Text>
                                             <Text className={styles.flex_1}>{item.product_number}</Text>
+                                        </li>
+                                        <li className={styles.flex}>
+                                            <Text className={[styles.bold, styles.flex_basis_140p].join(' ')}>{t('user.item.tag')}</Text>
+                                            <Text className={styles.flex_1}>{ related_tags.map(list => list.tag_name).join(' / ') }</Text>
                                         </li>
                                     </ul>
                                 </div>
@@ -168,7 +175,7 @@ function ItemShowPage(props) {
                     <div className={styles.item_related_area}>
                         {   item.publishedBlogs &&
                             <>
-                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.related-blog')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{t('user.item.related-blog')}</Heading>
                                 <div className={styles.mb_32}>
                                     {
                                         item.publishedBlogs.map((blog) =>
@@ -188,7 +195,7 @@ function ItemShowPage(props) {
                         }  
                         {   related_items &&
                             <>
-                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.related-item')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{t('user.item.related-item')}</Heading>
                                 <div className={[styles.show_card_area, styles.mb_32].join(' ')}>
                                     {   related_items.map((item) =>
                                             <TopItemCard 
@@ -207,7 +214,7 @@ function ItemShowPage(props) {
                         }
                         { JSON.parse(localStorage.getItem('viewed_items')) && cookies.item_info &&
                             <>
-                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{i18next.t('user.item.view-record')}</Heading>
+                                <Heading tag={'h2'} tag_style={'h2'} className={[styles.title, styles.mb_16].join(' ')}>{t('user.item.view-record')}</Heading>
                                 <div className={[styles.flex, styles.scroll_x].join(' ')}>
                                 {   
                                     JSON.parse(localStorage.getItem('viewed_items')).filter(list => cookies.item_info.includes(list.id)).map(list => (

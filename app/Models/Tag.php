@@ -7,26 +7,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
-    // use SoftDeletes; // 論理削除
+    // use SoftDeletes;
 
-    /** シリアライズ */
-
-    // 編集不可カラム
+    // Setting allowing Mass Assignment  * except columns in the array the below
     protected $guarded = [
         'id'
     ];
 
-    /** リレーション */
+    /** Relationships */
 
-    public function news() {
+    public function news()
+    {
         return $this->belongsToMany('App\Models\News');
     }
 
-    public function blogs() {
+    public function blogs()
+    {
         return $this->belongsToMany('App\Models\Blog');
     }
 
-    public function items() {
+    public function items()
+    {
         return $this->belongsToMany('App\Models\Item');
     }
 }

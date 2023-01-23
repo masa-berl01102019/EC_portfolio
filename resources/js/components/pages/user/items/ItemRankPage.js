@@ -9,7 +9,7 @@ import TopItemCard from '../../../molecules/Card/TopItemCard';
 import PaginationList from '../../../atoms/PaginationList/PaginationList';
 import Heading from '../../../atoms/Heading/Heading';
 import styles from '../styles.module.css';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function ItemRankPage() {
 
@@ -19,7 +19,7 @@ function ItemRankPage() {
     const [params, setParams] = useRecoilState(paramState(model));
     const {data, errorMessage} = useFetchApiData(useCreateUrl(baseUrl, params), model);
     const items = data.data? data.data: null;
-    const i18next = useI18next();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if(params.scope === null) {
@@ -35,7 +35,7 @@ function ItemRankPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.item.rank-title')}</Heading>
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{t('user.item.rank-title')}</Heading>
                 <div className={styles.main_contents_area}>
                     {   items &&
                         <div className={[styles.search_item_area, styles.mb_24].join(' ')}>

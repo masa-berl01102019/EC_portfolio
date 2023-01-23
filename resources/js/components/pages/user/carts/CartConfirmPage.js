@@ -9,7 +9,7 @@ import Heading from '../../../atoms/Heading/Heading';
 import Button from '../../../atoms/Button/Button';
 import LinkBtn from '../../../atoms/LinkButton/LinkBtn';
 import LoadingPopup from '../../../molecules/Popup/LoadingPopup';
-import useI18next from '../../../context/I18nextContext';
+import { useTranslation } from 'react-i18next';
 
 function CartConfirmPage() {
 
@@ -22,17 +22,17 @@ function CartConfirmPage() {
     const elements = useElements();
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
-    const i18next = useI18next();
+    const { t } = useTranslation();
     
 
     const handleSubmit = async () => {
         if (elements == null) return;
-        // ローディングスタート
+        // Start loading UI
         setIsLoading(true);
-        // 非同期の関数を宣言してるのでawaitをつけてstripeに情報を送信する
+        // Send payment info to stripe
         const {error, paymentMethod} = await stripe.createPaymentMethod({
             type: 'card',
-            // 要素からクレジットカードの入力情報を取得
+            // Get credit card info that user inputted on stripe element
             card: elements.getElement(CardElement),
         });
         if(!error) {
@@ -43,7 +43,6 @@ function CartConfirmPage() {
                 callback: () => history.push('/carts/complete')
             });
         } else {
-            // 失敗ページ表示
             history.push('/carts/error');
         }
     };
@@ -51,19 +50,19 @@ function CartConfirmPage() {
     return (
         <main className={styles.mt_40}>
             <Suspense fallback={<CircularProgress disableShrink />}>
-                { isLoading && !errorMessage && <LoadingPopup isOpen={isLoading}>{i18next.t('user.cart.confirm.loading-msg')}</LoadingPopup> }
-                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{i18next.t('user.cart.confirm.title')}</Heading>
+                { isLoading && !errorMessage && <LoadingPopup isOpen={isLoading}>{t('user.cart.confirm.loading-msg')}</LoadingPopup> }
+                <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>{t('user.cart.confirm.title')}</Heading>
                 <div className={[styles.flex, styles.justify_center, styles.mb_32].join(' ')}>
-                    <Text role='title'>{i18next.t('user.cart.progress-input')}</Text>
+                    <Text role='title'>{t('user.cart.progress-input')}</Text>
                     <Text role='title' className={styles.mrl_8}>▶</Text>
-                    <Text role='title'>{i18next.t('user.cart.progress-confirm')}</Text>
+                    <Text role='title'>{t('user.cart.progress-confirm')}</Text>
                     <Text className={[styles.mrl_8, styles.disable].join(' ')}>▶</Text>
-                    <Text className={styles.disable}>{i18next.t('user.cart.progress-complete')}</Text>
+                    <Text className={styles.disable}>{t('user.cart.progress-complete')}</Text>
                 </div>
                 <div className={styles.form_contents_area}>
                     {   errorMessage && !errorMessage.httpRequestError &&
                         <div className={styles.mb_24}>
-                            <Text role='error'>{i18next.t('user.cart.confirm.error1')}</Text> 
+                            <Text role='error'>{t('user.cart.confirm.error1')}</Text> 
                             { errorMessage.payment_token && <Text role='error' className={styles.mt_8}>・{errorMessage.payment_token}</Text> }
                             { errorMessage.total_amount && <Text role='error' className={styles.mt_8}>・{errorMessage.total_amount}</Text> }
                             { errorMessage.delivery_date && <Text role='error' className={styles.mt_8}>・{errorMessage.delivery_date}</Text> }
@@ -72,28 +71,28 @@ function CartConfirmPage() {
                     }
                     <fieldset className={styles.field_area}>
                         <legend>
-                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.bill-amount')}</Text>
+                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{t('user.cart.bill-amount')}</Text>
                         </legend>
                         <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                            <Text>{i18next.t('user.cart.subtotal-amount')}</Text>
+                            <Text>{t('user.cart.subtotal-amount')}</Text>
                             <Text>￥{state ? Number(state.total_amount).toLocaleString() : null}</Text>
                         </div>
                         <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                            <Text>{i18next.t('user.cart.postage')}</Text>
+                            <Text>{t('user.cart.postage')}</Text>
                             <Text>￥{state ? Number(0).toLocaleString() : ''}</Text>
                         </div>
                         <div className={[styles.flex, styles.justify_between, styles.mb_8].join(' ')}>
-                            <Text>{i18next.t('user.cart.commission-fee')}</Text>
+                            <Text>{t('user.cart.commission-fee')}</Text>
                             <Text>￥{state ? Number(state.payment_method == 1 ? 330 : 0).toLocaleString() : ''}</Text>
                         </div>
                         <div className={[styles.flex, styles.justify_between].join(' ')}>
-                            <Text>{i18next.t('user.cart.total-amount')}</Text>
+                            <Text>{t('user.cart.total-amount')}</Text>
                             <Text>￥{state ? Number(state.payment_method == 1 ? state.total_amount + 330 : state.total_amount).toLocaleString() : null}</Text>
                         </div>
                     </fieldset>
                     <fieldset className={styles.field_area}>
                         <legend>
-                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.delivery-place')}</Text>
+                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{t('user.cart.delivery-place')}</Text>
                         </legend>
                         <Text className={styles.mb_8}>{user.delivery_post_code_text ? user.delivery_post_code_text : user.post_code_text}</Text>
                         <Text className={styles.mb_8}>{user.full_delivery_address ? user.full_delivery_address : user.full_address}</Text>
@@ -102,17 +101,18 @@ function CartConfirmPage() {
                     </fieldset>
                     <fieldset className={styles.field_area}>
                         <legend>
-                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.delivery-date')}</Text>
+                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{t('user.cart.delivery-date')}</Text>
                         </legend>
-                        <Text className={styles.mb_8}>{i18next.t('user.cart.preferred-delivery-day')}　{state?.delivery_date}</Text>
-                        <Text>{i18next.t('user.cart.preferred-delivery-time')}　{state?.delivery_time}</Text>
+                        <Text className={styles.mb_8}>{t('user.cart.preferred-delivery-day')}　{state?.delivery_date}</Text>
+                        <Text>{t('user.cart.preferred-delivery-time')}　{state?.delivery_time}</Text>
                     </fieldset>
                     <fieldset className={styles.field_area}>
                         <legend>
-                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{i18next.t('user.cart.payment-method')}</Text>
+                            <Text role='title' className={[styles.bold, styles.mrl_8].join(' ')}>{t('user.cart.payment-method')}</Text>
                         </legend>
                         <CardElement options={{ hidePostalCode: true }} />
-                        <Text className={styles.mt_8} style={{'lineHeight' : '1.5'}}>{i18next.t('user.cart.confirm.caution')}</Text>
+                        <Text role='error' className={styles.mt_8} style={{'lineHeight' : '1.5'}}>TEST CARD NUMBER: 4242 4242 4242 4242</Text>
+                        <Text className={styles.mt_8} style={{'lineHeight' : '1.5'}}>{t('user.cart.confirm.caution')}</Text>
                     </fieldset>
                     <div className={styles.cart_btn_area}>
                         <Button 
@@ -123,9 +123,9 @@ function CartConfirmPage() {
                             disabled={!stripe}
                             style={{'width' : '100%'}}
                         >
-                            {i18next.t('user.cart.confirm.go-btn')}
+                            {t('user.cart.confirm.go-btn')}
                         </Button>
-                        <LinkBtn size='l' to={'/carts'} style={{'width' : '100%'}}>{i18next.t('user.cart.confirm.back-btn')}</LinkBtn>
+                        <LinkBtn size='l' to={'/carts'} style={{'width' : '100%'}}>{t('user.cart.confirm.back-btn')}</LinkBtn>
                     </div>
                 </div>
             </Suspense>

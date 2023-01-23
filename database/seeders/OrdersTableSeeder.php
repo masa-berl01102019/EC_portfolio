@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Tax;
@@ -22,75 +23,69 @@ class OrdersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // 一時的に外部キー制約を無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('orders')->truncate(); // テーブルごと削除して再構築
+        DB::table('orders')->truncate();
 
-        DB::table('order_details')->truncate(); // テーブルごと削除して再構築
+        DB::table('order_details')->truncate();
 
-        for($n = 0; $n < 1000; $n++) {
+        for ($n = 0; $n < 1000; $n++) {
 
-            // ランダムに会員インスタンスを取得
+            // Get user instance randomly
             $user = User::inRandomOrder()->first();
 
-            if($user->gender == 0 || $user->gender == 1) { // 0:man 1:woman 2:others 3:no answer
-                // 会員が男性か女性を判定して性別カテゴリのIDをセット * 1 => 'メンズ', 2 => 'レディース'
+            if ($user->gender == 0 || $user->gender == 1) { // 0:man 1:woman 2:others 3:no answer
+                // Set gender category ID after checking if user is man or woman  * 1:men  2:women
                 $gender_category = $user->gender == 0 ? 1 : 2;
-                // 該当の性別カテゴリの商品IDを配列に格納
+                // Store item ID of gender category which is correspond with user's gender in array
                 $items_id_arr = Item::with('categories')->whereHas('categories', function ($query) use ($gender_category) {
                     return $query->where('categories.id', $gender_category);
                 })->pluck('id')->toArray();
-                // 該当の商品をランダムに1~5件インスタンスで取得
-                $purchased_items = Item::whereIn('id', $items_id_arr)->inRandomOrder()->take(rand(1,5))->get();
+                // Create instances of 1 to 5 items randomly 
+                $purchased_items = Item::whereIn('id', $items_id_arr)->inRandomOrder()->take(rand(1, 5))->get();
             } else {
-                // 商品をランダムに1~5件インスタンスで取得
-                $purchased_items = Item::inRandomOrder()->take(rand(1,5))->get();
+                // Create 1 to 5 instances of item  randomly
+                $purchased_items = Item::inRandomOrder()->take(rand(1, 5))->get();
             }
 
-            // 小計を算出
+            // calculate subtotal
             $sub_total = intval($purchased_items->sum('price'));
 
-            // 商品の価格のみを抜き出し配列を生成
-            $price_arr = array_column($purchased_items->toArray(),'price');
-            
-            // 商品の価格のそれぞれに消費税を掛ける
-            $tax_arr = array_map(fn($item): int => intval($item * Tax::getTaxRate()), $price_arr);
+            // Extract only the item price and store it in array
+            $price_arr = array_column($purchased_items->toArray(), 'price');
 
-            // 消費税の合計を算出
+            // Calculate price including tax for each items 
+            $tax_arr = array_map(fn ($item): int => intval($item * Tax::getTaxRate()), $price_arr);
+
+            // Calculate the total amount of consumption tax
             $tax_amount = intval(array_sum($tax_arr));
 
-            // 購入総額を算出
+            // Calculate the total amount of order price
             $total_amount = $sub_total + $tax_amount;
 
-            // 手数料を3.6%と想定し算出 * ストライプの手数料は小数点以下を四捨五入しなければいけないのでround()をかませる
+            // Caluculate stripe fee (3.6%) * stripe fee has to round after the decimal point
             $commission_fee = intval(round($total_amount * config('define.stripe_commision_fee')));
 
-            // 決済種別
-            $payment_method =rand(0, 1); // 0:クレジットカード 1:代引き
+            // Set each status randomly
+            $payment_method = rand(0, 1); // 0: Credit card 1: Cache
+            $payment_status = rand(0, 1); // 0: Unsettled 1: Settled
+            $is_paid = $payment_status === 1 ? rand(0, 1) : 0; // 0: Not paid 1: Paid
+            $is_shipped = $is_paid === 1 ? rand(0, 1) : 0; // 0:Not delivered 1:Delivered
 
-            // 決済ステータス
-            $payment_status = rand(0, 1); // 0:未決済 1:決済済
-
-            // 入金の有無
-            $is_paid = $payment_status === 1 ? rand(0, 1): 0; // 0:入金無し 1:入金有り
-
-            // 配送の有無
-            $is_shipped = $is_paid === 1? rand(0, 1): 0; // 0:未配送 1:配送済
-
-            // dateTimeThisDecade() 過去10年のランダムな日付を取得→Carbon::instance()でDatetime型の日付からCarbonインスタンスを取得
+            // Get a random date in the last decade and create carbon instance
             $first = Carbon::instance(DateTime::dateTimeThisDecade());
             $second = Carbon::instance(DateTime::dateTimeThisDecade());
-            
-            // オーダー作成日
-            $created_at = $first->min($second); // 2つの日付のうち前のものを取得
+
+            // Get the oldest date between variables of first and second 
+            $created_at = $first->min($second);
 
             $delivery_time_zone = ['8:00 - 12:00', '14:00 - 16:00', '16:00 - 18:00', '18:00 - 20:00'];
 
-            // ランダムで配達希望時間帯の配列のキーを一つ取り出し
+            // Extract one from an array which is stored preferred delivery time zone
             $key2 = array_rand($delivery_time_zone, 1);
 
-            // オーダー更新日
-            $updated_at = $is_paid === 1 || $is_shipped === 1 ? $first->max($second) : $created_at; // 2つの日付のうち先のものを取得
+            // Assign the latest date to variable of updated_at if order was paid or delivered.
+            $updated_at = $is_paid === 1 || $is_shipped === 1 ? $first->max($second) : $created_at;
 
             $order = Order::create([
                 'user_id' => $user->id,
@@ -108,13 +103,13 @@ class OrdersTableSeeder extends Seeder
                 'updated_at' => $updated_at
             ]);
 
-            for($i = 0; $i < count($purchased_items); $i++) {
-                // ランダムに選ばれた商品に紐づくSKUのを取得
+            for ($i = 0; $i < count($purchased_items); $i++) {
+                // Get sku related with items randomly
                 $skus = $purchased_items[$i]->skus()->first();
-                // SKUに紐づくカラーとサイズを取得
+                // Get instances of color and size related with sku
                 $color = Color::find($skus->color_id)->color_name;
                 $size = Size::find($skus->size_id)->size_name;
-                // 注文テーブルと整合性がとれるようOrderDetailsのインスタンスを作成して保存
+                // Store item data which is correspond with the total amount of order
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'sku_id' => $skus->id,
@@ -128,10 +123,8 @@ class OrdersTableSeeder extends Seeder
                     'updated_at' => $created_at
                 ]);
             }
-
         }
 
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // 外部キー制約を有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

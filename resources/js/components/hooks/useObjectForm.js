@@ -1,32 +1,29 @@
 import useHelper from "./useHelper";
 
- // オブジェクトを送信するラッパー関数
 const useObjectForm = (formData, setFormData, dispatch) => {
 
-  // 便利関数の呼び出し
   const {isObject} = useHelper();
 
-  // content-typeを'multipart/form-data'にしないと送信出来ないフォームの送信 ex) 画像等のファイル形式
+  // content-type shuld be 'multipart/form-data' otherwise it can't be send  ex) image file etc 
   const handleSendObjectForm = (sendUrl, callback) => {
-    console.log('handleSendObjectForm');
-    // FormDataオブジェクトのインスタンス生成
+    // Create FormData instance
     const params = new FormData();
-    // formオブジェクトを展開
+
     Object.entries(formData).forEach(([key, value]) => {
-        // valueが配列形式か判定
+        // check whether if value is array type
         if(Array.isArray(value)) {
-            // 配列を展開
+
             for(let i = 0; i < value.length; i++) {
-                // 展開した配列内に複数オブジェクトを持つか単純な配列か判定
+                // check whether if array has multiple objects or not
                 if(isObject(value[i])) {
-                    // FormDataは配列やオブジェクトそのままappend()で追加出来ないので formData.images = [ {id:'1', item_id:'2'...} {id:'2', item_id:'3'...}] の場合
-                    // 全て展開してkey: valueの形でappend()で代入する際に文字列を下記のように加工すればサーバー側に渡る際にオブジェクトの形式で渡せる
                     Object.entries(value[i]).forEach(([key2, value2]) => {
-                        // formオブジェクトはnullを文字列にしてしまうので空文字に修正
+                        // FormData can't store array and object types by using append function  ex) × formData.images = [ {id:'1', item_id:'2'...} {id:'2', item_id:'3'...}] 
+                        // The append function can only assign like a key:value format, so the key should be processed like the below.
+                        // FormData take null as a string so it has to replace it with a blank
                         params.append(key+'['+i+']['+key2+']', value2 === null ? '': value2)
                     })
                 } else {
-                    // 全て展開してkey[]: valueの形でappend()で代入すればサーバー側に渡る際に配列の形式で渡せる
+                    // The key should be processed like the below in order to send array type data to server ex) key[]: value
                     params.append(key+'[]', value[i] === null ? '': value[i])
                 }
             }
@@ -34,9 +31,7 @@ const useObjectForm = (formData, setFormData, dispatch) => {
             params.append(key, value === null ? '': value);
         }
     });
-    // axiosで画像等のファイル形式を送信する際はcontent-typeを'multipart/form-data'にしないと送信出来ない
-    // post形式でないと正しく送れない * axiosの仕様的な問題？？
-    // dispatch({type: 'CREATE', form: params, url: sendUrl, headers: {'content-type': 'multipart/form-data'} });
+    // Axios library has to use post method and set  'multipart/form-data' to request header when it send image files to server.
     dispatch({ 
         form: params, 
         url: sendUrl, 
@@ -45,21 +40,17 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     });
   }
 
- // 以下のメソッドは管理画面の商品の新規作成・編集でのみしか使われてない
-
-  // オブジェクトFormの追加
+  // Add Object form 
   const handleInsertObjectForm = (table_name, exceptInitilizeColumns = []) => {
-    console.log('handleInsertObjectForm');
     let new_obj = {};
     if(formData[table_name].length > 0) {
-        // スプレッド構文でオブジェクトのコピー
+        // Copy the beginning of array of a designated object using spread syntax
         new_obj = {...formData[table_name][0]}
-        // オブジェクトを展開して初期化
+        // Use for loop to initialize object
         for (let key in new_obj) {
-            if(exceptInitilizeColumns.includes(key)) continue; // 初期化しないカラム名があればスキップする
-            new_obj[key] = ''; // 値の初期化
+            if(exceptInitilizeColumns.includes(key)) continue; // Skip if there is key which doesn't initialize
+            new_obj[key] = ''; // initialize value
         }
-        // ステートを更新して再描画走らせる
         setFormData({
             ...formData,
             [table_name] : [
@@ -70,28 +61,24 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     }
   }
  
-  // オブジェクトFormの削除 ＊アイテム以外でも使う場合はURLを引数で受け取るような形で修正必要
+  // Delete Object form ＊TODO: This function has to modify so that it can use against other api
   const handleDeleteObjectForm = (table_name, index, id) => {
-    console.log('handleDeleteObjectForm');
     if(formData[table_name].length > 1) {
-        // 新規で動的に追加したフォームの場合はＩＤないので条件分岐
+        // Check whether ID exists because Form which is dynamically added has no id
         if(id) {
-            // 削除のリクエスト送信
             dispatch({
                 url: `/api/admin/items/${table_name}/${id}`, 
                 callback: () => {
-                    // 配列からindex番目のオブジェクトを1個削除
+                    // Delete an index-th object from array
                     formData[table_name].splice(index,1);
-                    // ステートを更新して再描画走らせる
                     setFormData({
                         ...formData
                     });
                 } 
             });
         } else {
-            // 配列からindex番目のオブジェクトを1個削除
+            // Delete an index-th object from array
             formData[table_name].splice(index,1);
-            // ステートを更新して再描画走らせる
             setFormData({
                 ...formData
             });
@@ -99,22 +86,19 @@ const useObjectForm = (formData, setFormData, dispatch) => {
     } 
   }
 
-  // オブジェクトFormのカラムの値の更新
+  // Update Object form
   const handleChangeObjectForm = (table_name, index, e) => {
-    console.log('handleChangeObjectForm');
-    const name = e.target.name; // name属性にDBのカラム名を指定しているので取得
-    const recode = formData[table_name][index] // 配列のindex番目のオブジェクト取得
-    if(e.target.files && e.target.files.length > 0) { // 画像か判定
-      const file = e.target.files && e.target.files[0]; // fileオブジェクトを変数に格納
-      const imageUrl = URL.createObjectURL(file); // 新しいオブジェクトURLを生成
-      recode[name] = imageUrl; // 配列のindex番目のオブジェクトの特定カラムを更新 *画像プレビューのセット用
-      recode['file'] = file; // fileというカラム名を追加してfileオブジェクトを格納
+    const name = e.target.name; // name attribute of input is set DB column name
+    const recode = formData[table_name][index] // Get index-th object from an array
+    if(e.target.files && e.target.files.length > 0) { // Check if it's files
+      const file = e.target.files && e.target.files[0]; // Assign a file object to variable
+      const imageUrl = URL.createObjectURL(file); // Create a new objectURL
+      recode[name] = imageUrl; // Update designated column in index-th object of array * for image preview
+      recode['file'] = file; // Add a file column and store the file object.
     } else {
-      // e.target.valueで渡って来るとき数値も文字列でキャストされた状態で渡って来る
-      // 現時点では更新する値は数値のみなので数値にキャストしてる
-      recode[name] = e.target.value !== '' ? Number(e.target.value): ''; // 配列のindex番目のオブジェクトの特定カラムを更新
+      // Cast string to number
+      recode[name] = e.target.value !== '' ? Number(e.target.value): ''; // update designated column in index-th object of array
     }
-    // ステートを更新
     setFormData({
         ...formData,
         [table_name] : [

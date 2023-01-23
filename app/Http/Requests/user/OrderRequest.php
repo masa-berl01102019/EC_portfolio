@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests\User;
 
-use Carbon\Carbon;
-use App\Rules\Kana;
-use App\Rules\JapanesePhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderRequest extends FormRequest
@@ -27,7 +24,7 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'payment_token' => 'required|string',
+            'payment_token' => 'required|string|max:255',
             'total_amount' => 'required|integer|min:0',
             'payment_method' => 'required|integer|min:0|max:1',
             'delivery_date' => 'required|date|after:today',

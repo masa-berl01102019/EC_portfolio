@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ImageResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -34,5 +33,5 @@ class ImageResource extends JsonResource
                 'image_category' => $this->image_category,
             ];
         }
-    } 
+    }
 }

@@ -16,9 +16,9 @@ class CreateBlogTagTable extends Migration
         Schema::create('blog_tag', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('blog_id');
-            $table ->foreign('blog_id')->references('id')->on('blogs'); // 外部キー
+            $table->foreign('blog_id')->references('id')->on('blogs');
             $table->unsignedInteger('tag_id');
-            $table ->foreign('tag_id')->references('id')->on('tags'); // 外部キー
+            $table->foreign('tag_id')->references('id')->on('tags');
         });
     }
 

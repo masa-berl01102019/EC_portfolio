@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class AdminResource extends JsonResource
 {
     /**
-     * 適用する「データ」ラッパー
      *
      * @var string
      */
@@ -41,7 +40,5 @@ class AdminResource extends JsonResource
                 'updated_at' => $this->updated_at->format('Y/m/d H:i')
             ];
         }
-
-    } 
-    
+    }
 }

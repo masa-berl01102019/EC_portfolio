@@ -2,20 +2,19 @@ import React, {useEffect, Suspense, lazy} from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {CircularProgress} from "@material-ui/core";
 import {UserPrivateRoute, UserLoginRoute,AdminPrivateRoute, AdminLoginRoute} from './GuardRoute';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { authAdminState, authUserState } from './store/authState';
-import { langState } from './store/langState';
 import useAuth from './hooks/useAuth';
 import ErrorBoundary from './ErrorBoundary';
+import ApplicationError from './pages/error/ApplicationError';
 
-// 固定ルーティング
+// Fixed routes
 import {Header as AdminHeader} from "./organisms/admin/Header/Header";
 import {Header as UserHeader} from "./organisms/user/Header/Header";
 import {Footer as AdminFooter} from "./organisms/admin/Footer/Footer";
 import {Footer as UserFooter} from "./organisms/user/Footer/Footer";
 
-
-// user用 各ページコンポーネント
+// Page component for user
 const TopPage = lazy(() => import( "./pages/user/TopPage" ));
 const HistoryPage = lazy(() => import( "./pages/user/HistoryPage" ));
 const ItemIndexPage = lazy(() => import( "./pages/user/items/ItemIndexPage" ));
@@ -43,7 +42,7 @@ const ContactCompletePage = lazy(() => import( "./pages/user/contacts/ContactCom
 const UserEditPage = lazy(() => import( "./pages/user/users/UserEditPage" ));
 const UserEditCompletePage = lazy(() => import( "./pages/user/users/UserEditCompletePage" ));
 const UserDeletePage = lazy(() => import( "./pages/user/users/UserDeletePage" ));
-// admin用 各ページコンポーネント
+// Page component for admin
 const AdminLogin = lazy(() => import( "./pages/admin/auth/AdminLogin" ));
 const AdminResetPassword = lazy(() => import( "./pages/admin/auth/AdminResetPassword" ));
 const AdminChangePassword = lazy(() => import( "./pages/admin/auth/AdminChangePassword" ));
@@ -75,30 +74,28 @@ const BrandIndex = lazy(() => import( "./pages/admin/brands/BrandIndex" ));
 const TagIndex = lazy(() => import( "./pages/admin/tags/TagIndex" ));
 const CategoryIndex = lazy(() => import( "./pages/admin/categories/CategoryIndex" ));
 const SizeIndex = lazy(() => import( "./pages/admin/sizes/SizeIndex" ));
-// エラーページ用 コンポーネント
+// Page component for error
 const NotFound = lazy(() => import( "./pages/error/NotFound" ));
 
 
 
 function Router() {
-    // グローバルステートの呼び出し
+    // Call global state for user and admin
     const setIsUserLogin = useSetRecoilState(authUserState);
     const setIsAdminLogin = useSetRecoilState(authAdminState);
-    // ブラウザからのアクセスされたURLのドメイン以下を取得して文字列を切り出す
-    const str = window.location.pathname.substring( 1, 6 );
-    // 再読み込み時に直前のURL取得
+    // Get previous URL when reloading
     const prevUrl = window.location.pathname;
-    // 管理画面のURLは全て /admin/* のルーティングになるので取得した文字列がadminかどうかで管理者ページへのアクセスか一般ページへのアクセスか判別してauth名を決定
+    // Get characters which is after domain from access URL
+    const str = prevUrl.substring( 1, 6 );
+    // Judge whether access is for admin pages or general user page from str variable because admin page's URL start with domain/admin/*.
     const auth = str !== 'admin' ? 'user': 'admin';
-    // Auth hooksの呼び出し
+    // Get Auth data from API
     const {data, errorMessage} = useAuth(`/api/${auth}/auth`, auth);
-    // 言語が変更になった際に再レンダリング掛ける為に呼びだし
-    const lang = useRecoilValue(langState);
 
     useEffect(() => {
-        // ログインしていればユーザー名が返却されて来るので
+        // It will return the name if auth has been logged in
         if(data) {
-            // ログインステータスをTRUEにセットする * リロード時に状態を保持する為
+            // Set login status true to retain it when browser reloads
             if(auth === 'user') {
                 setIsUserLogin(true);
             } else if (auth === 'admin') {
@@ -116,7 +113,7 @@ function Router() {
                     <UserHeader style={{ 'position': 'fixed', 'left' : '0', 'top' : '0', 'right' : '0', 'zIndex' : '999999' }} /> : 
                     <AdminHeader style={{ 'position': 'fixed', 'left' : '0', 'top' : '0', 'right' : '0', 'zIndex' : '999999' }} />
                 }
-                <ErrorBoundary>
+                <ErrorBoundary fallback={<ApplicationError/>}>
                     <Suspense fallback={<CircularProgress disableShrink style={{'margin': '120px auto'}}/>}>
                         <Switch>
                             {/* USER ROUTING */}
