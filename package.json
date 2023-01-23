@@ -12,12 +12,9 @@
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
         "axios": "^0.19",
-        "bootstrap": "^4.0.0",
         "cross-env": "^5.2.1",
-        "jquery": "^3.2",
         "laravel-mix": "^4.0.7",
         "lodash": "^4.17.13",
-        "popper.js": "^1.12",
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
         "resolve-url-loader": "^2.3.1",
@@ -31,6 +28,7 @@
         "react-js-pagination": "^3.0.3",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
+        "react-toastify": "^8.0.2",
         "sass-loader": "7.1.0"
     }
 }

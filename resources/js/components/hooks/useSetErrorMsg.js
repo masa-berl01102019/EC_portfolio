@@ -9,22 +9,22 @@ const useSetErrorMsg = (initialValue) => {
     const handleApiErrorMessage = (error) => {
         console.log('handleErrorMessage');
         // エラーを格納する配列の初期化
-        const arrayErrors = [];
+        let arrayErrors = {};
         // 422 バリデーションエラー時は複数エラーメッセージが返ってくるので条件分岐
         if(error.response.status === 422 ) {
             // 取得したエラーオブジェクトを変数に格納
             const errors = error.response.data.errors;
             // for~in で展開して配列に格納
             for (let key in errors) {
-                arrayErrors.push(errors[key][0]);
+                // オブジェクトにカラム名をキーにして代入
+                arrayErrors[key] = errors[key][0] ;
             }
         } else {
-            // 配列に格納
-            // arrayErrors.push(`${error.response.status} ${error.response.statusText}`);　＊ ステータステキストではサーバーからのjson　error message が拾えないので変更
-            arrayErrors.push(`${error.response.status} ${error.response.data.message}`);
+            // オブジェクトに格納
+            arrayErrors.httpRequestError = `${error.response.status} ${error.response.data.message}`;
         }
         // エラーメッセージをセット
-        setErrorMessage([...arrayErrors]);
+        setErrorMessage({...arrayErrors});
     }
 
     return [errorMessage, {setErrorMessage, handleApiErrorMessage}];

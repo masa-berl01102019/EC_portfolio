@@ -11,10 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    // TODO レスポンスの返却形式の統一
-    // TODO エラーハンドリングの統一 * auth認証されてない場合等のエラーと入力バリデーション等のエラーは出しどころを分ける必要あり
-    // TODO フリーワード検索　カラムを指定して検索をかけるようにするか要検討
-    // TODO 他のコントローラーでも使用する共通処理をヘルパー関数でまとめる
+    // TODO Resource APIでレスポンスの返却形式を決めるか要検討
+    // TODO フリーワード検索でカラムを指定受けて検索をかける仕様にするか要検討
 
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [ 'admin_id', 'title', 'body', 'is_published', 'expired_at', 'posted_at', 'modified_at' ];
@@ -32,94 +30,22 @@ class NotificationController extends Controller
             ->join('admins','admins.id', '=', 'notifications.admin_id');
 
         // フリーワード検索
-        if(!is_null($request->input('f_keyword'))) {
-            // 全角スペースを半角スペースに変換
-            $keyword = mb_convert_kana($request->input('f_keyword'), 's', 'UTF-8');
-            // 前後のスペース削除（trimの対象半角スペースのみなので半角スペースに変換後行う）
-            $keyword = trim($keyword);
-            // 連続する半角スペースを半角スペースカンマに変換
-            $keyword = preg_replace('/\s+/', ',', $keyword);
-            // 半角スペース区切りで配列に変換
-            $keywords = explode(',',$keyword);
-
-            // テーブル結合してキーワード検索で渡ってきた値と部分一致するアイテムに絞りこみ　DBのカラムが分かれてるのでスペースなしでフルネームで検索されると表示されない！！
-            $search_notification->where(function ($query) use ($keywords) {
-                foreach ($keywords as $keyword) { // 複数のkeywordを検索
-                    $query->orWhere('title', 'like', "%{$keyword}%")
-                        ->orWhere('title', 'like', "%{$keyword}%")
-                        ->orWhere('title', 'like', "%{$keyword}%")
-                        ->orWhere('title', 'like', "%{$keyword}%");
-                }
-            });
-        }
-
+        $search_notification->filterKeyword($request, ['title']);
+        // 検索期間の指定フィルター
+        $search_notification->filterDateRange($request);
         // 公開の有無フィルター
-        if(!is_null($request->input('f_is_published'))) {
-            // 全角スペースを半角スペースに変換
-            $is_published = $request->input('f_is_published');
-            // カンマ区切りで配列に変換
-            $published_arr = explode(',',$is_published);
-            // テーブル結合してキーワード検索で渡ってきた値と部分一致するアイテムに絞りこみ
-            $search_notification->where(function ($query) use ($published_arr) {
-                foreach ($published_arr as $list) { // 複数のkeywordを検索
-                    $query->orWhere('is_published', "{$list}");
-                }
-            });
-        }
-
-        // 検索期間の指定
-        $target = $request->all();
-        // array_flip()でkeyとvalueを反転させてpreg_grep()で正規表現を使って該当の連想配列を取り出す * keyとvalueが反転した状態で連想配列が返されてる
-        $flip_array = preg_grep( '/f_dr_/', array_flip($target) ); // f_dr_ = 期間指定のフィルタリング　
-        // 該当のkeyがあるか条件分岐
-        if(!empty($flip_array)) {
-            // array_key_first()で最初のキーを取得して変数に格納
-            $index = array_key_first($flip_array);
-            // keyとvalueが反転してるのでvalueに対してstr_replace()でプレフィックスを取り除いてカラム名を取得
-            $column_name = str_replace('f_dr_', '', $flip_array[$index]);
-            // keyとvalueが反転してるのでkeyには日付が「検索開始日,検索終了日」の形で入ってるのでexplode()で配列に変換
-            $date_array = explode(',',$index);
-            try {
-                $begin = new Carbon($date_array[0]);
-                $end = new Carbon($date_array[1]);
-                // 開始日と終了日をwhereBetween()でクエリに追加
-                $search_notification->whereBetween($column_name, [$begin,$end]);
-            } catch(\Exception $e) {
-                // 例外の結果をログ書き出し
-                report($e);
-                // json形式でエラーを返却
-                return response()->json([
-                    'status' => 400,
-                    'errors' => $e->getMessage()
-                ], 400);
-            }
-        }
+        $search_notification->filterIsPublished($request);
 
         // 名前順->掲載終了日順->投稿日順->更新日順の優先順位でソートされる仕組み
 
         // 名前でソート
-        if(!is_null($request->input('last_name_kana'))) {
-            $sort = $request->input('last_name_kana');
-            $search_notification->orderBy('last_name_kana', $sort)->orderBy('first_name_kana', $sort);
-        }
-
+        $search_notification->orderByName($request);
         // 掲載終了日でソート
-        if(!is_null($request->input('expired_at'))) {
-            $sort = $request->input('expired_at');
-            $search_notification->orderBy('expired_at', $sort);
-        }
-
+        $search_notification->orderByExpiredAt($request);
         // 投稿日でソート　
-        if(!is_null($request->input('posted_at'))) {
-            $sort = $request->input('posted_at');
-            $search_notification->orderBy('posted_at', $sort);
-        }
-
-        // 更新日でソート
-        if(!is_null($request->input('modified_at'))) {
-            $sort = $request->input('modified_at');
-            $search_notification->orderBy('modified_at', $sort);
-        }
+        $search_notification->orderByPostedAt($request);
+        // 修正更新日でソート
+        $search_notification->orderByModifiedAt($request);
 
         // 1ページ当たり件数の指定の有無を確認
         if($request->input('per_page')) {
@@ -132,13 +58,13 @@ class NotificationController extends Controller
         }
 
         // レスポンスを返却
-        return response()->json(['notifications' => $notifications ]);
+        return response()->json(['notifications' => $notifications],200);
     }
 
     public function create()
     {
         // とりあえずなんか返す
-        return response()->json(['auth' => true]);
+        return response()->json(['read' => true],200);
     }
 
     public function store(NotificationRequest $request)
@@ -157,13 +83,13 @@ class NotificationController extends Controller
             'posted_at' => $data['is_published'] == 1 ? Carbon::now(): null, // 初公開された投稿日だけを登録したいので条件分岐を追加
         ]);
         // レスポンスを返却
-        return response()->json(['success' => true]);
+        return response()->json(['create' => true, 'message' => 'お知らせの新規登録を完了しました'], 200);
     }
 
     public function edit(Notification $notification)
     {
         // レスポンスを返却
-        return response()->json(['notification' => $notification]);
+        return response()->json(['notification' => $notification],200);
     }
 
     public function update(NotificationRequest $request, Notification $notification)
@@ -185,7 +111,7 @@ class NotificationController extends Controller
         ])->save();
 
         // レスポンスを返却
-        return response()->json(['success' => true]);
+        return response()->json(['update' => true, 'message' => 'お知らせの編集を完了しました'], 200);
     }
 
     public function destroy(Request $request)
@@ -199,7 +125,7 @@ class NotificationController extends Controller
             $notification->delete();
         }
         // レスポンスを返却
-        return response()->json(['delete' => true]);
+        return response()->json(['delete' => true, 'message' => 'お知らせの削除を完了しました'], 200);
     }
 
     public function csvExport(Request $request)
@@ -231,7 +157,7 @@ class NotificationController extends Controller
 
                 $file->fputcsv([
                     $num,
-                    $notification->ac_is_published,
+                    $notification->is_published_text,
                     $notification->title,
                     $last_editor,
                     $notification->body,

@@ -2,15 +2,37 @@
 
 namespace App\Models;
 
+use App\Traits\AddressAccessorTrait;
+use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\FilterGenderScopeTrait;
+use App\Traits\FilterIsReceivedScopeTrait;
+use App\Traits\FilterKeywordScopeTrait;
+use App\Traits\NameAccessorTrait;
+use App\Traits\OrderByBirthdayScopeTrait;
+use App\Traits\OrderByCreatedAtScopeTrait;
+use App\Traits\OrderByNameScopeTrait;
+use App\Traits\OrderByUpdatedAtScopeTrait;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Carbon;
 
 class User extends Authenticatable
 {
     use Notifiable; // 通知(使うか未定)
     use SoftDeletes; //　論理削除
+    use NameAccessorTrait;
+    use AddressAccessorTrait;
+    use OrderByNameScopeTrait;
+    use OrderByBirthdayScopeTrait;
+    use OrderByCreatedAtScopeTrait;
+    use OrderByUpdatedAtScopeTrait;
+    use FilterIsReceivedScopeTrait;
+    use FilterGenderScopeTrait;
+    use FilterKeywordScopeTrait;
+    use FilterDateRangeScopeTrait;
 
     /** シリアライズ */
 
@@ -24,50 +46,30 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    // モデルからシリアライズ時の日付形式の設定
+    // モデルからシリアライズ時の日付形式の設定 Datetime型用
     protected $casts = [
-        'birthday' => 'date:Y-m-d',
-        'created_at' => 'date:Y-m-d H:m',
-        'updated_at' => 'date:Y-m-d H:m',
-        'email_verified_at' => 'datetime',
+        'birthday' => 'date:Y-m-d'
     ];
 
-    // 日時データをCarbonインタンスへ自動変換するカラム名を指定
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'birthday',
-    ];
+    // timestamp型はconfig.phpのlocaleに依存しているので
+    //　DB保存時はセットされてるlocaleのタイムゾーンを確認してUTCに変換してDBにinsertするがselect時にはタイムゾーンを確認してセットされたタイムゾーンで表示される
+    // JSON形式にシリアライズする際はタイムゾーンを考慮しないでUTCの時間でシリアライズされるので時間がずれてしまう
+    // その為、serializeDate()をオーバーライドしてシリアライズ時にタイムゾーンをセットして日付文字列に変換する必要がある
+    protected function serializeDate(DateTimeInterface $date)
+    {
+       return Carbon::instance($date)->tz('Asia/Tokyo')->format('Y-m-d H:i');
+    }
 
     /** アクセサ */
 
     // 配列内に含めたい独自の属性(カラム名)を定義
-    protected $appends = ['ac_post_code', 'ac_delivery_post_code', 'ac_gender', 'ac_is_received'];
+    protected $appends = ['post_code_text', 'delivery_post_code_text', 'full_delivery_address', 'full_address', 'gender_text', 'is_received_text', 'full_name', 'full_name_kana' ];
 
     // 関数の返却値を独自の属性(カラム名)として設定
-    public function getFullNameAttribute() {
-        return $this->last_name . ' ' . $this->first_name;
-    }
-    public function getFullNameKanaAttribute() {
-        return $this->last_name_kana . ' ' . $this->first_name_kana;
-    }
-    public function getFullAddressAttribute() {
-        return $this->prefecture . $this->municipality . $this->street_name . $this->street_number . $this->building;
-    }
-    public function getFullDeliveryAddressAttribute() {
-        return $this->delivery_prefecture . $this->delivery_municipality . $this->delivery_street_name . $this->delivery_street_number . $this->delivery_building;
-    }
-    public function getAcPostCodeAttribute() {
-        return !empty($this->post_code)? '〒'. substr_replace($this->post_code, "-", 3, 0): '';
-    }
-    public function getAcDeliveryPostCodeAttribute() {
-        return !empty($this->delivery_post_code)? '〒'. substr_replace($this->delivery_post_code, "-", 3, 0): '';
-    }
-    public function getAcGenderAttribute() {
+    public function getGenderTextAttribute() {
         return isset($this->gender) ? config('define.gender')[$this->gender]: '';
     }
-    public function getAcIsReceivedAttribute() {
+    public function getIsReceivedTextAttribute() {
         return isset($this->is_received) ? config('define.is_received')[$this->is_received]: '';
     }
 
