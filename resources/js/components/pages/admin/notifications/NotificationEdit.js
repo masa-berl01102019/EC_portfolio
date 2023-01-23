@@ -36,7 +36,7 @@ function NotificationEdit(props) {
             // フォームのデフォルト値を設定するためにsetFormDataで値をセット
             setFormData({...notification});
         }
-        if(data.success === true) {
+        if(data.update === true) {
             // 処理が完了した時点でリダイレクトの処理
             history.push('/admin/notifications');
         }
