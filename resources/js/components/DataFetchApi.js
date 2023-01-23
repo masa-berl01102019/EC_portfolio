@@ -22,7 +22,6 @@ const DataFetchApi = (initialUrl, initialMethod, initialData) => {
                     data: action.form
                 };
             case 'READ':
-                console.log(state.url);
                 return {
                     url: action.url, // GET '/api/admin/users' or '/api/admin/users/create' or '/api/admin/users/{id}' or `/api/admin/users/{id}/edit`
                     method: 'get'
@@ -35,8 +34,9 @@ const DataFetchApi = (initialUrl, initialMethod, initialData) => {
                 };
             case 'DELETE':
                 return {
-                    url:  action.url , // DELETE '/api/admin/users/{id}'
+                    url:  action.url , // DELETE '/api/admin/users/delete'
                     method: 'delete',
+                    data: action.data
                 };
             default:
                 return state
