@@ -8,6 +8,9 @@
 .nowrap {
   white-space: nowrap;
 }
+.text_center {
+  text-align: center;
+}
 .img {
   margin: 0 auto 16px;
   display: block;

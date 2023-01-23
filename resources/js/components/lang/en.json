@@ -486,7 +486,7 @@
       "payment-credit" : "Credit card",
       "registered" : "Done",
       "register" : "Cart",
-      "done" : "Added cart",
+      "done" : "ADDED TO CART",
       "index" : {
         "title" : "SHIPPING",
         "error1" : "There are items which are run out already.",
@@ -531,7 +531,7 @@
       "register-date" : "Register date",
       "registered" : "Done",
       "register" : "Bookmark",
-      "done" : "Added bookmark"
+      "done" : "ADDED TO BOOKMARK"
     },
     "view-record" : {
       "index-title" : "BROWSING HISTORY"
