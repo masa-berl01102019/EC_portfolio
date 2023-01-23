@@ -21,10 +21,7 @@ class ContactResource extends JsonResource
      */
     public function toArray($request)
     {
-        // URLにeditが含まれるか判定
-        $str = strstr($request->url(), 'edit');
-        // editかどうかで条件分岐
-        if($str === 'edit') {
+        if ($request->routeIs('admin.contacts.edit')) {
             return [
                 'title' => $this->title,
                 'body' => $this->body,

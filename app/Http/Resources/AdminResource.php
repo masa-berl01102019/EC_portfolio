@@ -21,10 +21,7 @@ class AdminResource extends JsonResource
      */
     public function toArray($request)
     {
-        // URLにeditが含まれるか判定
-        $str = strstr($request->url(), 'edit');
-        // editかどうかで条件分岐
-        if($str === 'edit') {
+        if ($request->routeIs('admin.admins.edit')) {
             return [
                 'last_name' =>  $this->last_name,
                 'first_name' =>  $this->first_name,

@@ -31,7 +31,7 @@ function OrderIndex() {
             console.log('ORDERにてparamsの初期値をセットしてscopeを変更');
             setParams({
                 ...params,
-                sort: { 'total_amount' : '', 'created_at' : '', 'updated_at' : ''},
+                sort: { 'total_amount' : '', 'created_at' : '', 'delivery_date' : '', 'updated_at' : ''},
                 filter: { 'payment_method' : [], 'is_paid' : [], 'is_shipped' : [], 'dateRange': {} },
             });
             setScope(model);
@@ -90,6 +90,7 @@ function OrderIndex() {
                             <select name='field' ref={dateRangeField} value={Object.keys(params.filter.dateRange)[0]} onChange={handleFilterDateRange}>
                                 <option value={'clear'}>フィールド選択</option>
                                 <option value={'created_at'}>購入日</option>
+                                <option value={'delivery_date'}>配達希望日</option>
                                 <option value={'updated_at'}>ステータス更新日</option>
                             </select>
                             <input type='number' name='start' ref={dateRangeStart} onBlur={handleFilterDateRange} defaultValue={Object.values(params.filter.dateRange).length > 0 ? Object.values(params.filter.dateRange)[0][0]: ''} placeholder={'19500101'} />　〜　
@@ -116,6 +117,13 @@ function OrderIndex() {
                                 <option value={'asc'}>昇順</option>
                             </select>
                         </label>
+                        <label>配達希望日
+                            <select name='delivery_date' value={params.sort.delivery_date} onChange={handleSort}>
+                                <option value={''}>未選択</option>
+                                <option value={'desc'}>降順</option>
+                                <option value={'asc'}>昇順</option>
+                            </select>
+                        </label>
                         <label>ステータス更新日
                             <select name='updated_at' value={params.sort.updated_at} onChange={handleSort}>
                                 <option value={''}>未選択</option>
@@ -135,6 +143,8 @@ function OrderIndex() {
                             <th>購入日</th>
                             <th>購入金額</th>
                             <th>支払方法</th>
+                            <th>希望配達日</th>
+                            <th>希望配達時間帯</th>
                             <th>入金状況</th>
                             <th>出荷状況</th>
                             <th>購入者(カナ)</th>
@@ -156,6 +166,8 @@ function OrderIndex() {
                                 <td>{order.created_at}</td>
                                 <td>{order.total_amount_text}</td>
                                 <td>{order.payment_method_text}</td>
+                                <td>{order.delivery_date}</td>
+                                <td>{order.delivery_time}</td>
                                 <td>{order.is_paid_text}</td>
                                 <td>{order.is_shipped_text}</td>
                                 <td>{order.full_name && order.full_name_kana && (`${order.full_name}(${order.full_name_kana})`)}</td>

@@ -21,10 +21,16 @@ class NotificationResource extends JsonResource
      */
     public function toArray($request)
     {
-        // URLにeditが含まれるか判定
-        $str = strstr($request->url(), 'edit');
-        // editかどうかで条件分岐
-        if($str === 'edit') {
+        // 受信リクエストが名前付きルートに一致するかを判定
+        if($request->routeIs('user.home.index') || $request->routeIs('user.notifications.index')) {
+            return [
+                'id' => $this->id,
+                'title' => $this->title,
+                'body' => $this->body,
+                'posted_at' => $this->posted_at !== null ? $this->posted_at->format('Y/m/d H:i') : null,
+                'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null
+            ];
+        } else if ($request->routeIs('admin.notifications.edit')) {
             return [
                 'title' => $this->title,
                 'body' => $this->body,

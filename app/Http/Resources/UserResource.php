@@ -21,11 +21,9 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        // URLにeditが含まれるか判定
-        $str = strstr($request->url(), 'edit');
-        // editかどうかで条件分岐
-        if($str === 'edit') {
+        if ($request->routeIs('admin.users.edit') || $request->routeIs('user.users.edit')) {
             return [
+                'id' => $this->id,
                 'last_name' =>  $this->last_name,
                 'first_name' =>  $this->first_name,
                 'last_name_kana' =>  $this->last_name_kana,
@@ -46,7 +44,7 @@ class UserResource extends JsonResource
                 'delivery_building' =>  $this->delivery_building,
                 'tel' =>  $this->tel,
                 'email' =>  $this->email,
-                'password' =>  $this->password,
+                // 'password' =>  $this->password, TODO: パスワードの変更時の要件を整理して実装する
                 'is_received' =>  $this->is_received,
             ];
         } else {

@@ -21,17 +21,16 @@ class OrderResource extends JsonResource
      */
     public function toArray($request)
     {
-
-        // URLにeditが含まれるか判定
-        $str = strstr($request->url(), 'edit');
-        // editかどうかで条件分岐
-        if($str === 'edit') {
+        // 受信リクエストが名前付きルートに一致するかを判定
+        if($request->routeIs('admin.orders.edit')) {
             return [
                 'is_paid' => $this->is_paid,
                 'is_shipped' => $this->is_shipped,
                 'sub_total_text' => $this->sub_total_text,
                 'tax_amount_text' => $this->tax_amount_text,
                 'total_amount_text' => $this->total_amount_text,
+                'delivery_date' => $this->delivery_date,
+                'delivery_time' => $this->delivery_time,
                 'order_details' => OrderDetailResource::collection($this->orderDetails),
             ];
         } else {
@@ -51,6 +50,8 @@ class OrderResource extends JsonResource
                 'full_address' => optional($this->user)->full_address,
                 'email' => optional($this->user)->email,
                 'updated_at' => $this->updated_at->format('Y/m/d H:i'),
+                'delivery_date' => $this->delivery_date,
+                'delivery_time' => $this->delivery_time
             ];
         }
 
