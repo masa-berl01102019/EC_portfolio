@@ -114,6 +114,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
         Route::post('/categories', 'CategoryController@store')->name('categories.store');
         Route::put('/categories/{category}', 'CategoryController@update')->name('categories.update'); 
         Route::delete('/categories/{category}', 'CategoryController@destroy')->name('categories.destroy');
+
+        // サイズマスタのCRUD
+        Route::get('/sizes', 'SizeController@index')->name('sizes.index');
+        Route::post('/sizes', 'SizeController@store')->name('sizes.store');
+        Route::put('/sizes/{size}', 'SizeController@update')->name('sizes.update'); 
+        Route::delete('/sizes/{size}', 'SizeController@destroy')->name('sizes.destroy');
     });
 
 });
