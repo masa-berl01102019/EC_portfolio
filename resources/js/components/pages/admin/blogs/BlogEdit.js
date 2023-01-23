@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {EditorState, convertToRaw, convertFromRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {stateFromHTML} from 'draft-js-import-html';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
