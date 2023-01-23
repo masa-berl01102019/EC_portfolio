@@ -83,6 +83,9 @@ function AdminHeader(props) {
                     <Link to="/admin/contacts">
                         <li>お問い合わせ一覧</li>
                     </Link>
+                    <Link to="/admin/colors">
+                        <li>カラーマスタ</li>
+                    </Link>
                 </ul>
             </nav>
         </>
