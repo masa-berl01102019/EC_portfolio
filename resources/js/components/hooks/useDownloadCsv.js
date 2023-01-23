@@ -18,3 +18,13 @@ export const useDownloadCsv = (data, fileName) => {
     //createObjectURLで作成したオブジェクトURLを開放する
     window.URL.revokeObjectURL(link.href);
 };
+
+export const getFileName = (contentDisposition) => {
+    // 「attachment; filename=.csv; filename*=utf-8''URIエンコードされたファイル名.csv」の形でHTTPレスポンスヘッダーのcontent-dispositionに格納されてるので引数で取得
+    // indexOf()でファイル名の開始位置を取得してsubstring()で開始位置以降の文字列を取得
+    let fileName = contentDisposition.substring(contentDisposition.indexOf("''") + 2);
+    //　エンコードされたファイル名をdecodeURI()でデコード　＊デコードの際にスペースが"+"になるのでスペースへ置換して変数に格納
+    fileName = decodeURI(fileName).replace(/\+/g, " ");
+    // ファイル名を返却
+    return fileName;
+}

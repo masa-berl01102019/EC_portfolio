@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     // TODO レスポンスの返却形式の統一
+    // TODO エラーハンドリングの統一 * auth認証されてない場合等のエラーと入力バリデーション等のエラーは出しどころを分ける必要あり
+    // TODO フリーワード検索　カラムを指定して検索をかけるようにするか要検討
 
     // 該当のカラム以外を扱わないようにホワイトリスト作成
     private $form_items = [
@@ -30,7 +32,7 @@ class UserController extends Controller
     {
         $search_user = User::query();
 
-        // フリーワード検索　TODO カラムを指定して検索をかけるようにするか要検討
+        // フリーワード検索
         if(!is_null($request->input('f_keyword'))) {
             // 全角スペースを半角スペースに変換
             $keyword = mb_convert_kana($request->input('f_keyword'), 's', 'UTF-8');
@@ -99,7 +101,7 @@ class UserController extends Controller
                 $end = new Carbon($date_array[1]);
                 // 開始日と終了日をwhereBetween()でクエリに追加
                 $search_user->whereBetween($column_name, [$begin,$end]);
-            } catch(\Exception $e) { // TODO エラーハンドリングの統一する
+            } catch(\Exception $e) {
                 // 例外の結果をログ書き出し
                 report($e);
                 // json形式でエラーを返却
@@ -147,7 +149,7 @@ class UserController extends Controller
         }
 
         // レスポンスを返却
-        return response()->json(['users' => $users]);
+        return response()->json(['users' => $users ]);
     }
 
     public function create()
@@ -161,6 +163,7 @@ class UserController extends Controller
         // ブラウザで不正に仕込んだinputに対してaxios側で制御出来ない上、フォームリクエストを通過してしまうので
         //　ホワイトリスト以外のカラム名は受け付けないように制御　＊　{last_name: 髙田, first_name: 清雅} の形でPOSTされてくる
         $data = $request->only($this->form_items);
+
         // DBに登録
         User::create([
             'last_name' => $data['last_name'],
@@ -225,13 +228,13 @@ class UserController extends Controller
         // 複数のIDが渡ってくるので全て取得する
         $id = $request->all();
         // 該当のIDのユーザーを取得
-        $users = User::select(['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'gender', 'birthday', 'post_code', 'prefecture', 'municipality', 'street_name', 'street_number', 'building', 'delivery_post_code', 'delivery_prefecture', 'delivery_municipality', 'delivery_street_name', 'delivery_street_number', 'delivery_building', 'tel', 'email' ])
+        $users = User::select(['last_name', 'first_name', 'last_name_kana', 'first_name_kana', 'gender', 'birthday', 'post_code', 'prefecture', 'municipality', 'street_name', 'street_number', 'building', 'delivery_post_code', 'delivery_prefecture', 'delivery_municipality', 'delivery_street_name', 'delivery_street_number', 'delivery_building', 'tel', 'email', 'is_received', 'created_at', 'updated_at' ])
             ->whereIn('id', $id)->cursor();
 
         // クロージャの中でエラーが起きても、streamDownloadを呼んだ時点でもうヘッダーとかが返っているのでエラーレスポンスが返せない。
         return response()->streamDownload(function () use ($users) {
             // CSVのヘッダー作成
-            $csv_header = ['姓', '名', '姓（カナ）', '名（カナ）', '性別', '誕生日', '郵便番号', '都道府県', '市区町村郡', '町名', '丁目番地', '建物名', '配達先-郵便番号', '配達先-都道府県', '配達先-市区町村郡', '配達先-町名', '配達先-丁目番地', '配達先-建物名', '電話番号', 'メールアドレス'];
+            $csv_header = ['No','氏名', '氏名（カナ）', '性別', '生年月日', '郵便番号', '住所', '配送先-郵便番号', '配送先-住所', '電話番号', 'メールアドレス', 'DM登録', '作成日時', '更新日時'];
             //　SplFileObjectのインスタンスを生成
             $file = new \SplFileObject('php://output', 'w');
             // EXCEL(デフォルトがShift-JIS形式)で開いた時に日本語が文字化けしないように、UTF-8のBOM付きにするためにBOMを書き込み
@@ -239,33 +242,29 @@ class UserController extends Controller
             // ヘッダーの読み込み
             $file->fputcsv($csv_header);
             // 一行ずつ連想配列から値を取り出して配列に格納
+            $num = 1;
             foreach ($users as $user){
                 $file->fputcsv([
-                    $user->last_name,              // 姓
-                    $user->first_name,             // 名
-                    $user->last_name_kana,         // 姓（カナ）
-                    $user->first_name_kana,        // 名（カナ）
-                    $user->gender,                 // 性別
-                    $user->birthday,               // 誕生日
-                    $user->post_code,              // 郵便番号
-                    $user->prefecture,             // 都道府県
-                    $user->municipality,           // 市区町村郡
-                    $user->street_name,            // 町名
-                    $user->street_number,          // 丁目番地
-                    $user->building,               // 建物名
-                    $user->delivery_post_code,     // 配達先　郵便番号
-                    $user->delivery_prefecture,    // 配達先　都道府県
-                    $user->delivery_municipality,  // 配達先　市区町村番地
-                    $user->delivery_street_name,   // 配達先　町名
-                    $user->delivery_street_number, // 配達先　丁目番地
-                    $user->delivery_building,      // 配達先　建物名
-                    $user->tel,                    // 電話番号
-                    $user->email,                  // メールアドレス
+                    $num,                                   // NO
+                    $user->full_name,                       // 氏名
+                    $user->full_name_kana,                  // 氏名（カナ）
+                    $user->ac_gender,                       // 性別
+                    $user->birthday->format('Y-m-d'),       // 生年月日
+                    $user->ac_post_code,                    // 郵便番号
+                    $user->full_address,                    // 住所
+                    $user->ac_delivery_post_code,           // 配送先　郵便番号
+                    $user->full_delivery_address,           // 配送先　住所
+                    $user->tel,                             // 電話番号
+                    $user->email,                           // メールアドレス
+                    $user->ac_is_received,                  // DM登録
+                    $user->created_at->format('Y-m-d H:m'), // 作成日時
+                    $user->updated_at->format('Y-m-d H:m'), // 更新日時
                 ]);
+                $num++;
             }
 
         }, '顧客情報出力.csv', [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv'
         ]);
     }
 

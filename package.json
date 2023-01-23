@@ -25,7 +25,10 @@
         "sass-loader": "^7.1.0"
     },
     "dependencies": {
+        "@date-io/date-fns": "1.x",
         "@material-ui/core": "^4.11.4",
+        "@material-ui/pickers": "^3.3.10",
+        "date-fns": "^2.23.0",
         "react-js-pagination": "^3.0.3",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0"

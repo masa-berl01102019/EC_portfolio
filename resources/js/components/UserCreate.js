@@ -5,14 +5,12 @@ import {CircularProgress} from "@material-ui/core";
 import useInputForm from "./hooks/useInputForm";
 import useToggle from "./hooks/useToggle";
 import ShowErrorMsg from "./ShowErrorMsg";
+import DateFnsUtils from '@date-io/date-fns';
+import jaLocale from "date-fns/locale/ja";
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
 // TODO フロント側でのバリデーション設定
-// TODO placeholderを設定
-// TODO バック側で正規表現でのバリデーションルール作成　＊カナetc
-// TODO 誕生日/郵便番号/電話番号の入出力の仕方を決める
-// TODO ボタンの制御(連打対策)
 // TODO 登録後に一覧へリダイレクトして成功のメッセージを表示
-// TODO preventDefault()しないとなぜかPOST後に'/api/admin/users/create?formData'の形でリクエストが飛んで落ちてしまう。。原因を調べる
 
 function UserCreate() {
 
@@ -23,7 +21,7 @@ function UserCreate() {
     const [toggle, {handleToggle}] = useToggle(false);
 
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {handleFormData}] = useInputForm({
+    const [formData, {setFormData, handleFormData}] = useInputForm({
         'last_name': null,
         'first_name': null,
         'last_name_kana': null,
@@ -51,9 +49,18 @@ function UserCreate() {
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
 
+    const handleDateChange = (date, name) => { // Sat Feb 17 2018 14:43:00 GMT+0900 (日本標準時)の形式で値が渡ってくる
+        // date型に合わせてフォーマット
+        let formatted_date = date !== null ? date.getFullYear() + "-" + ("00" + (date.getMonth() + 1)).slice(-2) + "-" + ("00" + date.getDate()).slice(-2) : null;
+        setFormData({
+            ...formData,
+            [name]: formatted_date
+        });
+    };
+
     useEffect(() => {
         if(data.success === true) {
-            // 処理が完了した時点でリダイレクトの処理　＊TODO ルーティングをあとで変更
+            // 処理が完了した時点でリダイレクトの処理
             location.href = '/admin/home';
             // redirect先で成功したメッセージを表示必要
         }
@@ -71,15 +78,15 @@ function UserCreate() {
                         e.preventDefault();
                         dispatch({type: 'CREATE', form: formData, url:'/api/admin/users'});
                     }}>
-                        <div>お名前</div>
+                        <div>氏名</div>
                         <div>
-                            <input type='text' name='last_name' onBlur={handleFormData} defaultValue={formData.last_name} />
-                            <input type='text' name='first_name' onBlur={handleFormData} defaultValue={formData.first_name} />
+                            <input type='text' name='last_name' onBlur={handleFormData} defaultValue={formData.last_name} placeholder='山田'/>
+                            <input type='text' name='first_name' onBlur={handleFormData} defaultValue={formData.first_name} placeholder='太郎'/>
                         </div>
-                        <div>お名前(カナ)</div>
+                        <div>氏名(カナ)</div>
                         <div>
-                            <input type='text' name='last_name_kana' onBlur={handleFormData} defaultValue={formData.last_name_kana} />
-                            <input type='text' name='first_name_kana' onBlur={handleFormData} defaultValue={formData.first_name_kana} />
+                            <input type='text' name='last_name_kana' onBlur={handleFormData} defaultValue={formData.last_name_kana} placeholder='ヤマダ' />
+                            <input type='text' name='first_name_kana' onBlur={handleFormData} defaultValue={formData.first_name_kana} placeholder='タロウ' />
                         </div>
                         <div>性別</div>
                         <div>
@@ -88,33 +95,49 @@ function UserCreate() {
                             <label><input type='radio' name='gender' onClick={handleFormData} value={2} defaultChecked={formData.gender === '2'} />その他</label>
                             <label><input type='radio' name='gender' onClick={handleFormData} value={3} defaultChecked={formData.gender === '3'} />設定しない</label>
                         </div>
-                        <label htmlFor='birthday'>誕生日</label>
+                        <label htmlFor='birthday'>生年月日</label>
                         <div>
-                            <input id="birthday" type='text' name='birthday' onBlur={handleFormData} defaultValue={formData.birthday} />
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>
+                                    <KeyboardDatePicker
+                                        id="birthday"
+                                        format='yyyy/MM/dd'
+                                        disableToolbar // 年月日の選択時に上部に選択されるtoolbarを非表示にする
+                                        variant="dialog" // modal形式でのカレンダーの表示
+                                        inputVariant="outlined" // inputっぽい表示
+                                        openTo="year" // カレンダーアイコンクリック時に年->月->日の順に選択出来るように設定
+                                        views={["year", "month", "date"]}
+                                        value={formData.birthday}
+                                        onChange={e => {
+                                            handleDateChange(e, 'birthday')
+                                        }}
+                                        placeholder='1991/01/01'
+                                    />
+                            </MuiPickersUtilsProvider>
+                            {/*<input type='date' name='birthday' onBlur={handleFormData} defaultValue={formData.birthday} placeholder='18950821' />*/}
                         </div>
                         <label htmlFor='post_code'>郵便番号</label>
                         <div>
-                            <input id="post_code" type='number' name='post_code' onBlur={handleFormData} defaultValue={formData.post_code} />
+                            <input id="post_code" type='number' name='post_code' onBlur={handleFormData} defaultValue={formData.post_code} placeholder='9208509' />
                         </div>
                         <label htmlFor='prefecture'>都道府県</label>
                         <div>
-                            <input id="prefecture" type='text' name='prefecture' onBlur={handleFormData} defaultValue={formData.prefecture} />
+                            <input id="prefecture" type='text' name='prefecture' onBlur={handleFormData} defaultValue={formData.prefecture} placeholder='石川県' />
                         </div>
                         <label htmlFor='municipality'>市区町村郡</label>
                         <div>
-                            <input id="municipality" type='text' name='municipality' onBlur={handleFormData} defaultValue={formData.municipality} />
+                            <input id="municipality" type='text' name='municipality' onBlur={handleFormData} defaultValue={formData.municipality} placeholder='金沢市' />
                         </div>
                         <label htmlFor='street_name'>町名</label>
                         <div>
-                            <input id="street_name" type='text' name='street_name' onBlur={handleFormData} defaultValue={formData.street_name} />
+                            <input id="street_name" type='text' name='street_name' onBlur={handleFormData} defaultValue={formData.street_name} placeholder='高坂' />
                         </div>
                         <label htmlFor='street_number'>町目番地</label>
                         <div>
-                            <input id="street_number" type='text' name='street_number' onBlur={handleFormData} defaultValue={formData.street_number} />
+                            <input id="street_number" type='text' name='street_number' onBlur={handleFormData} defaultValue={formData.street_number} placeholder='1-2-1' />
                         </div>
                         <label htmlFor='building'>建物名</label>
                         <div>
-                            <input id="building" type='text' name='building' onBlur={handleFormData} defaultValue={formData.building} />
+                            <input id="building" type='text' name='building' onBlur={handleFormData} defaultValue={formData.building} placeholder='メゾン金沢　101号室' />
                         </div>
                         <div>
                             <label><input type="checkbox" onClick={handleToggle} />配送先に別の住所を指定する</label>
@@ -122,42 +145,42 @@ function UserCreate() {
                         <div style={ toggle? { 'display': 'block' } : { 'display': 'none' } }>
                             <label htmlFor='delivery_post_code'>郵便番号</label>
                             <div>
-                                <input id="delivery_post_code" type='number' name='delivery_post_code' onBlur={handleFormData} defaultValue={formData.delivery_post_code} />
+                                <input id="delivery_post_code" type='number' name='delivery_post_code' onBlur={handleFormData} defaultValue={formData.delivery_post_code} placeholder='9200858' />
                             </div>
                             <label htmlFor='delivery_prefecture'>都道府県</label>
                             <div>
-                                <input id="delivery_prefecture" type='text' name='delivery_prefecture' onBlur={handleFormData} defaultValue={formData.delivery_prefecture} />
+                                <input id="delivery_prefecture" type='text' name='delivery_prefecture' onBlur={handleFormData} defaultValue={formData.delivery_prefecture} placeholder='石川県' />
                             </div>
                             <label htmlFor='delivery_municipality'>市区町村郡</label>
                             <div>
-                                <input id="delivery_municipality" type='text' name='delivery_municipality' onBlur={handleFormData} defaultValue={formData.delivery_municipality} />
+                                <input id="delivery_municipality" type='text' name='delivery_municipality' onBlur={handleFormData} defaultValue={formData.delivery_municipality} placeholder='金沢市' />
                             </div>
                             <label htmlFor='delivery_street_name'>町名</label>
                             <div>
-                                <input id="delivery_street_name" type='text' name='delivery_street_name' onBlur={handleFormData} defaultValue={formData.delivery_street_name} />
+                                <input id="delivery_street_name" type='text' name='delivery_street_name' onBlur={handleFormData} defaultValue={formData.delivery_street_name} placeholder='木ノ新保町' />
                             </div>
                             <label htmlFor='delivery_street_number'>町目番地</label>
                             <div>
-                                <input id="delivery_street_number" type='text' name='delivery_street_number' onBlur={handleFormData} defaultValue={formData.delivery_street_number} />
+                                <input id="delivery_street_number" type='text' name='delivery_street_number' onBlur={handleFormData} defaultValue={formData.delivery_street_number} placeholder='1-1' />
                             </div>
                             <label htmlFor='delivery_building'>建物名</label>
                             <div>
-                                <input id="delivery_building" type='text' name='delivery_building' onBlur={handleFormData} defaultValue={formData.delivery_building} />
+                                <input id="delivery_building" type='text' name='delivery_building' onBlur={handleFormData} defaultValue={formData.delivery_building} placeholder='パレス金沢　206号室' />
                             </div>
                         </div>
                         <label htmlFor='tel'>電話番号</label>
                         <div>
-                            <input id="tel" type='tel' name='tel' onBlur={handleFormData} defaultValue={formData.tel} />
+                            <input id="tel" type='tel' name='tel' onBlur={handleFormData} defaultValue={formData.tel} placeholder='08012345678' />
                         </div>
                         <label htmlFor='email'>メールアドレス</label>
                         <div>
-                            <input id="email" type='email' name='email' onBlur={handleFormData} defaultValue={formData.email} />
+                            <input id="email" type='email' name='email' onBlur={handleFormData} defaultValue={formData.email} placeholder='yamada@example.example.com' />
                         </div>
                         <label htmlFor='password'>パスワード</label>
                         <div>
-                            <input id="password" type='password' name='password' onBlur={handleFormData} defaultValue={formData.password} />
+                            <input id="password" type='password' name='password' onBlur={handleFormData} defaultValue={formData.password} placeholder='半角英数字8文字以上' />
                         </div>
-                        <div>DM送付</div>
+                        <div>DM登録</div>
                         <div>
                             <label><input type='radio' name='is_received' onClick={handleFormData} value={1} defaultChecked={formData.is_received === '1'} />登録する</label>
                             <label><input type='radio' name='is_received' onClick={handleFormData} value={0} defaultChecked={formData.is_received === '0'} />登録しない</label>

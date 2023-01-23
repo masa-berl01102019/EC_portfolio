@@ -1,7 +1,7 @@
 import {useEffect, useReducer, useState} from "react";
 import axios from "axios";
 import {useCreateUrl} from "./useCreateUrl";
-import {useDownloadCsv} from "./useDownloadCsv";
+import {useDownloadCsv, getFileName} from "./useDownloadCsv";
 import useSetErrorMsg from "./useSetErrorMsg";
 import {dataFetchReducer} from "../reducer/dataFetchReducer";
 import { useParamsContext } from '../context/ParamsContext';
@@ -43,8 +43,12 @@ const useFetchApiData = (initialUrl, initialMethod, initialData) => {
                     console.log('取得成功したデータは',response.data);
                     // CSVダウンロード時には再描画を走らせたくないのでresponseヘッダのcontent-type形式がCSVかどうかで条件分岐
                     if(response.headers['content-type'].includes('text/csv')) {
-                        // TODO API側からファイル名を受けとる必要
-                        useDownloadCsv(response.data, '顧客情報出力.csv')
+                        // CSVのファイル名はHTTPレスポンスヘッダーのcontent-dispositionに格納されてるので取得
+                        const contentDisposition = response.headers['content-disposition'];
+                        // ファイル名を取得
+                        const fileName = getFileName(contentDisposition)
+                        // CSVを出力
+                        useDownloadCsv(response.data, fileName)
                     } else {
                         // APIから取得したデータをセット
                         setData(response.data);
