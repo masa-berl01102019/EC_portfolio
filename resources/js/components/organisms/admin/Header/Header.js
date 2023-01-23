@@ -67,7 +67,7 @@ export const Header = memo(({...props}) => {
                             </ul>
                         </nav>
                     </header>
-                    { openAdminMenu && <GlobalMenu className={styles.global_menu} /> }
+                    { openAdminMenu && <GlobalMenu className={styles.global_menu} closeMethod={() => {setOpenAdminMenu(false)}}/> }
                 </>
             )
         }
