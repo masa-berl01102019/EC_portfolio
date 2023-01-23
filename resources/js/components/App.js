@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; // routing
 import ErrorBoundary from './ErrorBoundary';
@@ -10,8 +10,16 @@ import TestTop from './TestTop';
 import UserEdit from "./UserEdit";
 import UserCreate from "./UserCreate";
 
+export const shareParams = React.createContext();
 
 function App() {
+
+    const [params, setParams] = useState({});
+    const value = {
+        params,
+        setParams
+    }
+
     return (
         <ErrorBoundary>
             <Router>
@@ -19,9 +27,11 @@ function App() {
                     <TestNavBar />
                     <Switch>
                         <Route path="/" exact component={TestTop} />
-                        <Route path="/admin/users" exact component={UserIndex} />
-                        <Route path="/admin/users/create" exact component={UserCreate} />
-                        <Route path="/admin/users/:id/edit" exact component={UserEdit} />
+                        <shareParams.Provider value={value}>
+                            <Route path="/admin/users" exact component={UserIndex} />
+                            <Route path="/admin/users/create" exact component={UserCreate} />
+                            <Route path="/admin/users/:id/edit" exact component={UserEdit} />
+                        </shareParams.Provider>
                     </Switch>
                 </div>
             </Router>
