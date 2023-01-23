@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {EditorState} from 'draft-js';
+import {EditorState, convertToRaw, convertFromRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {stateToHTML} from 'draft-js-export-html';
 import {stateFromHTML} from 'draft-js-import-html';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
@@ -10,7 +9,6 @@ import {CircularProgress} from "@material-ui/core";
 import useInputForm from "../../../hooks/useInputForm";
 
 // TODO フロント側でのバリデーション設定
-// TODO ブログ本文をhtml形式で保存すると表示の際に一部スタイルが消えてしまう問題を修正
 // TODO ブログ本文で保存された画像をどうするか考える
 
 function BlogEdit(props) {
@@ -49,8 +47,8 @@ function BlogEdit(props) {
         if(blog) {
             // フォームのデフォルト値を設定するためにsetFormDataで値をセット
             setFormData({...blog});
-            // blogの本文はhtmlで保存されてるのでcontentStateに変換
-            const contentState = stateFromHTML(blog.body);
+            // blogの本文はJSONで保存されてるのでcontentStateに変換 * デモデータはHTMLで保存されてるのでJSONか判定して違ったらHTMLをcontentStateに変換
+            const contentState = is_json(blog.body) ? convertFromRaw(JSON.parse(blog.body)) : stateFromHTML(blog.body);
             // contentStateをeditorStateに変換
             const editorState = EditorState.createWithContent(contentState);
             // editorStateをdraft.jsにセット
@@ -61,6 +59,16 @@ function BlogEdit(props) {
             history.push('/admin/blogs');
         }
     },[data]);
+
+    // JSON判定用の関数
+    const is_json = (data) => {
+        try {
+            JSON.parse(data);
+        } catch (error) {
+            return false;
+        }
+        return true;
+    }
 
     // ItemIndexにも使われてるもののオブジェクトではない番
     const handleFormFile = (e) => {
@@ -136,12 +144,12 @@ function BlogEdit(props) {
     const onEditorStateChange = (editorState) => {
         // 現在のeditorStateからcontentStateを取得 
         const contentState = editorState.getCurrentContent();
-        // HTMLに変換
-        const html = stateToHTML(contentState);
-        // formDataのbodyにHTMLとして保存
+        // HTMLに変換して保存すると一部のスタイルが消えてしまうのでcontentStateをJSON形式で保存
+        const content = JSON.stringify(convertToRaw(contentState));
+        // formDataのbodyに保存
         setFormData({
             ...formData,
-            body : html
+            body : content
         });
         // editorStateを更新
         setEditorState(editorState);

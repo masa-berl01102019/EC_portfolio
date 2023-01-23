@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {EditorState} from 'draft-js';
+import {EditorState, convertToRaw} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {stateToHTML} from 'draft-js-export-html';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useInputForm from "../../../hooks/useInputForm";
 
 // TODO フロント側でのバリデーション設定
-// TODO ブログ本文をhtml形式で保存すると表示の際に一部スタイルが消えてしまう問題を修正
 // TODO ブログ本文で保存された画像をどうするか考える
 
 function BlogCreate() {
@@ -123,12 +121,12 @@ function BlogCreate() {
     const onEditorStateChange = (editorState) => {
         // 現在のeditorStateからcontentStateを取得 
         const contentState = editorState.getCurrentContent();
-        // HTMLに変換
-        const html = stateToHTML(contentState);
-        // formDataのbodyにHTMLとして保存
+        // HTMLに変換して保存すると一部のスタイルが消えてしまうのでcontentStateをJSON形式で保存
+        const content = JSON.stringify(convertToRaw(contentState));
+        // formDataのbodyに保存
         setFormData({
             ...formData,
-            body : html
+            body : content
         });
         // editorStateを更新
         setEditorState(editorState);
