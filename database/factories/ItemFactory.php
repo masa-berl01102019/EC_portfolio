@@ -115,7 +115,7 @@ $factory->define(Item::class, function (Faker $faker) {
         'product_number' => $items[0]['product_number'],
         'price' => $items[0]['price'],
         'cost' => $items[0]['price'] * (rand(28, 50) / 100), // 下代の掛け率28 ~ 50%で設定
-        'description' => $faker->realText(500),
+        'description' => $faker->realText(),
         'mixture_ratio' => $items[0]['mixture_ratio'],
         'made_in' => $items[0]['made_in'],
         'is_published' => $is_published,
