@@ -3,31 +3,29 @@ import {EditorState} from 'draft-js';
 import {Editor} from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {stateToHTML} from 'draft-js-export-html';
-import {stateFromHTML} from 'draft-js-import-html';
 import {Link, useHistory} from "react-router-dom";
 import useFetchApiData from "../../../hooks/useFetchApiData";
 import {CircularProgress} from "@material-ui/core";
 import useInputForm from "../../../hooks/useInputForm";
 
 // TODO フロント側でのバリデーション設定
-// TODO ブログ本文をhtml形式で保存すると表示の際に一部スタイルが消えてしまう問題を修正
-// TODO ブログ本文で保存された画像をどうするか考える
+// TODO ニュース本文をhtml形式で保存すると表示の際に一部スタイルが消えてしまう問題を修正
+// TODO ニュース本文で保存された画像をどうするか考える
 
-function BlogEdit(props) {
+function NewsCreate() {
 
-    // urlの設定 * propsで渡ってきたIDを初期URLにセット
-    const baseUrl = `/api/admin/blogs/${props.match.params.id}/edit`;
+    // urlの設定
+    const baseUrl = '/api/admin/news/create';
 
     // APIと接続して返り値を取得
     const [{isLoading, errorMessage, data}, dispatch] = useFetchApiData(baseUrl, 'get', []);
 
     // フォーム項目の初期値をuseStateで管理
-    const [formData, {setFormData, handleFormData}] = useInputForm({
+    const [formData, {handleFormData, setFormData}] = useInputForm({
         'title': '',
         'body': '',
         'brand_id': '',
         'category_id': '',
-        'items_id': [],
         'tags_id': [],
         'is_published': 0, // 0: 非公開 1: 公開中
         'thumbnail': '/img/no_image.png'
@@ -38,27 +36,14 @@ function BlogEdit(props) {
     const history = useHistory();
 
     // dataは{ key(APIサーバーからレスポンスを返す時に設定したkey名) : 値 }の形で返却されるので変数に代入しておく
-    const blog = data.blog;
     const brands = data.brands? data.brands: null;
     const gender_categories = data.gender_categories? data.gender_categories: null;
     const tags = data.tags? data.tags: null;
-    const items = data.items? data.items: null;
 
     useEffect(() => {
-        // 非同期で通信されるので初回読み込み時にblogが入ってこない場合があるので条件分岐してあげる
-        if(blog) {
-            // フォームのデフォルト値を設定するためにsetFormDataで値をセット
-            setFormData({...blog});
-            // blogの本文はhtmlで保存されてるのでcontentStateに変換
-            const contentState = stateFromHTML(blog.body);
-            // contentStateをeditorStateに変換
-            const editorState = EditorState.createWithContent(contentState);
-            // editorStateをdraft.jsにセット
-            setEditorState(editorState);
-        }
-        if(data.update === true) {
+        if(data.create === true) {
             // 処理が完了した時点でリダイレクトの処理
-            history.push('/admin/blogs');
+            history.push('/admin/news');
         }
     },[data]);
 
@@ -111,7 +96,7 @@ function BlogEdit(props) {
         });
         // axiosで画像等のファイル形式を送信する際はcontent-typeを'multipart/form-data'にしないと送信出来ない
         // post形式でないと正しく送れない * axiosの仕様的な問題？？
-        dispatch({type: 'CREATE', form: params, url:`/api/admin/blogs/${props.match.params.id}`, headers: {'content-type': 'multipart/form-data'}});
+        dispatch({type: 'CREATE', form: params, url:'/api/admin/news', headers: {'content-type': 'multipart/form-data'}});
     }
 
     // ItemIndexにも使われてるので後で切り出す
@@ -147,7 +132,6 @@ function BlogEdit(props) {
         setEditorState(editorState);
     };
 
-    // 描画のみを担当
     return (
         isLoading ? (
             <CircularProgress disableShrink />
@@ -155,7 +139,7 @@ function BlogEdit(props) {
             <p style={{'color': 'red'}}>{errorMessage.httpRequestError}</p>
         ) : (
             <div style={{'width': '50%', 'margin': '0 auto'}}>
-                <h1>ブログ編集</h1>
+                <h1>ニュース新規登録</h1>
                 <form onSubmit={ e => {
                     e.preventDefault();
                     handleFormSendwithFile();
@@ -185,7 +169,7 @@ function BlogEdit(props) {
                     <div>
                         <span>サムネイル</span>
                         <label className="insert_image">
-                            <img src={formData.thumbnail} alt="blog image" style={{'width' : '100px', 'height' : '100px'}} />
+                            <img src={formData.thumbnail} alt="news image" style={{'width' : '100px', 'height' : '100px'}} />
                             <input name="thumbnail" type="file" accept="image/*" onChange={ e => handleFormFile(e)} style={{'display': 'none'}} />
                         </label>
                         { errorMessage && <p style={{'color': 'red'}}>{errorMessage.file}</p> }
@@ -212,26 +196,6 @@ function BlogEdit(props) {
                             </select>
                         </label>
                         { errorMessage && <p style={{'color': 'red'}}>{errorMessage.category_id}</p> }
-                    </div>
-
-                    <div>
-                        <div style={{'display':'flex'}}>
-                            <span style={{'marginRight': '20px'}}>関連品番</span>
-                            <div style={{'width': '200px', 'overflowY': 'scroll', 'height': '45px', 'border': '1px solid #000'}}>
-                                {   items &&
-                                    items.map((item) =>
-                                        <label key={item.id} style={{'display':'block'}}><input type='checkbox' name='items_id' onChange={handleFormCheckbox} value={item.id} checked={formData.items_id.includes(item.id)} />{item.product_number}</label>
-                                    )
-                                }
-                            </div>
-                        </div>
-                        {   errorMessage &&
-                            Object.entries(errorMessage).map((value, index) => {
-                                if(value[0].includes('items_id')) {
-                                    return <p key={index} style={{'color': 'red'}}>{value[1]}</p> 
-                                }
-                            })
-                        }
                     </div>
 
                     <div>
@@ -267,12 +231,12 @@ function BlogEdit(props) {
                         { errorMessage && <p style={{'color': 'red'}}>{errorMessage.is_published}</p> }
                     </div>
 
-                    <button><Link to={`/admin/blogs`}>一覧に戻る</Link></button>
-                    <button type="submit">編集</button>
+                    <button><Link to={`/admin/news`}>一覧に戻る</Link></button>
+                    <button type="submit">新規登録</button>
                 </form>
             </div>
         )
     );
 }
 
-export default BlogEdit;
+export default NewsCreate;

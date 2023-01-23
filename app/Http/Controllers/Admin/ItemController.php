@@ -272,10 +272,12 @@ class ItemController extends Controller
 
     public function update(ItemEditRequest $request, Item $item)
     {
-        // 初回登録時に非公開の状態で保存されている場合もあるのでカラム名の出し分け
-        $registered_date = $item->posted_at !== null ? 'modified_at': 'posted_at';
         // 項目制限
         $data = $request->only($this->form_items);
+        // 初回登録時に非公開の状態で保存されている場合もあるのでカラム名の出し分け
+        $registered_date = $item->posted_at !== null ? 'modified_at': 'posted_at';
+        // 編集した内容を非公開で保存する場合は日付を更新したくないので該当インスタンスに登録されてる日付を取得
+        $date = $registered_date === 'modified_at'? $item->modified_at : $item->posted_at;
         DB::beginTransaction();
         try {
             // 基本情報をDBに保存
@@ -290,7 +292,7 @@ class ItemController extends Controller
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
                 'brand_id' => $data['brand_id'],
-                $registered_date => $data['is_published'] == 1 ? Carbon::now(): null, // 公開日ベースで更新日を保存したいので条件分岐を追加
+                $registered_date => $data['is_published'] == 1 ? Carbon::now(): $date, // 公開日ベースで更新日を保存したいので条件分岐を追加
             ])->save();
             // カテゴリ中間テーブルへの保存 ＊ 配列形式でIDを渡して配列外のIDは削除される
             $item->categories()->sync([$data['gender_category'], $data['main_category'], $data['sub_category']]);

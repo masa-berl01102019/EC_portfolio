@@ -71,6 +71,12 @@ function AdminHeader(props) {
                     <Link to="/admin/blogs/create">
                         <li>ブログ新規登録</li>
                     </Link>
+                    <Link to="/admin/news">
+                        <li>ニュース一覧</li>
+                    </Link>
+                    <Link to="/admin/news/create">
+                        <li>ニュース新規登録</li>
+                    </Link>
                     <Link to="/admin/contacts">
                         <li>お問い合わせ一覧</li>
                     </Link>
