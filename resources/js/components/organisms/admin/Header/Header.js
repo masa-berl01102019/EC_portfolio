@@ -44,7 +44,7 @@ export const Header = memo(({...props}) => {
                                     </>
                                 }
                                 <div className={styles.relative}>
-                                    <Text role='reverse' className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{localStorage.getItem('lang').toUpperCase()}</Text>
+                                    <Text role='reverse' className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{localStorage.getItem('lang') ? localStorage.getItem('lang').toUpperCase() : 'EN'}</Text>
                                     {   openPulldown && 
                                         <ul className={styles.pulldown}>
                                             <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('en')}>{t('common.lang-en')}</li>
