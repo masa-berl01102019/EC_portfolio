@@ -31,7 +31,7 @@ export const Header = ({...props}) => {
                             <Link to="/"><Text size='xl' className={styles.bold}>EC APP</Text></Link>
                         </div>
                         <div className={styles.relative}>
-                            <Text className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{localStorage.getItem('lang').toUpperCase()}</Text>
+                            <Text className={styles.lang} onClick={() => setOpenPulldown(!openPulldown)}>{localStorage.getItem('lang') ? localStorage.getItem('lang').toUpperCase() : 'EN'}</Text>
                             {   openPulldown && 
                                 <ul className={styles.pulldown}>
                                     <li className={styles.pulldown_list} onClick={() => handleChangeLanguage('en')}>{t('common.lang-en')}</li>
