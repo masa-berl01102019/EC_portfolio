@@ -16,9 +16,9 @@ class CreateMeasurementsTable extends Migration
         Schema::create('measurements', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
+            // $table->foreign('item_id')->references('id')->on('items');
             $table->unsignedInteger('size_id');
-            $table->foreign('size_id')->references('id')->on('sizes');
+            // $table->foreign('size_id')->references('id')->on('sizes');
             $table->unsignedInteger('width')->nullable();
             $table->unsignedInteger('shoulder_width')->nullable();
             $table->unsignedInteger('raglan_sleeve_length')->nullable();

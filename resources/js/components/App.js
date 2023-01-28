@@ -43,7 +43,7 @@ function App() {
                             <ToastifyProvider>
                                 <QueryClientProvider client={queryClient}>
                                     <Router />
-                                    <ReactQueryDevtools initialIsOpen={false} />
+                                    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                                 </QueryClientProvider>
                             </ToastifyProvider>
                         </NotifyProvider>

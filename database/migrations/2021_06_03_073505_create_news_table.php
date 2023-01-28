@@ -16,11 +16,11 @@ class CreateNewsTable extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('brand_id');
-            $table->foreign('brand_id')->references('id')->on('brands');
+            // $table->foreign('brand_id')->references('id')->on('brands');
             $table->unsignedInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
+            // $table->foreign('admin_id')->references('id')->on('admins');
             $table->unsignedInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            // $table->foreign('category_id')->references('id')->on('categories');
             $table->string('title', 255);
             $table->mediumText('body');
             $table->string('thumbnail', 255);
