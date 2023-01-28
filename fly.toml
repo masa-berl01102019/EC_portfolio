@@ -1,6 +1,6 @@
-# fly.toml file generated for laravel-e-commerce-portfolio-20230125 on 2023-01-25T21:02:40+09:00
+# fly.toml file generated for fashion-e-commerce-portfolio on 2023-01-28T12:34:38+09:00
 
-app = "laravel-e-commerce-portfolio-20230125"
+app = "fashion-e-commerce-portfolio"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -11,11 +11,17 @@ processes = []
     PHP_VERSION = "8.0"
 
 [env]
+  APP_NAME = "fashion-e-commerce-portfolio"
+  APP_URL = "https://fashion-e-commerce-portfolio.fly.dev"
+  SANCTUM_STATEFUL_DOMAINS = "fashion-e-commerce-portfolio.fly.dev"
+  BROADCAST_DRIVER = "log"
+  SESSION_LIFETIME = "1440"
+  CASHIER_CURRENCY = "jpy"
   APP_ENV = "production"
   LOG_CHANNEL = "stderr"
   LOG_LEVEL = "info"
   LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
-  DB_HOST=ap-northeast.connect.psdb.cloud
+  DB_HOST = "ap-northeast.connect.psdb.cloud"
   MYSQL_ATTR_SSL_CA = "/etc/ssl/certs/ca-certificates.crt"
 
 [experimental]

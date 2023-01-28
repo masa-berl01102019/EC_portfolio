@@ -16,7 +16,7 @@ class CreateNotificationsTable extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
+            // $table->foreign('admin_id')->references('id')->on('admins');
             $table->string('title', 255);
             $table->text('body');
             $table->boolean('is_published'); // 0: Unpublished 1: Published

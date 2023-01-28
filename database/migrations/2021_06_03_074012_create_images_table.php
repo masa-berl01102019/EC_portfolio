@@ -16,9 +16,9 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
+            // $table->foreign('item_id')->references('id')->on('items');
             $table->unsignedInteger('color_id');
-            $table->foreign('color_id')->references('id')->on('colors');
+            // $table->foreign('color_id')->references('id')->on('colors');
             $table->string('image', 255);
             $table->unsignedTinyInteger('image_category'); // 0~255 0: Main image 1: thumbnail image
             $table->timestamps();

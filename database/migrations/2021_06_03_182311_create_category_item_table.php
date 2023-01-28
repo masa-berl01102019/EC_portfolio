@@ -16,9 +16,9 @@ class CreateCategoryItemTable extends Migration
         Schema::create('category_item', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            // $table->foreign('category_id')->references('id')->on('categories');
             $table->unsignedInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
+            // $table->foreign('item_id')->references('id')->on('items');
         });
     }
 

@@ -16,9 +16,9 @@ class CreateItemsTable extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('brand_id');
-            $table->foreign('brand_id')->references('id')->on('brands');
+            // $table->foreign('brand_id')->references('id')->on('brands');
             $table->unsignedInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
+            // $table->foreign('admin_id')->references('id')->on('admins');
             $table->string('item_name', 100);
             $table->string('product_number', 50);
             $table->unsignedInteger('price');

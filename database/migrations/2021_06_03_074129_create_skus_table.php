@@ -16,11 +16,11 @@ class CreateSkusTable extends Migration
         Schema::create('skus', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
+            // $table->foreign('item_id')->references('id')->on('items');
             $table->unsignedInteger('size_id');
-            $table->foreign('size_id')->references('id')->on('sizes');
+            // $table->foreign('size_id')->references('id')->on('sizes');
             $table->unsignedInteger('color_id');
-            $table->foreign('color_id')->references('id')->on('colors');
+            // $table->foreign('color_id')->references('id')->on('colors');
             $table->integer('quantity')->nullable();
             $table->timestamps();
             $table->softDeletes();
