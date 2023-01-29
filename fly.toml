@@ -1,6 +1,6 @@
-# fly.toml file generated for fashion-e-commerce-portfolio on 2023-01-28T12:34:38+09:00
+# fly.toml file generated for ecommerce-portfolio on 2023-01-29T11:57:26+09:00
 
-app = "fashion-e-commerce-portfolio"
+app = "ecommerce-portfolio"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -11,9 +11,9 @@ processes = []
     PHP_VERSION = "8.0"
 
 [env]
-  APP_NAME = "fashion-e-commerce-portfolio"
-  APP_URL = "https://fashion-e-commerce-portfolio.fly.dev"
-  SANCTUM_STATEFUL_DOMAINS = "fashion-e-commerce-portfolio.fly.dev"
+  APP_NAME = "ecommerce-portfolio"
+  APP_URL = "https://ecommerce-portfolio.fly.dev"
+  SANCTUM_STATEFUL_DOMAINS = "ecommerce-portfolio.fly.dev"
   BROADCAST_DRIVER = "log"
   SESSION_LIFETIME = "1440"
   CASHIER_CURRENCY = "jpy"
@@ -23,6 +23,10 @@ processes = []
   LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
   DB_HOST = "ap-northeast.connect.psdb.cloud"
   MYSQL_ATTR_SSL_CA = "/etc/ssl/certs/ca-certificates.crt"
+  MAIL_MAILER = "smtp"
+  MAIL_HOST = "smtp.mailtrap.io"
+  MAIL_PORT = "2525"
+  MAIL_ENCRYPTION = "tls"
 
 [experimental]
   auto_rollback = true

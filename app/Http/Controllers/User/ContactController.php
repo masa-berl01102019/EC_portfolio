@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\Admin\AdminContactMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Requests\User\ContactRequest;
+use App\Http\Requests\user\ContactRequest;
 
 class ContactController extends Controller
 {

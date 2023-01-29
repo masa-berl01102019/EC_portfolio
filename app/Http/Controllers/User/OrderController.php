@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Requests\User\OrderRequest;
+use App\Http\Requests\user\OrderRequest;
 use App\Http\Resources\OrderDetailResource;
 
 class OrderController extends Controller
