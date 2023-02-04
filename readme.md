@@ -11,6 +11,7 @@
 * [Technology Stacks](#Technology-Stacks)
 * [How to Use](#How-to-Use)
 * [Features](#Features)
+* [Issues](#Issues)
 
 ## URL
 - https://ecommerce-portfolio.fly.dev (For general user)
@@ -65,3 +66,6 @@
   + Brand CRUD operations
   + Category CRUD operations
   + Tag CRUD operations
+  
+## Issues 
+ [Check here](https://github.com/users/masa-berl01102019/projects/2)
