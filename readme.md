@@ -11,7 +11,6 @@
 * [Technology Stacks](#Technology-Stacks)
 * [How to Use](#How-to-Use)
 * [Features](#Features)
-* [Release Note ver.2](#Release-Note-ver.2)
 
 ## URL
 - https://ecommerce-portfolio.fly.dev (For general user)
@@ -37,43 +36,32 @@
 
 ## Features
 - For general user
-    + Authentication
-    + User CRUD operations
-    + Reset and change passwords
-    + Contact form 
-    + Display / search products 
-    + Add / delete bookmarks 
-    + Add / delete carts
-    + Display browsing history
-    + Display user's order history
-    + Purchase products
-    + Display / search Blogs
-    + Display / search News
-    + Display notifications
+  + Authentication
+  + User CRUD operations
+  + Reset and change passwords
+  + Contact form 
+  + Display / search products 
+  + Add / delete bookmarks 
+  + Add / delete carts
+  + Display browsing history
+  + Display user's order history
+  + Purchase products
+  + Display / search Blogs
+  + Display / search News
+  + Display notifications
 - For Admin 
-    + Authentication
-    + Reset and change passwords
-    + Item CRUD operations / Output CSV
-    + Notification CRUD operations / Output CSV
-    + News CRUD operations / Output CSV
-    + Blog CRUD operations / Output CSV
-    + Admin CRUD operations / Output CSV
-    + User CRUD operations / Output CSV
-    + Update / Delete contacts
-    + Update order status / Output CSV
-    + Size CRUD operations
-    + Color CRUD operations
-    + Brand CRUD operations
-    + Category CRUD operations
-    + Tag CRUD operations
-
-## Release Note ver.2
-- Replace Javascript with TypeScript. 
-- Implement Test Code at front and back end.
-- Upgrade Laravel Version to 9.x.x.
-- Add discount feature of products .
-- Add animation to UI.
-- Replace contact form feature with chat feature.
-- Add dashboard feature using Google Analytics API.
-- Add preview feature to pages of blogs and news.
-- Performance tuning.
+  + Authentication
+  + Reset and change passwords
+  + Item CRUD operations / Output CSV
+  + Notification CRUD operations / Output CSV
+  + News CRUD operations / Output CSV
+  + Blog CRUD operations / Output CSV
+  + Admin CRUD operations / Output CSV
+  + User CRUD operations / Output CSV
+  + Update / Delete contacts
+  + Update order status / Output CSV
+  + Size CRUD operations
+  + Color CRUD operations
+  + Brand CRUD operations
+  + Category CRUD operations
+  + Tag CRUD operations
