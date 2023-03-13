@@ -195,7 +195,8 @@
       "alert-msg1" : "Some combinations of color and size you selected at SKU section is duplicated.",
       "alert-msg2" : "Size you selected at measurements section is duplicated.",
       "alert-msg3" : "It doesn't match size at sku section and size at measurement section.",
-      "alert-msg4" : "It doesn't match color at sku section and color at image section."
+      "alert-msg4" : "It doesn't match color at sku section and color at image section.",
+      "alert-msg5" : "Main image is required."
     },
     "blog" : {
       "index-title" : "BLOG LIST",
@@ -490,8 +491,8 @@
       "done" : "ADDED TO CART",
       "index" : {
         "title" : "SHIPPING",
-        "error1" : "There are items which are run out already.",
-        "error2" : "Please delete items which is run out from your cart ",
+        "error1" : "There are items which run out already.",
+        "error2" : "Please delete items which run out from your cart ",
         "error3" : "if you would like to move forward to procedure.",
         "go-btn" : "Next Step",
         "back-btn" : "Keep Shopping"
@@ -626,6 +627,7 @@
       "error-msg" : "Members only can available to bookmark and cart function.",
       "size-detail" : "SIZE・DETAILS",
       "description" : "DESCRIPTION",
+      "description-sub" : "Description",
       "size-table" : "Size",
       "detail" : "Details",
       "gender" : "Gender",
@@ -656,8 +658,8 @@
       "ranking" : "RANKING",
       "news" : "NEWS",
       "blog" : "BLOG",
-      "view-all" : "View all",
-      "to-list-page" : "View all",
+      "view-all" : "VIEW ALL",
+      "to-list-page" : "VIEW ALL",
       "view-record" : "BROWSING HISTORY"
     },
     "top-btn" : "Back To Home",
@@ -678,6 +680,7 @@
     "filter" : "Filter",
     "keyword" : "Search",
     "posted-date" : "Posted date",
+    "updated-date" : "Updated date",
     "desc-alpha" : "Z to A",
     "desc-num" : "hght to low",
     "desc-date" : "new to old",
@@ -686,7 +689,8 @@
     "asc-date" : "old to new",
     "in-stock" : "In stock",
     "sold-out" : "Sold out",
-    "tax-including" : "Tax included"
+    "tax-including" : "Tax included",
+    "not-found" : "No Results"
   },
   "error" : {
     "404" : {

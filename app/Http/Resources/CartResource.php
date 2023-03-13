@@ -25,7 +25,7 @@ class CartResource extends JsonResource
         return [
             'id' => $this->id,
             'sku_id' => $this->sku_id,
-            'stock_status' => $this->sku->quantity > 0 ? 1 : 0,
+            'stock_status' => $this->sku->quantity > 0 ? config('define.stock_status.in_stock') : config('define.stock_status.sold_out'),
             'stock' => $this->sku->quantity,
             'item_id' => $this->item_id,
             'size_name' => Size::where('id', $this->size_id)->first()->size_name,

@@ -69,7 +69,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.get_err')], 500);
         }
     }
 
@@ -87,7 +87,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.get_err')], 500);
         }
     }
 
@@ -107,7 +107,7 @@ class ItemController extends Controller
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
                 'brand_id' => $data['brand_id'],
-                'posted_at' => $data['is_published'] == 1 ? Carbon::now() : null
+                'posted_at' => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : null
             ]);
             // category ID stored in DB are deleted if it doesn't match category id in Array
             $item->categories()->sync([$data['gender_category'], $data['main_category'], $data['sub_category']]);
@@ -156,11 +156,11 @@ class ItemController extends Controller
                 ]);
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.items.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.items.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.create_err')], 500);
         }
     }
 
@@ -179,7 +179,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.get_err')], 500);
         }
     }
 
@@ -202,7 +202,7 @@ class ItemController extends Controller
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
                 'brand_id' => $data['brand_id'],
-                $registered_date => $data['is_published'] == 1 ? Carbon::now() : $date // don't update published date if is_published status close
+                $registered_date => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : $date // don't update published date if is_published status close
             ])->save();
             // category ID stored in DB are deleted if it doesn't match category id in Array
             $item->categories()->sync([$data['gender_category'], $data['main_category'], $data['sub_category']]);
@@ -236,11 +236,11 @@ class ItemController extends Controller
                 ], $data['measurements'][$i]);
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.items.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.items.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.update_err')], 500);
         }
     }
 
@@ -254,11 +254,11 @@ class ItemController extends Controller
                 $item->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.items.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.delete_err')], 500);
         }
     }
 
@@ -268,11 +268,11 @@ class ItemController extends Controller
         try {
             $measurement->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_size_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.items.delete_size_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_size_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.delete_size_err')], 500);
         }
     }
 
@@ -282,11 +282,11 @@ class ItemController extends Controller
         try {
             $sku->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_sku_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.items.delete_sku_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_sku_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.delete_sku_err')], 500);
         }
     }
 
@@ -296,11 +296,11 @@ class ItemController extends Controller
         try {
             $image->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.items.delete_img_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.items.delete_img_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.delete_img_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.delete_img_err')], 500);
         }
     }
 
@@ -308,7 +308,7 @@ class ItemController extends Controller
     {
         try {
             $id = $request->all();
-            $items = Item::whereIn('id', $id)->with(['skus.color', 'skus.size', 'brand', 'categories', 'tags', 'admin',])->cursor();
+            $items = Item::whereIn('id', $id)->with(['skus.color', 'skus.size', 'brand', 'genderCategory', 'mainCategory', 'subCategory', 'tags', 'admin'])->cursor();
             $csv_body = [];
             $num = 1;
             foreach ($items as $item) {
@@ -325,9 +325,9 @@ class ItemController extends Controller
                     $item->made_in,
                     $item->mixture_ratio,
                     $item->brand->brand_name,
-                    count($item->categories) > 0 ? $item->categories[0]['category_name'] : '',
-                    count($item->categories) > 1 ? $item->categories[1]['category_name'] : '',
-                    count($item->categories) > 2 ? $item->categories[2]['category_name'] : '',
+                    $item->genderCategory ? $item->genderCategory->first()->category_name : '',
+                    $item->mainCategory ? $item->mainCategory->first()->category_name : '',
+                    $item->subCategory ? $item->subCategory->first()->category_name : '',
                     implode(' / ', $item->tags->pluck('tag_name')->toArray()),
                     optional($item->admin)->full_name . '(' . optional($item->admin)->full_name_kana . ')',
                     $item->posted_at !== null ? $item->posted_at->format('Y/m/d H:i') : '　　',
@@ -339,7 +339,7 @@ class ItemController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.items.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.items.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.items.csv_err')], 500);
         }
     }
 }

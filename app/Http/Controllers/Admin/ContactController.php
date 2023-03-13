@@ -37,7 +37,7 @@ class ContactController extends Controller
             return ContactResource::collection($contacts);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.contacts.get_err')], 500);
         }
     }
 
@@ -47,7 +47,7 @@ class ContactController extends Controller
             return new ContactResource($contact);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.contacts.get_err')], 500);
         }
     }
 
@@ -63,11 +63,11 @@ class ContactController extends Controller
                 'updated_at' => Carbon::now(),
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.contacts.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.contacts.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.contacts.update_err')], 500);
         }
     }
 
@@ -81,11 +81,11 @@ class ContactController extends Controller
                 $contact->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.contacts.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.contacts.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.contacts.delete_err')], 500);
         }
     }
 
@@ -119,7 +119,7 @@ class ContactController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.contacts.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.contacts.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.contacts.csv_err')], 500);
         }
     }
 }

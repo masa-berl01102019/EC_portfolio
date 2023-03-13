@@ -118,8 +118,8 @@ class ItemFactory extends Factory
                 'mixture_ratio' => $mixture_ratio,
                 'made_in' => $made_in,
                 'is_published' => $is_published,
-                'posted_at' => $is_published === 1 ? $posted_at : null,
-                'modified_at' => $is_published === 1 ? $modified_at : null,
+                'posted_at' => $is_published === config('define.is_published.open') ? $posted_at : null,
+                'modified_at' => $is_published === config('define.is_published.open') ? $modified_at : null,
             ];
 
             $category1_arr = config('define.main_category');
@@ -132,7 +132,7 @@ class ItemFactory extends Factory
             // Sub category
             $item2 = !empty($response_data[$i]['parentGenreCategories'][2]) ? $response_data[$i]['genreCategory']['id'] : null;
 
-            $categoryId1 = $genre == 2494 ? 2 : 1;
+            $categoryId1 = $genre == 2494 ? config('define.gender_category.women') : config('define.gender_category.men');
             $categoryId2 = null;
             $categoryId3 = null;
 

@@ -79,7 +79,7 @@ class ItemsTableSeeder extends Seeder
                 'item_id' => $item->id,
                 'color_id' => $color_instance->id,
                 'image' => $item_img['image'],
-                'image_category' => 0, // 0: main image, * ItemSearch API (Yahoo) can get only one item picture
+                'image_category' => config('define.image_category.main'), // 0: main image, * ItemSearch API (Yahoo) can get only one item picture
                 'created_at' => !is_null($item->posted_at) ? $item->posted_at : '2010-04-01 00:00:00',
                 'updated_at' => !is_null($item->modified_at) ? $item->modified_at : '2010-04-01 00:00:00',
             ]);

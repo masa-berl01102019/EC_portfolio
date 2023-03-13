@@ -196,7 +196,8 @@
       "alert-msg1" : "SKUセクションで選択されてるカラーとサイズの組み合わせの一部が重複しております。",
       "alert-msg2" : "寸法セクションで選択されてるサイズが重複がしております。",
       "alert-msg3" : "SKUセクションで選択されてるサイズが寸法セクションで選択されてるものと一致しておりません。",
-      "alert-msg4" : "SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。"
+      "alert-msg4" : "SKUセクションで選択されてるカラーが画像セクションで選択されてるものと一致しておりません。",
+      "alert-msg5" : "メイン画像を設定してください。"
     },
     "blog" : {
       "index-title" : "ブログ一覧",
@@ -627,6 +628,7 @@
       "error-msg" : "会員様はお気に入り機能とカート機能がご利用可能です。",
       "size-detail" : "サイズ・詳細",
       "description" : "商品説明",
+      "description-sub" : "商品説明",
       "size-table" : "サイズ表",
       "detail" : "商品詳細",
       "gender" : "性別",
@@ -679,6 +681,7 @@
     "filter" : "絞り込み",
     "keyword" : "キーワード検索",
     "posted-date" : "投稿日",
+    "updated-date" : "更新日",
     "desc-alpha" : "降順",
     "desc-num" : "降順",
     "desc-date" : "降順",
@@ -687,7 +690,8 @@
     "asc-date" : "昇順",
     "in-stock" : "在庫有り",
     "sold-out" : "在庫無し",
-    "tax-including" : "税込"
+    "tax-including" : "税込",
+    "not-found" : "該当データなし"
   },
   "error" : {
     "404" : {

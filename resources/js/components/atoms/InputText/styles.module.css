@@ -4,6 +4,7 @@
   border: 1px solid #666;
   font-weight: 400;
   font-size: 14px;
+  touch-action: manipulation;
   line-height: 18px;
   padding: 4px;
   box-sizing: border-box;

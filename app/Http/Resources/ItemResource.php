@@ -65,7 +65,7 @@ class ItemResource extends JsonResource
                 'made_in' => $this->made_in,
                 'mixture_ratio' => $this->mixture_ratio,
                 'description' => $this->description,
-                'brand_name' => optional($this->brand)->brand_name,
+                'brand' => new BrandResource($this->brand),
                 'measurements' => MeasurementResource::collection($this->measurements),
                 'color_variation' => Color::whereIn('id', uniqueArray($this->skus->pluck('color_id')->toArray()))->pluck('color_name'),
                 'size_variation' => Size::whereIn('id', uniqueArray($this->skus->pluck('size_id')->toArray()))->pluck('size_name'),

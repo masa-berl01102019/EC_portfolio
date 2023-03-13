@@ -13,7 +13,7 @@ use App\Http\Requests\admin\CategoryRegisterRequest;
 
 class CategoryController extends Controller
 {
-    private $form_items = ['id', 'category_name', 'parent_id'];
+    private $form_items = ['id', 'category_name', 'category_type', 'parent_id'];
 
     public function __construct()
     {
@@ -23,11 +23,15 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = Category::whereIn('id', [1, 2])->select('id', 'category_name', 'parent_id')->with(['children:id,category_name,parent_id', 'children.grandChildren:id,category_name,parent_id'])->get()->toArray();
+            $categories = Category::whereIn('id', [config('define.gender_category.men'), config('define.gender_category.women')])
+                ->select('id', 'category_name', 'category_type', 'parent_id')
+                ->with(['children:id,category_name,category_type,parent_id', 'children.grandChildren:id,category_name,category_type,parent_id'])
+                ->get()
+                ->toArray();
             return response()->json(['categories' => $categories]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.categories.get_err')], 500);
         }
     }
 
@@ -38,14 +42,15 @@ class CategoryController extends Controller
             $data = $request->only($this->form_items);
             Category::create([
                 'category_name' => $data['category_name'],
+                'category_type' => $data['category_type'],
                 'parent_id' => $data['parent_id'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.categories.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.categories.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.categories.create_err')], 500);
         }
     }
 
@@ -56,11 +61,11 @@ class CategoryController extends Controller
             $data = $request->only($this->form_items);
             $category->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.categories.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.categories.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.categories.update_err')], 500);
         }
     }
 
@@ -69,19 +74,19 @@ class CategoryController extends Controller
         DB::beginTransaction();
         try {
             if (!$category->items->isEmpty() || !$category->news->isEmpty() || !$category->blogs->isEmpty()) {
-                return response()->json(['status' => 9, 'message' => trans('api.admin.categories.delete_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.categories.delete_err2')], 400);
             }
             if (!$category->children->isEmpty() || !$category->grandChildren->isEmpty()) {
-                return response()->json(['status' => 9, 'message' => trans('api.admin.categories.delete_err3')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.categories.delete_err3')], 400);
             }
             $category->items()->sync([]);
             $category->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.categories.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.categories.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.categories.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.categories.delete_err')], 500);
         }
     }
 }

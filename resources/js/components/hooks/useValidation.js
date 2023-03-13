@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import * as Validator from 'validatorjs';
 import validationConfig from '../validation/config';
 
 const useValidation = (data, scope, config_key) => {
-  
+
   const config = validationConfig();
 
   const [valid, setValid] = useState(false);
@@ -16,7 +16,7 @@ const useValidation = (data, scope, config_key) => {
 
   const errorObject = {};
 
-  if(validation.fails()) {
+  if (validation.fails()) {
     Object.entries(validation.errors.all()).forEach(([key, value]) => {
       const correctKey = key.replace(/\d+/, '*');
       const correctAttribute = config[scope][config_key].attributes[correctKey];
@@ -26,7 +26,7 @@ const useValidation = (data, scope, config_key) => {
     });
   }
 
-  return {valid, setValid, validation, errorObject};
+  return { valid, setValid, validation, errorObject };
 }
 
 export default useValidation;

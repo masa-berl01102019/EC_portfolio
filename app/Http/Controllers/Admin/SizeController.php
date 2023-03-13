@@ -27,7 +27,7 @@ class SizeController extends Controller
             return response()->json(['sizes' => SizeResource::collection(Size::all())]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.sizes.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.sizes.get_err')], 500);
         }
     }
 
@@ -40,11 +40,11 @@ class SizeController extends Controller
                 'size_name' => $data['size_name'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.sizes.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.sizes.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.sizes.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.sizes.create_err')], 500);
         }
     }
 
@@ -55,11 +55,11 @@ class SizeController extends Controller
             $data = $request->only($this->form_items);
             $size->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.sizes.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.sizes.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.sizes.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.sizes.update_err')], 500);
         }
     }
 
@@ -69,15 +69,15 @@ class SizeController extends Controller
         try {
             $related_items_arr = Item::whereIn('id', $size->skus->pluck('item_id'))->pluck('product_number')->toArray();
             if (!empty($related_items_arr)) {
-                return response()->json(['status' => 9, 'message' => trans('api.admin.sizes.delete_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.sizes.delete_err2')], 400);
             }
             $size->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.sizes.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.sizes.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.sizes.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.sizes.delete_err')], 500);
         }
     }
 }

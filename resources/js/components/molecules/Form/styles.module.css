@@ -20,6 +20,19 @@
 .mr_4{
   margin-right: 4px;
 }
+/* FormInputCheckbox */
+.ma_4{
+  margin: 4px;
+}
+/* FormInputImage */
+.insert_img {
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+.hidden {
+  display: none;
+}
 
 
 /* ERROR */
@@ -34,7 +47,8 @@
 
 .front_validation {
   background: #ed82af45;
-  display: inline-block;
+  display: block;
+  width: fit-content;
   padding: 4px 8px;
   border-radius: 4px;
 }

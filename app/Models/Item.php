@@ -89,10 +89,9 @@ class Item extends Model
     public function scopeFilterPriceFrom($query, $request, $tax = 'include')
     {
         $from = $request->input('f_price_from');
-        $from_excluding_tax = $tax === 'include' ? (int)$from - intval($from * Tax::getTaxRate()) : (int)$from;
-        $flag = !empty($from_excluding_tax) ? true : false;
-
-        $query->when($flag, function ($query) use ($from_excluding_tax) {
+        $flag = $from !== null ? true : false;
+        $query->when($flag, function ($query) use ($from, $tax) {
+            $from_excluding_tax = $tax === 'include' ? (int)$from - intval($from * Tax::getTaxRate()) : (int)$from;
             return $query->where('price', '>=', $from_excluding_tax);
         });
     }
@@ -100,10 +99,9 @@ class Item extends Model
     public function scopeFilterPriceTo($query, $request, $tax = 'include')
     {
         $to = $request->input('f_price_to');
-        $to_excluding_tax = $tax === 'include' ? (int)$to - intval($to * Tax::getTaxRate()) : (int)$to;
-        $flag = !empty($to_excluding_tax) ? true : false;
-
-        $query->when($flag, function ($query) use ($to_excluding_tax) {
+        $flag = $to !== null ? true : false;
+        $query->when($flag, function ($query) use ($to, $tax) {
+            $to_excluding_tax = $tax === 'include' ? (int)$to - intval($to * Tax::getTaxRate()) : (int)$to;
             return $query->where('price', '<=', $to_excluding_tax);
         });
     }
@@ -112,7 +110,7 @@ class Item extends Model
     {
         $stock_status = $request->input('f_stock_status');
 
-        $flag = $stock_status === '1' ? true : false;
+        $flag = $stock_status == config('define.stock_status.in_stock') ? true : false;
 
         $query->when($flag, function ($query) {
             $skus = Sku::where('quantity', '>', 0)->groupBy('item_id')->pluck('id')->toArray();
@@ -308,22 +306,16 @@ class Item extends Model
 
     public function genderCategory()
     {
-        $gender_category_arr = array_values(config('define.gender_category'));
-
-        return $this->belongsToMany('App\Models\Category')->whereIn('categories.id', $gender_category_arr);
+        return $this->belongsToMany('App\Models\Category')->where('category_type', config('define.category_type.gender'));
     }
 
     public function mainCategory()
     {
-        $gender_category_arr = array_values(config('define.gender_category'));
-
-        return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', $gender_category_arr);
+        return $this->belongsToMany('App\Models\Category')->where('category_type', config('define.category_type.main'));
     }
 
     public function subCategory()
     {
-        $main_categories = Category::mainCategories()->pluck('id')->toArray();
-
-        return $this->belongsToMany('App\Models\Category')->whereIn('categories.parent_id', $main_categories);
+        return $this->belongsToMany('App\Models\Category')->where('category_type', config('define.category_type.sub'));
     }
 }

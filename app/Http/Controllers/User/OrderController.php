@@ -42,7 +42,7 @@ class OrderController extends Controller
             return (OrderDetailResource::collection($orders));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.orders.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.orders.get_err')], 500);
         }
     }
 
@@ -63,7 +63,7 @@ class OrderController extends Controller
             // checking stock
             foreach ($cart_items as $items) {
                 if ($items->stock < $items->quantity) {
-                    return response()->json(['status' => 9, 'message' => trans('api.user.orders.create_err')], 400);
+                    return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.orders.create_err')], 400);
                 }
             }
             // put price and quantity of items out from collection
@@ -80,7 +80,7 @@ class OrderController extends Controller
             $total_amount = $sub_total + $tax_amount;
             // checking total amount
             if ($data['total_amount'] != $total_amount) {
-                return response()->json(['status' => 9, 'message' => trans('api.user.orders.create_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.orders.create_err2')], 400);
             }
             // caluculate stripe fee (3.6%) * stripe fee has to round after the decimal point
             $commission_fee = (int)round($total_amount * config('define.stripe_commision_fee'));
@@ -124,11 +124,11 @@ class OrderController extends Controller
             Mail::to(Auth::guard('user')->user()->email)->send(new UserOrderMail($order));
             Mail::to(config('define.admin_email.to.sales_report'))->send(new AdminOrderMail($order));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.orders.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.orders.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.orders.create_err3')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.orders.create_err3')], 500);
         }
     }
 }

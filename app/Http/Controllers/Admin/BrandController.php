@@ -26,7 +26,7 @@ class BrandController extends Controller
             return response()->json(['brands' => BrandResource::collection(Brand::all())]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.brands.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.brands.get_err')], 500);
         }
     }
 
@@ -39,11 +39,11 @@ class BrandController extends Controller
                 'brand_name' => $data['brand_name'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.brands.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.brands.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.brands.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.brands.create_err')], 500);
         }
     }
 
@@ -54,11 +54,11 @@ class BrandController extends Controller
             $data = $request->only($this->form_items);
             $brand->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.brands.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.brands.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.brands.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.brands.update_err')], 500);
         }
     }
 
@@ -67,15 +67,15 @@ class BrandController extends Controller
         DB::beginTransaction();
         try {
             if (!$brand->items->isEmpty() || !$brand->news->isEmpty() || !$brand->blogs->isEmpty()) {
-                return response()->json(['status' => 9, 'message' => trans('api.admin.brands.delete_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.brands.delete_err2')], 400);
             }
             $brand->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.brands.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.brands.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.brands.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.brands.delete_err')], 500);
         }
     }
 }

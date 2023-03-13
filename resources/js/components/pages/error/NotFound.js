@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 
 function NotFound() {
 
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
-    return (
-        <main className={styles.mt_40}>
-            <Heading tag='h1' tag_style='h1' className={styles.section_title}>{t('error.404.status')}</Heading>
-            <Text size='l' role='title' className={styles.text_center}>{t('error.404.message')}</Text>
-        </main>
-    );
+  return (
+    <main className={styles.mt_40}>
+      <Heading tag='h1' tag_style='h1' className={styles.section_title}>{t('error.404.status')}</Heading>
+      <Text size='l' role='title' className={styles.text_center}>{t('error.404.message')}</Text>
+    </main>
+  );
 }
 
 export default NotFound;

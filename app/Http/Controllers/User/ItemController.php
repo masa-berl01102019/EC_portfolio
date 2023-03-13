@@ -19,6 +19,7 @@ use App\Http\Resources\SizeResource;
 use App\Http\Resources\BrandResource;
 use App\Http\Resources\ColorResource;
 use Illuminate\Support\Facades\Cookie;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\RelatedItemResource;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -63,7 +64,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err')], 500);
         }
     }
 
@@ -74,17 +75,20 @@ class ItemController extends Controller
                 ->with(['skus', 'genderCategory', 'mainCategory', 'subCategory', 'tags', 'images', 'measurements', 'publishedBlogs'])
                 ->first();
             if (empty($item)) {
-                return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err2')], 400);
             }
             $related_items = Item::getRelatedItems($item->id);
             return (new ItemResource($item))->additional([
                 'sizes' => SizeResource::collection(Size::orderBy('size_name', 'desc')->get()),
                 'related_items' => RelatedItemResource::collection($related_items),
-                'related_tags' => TagResource::collection($item->tags)
+                'related_tags' => TagResource::collection($item->tags),
+                'related_gender_category' => new CategoryResource($item->genderCategory->first()),
+                'related_main_category' => new CategoryResource($item->mainCategory->first()),
+                'related_sub_category' => new CategoryResource($item->subCategory->first()),
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err')], 500);
         }
     }
 
@@ -95,7 +99,7 @@ class ItemController extends Controller
             return ItemResource::collection($ranked_items);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err3')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err3')], 500);
         }
     }
 
@@ -125,7 +129,7 @@ class ItemController extends Controller
             );
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err4')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err4')], 500);
         }
     }
 
@@ -136,7 +140,7 @@ class ItemController extends Controller
             return ItemResource::collection($new_items);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err5')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err5')], 500);
         }
     }
 
@@ -154,7 +158,7 @@ class ItemController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.items.get_err6')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.items.get_err6')], 500);
         }
     }
 }

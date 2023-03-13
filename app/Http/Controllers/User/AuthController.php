@@ -26,10 +26,10 @@ class AuthController extends Controller
 
         if (Auth::guard('user')->attempt($credentials)) {
             $request->session()->regenerate();
-            return response()->json(['status' => 1, 'message' => trans('api.user.auth.login_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.auth.login_msg')], 200);
         }
 
-        return response()->json(['status' => 9, 'message' => trans('api.user.auth.login_err')], 401);
+        return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.auth.login_err')], 401);
     }
 
     public function logout(Request $request)
@@ -37,9 +37,9 @@ class AuthController extends Controller
         if (Auth::guard('user')->check()) {
             Auth::guard('user')->logout();
             $request->session()->regenerate();
-            return response()->json(['status' => 1, 'message' => trans('api.user.auth.logout_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.auth.logout_msg')], 200);
         }
 
-        return response()->json(['status' => 9, 'message' => trans('api.user.auth.logout_err')], 401);
+        return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.auth.logout_err')], 401);
     }
 }

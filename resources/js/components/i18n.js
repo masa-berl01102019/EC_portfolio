@@ -23,7 +23,7 @@ i18n
         translation: en
       },
       ja: {
-          translation: ja
+        translation: ja
       }
     }
   });

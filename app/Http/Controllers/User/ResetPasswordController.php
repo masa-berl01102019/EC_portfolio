@@ -35,7 +35,7 @@ class ResetPasswordController extends Controller
             $user = User::where('email', $data['email'])->first();
             // checking user existence
             if (!$user) {
-                return response()->json(['status' => 9, 'message' => trans('api.user.reset_passwords.send_err')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.reset_passwords.send_err')], 400);
             }
             $password_reset = PasswordReset::create([
                 'user_id' => $user->id,
@@ -45,11 +45,11 @@ class ResetPasswordController extends Controller
             ]);
             Mail::to($user->email)->send(new UserResetPasswordMail($password_reset, $user->full_name));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.reset_passwords.send_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.reset_passwords.send_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.reset_passwords.send_err2')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.reset_passwords.send_err2')], 500);
         }
     }
 
@@ -61,29 +61,29 @@ class ResetPasswordController extends Controller
             $password_reset = PasswordReset::where('uuid', $data['uuid'])->first();
             // checking record existence
             if (!$password_reset) {
-                return response()->json(['status' => 9, 'message' => trans('api.user.reset_passwords.change_err')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.reset_passwords.change_err')], 400);
             }
             $now = Carbon::now();
             $expired_at = Carbon::parse($password_reset->expired_at);
             // checking expired_at
             if ($now->gt($expired_at)) {
-                return response()->json(['status' => 9, 'message' => trans('api.user.reset_passwords.change_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.reset_passwords.change_err2')], 400);
             }
             $user = User::find($password_reset->user_id);
             // checking user existence
             if (!$user) {
-                return response()->json(['status' => 9, 'message' => trans('api.user.reset_passwords.change_err3')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.reset_passwords.change_err3')], 400);
             }
             $user->fill([
                 'password' => Hash::make($data['password'])
             ])->save();
             Mail::to($user->email)->send(new UserChangePasswordMail($user->full_name));
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.reset_passwords.change_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.reset_passwords.change_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.reset_passwords.change_err4')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.reset_passwords.change_err4')], 500);
         }
     }
 }

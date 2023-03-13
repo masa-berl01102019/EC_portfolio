@@ -38,7 +38,7 @@ class OrderController extends Controller
             return OrderResource::collection($orders);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.orders.get_err')], 500);
         }
     }
 
@@ -49,7 +49,7 @@ class OrderController extends Controller
             return new OrderResource($order);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.orders.get_err')], 500);
         }
     }
 
@@ -65,11 +65,11 @@ class OrderController extends Controller
                 'delivery_time' => $data['delivery_time']
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.orders.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.orders.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.orders.update_err')], 500);
         }
     }
 
@@ -84,11 +84,11 @@ class OrderController extends Controller
                 $item->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.orders.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.orders.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.orders.delete_err')], 500);
         }
     }
 
@@ -124,7 +124,7 @@ class OrderController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.orders.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.orders.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.orders.csv_err')], 500);
         }
     }
 }

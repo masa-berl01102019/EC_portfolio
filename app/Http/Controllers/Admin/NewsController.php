@@ -49,7 +49,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.get_err')], 500);
         }
     }
 
@@ -63,7 +63,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.get_err')], 500);
         }
     }
 
@@ -88,11 +88,11 @@ class NewsController extends Controller
             ]);
             $news->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.news.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.news.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.create_err')], 500);
         }
     }
 
@@ -106,7 +106,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.get_err')], 500);
         }
     }
 
@@ -135,11 +135,11 @@ class NewsController extends Controller
             ])->save();
             $news->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.news.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.news.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.update_err')], 500);
         }
     }
 
@@ -153,11 +153,11 @@ class NewsController extends Controller
                 $news->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.news.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.news.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.delete_err')], 500);
         }
     }
 
@@ -187,7 +187,7 @@ class NewsController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.news.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.news.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.news.csv_err')], 500);
         }
     }
 }

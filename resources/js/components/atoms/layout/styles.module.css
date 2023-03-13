@@ -1,0 +1,15 @@
+/* ScrollWrapper */
+.flex_column {
+  display : flex;
+  flex-flow: column;
+}
+.scroll_area {
+  overflow-y: scroll;
+  max-height: 200px;
+  border: 1px solid #E6E7E9;
+}
+/* FlexWrapper */
+.flex_wrap {
+  display : flex;
+  flex-flow: wrap;
+}

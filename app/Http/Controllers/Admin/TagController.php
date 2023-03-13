@@ -26,7 +26,7 @@ class TagController extends Controller
             return response()->json(['tags' => TagResource::collection(Tag::all())]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.tags.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.tags.get_err')], 500);
         }
     }
 
@@ -39,11 +39,11 @@ class TagController extends Controller
                 'tag_name' => $data['tag_name'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.tags.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.tags.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.tags.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.tags.create_err')], 500);
         }
     }
 
@@ -54,11 +54,11 @@ class TagController extends Controller
             $data = $request->only($this->form_items);
             $tag->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.tags.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.tags.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.tags.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.tags.update_err')], 500);
         }
     }
 
@@ -67,18 +67,18 @@ class TagController extends Controller
         DB::beginTransaction();
         try {
             if (!$tag->items->isEmpty() || !$tag->blogs->isEmpty() || !$tag->blogs->isEmpty()) {
-                return response()->json(['status' => 9, 'message' => trans('api.admin.tags.delete_err2')], 400);
+                return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.tags.delete_err2')], 400);
             }
             $tag->items()->sync([]);
             $tag->blogs()->sync([]);
             $tag->news()->sync([]);
             $tag->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.tags.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.tags.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.tags.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.tags.delete_err')], 500);
         }
     }
 }

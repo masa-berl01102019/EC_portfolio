@@ -2,3 +2,16 @@
   display: flex;
   justify-content: space-between;
 }
+/* paginationCounter */
+.set_row_label {
+  margin-right: 8px;
+}
+.set_row_input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #E6E7E9;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}

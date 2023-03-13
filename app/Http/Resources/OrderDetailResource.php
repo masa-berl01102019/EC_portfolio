@@ -31,7 +31,7 @@ class OrderDetailResource extends JsonResource
             // Get soft deleted items
             $sku = Sku::withTrashed()->find($this->sku_id);
             $item = Item::withTrashed()->find($sku->item_id);
-            $imeges = Image::where('image_category', 0)->where('item_id', $item->id)->pluck('image')->toArray();
+            $imeges = Image::where('image_category', config('define.image_category.main'))->where('item_id', $item->id)->pluck('image')->toArray();
 
             return [
                 'id' => $this->id,
@@ -43,9 +43,9 @@ class OrderDetailResource extends JsonResource
                 'order_color' => $this->order_color,
                 'order_size' => $this->order_size,
                 'created_at' => $this->created_at->format('Y/m/d'),
-                'stock_status' => optional($sku)->quantity > 0 ? 1 : 0,
-                'cart_status' => in_array($this->sku_id, $cart_item_arr) ? 1 : 0, // Is it in cart?
-                'delete_status' => optional($sku)->deleted_at || optional($item)->deleted_at ? 1 : 0, // Check if it's deleted
+                'stock_status' => optional($sku)->quantity > 0 ? config('define.stock_status.in_stock') : config('define.stock_status.sold_out'),
+                'cart_status' => in_array($this->sku_id, $cart_item_arr) ? config('define.cart_status.in_cart') : config('define.cart_status.out_of_cart'), // Is it in cart?
+                'delete_status' => optional($sku)->deleted_at || optional($item)->deleted_at ? config('define.delete_status.deleted') : config('define.delete_status.not_deleted'), // Check if it's deleted
                 'is_published' => optional($item)->is_published, // 0: Unpublished 1: Published
                 'sku_id' => $this->sku_id,
                 'order_quantity' => $this->order_quantity
