@@ -1,9 +1,9 @@
-import React, {memo, useState} from 'react';
+import React, { memo, useState } from 'react';
 import styles from './styles.module.css';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
 import useInputCheckBox from '../../../hooks/useInputCheckBox';
-import {TableHeadCell as Th} from '../../../atoms/TableHeadCell/TableHeadCell';
-import {TableBodyCell as Td} from '../../../atoms/TableBodyCell/TableBodyCell';
+import { TableHeadCell as Th } from '../../../atoms/TableHeadCell/TableHeadCell';
+import { TableBodyCell as Td } from '../../../atoms/TableBodyCell/TableBodyCell';
 import EditLink from '../../../molecules/IconLink/EditLink';
 import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
@@ -12,58 +12,50 @@ import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 
 
-const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
+const UserTable = memo(({ users, className = '', deleteMethod, csvOutputMethod }) => {
 
-  const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
+  const [checklist, { setChecklist, handleCheck, handleUnCheckAll, handleCheckAll }] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
   const { t } = useTranslation();
 
   const handleConfirmDelete = async () => {
-      const result = await confirm({
-          body : t('admin.delete-confirm', {count: checklist.length}),
-          confirmBtnLabel : t('admin.delete-btn')
-      });
-      result && deleteMethod({url:`/api/admin/users`, form:checklist, callback: () => setChecklist([])});
+    const result = await confirm({
+      body: t('admin.delete-confirm', { count: checklist.length }),
+      confirmBtnLabel: t('admin.delete-btn')
+    });
+    result && deleteMethod({ url: `/api/admin/users`, form: checklist, callback: () => setChecklist([]) });
+  }
+
+  const handleCheckboxState = () => {
+    if (checkItemAll) {
+      handleUnCheckAll();
+      setCheckItemAll(false);
+    } else {
+      handleCheckAll(users);
+      setCheckItemAll(true);
+    }
   }
 
   return (
     <>
-      <div style={{'display': 'flex', 'marginBottom': '16px'}}>
+      <div style={{ 'display': 'flex', 'marginBottom': '16px' }}>
         <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{t('admin.delete-all-btn')}</DeleteBtn>
-        <DownloadCsvBtn onClick={() => { 
-          csvOutputMethod({ 
-            url:`/api/admin/users/csv`, 
-            form:checklist 
-          }); 
-        }}>{t('admin.csv-output')}</DownloadCsvBtn>
+        <DownloadCsvBtn onClick={() => csvOutputMethod({ url: `/api/admin/users/csv`, form: checklist })}>
+          {t('admin.csv-output')}
+        </DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
           <thead className={styles.fix_theader} >
             <Row>
               <Th>
-                { checkItemAll ? (
-                  <InputCheckbox
-                    onChange={() => {
-                      handleUnCheckAll();
-                      setCheckItemAll(false);
-                    }} 
-                    value={true} 
-                    checked={checkItemAll} 
-                    className={styles.table_check}
-                  />
-                ) :(
-                  <InputCheckbox 
-                    onChange={() => {
-                      handleCheckAll(users); 
-                      setCheckItemAll(true);
-                    }} 
-                    value={false} 
-                    checked={checkItemAll} 
-                    className={styles.table_check}
-                  />
-                )}
+                <InputCheckbox
+                  onChange={handleCheckboxState}
+                  value={checkItemAll ? true : false}
+                  checked={checkItemAll}
+                  className={styles.table_check}
+                />
               </Th>
               <Th>{t('admin.id')}</Th>
               <Th>{t('admin.edit-link')}</Th>
@@ -83,9 +75,16 @@ const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
             </Row>
           </thead>
           <tbody>
-          { users.map((user) =>
-              <Row key={user.id} className={checklist.includes(user.id) ? styles.checked_row: ''}>
-                <Td><InputCheckbox onChange={handleCheck} value={user.id} checked={checklist.includes(user.id)} className={styles.table_check}/></Td>
+            {users.map((user) =>
+              <Row key={user.id} className={checklist.includes(user.id) ? styles.checked_row : ''}>
+                <Td>
+                  <InputCheckbox
+                    onChange={handleCheck}
+                    value={user.id}
+                    checked={checklist.includes(user.id)}
+                    className={styles.table_check}
+                  />
+                </Td>
                 <Td>{user.id}</Td>
                 <Td><EditLink to={`/admin/users/${user.id}/edit`}>{t('admin.edit-link')}</EditLink></Td>
                 <Td>{user.full_name}</Td>
@@ -102,14 +101,13 @@ const UserTable = ({users, className = '', deleteMethod, csvOutputMethod}) => {
                 <Td>{user.created_at}</Td>
                 <Td>{user.updated_at}</Td>
               </Row>
-            )
-          }
+            )}
           </tbody>
         </table>
       </div>
     </>
   );
-};
+});
 
 
 export default UserTable;

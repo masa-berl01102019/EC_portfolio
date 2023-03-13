@@ -1,71 +1,64 @@
-import React, {memo, useState} from 'react';
+import React, { memo, useState } from 'react';
 import styles from './styles.module.css';
 import InputCheckbox from '../../../atoms/InputCheckbox/InputCheckbox';
 import useInputCheckBox from '../../../hooks/useInputCheckBox';
-import {TableHeadCell as Th} from '../../../atoms/TableHeadCell/TableHeadCell';
-import {TableBodyCell as Td} from '../../../atoms/TableBodyCell/TableBodyCell';
+import { TableHeadCell as Th } from '../../../atoms/TableHeadCell/TableHeadCell';
+import { TableBodyCell as Td } from '../../../atoms/TableBodyCell/TableBodyCell';
 import EditLink from '../../../molecules/IconLink/EditLink';
 import DeleteBtn from '../../../molecules/IconBtn/DeleteBtn';
 import DownloadCsvBtn from '../../../molecules/IconBtn/DownloadCsvBtn';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
+import Text from '../../../atoms/Text/Text';
 
 
 // TODO: Implement order cancel function
 
-const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => {
+const OrderTable = memo(({ orders, className = '', deleteMethod, csvOutputMethod }) => {
 
-  const [checklist, {setChecklist, handleCheck, handleUnCheckAll, handleCheckAll}] = useInputCheckBox();
+  const [checklist, { setChecklist, handleCheck, handleUnCheckAll, handleCheckAll }] = useInputCheckBox();
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
   const { t } = useTranslation();
 
   const handleConfirmDelete = async () => {
-      const result = await confirm({
-          body : t('admin.delete-confirm', {count: checklist.length}),
-          confirmBtnLabel : t('admin.delete-btn')
-      });
-      result && deleteMethod({url:`/api/admin/orders`, form:checklist, callback: () => setChecklist([])});
+    const result = await confirm({
+      body: t('admin.delete-confirm', { count: checklist.length }),
+      confirmBtnLabel: t('admin.delete-btn')
+    });
+    result && deleteMethod({ url: `/api/admin/orders`, form: checklist, callback: () => setChecklist([]) });
+  }
+
+  const handleCheckboxState = () => {
+    if (checkItemAll) {
+      handleUnCheckAll();
+      setCheckItemAll(false);
+    } else {
+      handleCheckAll(orders);
+      setCheckItemAll(true);
+    }
   }
 
   return (
     <>
-      <div style={{'display': 'flex', 'marginBottom': '16px'}}>
+      <div style={{ 'display': 'flex', 'marginBottom': '16px' }}>
         {/* <DeleteBtn onClick={handleConfirmDelete} className={styles.mr}>{t('admin.delete-all-btn')}</DeleteBtn> */}
-        <DownloadCsvBtn onClick={() => { 
-          csvOutputMethod({ 
-            url:`/api/admin/orders/csv`, 
-            form:checklist 
-          }); 
-        }}>{t('admin.csv-output')}</DownloadCsvBtn>
+        <DownloadCsvBtn onClick={() => csvOutputMethod({ url: `/api/admin/orders/csv`, form: checklist })}>
+          {t('admin.csv-output')}
+        </DownloadCsvBtn>
       </div>
       <div className={className}>
         <table className={styles.table}>
           <thead className={styles.fix_theader} >
             <Row>
               <Th>
-                { checkItemAll ? (
-                  <InputCheckbox
-                    onChange={() => {
-                      handleUnCheckAll();
-                      setCheckItemAll(false);
-                    }} 
-                    value={true} 
-                    checked={checkItemAll} 
-                    className={styles.table_check}
-                  />
-                ) :(
-                  <InputCheckbox 
-                    onChange={() => {
-                      handleCheckAll(orders); 
-                      setCheckItemAll(true);
-                    }} 
-                    value={false} 
-                    checked={checkItemAll} 
-                    className={styles.table_check}
-                  />
-                )}
+                <InputCheckbox
+                  onChange={handleCheckboxState}
+                  value={checkItemAll ? true : false}
+                  checked={checkItemAll}
+                  className={styles.table_check}
+                />
               </Th>
               <Th>{t('admin.id')}</Th>
               <Th>{t('admin.edit-link')}</Th>
@@ -86,9 +79,16 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
             </Row>
           </thead>
           <tbody>
-          { orders.map((order) =>
-              <Row key={order.id} className={checklist.includes(order.id) ? styles.checked_row: ''}>
-                <Td><InputCheckbox onChange={handleCheck} value={order.id} checked={checklist.includes(order.id)} className={styles.table_check}/></Td>
+            {orders.map((order) =>
+              <Row key={order.id} className={checklist.includes(order.id) ? styles.checked_row : ''}>
+                <Td>
+                  <InputCheckbox
+                    onChange={handleCheck}
+                    value={order.id}
+                    checked={checklist.includes(order.id)}
+                    className={styles.table_check}
+                  />
+                </Td>
                 <Td>{order.id}</Td>
                 <Td><EditLink to={`/admin/orders/${order.id}/edit`}>{t('admin.edit-link')}</EditLink></Td>
                 <Td>{order.created_at}</Td>
@@ -99,7 +99,12 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
                 <Td>{order.delivery_time}</Td>
                 <Td>{order.is_paid_text}</Td>
                 <Td>{order.is_shipped_text}</Td>
-                <Td>{order.full_name && order.full_name_kana && (`${order.full_name}(${order.full_name_kana})`)}</Td>
+                <Td>
+                  <Text tag='span'>{order.full_name}</Text>
+                  <Text tag='span'>
+                    {order.full_name_kana.trim() !== '' && `(${order.full_name_kana})`}
+                  </Text>
+                </Td>
                 <Td>{order.tel}</Td>
                 <Td>{order.email}</Td>
                 {/* Prioritize delivery address over address */}
@@ -107,13 +112,12 @@ const OrderTable = ({orders, className = '', deleteMethod, csvOutputMethod}) => 
                 <Td>{order.full_delivery_address ? order.full_delivery_address : order.full_address}</Td>
                 <Td>{order.updated_at}</Td>
               </Row>
-            )
-          }
+            )}
           </tbody>
         </table>
       </div>
     </>
   );
-};
+});
 
 export default OrderTable;

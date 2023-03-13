@@ -56,7 +56,7 @@ class BookmarkController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.bookmarks.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.bookmarks.get_err')], 500);
         }
     }
 
@@ -70,11 +70,11 @@ class BookmarkController extends Controller
                 'sku_id' => $data['sku_id']
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.bookmarks.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.bookmarks.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.bookmarks.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.bookmarks.create_err')], 500);
         }
     }
 
@@ -84,11 +84,11 @@ class BookmarkController extends Controller
         try {
             $bookmark->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.bookmarks.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.bookmarks.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.bookmarks.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.bookmarks.delete_err')], 500);
         }
     }
 }

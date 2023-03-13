@@ -42,7 +42,7 @@ class UserController extends Controller
             return UserResource::collection($users);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.users.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.users.get_err')], 500);
         }
     }
 
@@ -76,11 +76,11 @@ class UserController extends Controller
                 'is_received' => $data['is_received'],
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.users.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.users.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.users.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.users.create_err')], 500);
         }
     }
 
@@ -90,7 +90,7 @@ class UserController extends Controller
             return new UserResource($user);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.users.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.users.get_err')], 500);
         }
     }
 
@@ -101,11 +101,11 @@ class UserController extends Controller
             $data = $request->only($this->form_items);
             $user->fill($data)->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.users.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.users.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.users.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.users.update_err')], 500);
         }
     }
 
@@ -119,11 +119,11 @@ class UserController extends Controller
                 $user->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.users.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.users.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.users.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.users.delete_err')], 500);
         }
     }
 
@@ -158,7 +158,7 @@ class UserController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.users.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.users.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.users.csv_err')], 500);
         }
     }
 }

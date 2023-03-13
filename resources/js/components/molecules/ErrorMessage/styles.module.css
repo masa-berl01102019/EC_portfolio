@@ -1,0 +1,10 @@
+.front_validation {
+  background: #ed82af45;
+  display: block;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.mt_8 {
+  margin-top: 8px;
+}

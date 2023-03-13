@@ -1,9 +1,13 @@
-.flex {
+.date_picker_area {
   display: flex;
-  justify-content: flex-start;
+  margin-top: 8px;
   align-items: center;
+  justify-content: space-between;
 }
-.mb {
+.w_100 {
+  width: 100%;
+}
+.mb_8 {
   margin-bottom: 8px;
 }
 .ma {

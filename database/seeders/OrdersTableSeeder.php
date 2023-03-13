@@ -34,9 +34,11 @@ class OrdersTableSeeder extends Seeder
             // Get user instance randomly
             $user = User::inRandomOrder()->first();
 
-            if ($user->gender == 0 || $user->gender == 1) { // 0:man 1:woman 2:others 3:no answer
+
+            if ($user->gender == config('define.gender.man') || $user->gender == config('define.gender.woman')) { // 0:man 1:woman 2:others 3:no answer
                 // Set gender category ID after checking if user is man or woman  * 1:men  2:women
-                $gender_category = $user->gender == 0 ? 1 : 2;
+                $gender_category = $user->gender == config('define.gender.man') ? config('define.gender_category.men') : config('define.gender_category.women');
+
                 // Store item ID of gender category which is correspond with user's gender in array
                 $items_id_arr = Item::with('categories')->whereHas('categories', function ($query) use ($gender_category) {
                     return $query->where('categories.id', $gender_category);
@@ -85,7 +87,7 @@ class OrdersTableSeeder extends Seeder
             $key2 = array_rand($delivery_time_zone, 1);
 
             // Assign the latest date to variable of updated_at if order was paid or delivered.
-            $updated_at = $is_paid === 1 || $is_shipped === 1 ? $first->max($second) : $created_at;
+            $updated_at = $is_paid === config('define.is_paid.paid') || $is_shipped === config('define.is_shipped.shipped') ? $first->max($second) : $created_at;
 
             $order = Order::create([
                 'user_id' => $user->id,

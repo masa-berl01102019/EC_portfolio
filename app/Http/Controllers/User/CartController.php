@@ -42,7 +42,7 @@ class CartController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.carts.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.carts.get_err')], 500);
         }
     }
 
@@ -57,11 +57,11 @@ class CartController extends Controller
                 'quantity' => 1,
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.carts.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.carts.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.carts.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.carts.create_err')], 500);
         }
     }
 
@@ -74,11 +74,11 @@ class CartController extends Controller
                 'quantity' => $data['quantity']
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.carts.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.carts.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.carts.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.carts.update_err')], 500);
         }
     }
 
@@ -88,11 +88,11 @@ class CartController extends Controller
         try {
             $cart->delete();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.user.carts.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.carts.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.user.carts.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.carts.delete_err')], 500);
         }
     }
 }

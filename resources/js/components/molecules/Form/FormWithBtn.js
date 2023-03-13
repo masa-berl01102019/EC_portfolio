@@ -1,4 +1,4 @@
-import React, {memo, useRef} from 'react';
+import React, { memo, useRef } from 'react';
 import Button from '../../atoms/Button/Button';
 import InputText from '../../atoms/InputText/InputText';
 import Text from '../../atoms/Text/Text';
@@ -8,63 +8,63 @@ import styles from './styles.module.css';
 import { useTranslation } from 'react-i18next';
 
 const FormWithBtn = ({
-    name, 
-    placeholder, 
-    formInitialValue,
-    validateScope,
-    validateConfigKey,
-    requestUrl,
-    createMethod,
-    updateMethod,
-    deleteMethod,
-    className = '',
-    ...props
-  }) => {
+  name,
+  placeholder,
+  formInitialValue,
+  validateScope,
+  validateConfigKey,
+  requestUrl,
+  createMethod,
+  updateMethod,
+  deleteMethod,
+  className = '',
+  ...props
+}) => {
 
-    const [formData, {handleFormData, setFormData}] = useForm(formInitialValue);
-    const {valid, setValid, validation, errorObject} = useValidation(formData, validateScope, validateConfigKey);
-    const inputValue = useRef(undefined);
-    const { t } = useTranslation();
+  const [formData, { handleFormData, setFormData }] = useForm(formInitialValue);
+  const { valid, setValid, validation } = useValidation(formData, validateScope, validateConfigKey);
+  const inputValue = useRef(undefined);
+  const { t } = useTranslation();
 
   return (
     <div className={className}>
       <div className={styles.flex}>
         <InputText
-            name={name}
-            value={formData[name]}
-            onChange={handleFormData}
-            placeholder={placeholder}
-            className={styles.mr_4}
-            ref={inputValue}
-            {...props}
+          name={name}
+          value={formData[name]}
+          onChange={handleFormData}
+          placeholder={placeholder}
+          className={styles.mr_4}
+          ref={inputValue}
+          {...props}
         />
-        { createMethod ? (
+        {createMethod ? (
+          <Button onClick={() => {
+            setFormData({ ...formData, [name]: inputValue.current?.value });
+            if (validation.fails()) {
+              setValid(true);
+              return false;
+            }
+            createMethod({ form: formData, url: requestUrl });
+          }} size='s' color='primary'>{t('admin.add-btn')}</Button>
+        ) : (
+          <>
             <Button onClick={() => {
-              setFormData({...formData, [name]: inputValue.current?.value});
-              if(validation.fails()) {
+              setFormData({ ...formData, [name]: inputValue.current?.value });
+              if (validation.fails()) {
                 setValid(true);
                 return false;
               }
-              createMethod({form: formData, url: requestUrl});
-            }} size='s' color='primary'>{t('admin.add-btn')}</Button>
-          ) : (
-            <>
-              <Button onClick={() => {
-                  setFormData({...formData, [name]: inputValue.current?.value});
-                  if(validation.fails()) {
-                    setValid(true);
-                    return false;
-                  }
-                  updateMethod({form: formData, url: requestUrl});
-              }} size='s' color='primary' className={styles.mr_4}>{t('admin.edit-link')}</Button>
-              <Button onClick={deleteMethod} size='s'>{t('admin.delete-btn')}</Button>
-            </>
+              updateMethod({ form: formData, url: requestUrl });
+            }} size='s' color='primary' className={styles.mr_4}>{t('admin.edit-link')}</Button>
+            <Button onClick={deleteMethod} size='s'>{t('admin.delete-btn')}</Button>
+          </>
         )}
       </div>
-      { valid && validation.fails() && validation.errors.first(name) && 
-          <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')}>
-              {validation.errors.first(name)}
-          </Text> 
+      {valid && validation.fails() && validation.errors.first(name) &&
+        <Text size='s' role='error' className={[styles.mt_8, styles.front_validation].join(' ')}>
+          {validation.errors.first(name)}
+        </Text>
       }
     </div>
   );

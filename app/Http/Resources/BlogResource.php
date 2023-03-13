@@ -26,14 +26,18 @@ class BlogResource extends JsonResource
                 'title' => $this->title,
                 'brand_name' => optional($this->brand)->brand_name,
                 'thumbnail' => $this->thumbnail,
-                'posted_at' => $this->posted_at !== null ? $this->posted_at->format('Y/m/d H:i') : null,
-                'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null
+                'tags' => $this->tags->pluck('tag_name'),
+                'posted_at' => $this->posted_at !== null ? $this->posted_at->format('Y/m/d') : null,
+                'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d') : null
             ];
         } else if ($request->routeIs('user.blogs.show')) {
             return [
                 'title' => $this->title,
                 'body' => $this->body,
                 'thumbnail' => $this->thumbnail,
+                'tags' => TagResource::collection($this->tags),
+                'brand' => new BrandResource($this->brand),
+                'category' => new CategoryResource($this->category),
                 'posted_at' => $this->posted_at !== null ? $this->posted_at->format('Y/m/d H:i') : null,
                 'modified_at' => $this->modified_at !== null ? $this->modified_at->format('Y/m/d H:i') : null,
                 'items' => ItemResource::collection($this->publishedItems)

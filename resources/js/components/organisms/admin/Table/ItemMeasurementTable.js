@@ -1,7 +1,7 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import styles from './styles.module.css';
-import {TableHeadCell as Th} from '../../../atoms/TableHeadCell/TableHeadCell';
-import {TableBodyCell as Td} from '../../../atoms/TableBodyCell/TableBodyCell';
+import { TableHeadCell as Th } from '../../../atoms/TableHeadCell/TableHeadCell';
+import { TableBodyCell as Td } from '../../../atoms/TableBodyCell/TableBodyCell';
 import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import Button from '../../../atoms/Button/Button';
 import Selectbox from '../../../atoms/Selectbox/Selectbox';
@@ -10,10 +10,27 @@ import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 
 
-const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod, handleFormMethod}) => {
+const ItemMeasurementTable = memo(({ measurements, sizes, className = '', deleteMethod, handleFormMethod }) => {
 
   const alert = useNotify();
   const { t } = useTranslation();
+
+  const measurementData = [
+    { name: 'width', placeholder: '55' },
+    { name: 'shoulder_width', placeholder: '50.5' },
+    { name: 'raglan_sleeve_length', placeholder: '70' },
+    { name: 'sleeve_length', placeholder: '57.5' },
+    { name: 'length', placeholder: '67' },
+    { name: 'waist', placeholder: '77' },
+    { name: 'hip', placeholder: '97' },
+    { name: 'rise', placeholder: '29' },
+    { name: 'inseam', placeholder: '61' },
+    { name: 'thigh_width', placeholder: '59' },
+    { name: 'outseam', placeholder: '90' },
+    { name: 'sk_length', placeholder: '88' },
+    { name: 'hem_width', placeholder: '23' },
+    { name: 'weight', placeholder: '150' }
+  ];
 
   return (
     <>
@@ -39,182 +56,53 @@ const ItemMeasurementTable = ({measurements, sizes, className = '', deleteMethod
           </Row>
         </thead>
         <tbody>
-        {   measurements &&
-            measurements.map((list, index) =>
-                <Row key={index}>
-                  <Td>
-                    <Button 
-                      onClick={() => {
-                        if(measurements.length > 1) {
-                          deleteMethod('measurements', index, list.id)
-                        } else {
-                          alert({
-                            body : t('admin.table-alert'),
-                            type: 'alert'
-                          });
-                        }
-                      }} 
-                      style={{'maxWidth': '65px'}}
-                    >
-                      {t('admin.delete-btn')}
-                    </Button>
-                  </Td>
-                  <Td>
-                    <Selectbox name='size_id' value={list.size_id} onChange={ e => { handleFormMethod('measurements', index, e) }} className={styles.table_row_form}>
-                        {   list.size_id == '' && <option value={''}>{t('admin.not-set')}</option>}
-                        {   sizes && sizes.map((size) => (
-                                <option key={size.id} value={size.id}>{size.size_name}</option>
-                            ))
-                        } 
-                    </Selectbox>
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='width'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.width} 
-                      placeholder='55'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='shoulder_width'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.shoulder_width} 
-                      placeholder='50.5'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='raglan_sleeve_length'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.raglan_sleeve_length} 
-                      placeholder='70'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='sleeve_length'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.sleeve_length} 
-                      placeholder='57.5'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='length'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.length} 
-                      placeholder='67'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>    
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='waist'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.waist}
-                      placeholder='77'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='hip'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.hip}
-                      placeholder='97'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='rise'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.rise}
-                      placeholder='29'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='inseam'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.inseam}
-                      placeholder='61'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='thigh_width'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.thigh_width}
-                      placeholder='59'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='outseam'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.outseam}
-                      placeholder='90'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='sk_length'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.sk_length}
-                      placeholder='88'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='hem_width'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.hem_width}
-                      placeholder='23'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                  <Td>
-                    <InputText 
-                      type='number'
-                      name='weight'
-                      onBlur={ e => handleFormMethod('measurements', index, e) }
-                      value={list.weight}
-                      placeholder='150'
-                      className={styles.table_row_form2}
-                    />
-                  </Td>
-                </Row>
-            )
-        }
+          {measurements.map((list, index) =>
+            <Row key={index}>
+              <Td>
+                <Button
+                  onClick={() => {
+                    if (measurements.length > 1) {
+                      deleteMethod('measurements', index, list.id)
+                    } else {
+                      alert({ body: t('admin.table-alert'), type: 'alert' });
+                    }
+                  }}
+                  style={{ 'maxWidth': '65px' }}
+                >
+                  {t('admin.delete-btn')}
+                </Button>
+              </Td>
+              <Td>
+                <Selectbox
+                  name='size_id'
+                  value={list.size_id}
+                  onChange={e => { handleFormMethod('measurements', index, e) }}
+                  className={styles.table_row_form}
+                >
+                  {list.size_id == '' && <option value={''}>{t('admin.not-set')}</option>}
+                  {sizes && sizes.map((size) => (
+                    <option key={size.id} value={size.id}>{size.size_name}</option>
+                  ))}
+                </Selectbox>
+              </Td>
+              {measurementData.map((item, idx) => (
+                <Td key={idx}>
+                  <InputText
+                    type='number'
+                    name={item.name}
+                    onBlur={e => handleFormMethod('measurements', index, e)}
+                    value={list[item.name] || null}
+                    placeholder={item.placeholder}
+                    className={styles.table_row_form2}
+                  />
+                </Td>
+              ))}
+            </Row>
+          )}
         </tbody>
       </table>
     </>
   );
-};
+});
 
 export default ItemMeasurementTable;

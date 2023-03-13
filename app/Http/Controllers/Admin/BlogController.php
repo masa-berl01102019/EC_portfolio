@@ -52,7 +52,7 @@ class BlogController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.get_err')], 500);
         }
     }
 
@@ -67,7 +67,7 @@ class BlogController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.get_err')], 500);
         }
     }
 
@@ -93,11 +93,11 @@ class BlogController extends Controller
             $blog->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             $blog->items()->sync(!empty($data['items_id']) ? $data['items_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.blogs.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.blogs.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.create_err')], 500);
         }
     }
 
@@ -112,7 +112,7 @@ class BlogController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.get_err')], 500);
         }
     }
 
@@ -137,16 +137,16 @@ class BlogController extends Controller
                 'thumbnail' => $db_reserve_path ? $db_reserve_path : $data['thumbnail'],
                 'is_published' => $data['is_published'],
                 'admin_id' => Auth::guard('admin')->id(),
-                $registered_date => $data['is_published'] == 1 ? Carbon::now() : $date // don't update published date if is_published status close
+                $registered_date => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : $date // don't update published date if is_published status close
             ])->save();
             $blog->tags()->sync(!empty($data['tags_id']) ? $data['tags_id'] : []);
             $blog->items()->sync(!empty($data['items_id']) ? $data['items_id'] : []);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.blogs.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.blogs.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.update_err')], 500);
         }
     }
 
@@ -160,11 +160,11 @@ class BlogController extends Controller
                 $blog->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.blogs.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.blogs.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.delete_err')], 500);
         }
     }
 
@@ -195,7 +195,7 @@ class BlogController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.blogs.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.blogs.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.blogs.csv_err')], 500);
         }
     }
 }

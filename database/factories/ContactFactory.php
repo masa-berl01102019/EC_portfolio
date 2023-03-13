@@ -31,7 +31,7 @@ class ContactFactory extends Factory
 
         return [
             'user_id' => $user_id,
-            'admin_id' => $response_status !== 0 ? $admin->id : null,
+            'admin_id' => $response_status !== config('define.response_status.yet') ? $admin->id : null,
             'last_name' => empty($user) ? $this->faker->lastName : $user->last_name,
             'first_name' => empty($user) ? $this->faker->firstName : $user->first_name,
             'last_name_kana' => empty($user) ? $this->faker->lastKanaName : $user->last_name_kana,
@@ -41,9 +41,9 @@ class ContactFactory extends Factory
             'subject' => $this->faker->text($maxNbChars = 20),
             'message' => $this->faker->text($maxNbChars = 200),
             'response_status' => $response_status,
-            'memo' => $response_status !== 0 ? $this->faker->text($maxNbChars = 200) : null,
+            'memo' => $response_status !== config('define.response_status.yet') ? $this->faker->text($maxNbChars = 200) : null,
             'created_at' => $created_at,
-            'updated_at' => $response_status === 0 ? null : $this->faker->dateTimeBetween($startDate = $created_at, $endDate = 'now', $timezone = null),
+            'updated_at' => $response_status === config('define.response_status.yet') ? null : $this->faker->dateTimeBetween($startDate = $created_at, $endDate = 'now', $timezone = null),
         ];
     }
 }

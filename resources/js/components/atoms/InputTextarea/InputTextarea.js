@@ -1,15 +1,15 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import styles from './styles.module.css';
 
-const InputTextarea = ({name, value, onBlur, placeholder, className = '', ...props}) => {
+const InputTextarea = ({ name, value, onBlur, placeholder, className = '', ...props }) => {
   return (
-    <textarea 
+    <textarea
       id={name}
-      name={name} 
-      defaultValue={value} 
-      onBlur={onBlur} 
+      name={name}
+      defaultValue={value}
+      onBlur={onBlur}
       placeholder={placeholder}
-      className={[ styles.textarea, className].join(' ')} 
+      className={[styles.textarea, className].join(' ')}
       {...props}
     />
   );

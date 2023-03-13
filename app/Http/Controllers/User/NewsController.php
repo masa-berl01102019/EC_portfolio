@@ -36,7 +36,7 @@ class NewsController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.news.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.news.get_err')], 500);
         }
     }
 
@@ -47,7 +47,7 @@ class NewsController extends Controller
             return new NewsResource($news);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.news.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.news.get_err')], 500);
         }
     }
 }

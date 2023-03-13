@@ -29,9 +29,9 @@ class NotificationFactory extends Factory
             'title' => $this->faker->text($maxNbChars = 20),
             'body' => $this->faker->text($maxNbChars = 200),
             'is_published' => $is_published,
-            'expired_at' => $is_published === 1 ? $expired_at : null,
-            'posted_at' => $is_published === 1 ? $posted_at : null,
-            'modified_at' => $is_published === 1 ? $modified_at : null,
+            'expired_at' => $is_published === config('define.is_published.open') ? $expired_at : null,
+            'posted_at' => $is_published === config('define.is_published.open') ? $posted_at : null,
+            'modified_at' => $is_published === config('define.is_published.open') ? $modified_at : null,
         ];
     }
 }

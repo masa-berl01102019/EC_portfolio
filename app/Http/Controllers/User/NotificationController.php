@@ -20,7 +20,7 @@ class NotificationController extends Controller
             return NotificationResource::collection($notifications);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.user.notifications.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.user.notifications.get_err')], 500);
         }
     }
 }

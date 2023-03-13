@@ -20,9 +20,9 @@ class UserFactory extends Factory
 
         return [
             'last_name' => $this->faker->lastName,
-            'first_name' => $gender === 0 || $gender === 2 ? $this->faker->firstNameMale : $this->faker->firstNameFemale,
+            'first_name' => $gender === config('define.gender.man') || $gender === config('define.gender.others') ? $this->faker->firstNameMale : $this->faker->firstNameFemale,
             'last_name_kana' => $this->faker->lastKanaName,
-            'first_name_kana' => $gender === 0 || $gender === 2 ? $this->faker->firstKanaNameMale : $this->faker->firstKanaNameFemale,
+            'first_name_kana' => $gender === config('define.gender.man') || $gender === config('define.gender.others') ? $this->faker->firstKanaNameMale : $this->faker->firstKanaNameFemale,
             'gender' => $gender,
             'birthday' => $this->faker->date($format = 'Y-m-d', $max = '-18 years'),
             'post_code' => $this->faker->postcode,

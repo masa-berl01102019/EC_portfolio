@@ -72,8 +72,8 @@ class BlogFactory extends Factory
             // 'thumbnail' => $this->faker->imageUrl($width = 640, $height = 480, $category = 'BLOG', $randomize = true),
             'thumbnail' => $image,
             'is_published' => $is_published,
-            'posted_at' => $is_published === 1 ? $posted_at : null,
-            'modified_at' => $is_published === 1 ? $modified_at : null,
+            'posted_at' => $is_published === config('define.is_published.open') ? $posted_at : null,
+            'modified_at' => $is_published === config('define.is_published.open') ? $modified_at : null,
         ];
     }
 }

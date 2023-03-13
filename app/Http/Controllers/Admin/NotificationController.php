@@ -37,7 +37,7 @@ class NotificationController extends Controller
             return NotificationResource::collection($notifications);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.notifications.get_err')], 500);
         }
     }
 
@@ -55,11 +55,11 @@ class NotificationController extends Controller
                 'posted_at' => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : null
             ]);
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.notifications.create_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.notifications.create_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.create_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.notifications.create_err')], 500);
         }
     }
 
@@ -69,7 +69,7 @@ class NotificationController extends Controller
             return new NotificationResource($notification);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.get_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.notifications.get_err')], 500);
         }
     }
 
@@ -90,11 +90,11 @@ class NotificationController extends Controller
                 $registered_date => $data['is_published'] == config('define.is_published.open') ? Carbon::now() : $date, // don't update published date if is_published status close
             ])->save();
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.notifications.update_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.notifications.update_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.update_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.notifications.update_err')], 500);
         }
     }
 
@@ -108,11 +108,11 @@ class NotificationController extends Controller
                 $notification->delete();
             }
             DB::commit();
-            return response()->json(['status' => 1, 'message' => trans('api.admin.notifications.delete_msg')], 200);
+            return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.admin.notifications.delete_msg')], 200);
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             DB::rollBack();
-            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.delete_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.notifications.delete_err')], 500);
         }
     }
 
@@ -141,7 +141,7 @@ class NotificationController extends Controller
             return csvExport($csv_body, $csv_header, trans('api.admin.notifications.csv_file_name'));
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            return response()->json(['status' => 9, 'message' => trans('api.admin.notifications.csv_err')], 500);
+            return response()->json(['status' => config('define.api_status.error'), 'message' => trans('api.admin.notifications.csv_err')], 500);
         }
     }
 }

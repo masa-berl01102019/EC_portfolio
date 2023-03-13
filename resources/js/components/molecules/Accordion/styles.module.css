@@ -1,0 +1,21 @@
+.mb_8 {
+  margin-bottom: 8px;
+}
+.tab_btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background: #fff;
+  box-shadow: 2px 2px 2px #00000024;
+  border-radius: 4px;
+  border: 1px solid #E6E7E9;
+  padding: 0px 4px 0px 8px;
+  width: 100%;
+  height: 28px;
+  cursor: pointer;
+}
+.text {
+  overflow: hidden;
+  white-space: nowrap;
+}

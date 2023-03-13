@@ -37,7 +37,8 @@ class CategoriesTableSeeder extends Seeder
                 $list[] = [
                     'id' => $line[0],
                     'category_name' => $line[1],
-                    'parent_id' => $line[2],
+                    'category_type' => $line[2], // 1: gender / 2: main / 3: sub
+                    'parent_id' => $line[3],
                     'created_at' => '2010-04-01 00:00:00',
                     'updated_at' => '2010-04-01 00:00:00',
                 ];

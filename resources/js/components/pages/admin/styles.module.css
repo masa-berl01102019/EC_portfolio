@@ -1,4 +1,4 @@
-/* total */
+/* admin pages layout */
 .container {
   width : 90%;
   margin: 86px auto 72px;
@@ -11,103 +11,44 @@
 .max_content {
   max-width: 1024px;
 }
-.form_area {
-  background : #fff; 
-  padding : 24px; 
-  margin : 0 auto;
+.login_max_content {
+  max-width: 520px;
 }
 .open_sidebar {
   width: calc(100% - 288px);
   margin-left: 24px;
 }
-/* item create / edit */
-.item_heading {
-  color : #000;
-  height: 18px;
-}
-.heading_border {
-  background : #E6E7E9;
-  height : 2px;
-  flex-grow : 1;
-  margin-left : 8px;
-}
-.cost_rate {
+.index_title {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 16px;
-  border-bottom: 1px solid #666;
-  padding-bottom: 4px;
-  justify-content: space-between;
 }
-.tag_area {
-  overflow-y: scroll;
-  max-height: 260px;
+.index_title > h1 {
+  padding: 16px 0;
 }
-/* blog create / edit */
-.sidebar_box {
-  width: 216px;
-  margin-top: 26px;
+.index_title > .btn_area {
+  max-width: 306px;
+  width: 100%;
 }
-.sidebar_card {
-  margin-bottom : 16px;
-  border: 1px solid #666;
+.index_title > .btn_area > a {
+  flex-basis: 50%;
+  width: auto;
 }
-.title_box {
-  height: 32px;
-  border-bottom: 1px solid #666;
-  text-align: center;
-  line-height: 32px;
-  box-sizing: border-box;
-  overflow: hidden;
+.index_title > .btn_area > button {
+  flex-basis: 50%;
+  width: auto;
 }
-.scroll_area {
-  overflow-y: scroll;
-  height: 126px;
+.table_scroll_area {
+  overflow: scroll;
+  max-height: calc(100vh - 340px);
 }
-.news_edit_area {
-  border: 1px solid #666;
-  height: 95.5%;
-  max-height: 621px;
-}
-.blog_edit_area {
-  border: 1px solid #666;
-  height: 95.5%;
-  max-height: 827px;
-}
-.blog_area {
-  margin-right: 16px;
-  display: flex;
-  justify-content: flex-start;
-  flex-flow: column;
-}
-/* order  edit */
-.amount {
-  display: flex;
-  justify-content: space-between;
-  width: 220px;
-  margin-left: auto;
-  text-align: right;
-}
-.amount_border {
-  border-bottom: 1px solid #666;
+.form_area {
+  background : #fff; 
+  padding : 24px; 
+  margin : 0 auto;
 }
 
-/* Login */
-.login_max_content {
-  max-width: 520px;
-}
-
-
-/* contact  edit */
-.contents_header {
-  border-bottom: 2px solid #257dc6;
-  display: inline-block;
-}
-.contents_body {
-  padding: 8px;
-  margin-bottom: 24px;
-  box-sizing: border-box;
-}
 /* color / size / tag / brand master */
 .master_form_area {
   display: flex;
@@ -124,6 +65,7 @@
   line-height : 28px;
   cursor: pointer;
 }
+
 /* category master */
 .category_text {
   height : 28px;
@@ -161,107 +103,37 @@
 .tab:checked + label > img {
   transform: rotate(90deg);
 }
-
-/* index */
-.index_title {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.index_title > h1 {
-  padding: 16px 0;
-}
-.index_title > .btn_area {
-  max-width: 306px;
-  width: 100%;
-}
-.index_title > .btn_area > a {
-  flex-basis: 50%;
-  width: auto;
-}
-.index_title > .btn_area > button {
-  flex-basis: 50%;
-  width: auto;
-}
-
-
-/* other */
-.scroll_x {
-  overflow-x: scroll;
-}
-.text_underline {
-  text-decoration: underline;
-}
-.text_center {
-  text-align:  center;
-}
-.table_scroll_area {
-  overflow: scroll;
-  max-height: calc(100vh - 340px);
-}
-.w_100 {
-  min-width: auto;
-  width: 100%;
-}
-.text_nowrap {
-  white-space: nowrap;
-}
-.block {
-  display: block;
-}
-.inline_block {
-  display: inline-block;
-}
 .inline_flex {
   display: inline-flex;
 }
 .hidden {
   display: none;
 }
-.front_validation {
-  background: #ed82af45;
+
+/* contact  edit */
+.contents_header {
+  border-bottom: 2px solid #257dc6;
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
+}
+.contents_body {
+  padding: 8px;
+  margin-bottom: 24px;
+  box-sizing: border-box;
 }
 
-/* USER EDIT / CREATE */
-.delivery_address_check {
-  width: 206px;
+/* order  edit */
+.amount {
   display: flex;
-  align-items: center;
-  margin-bottom: 16px;
+  justify-content: space-between;
+  width: 220px;
+  margin-left: auto;
+  text-align: right;
+}
+.amount_border {
+  border-bottom: 1px solid #666;
 }
 
-/* flex */
-.flex {
-  display: flex;
-}
-.flex_1 {
-  flex: 1;
-  min-width: 0;
-}
-.flex_wrap {
-  flex-flow: wrap;
-}
-.flex_grow {
-  flex-grow: 1;
-}
-.align_center {
-  align-items: center;
-}
-.justify_center {
-  justify-content: center;
-}
-.justify_evenly {
-  justify-content: space-evenly;
-}
-.flex_basis_50 {
-  flex-basis: 50%;
-}
-
-/* padding */
+/* other */
 .pa_16 {
   padding: 16px;
 }
@@ -271,8 +143,6 @@
 .pl_64 {
   padding-left: 64px;
 }
-
-/* margin */
 .mt_8 {
   margin-top: 8px;
 }
@@ -327,41 +197,53 @@
 .ml_auto {
   margin-left: auto;
 }
+.flex {
+  display: flex;
+}
+.flex_1 {
+  flex: 1;
+  min-width: 0;
+}
+.flex_wrap {
+  flex-flow: wrap;
+}
+.flex_grow {
+  flex-grow: 1;
+}
+.flex_basis_50 {
+  flex-basis: 50%;
+}
+.justify_evenly {
+  justify-content: space-evenly;
+}
+.justify_center {
+  justify-content: center;
+}
+.align_center {
+  align-items: center;
+}
+.w_100 {
+  min-width: auto;
+  width: 100%;
+}
+.text_center {
+  text-align:  center;
+}
+.text_underline {
+  text-decoration: underline;
+}
+.scroll_x {
+  overflow-x: scroll;
+}
 
 @media screen and (max-width : 767px) {
   .container_open_menu {
     transform: translateX(120vw);
   }
-  .flex_tb {
-    flex-flow: column;
-  }
-  .flex_tb > .mr_24{
-    margin-right: 0;
-  }
-  .flex_tb > .mb_16_tb{
-    margin-bottom: 16px;
-  }
-  .flex_tb > .blog_area {
-    margin-right: 0;
-  }
-  .flex_tb > .sidebar_box {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  .sidebar_box > .sidebar_card {
-    width: 48%;
-  }
-  .news_edit_area {
-    max-height: none;
-  }
-  .blog_edit_area {
-    max-height: none;
-  }
 }
 
 @media screen and (max-width : 440px) {
+  /* order edit */
   .flex_sp {
     flex-flow: column;
   }
@@ -374,15 +256,7 @@
   .flex_sp > .mb_8_sp {
     margin-bottom: 8px;
   }
-  .flex_tb > .sidebar_box {
-    width: 100%;
-    flex-flow: column;
-  }
   .flex_sp > .mb_16_sp{
     margin-bottom: 16px;
   }
-  .sidebar_box > .sidebar_card {
-    width: 100%;
-  }
-
 }

@@ -25,6 +25,7 @@ class CategoryRegisterRequest extends FormRequest
     {
         return [
             'category_name' => 'required|string|max:50',
+            'category_type' => 'required|integer|min:1|max:3',
             'parent_id' => 'required|integer',
         ];
     }

@@ -29,8 +29,8 @@ class BookmarkResource extends JsonResource
         return [
             'id' => $this->id,
             'sku_id' => $this->sku_id,
-            'cart_status' => in_array($this->sku_id, $cart_item_arr) ? 1 : 0, // check if it's in cart
-            'stock_status' => $this->sku->quantity > 0 ? 1 : 0,
+            'cart_status' => in_array($this->sku_id, $cart_item_arr) ? config('define.cart_status.in_cart') : config('define.cart_status.out_of_cart'), // Is it in cart?
+            'stock_status' => $this->sku->quantity > 0 ? config('define.stock_status.in_stock') : config('define.stock_status.sold_out'),
             'item_id' => $this->item_id,
             'size_name' => Size::where('id', $this->size_id)->first()->size_name,
             'color_name' => Color::where('id', $this->color_id)->first()->color_name,

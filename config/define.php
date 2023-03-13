@@ -8,6 +8,13 @@ return [
     'payment_status' => ['faile' => 0, 'success' => 1],
     'is_paid' => ['not_paid' => 0, 'paid' => 1],
     'is_shipped' => ['not_shipped' => 0, 'shipped' => 1],
+    'category_type' => ['gender' => 1, 'main' => 2, 'sub' => 3],
+    'stock_status' => ['in_stock' => 1, 'sold_out' => 0],
+    'cart_status' => ['out_of_cart' => 0, 'in_cart' => 1],
+    'delete_status' => ['not_deleted' => 0, 'deleted' => 1],
+    'gender' => ['man' => 0, 'woman' => 1, 'others' => 2, 'no_answer' => 3],
+    'response_status' => ['yet' => 0, 'during' => 1, 'done' => 2],
+    'is_received' => ['not_registered' => 0, 'registered' => 1],
     // Mail
     'user_email' => [
         'from' => [

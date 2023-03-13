@@ -18,23 +18,17 @@ class Category extends Model
 
     public static function genderCategories()
     {
-        $gender_category_arr = array_values(config('define.gender_category'));
-
-        return  Self::select('id', 'category_name', 'parent_id')->whereIn('id', $gender_category_arr);
+        return Self::select('id', 'category_name', 'category_type', 'parent_id')->where('category_type', config('define.category_type.gender'));
     }
 
     public static function mainCategories()
     {
-        $gender_category_arr = array_values(config('define.gender_category'));
-
-        return Self::select('id', 'category_name', 'parent_id')->whereIn('parent_id', $gender_category_arr);
+        return Self::select('id', 'category_name', 'category_type', 'parent_id')->where('category_type', config('define.category_type.main'));
     }
 
     public static function subCategories()
     {
-        return Self::select('depth_3.id', 'depth_3.category_name', 'depth_3.parent_id')
-            ->join('categories as depth_2', 'depth_2.parent_id', '=', 'categories.id')
-            ->join('categories as depth_3', 'depth_3.parent_id', '=', 'depth_2.id');
+        return Self::select('id', 'category_name', 'category_type', 'parent_id')->where('category_type', config('define.category_type.sub'));
     }
 
     /** Relationships */

@@ -1,7 +1,7 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import styles from './styles.module.css';
 
-const Text = ({children, tag = 'p', size = 'm', role = 'text', className='', ...props}) => {
+const Text = ({ children, tag = 'p', size = 'm', role = 'text', className = '', ...props }) => {
   // tag props is passed as a html element ex) p, div, span
   const Tag = tag;
   return (

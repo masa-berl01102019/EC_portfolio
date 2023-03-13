@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ErrorBoundary from './ErrorBoundary';
-import StripeProvider from './context/StripeContext';
 import Router from './Router';
 import { CookiesProvider } from 'react-cookie';
 import { RecoilRoot } from 'recoil';
@@ -20,40 +19,38 @@ import ApplicationError from './pages/error/ApplicationError';
 // ・The query is optionally configured with a refetch interval.
 // You can turn off most of the defaults by passing defaultOptions as config parameter
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: true, // automatically requests fresh data in the background if user leaves the app and returns to stale data
-            refetchOnmount: true, // if true, refetch on mount if the data is stale.
-            refetchOnReconnect: true, // if true, refetch on reconnect if the data is stale.
-            retry: false, // if true, failed queries will retry infinitely.
-            // cacheTime: 5,
-            // staleTime: 1*60*1000, // the time in milliseconds after data is considered stale. Defaults to 0
-            suspense: true
-        }
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true, // automatically requests fresh data in the background if user leaves the app and returns to stale data
+      refetchOnmount: true, // if true, refetch on mount if the data is stale.
+      refetchOnReconnect: true, // if true, refetch on reconnect if the data is stale.
+      retry: false, // if true, failed queries will retry infinitely.
+      // cacheTime: 5,
+      // staleTime: 1*60*1000, // the time in milliseconds after data is considered stale. Defaults to 0
+      suspense: true
     }
+  }
 });
 
 function App() {
-    return (
-        <ErrorBoundary fallback={<ApplicationError/>}>
-            <RecoilRoot>
-                <CookiesProvider>
-                    <StripeProvider>
-                        <NotifyProvider>
-                            <ToastifyProvider>
-                                <QueryClientProvider client={queryClient}>
-                                    <Router />
-                                    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-                                </QueryClientProvider>
-                            </ToastifyProvider>
-                        </NotifyProvider>
-                    </StripeProvider>
-                </CookiesProvider>
-            </RecoilRoot>
-        </ErrorBoundary>
-    )
+  return (
+    <ErrorBoundary fallback={<ApplicationError />}>
+      <RecoilRoot>
+        <CookiesProvider>
+          <NotifyProvider>
+            <ToastifyProvider>
+              <QueryClientProvider client={queryClient}>
+                <Router />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+              </QueryClientProvider>
+            </ToastifyProvider>
+          </NotifyProvider>
+        </CookiesProvider>
+      </RecoilRoot>
+    </ErrorBoundary>
+  )
 }
 
 const container = document.getElementById('test');
 const root = createRoot(container);
-root.render(<App/>);
+root.render(<App />);

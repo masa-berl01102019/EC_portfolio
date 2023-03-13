@@ -31,7 +31,7 @@
     right: 0;
     left: 0;
     bottom: 0;
-    z-index: 1000000;
+    z-index: 1000;
   }
   .container {
     max-height: 90% !important;
