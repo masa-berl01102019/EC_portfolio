@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
-const validationConfig =  () => {
+const validationConfig = () => {
 
   const { t } = useTranslation();
 
   // TODO: Add regular expression to judge kana character / Japanese postcode / Japanese tel
 
   return {
-    admin : {
-      admin_create : {
-        rules : {
+    admin: {
+      admin_create: {
+        rules: {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
@@ -18,7 +18,7 @@ const validationConfig =  () => {
           'email': 'required|email|max:100',
           'password': 'required|string|alpha_num|min:8|max:100'
         },
-        attributes : { 
+        attributes: {
           'last_name': t('validation.admin.admin.last_name'),
           'first_name': t('validation.admin.admin.first_name'),
           'last_name_kana': t('validation.admin.admin.last_name_kana'),
@@ -28,8 +28,8 @@ const validationConfig =  () => {
           'password': t('validation.admin.admin.password')
         }
       },
-      admin_edit : {
-        rules : {
+      admin_edit: {
+        rules: {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
@@ -37,7 +37,7 @@ const validationConfig =  () => {
           'tel': 'required|string|max:15',
           'email': 'required|email|max:100'
         },
-        attributes : { 
+        attributes: {
           'last_name': t('validation.admin.admin.last_name'),
           'first_name': t('validation.admin.admin.first_name'),
           'last_name_kana': t('validation.admin.admin.last_name_kana'),
@@ -46,8 +46,8 @@ const validationConfig =  () => {
           'email': t('validation.admin.admin.email')
         }
       },
-      user_create : {
-        rules : {
+      user_create: {
+        rules: {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
@@ -71,7 +71,7 @@ const validationConfig =  () => {
           'password': 'required|string|alpha_num|min:8|max:100',
           'is_received': 'required|integer|min:0|max:1'
         },
-        attributes : { 
+        attributes: {
           'last_name': t('validation.admin.user.last_name'),
           'first_name': t('validation.admin.user.first_name'),
           'last_name_kana': t('validation.admin.user.last_name_kana'),
@@ -96,8 +96,8 @@ const validationConfig =  () => {
           'is_received': t('validation.admin.user.is_received')
         }
       },
-      user_edit : {
-        rules : {
+      user_edit: {
+        rules: {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
@@ -120,7 +120,7 @@ const validationConfig =  () => {
           'email': 'required|email|max:100',
           'is_received': 'required|integer|min:0|max:1'
         },
-        attributes : { 
+        attributes: {
           'last_name': t('validation.admin.user.last_name'),
           'first_name': t('validation.admin.user.first_name'),
           'last_name_kana': t('validation.admin.user.last_name_kana'),
@@ -144,22 +144,22 @@ const validationConfig =  () => {
           'is_received': t('validation.admin.user.is_received')
         }
       },
-      notification_request : {
-        rules : {
+      notification_request: {
+        rules: {
           'title': 'required|string|max:255',
           'body': 'required|string',
           'is_published': 'required|integer|min:0|max:1',
           'expired_at': 'date'
         },
-        attributes : { 
+        attributes: {
           'title': t('validation.admin.notification.title'),
           'body': t('validation.admin.notification.body'),
           'is_published': t('validation.admin.notification.is_published'),
           'expired_at': t('validation.admin.notification.expired_at')
         }
       },
-      item_create : {
-        rules : {
+      item_create: {
+        rules: {
           'product_number': 'required|string|max:50',
           'item_name': 'required|string|max:100',
           'price': 'required|integer|min:0',
@@ -195,7 +195,7 @@ const validationConfig =  () => {
           'measurements.*.hem_width': 'numeric|min:0',
           'measurements.*.weight': 'numeric|min:0'
         },
-        attributes : { 
+        attributes: {
           'product_number': t('validation.admin.item.product_number'),
           'item_name': t('validation.admin.item.item_name'),
           'price': t('validation.admin.item.price'),
@@ -232,8 +232,8 @@ const validationConfig =  () => {
           'measurements.*.weight': t('validation.admin.item.measurements.*.weight')
         }
       },
-      item_edit : {
-        rules : {
+      item_edit: {
+        rules: {
           'product_number': 'required|string|max:50',
           'item_name': 'required|string|max:100',
           'price': 'required|integer|min:0',
@@ -274,7 +274,7 @@ const validationConfig =  () => {
           'measurements.*.hem_width': 'numeric|min:0',
           'measurements.*.weight': 'numeric|min:0'
         },
-        attributes : { 
+        attributes: {
           'product_number': t('validation.admin.item.product_number'),
           'item_name': t('validation.admin.item.item_name'),
           'price': t('validation.admin.item.price'),
@@ -311,8 +311,8 @@ const validationConfig =  () => {
           'measurements.*.weight': t('validation.admin.item.measurements.*.weight')
         }
       },
-      blog_create : {
-        rules : {
+      blog_create: {
+        rules: {
           'title': 'required|string|max:255',
           'body': 'required|string',
           'brand_id': 'required|integer',
@@ -323,7 +323,7 @@ const validationConfig =  () => {
           'file': 'required',
           'thumbnail': 'string|max:255'
         },
-        attributes : { 
+        attributes: {
           'title': t('validation.admin.blog.title'),
           'body': t('validation.admin.blog.body'),
           'brand_id': t('validation.admin.blog.brand_id'),
@@ -335,8 +335,8 @@ const validationConfig =  () => {
           'thumbnail': t('validation.admin.blog.thumbnail')
         }
       },
-      blog_edit : {
-        rules : {
+      blog_edit: {
+        rules: {
           'title': 'required|string|max:255',
           'body': 'required|string',
           'brand_id': 'required|integer',
@@ -346,7 +346,7 @@ const validationConfig =  () => {
           'is_published': 'required|integer|min:0|max:1',
           'thumbnail': 'required|string|max:255'
         },
-        attributes : { 
+        attributes: {
           'title': t('validation.admin.blog.title'),
           'body': t('validation.admin.blog.body'),
           'brand_id': t('validation.admin.blog.brand_id'),
@@ -357,8 +357,8 @@ const validationConfig =  () => {
           'thumbnail': t('validation.admin.blog.thumbnail')
         }
       },
-      news_create : {
-        rules : {
+      news_create: {
+        rules: {
           'title': 'required|string|max:255',
           'body': 'required|string',
           'brand_id': 'required|integer',
@@ -368,7 +368,7 @@ const validationConfig =  () => {
           'file': 'required',
           'thumbnail': 'string|max:255'
         },
-        attributes : { 
+        attributes: {
           'title': t('validation.admin.news.title'),
           'body': t('validation.admin.news.body'),
           'brand_id': t('validation.admin.news.brand_id'),
@@ -379,8 +379,8 @@ const validationConfig =  () => {
           'thumbnail': t('validation.admin.news.thumbnail')
         }
       },
-      news_edit : {
-        rules : {
+      news_edit: {
+        rules: {
           'title': 'required|string|max:255',
           'body': 'required|string',
           'brand_id': 'required|integer',
@@ -389,7 +389,7 @@ const validationConfig =  () => {
           'is_published': 'required|integer|min:0|max:1',
           'thumbnail': 'required|string|max:255'
         },
-        attributes : { 
+        attributes: {
           'title': t('validation.admin.news.title'),
           'body': t('validation.admin.news.body'),
           'brand_id': t('validation.admin.news.brand_id'),
@@ -399,136 +399,136 @@ const validationConfig =  () => {
           'thumbnail': t('validation.admin.news.thumbnail')
         }
       },
-      order_edit : {
-        rules : {
+      order_edit: {
+        rules: {
           'is_paid': 'required|integer|min:0|max:1',
           'is_shipped': 'required|integer|min:0|max:1',
           'delivery_date': 'required|date',
-          'delivery_time': 'required|string|max:30' 
+          'delivery_time': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'is_paid': t('validation.admin.order.is_paid'),
           'is_shipped': t('validation.admin.order.is_shipped'),
-          'delivery_date': t('validation.admin.order.delivery_date'), 
+          'delivery_date': t('validation.admin.order.delivery_date'),
           'delivery_time': t('validation.admin.order.delivery_time')
         }
       },
-      contact_request : {
-        rules : {
+      contact_request: {
+        rules: {
           'response_status': 'required|integer|min:0|max:2',
           'memo': 'string'
         },
-        attributes : { 
+        attributes: {
           'response_status': t('validation.admin.contact.response_status'),
           'memo': t('validation.admin.contact.memo')
         }
       },
-      color_request : {
-        rules : {
+      color_request: {
+        rules: {
           'color_name': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'color_name': t('validation.admin.color.color_name')
         }
       },
-      brand_request : {
-        rules : {
-          'brand_name': 'required|string|max:255'
+      brand_request: {
+        rules: {
+          'brand_name': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'brand_name': t('validation.admin.brand.brand_name')
         }
       },
-      tag_request : {
-        rules : {
-          'tag_name': 'required|string|max:255'
+      tag_request: {
+        rules: {
+          'tag_name': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'tag_name': t('validation.admin.tag.tag_name')
         }
       },
-      category_request : {
-        rules : {
-          'category_name': 'required|string|max:50'
+      category_request: {
+        rules: {
+          'category_name': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'category_name': t('validation.admin.category.category_name')
         }
       },
-      size_request : {
-        rules : {
+      size_request: {
+        rules: {
           'size_name': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'size_name': t('validation.admin.size.size_name')
         }
       },
-      change_password_request : {
-        rules : {
-          'password' : 'required|string|alpha_num|min:8|max:100'
+      change_password_request: {
+        rules: {
+          'password': 'required|string|alpha_num|min:8|max:100'
         },
-        attributes : { 
+        attributes: {
           'password': t('validation.admin.auth.password')
         }
       },
-      reset_password_request : {
-        rules : {
-          'email' : 'required|email|max:100'
+      reset_password_request: {
+        rules: {
+          'email': 'required|email|max:100'
         },
-        attributes : { 
+        attributes: {
           'email': t('validation.admin.auth.email')
         }
       },
-      login_request : {
-        rules : {
-          'email' : 'required|email|max:100',
-          'password' : 'required|string|alpha_num|min:8|max:100',
+      login_request: {
+        rules: {
+          'email': 'required|email|max:100',
+          'password': 'required|string|alpha_num|min:8|max:100',
         },
-        attributes : { 
+        attributes: {
           'email': t('validation.admin.auth.email'),
           'password': t('validation.admin.auth.password')
         }
       }
     },
-    user : {
-      contact_request : {
-        rules : {
-          'last_name': 'required|string|max:25', 
-          'first_name': 'required|string|max:25', 
+    user: {
+      contact_request: {
+        rules: {
+          'last_name': 'required|string|max:25',
+          'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
           'first_name_kana': 'string|max:25',
-          'tel': 'required|string|max:15', 
-          'email': 'required|email|max:100', 
-          'subject': 'required|string|max:255', 
+          'tel': 'required|string|max:15',
+          'email': 'required|email|max:100',
+          'subject': 'required|string|max:255',
           'message': 'required|string'
         },
-        attributes : { 
-          'last_name': t('validation.user.contact.last_name'), 
-          'first_name': t('validation.user.contact.first_name'), 
-          'last_name_kana': t('validation.user.contact.last_name_kana'), 
-          'first_name_kana': t('validation.user.contact.first_name_kana'), 
-          'tel': t('validation.user.contact.tel'), 
-          'email': t('validation.user.contact.email'), 
-          'subject': t('validation.user.contact.subject'), 
+        attributes: {
+          'last_name': t('validation.user.contact.last_name'),
+          'first_name': t('validation.user.contact.first_name'),
+          'last_name_kana': t('validation.user.contact.last_name_kana'),
+          'first_name_kana': t('validation.user.contact.first_name_kana'),
+          'tel': t('validation.user.contact.tel'),
+          'email': t('validation.user.contact.email'),
+          'subject': t('validation.user.contact.subject'),
           'message': t('validation.user.contact.message')
         }
       },
-      order_request : {
-        rules : {
+      order_request: {
+        rules: {
           'total_amount': 'required|integer|min:0',
           'payment_method': 'required|integer|min:0|max:1',
           'delivery_date': 'required|date',
           'delivery_time': 'required|string|max:30'
         },
-        attributes : { 
+        attributes: {
           'total_amount': t('validation.user.order.total_amount'),
           'payment_method': t('validation.user.order.payment_method'),
           'delivery_date': t('validation.user.order.delivery_date'),
           'delivery_time': t('validation.user.order.delivery_time')
         }
       },
-      user_create : {
-        rules : {
+      user_create: {
+        rules: {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
@@ -552,7 +552,7 @@ const validationConfig =  () => {
           'password': 'required|string|alpha_num|min:8|max:100',
           'is_received': 'required|integer|min:0|max:1'
         },
-        attributes : { 
+        attributes: {
           'last_name': t('validation.user.user.last_name'),
           'first_name': t('validation.user.user.first_name'),
           'last_name_kana': t('validation.user.user.last_name_kana'),
@@ -577,8 +577,8 @@ const validationConfig =  () => {
           'is_received': t('validation.user.user.is_received')
         }
       },
-      user_edit : {
-        rules : {
+      user_edit: {
+        rules: {
           'last_name': 'required|string|max:25',
           'first_name': 'required|string|max:25',
           'last_name_kana': 'string|max:25',
@@ -601,7 +601,7 @@ const validationConfig =  () => {
           'email': 'required|email|max:100',
           'is_received': 'required|integer|min:0|max:1'
         },
-        attributes : { 
+        attributes: {
           'last_name': t('validation.user.user.last_name'),
           'first_name': t('validation.user.user.first_name'),
           'last_name_kana': t('validation.user.user.last_name_kana'),
@@ -625,28 +625,28 @@ const validationConfig =  () => {
           'is_received': t('validation.user.user.is_received')
         }
       },
-      change_password_request : {
-        rules : {
-          'password' : 'required|string|alpha_num|min:8|max:100'
+      change_password_request: {
+        rules: {
+          'password': 'required|string|alpha_num|min:8|max:100'
         },
-        attributes : { 
+        attributes: {
           'password': t('validation.user.auth.password')
         }
       },
-      reset_password_request : {
-        rules : {
-          'email' : 'required|email|max:100'
+      reset_password_request: {
+        rules: {
+          'email': 'required|email|max:100'
         },
-        attributes : { 
+        attributes: {
           'email': t('validation.user.auth.email')
         }
       },
-      login_request : {
-        rules : {
-          'email' : 'required|email|max:100',
-          'password' : 'required|string|alpha_num|min:8|max:100',
+      login_request: {
+        rules: {
+          'email': 'required|email|max:100',
+          'password': 'required|string|alpha_num|min:8|max:100',
         },
-        attributes : { 
+        attributes: {
           'email': t('validation.user.auth.email'),
           'password': t('validation.user.auth.password')
         }

@@ -49,6 +49,7 @@ function UserEditPage() {
               valid={valid}
               validation={validation}
               errorMessage={errorMessage}
+              isEdit={true}
             />
             <div className={[styles.flex, styles.justify_center, styles.mb_40].join(' ')}>
               <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')}>

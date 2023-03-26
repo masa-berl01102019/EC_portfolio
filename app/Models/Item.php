@@ -15,7 +15,8 @@ use App\Traits\OrderByPriceScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
-use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\FilterDateFromScopeTrait;
+use App\Traits\FilterDateToScopeTrait;
 use App\Traits\OrderByItemNameScopeTrait;
 use App\Traits\OrderByPostedAtScopeTrait;
 use App\Traits\FilterIsPublishedScopeTrait;
@@ -34,7 +35,8 @@ class Item extends Model
     use OrderByItemNameScopeTrait;
     use OrderByPriceScopeTrait;
     use FilterKeywordScopeTrait;
-    use FilterDateRangeScopeTrait;
+    use FilterDateFromScopeTrait;
+    use FilterDateToScopeTrait;
     use FilterIsPublishedScopeTrait;
     use FilterTagScopeTrait;
     use FilterBrandScopeTrait;
@@ -113,10 +115,8 @@ class Item extends Model
         $flag = $stock_status == config('define.stock_status.in_stock') ? true : false;
 
         $query->when($flag, function ($query) {
-            $skus = Sku::where('quantity', '>', 0)->groupBy('item_id')->pluck('id')->toArray();
-            $query->whereHas('skus', function ($query) use ($skus) {
-                return $query->whereIn('skus.id', $skus);
-            });
+            $stock_items_arr = uniqueArray(Sku::where('quantity', '>', 0)->pluck('item_id')->toArray());
+            return $query->whereIn('items.id', $stock_items_arr);
         });
     }
 

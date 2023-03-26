@@ -27,7 +27,8 @@ class ContactController extends Controller
         try {
             $search_contact = Contact::with('admin');
             $search_contact->filterKeyword($request, ['contacts.last_name', 'contacts.first_name', 'contacts.last_name_kana', 'contacts.first_name_kana']);
-            $search_contact->filterDateRange($request, 'contacts');
+            $search_contact->filterDateFrom($request, 'contacts');
+            $search_contact->filterDateTo($request, 'contacts');
             $search_contact->filterResponseStatus($request);
             // last_name > created_at > updated_at
             $search_contact->orderByName($request);

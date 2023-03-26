@@ -80,7 +80,6 @@
   height: 100%;
 }
 .img_contents {
-  flex-basis: 40%;
   max-width: 158px;
   max-height: 132px;
   overflow: hidden;
@@ -101,7 +100,7 @@
 }
 .date_area {
   display: flex;
-  align-items: center;
+  flex-flow: wrap;
 }
 .time_icon {
   width: 18px;
@@ -125,6 +124,7 @@
 .text_contents {
   flex-basis: 71%;
   flex-grow: 1;
+  overflow: hidden;
 }
 .bookmark_text_contents {
   width: calc(100% - 108px);
@@ -171,7 +171,6 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-
 
 
 

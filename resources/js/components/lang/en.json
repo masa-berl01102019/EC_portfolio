@@ -112,7 +112,7 @@
       "title-ex" : "ex) Notifies you that server maintenance.",
       "body" : "Body",
       "body-ex" : "Type here what you need to notify users such as system change.",
-      "keyword-ex" : "Admin name",
+      "keyword-ex" : "Title",
       "expired-date" : "Expired date",
       "expired-date-ex" : "ex) 2024/01/01",
       "confirm-msg" : "It won't display on user's page if you don't set expired date. Would you like to register ?"
@@ -191,11 +191,11 @@
       "price-low-ex" : "Minimum price",
       "price-high-ex" : "Maximum price",
       "table-alert" : "You can't delete all of rows.",
-      "table-alert-img" : "Only one main image can be selected.",
-      "alert-msg1" : "Some combinations of color and size you selected at SKU section is duplicated.",
-      "alert-msg2" : "Size you selected at measurements section is duplicated.",
-      "alert-msg3" : "It doesn't match size at sku section and size at measurement section.",
-      "alert-msg4" : "It doesn't match color at sku section and color at image section.",
+      "table-alert-img" : "Main image type already has been selected, it can be registered only one items.",
+      "alert-msg1" : "Some combinations of colors and sizes you selected at SKU table is duplicated.",
+      "alert-msg2" : "Sizes you selected at measurements table is duplicated.",
+      "alert-msg3" : "Sizes you selected at sku table don't correspond with ones at measurement table.",
+      "alert-msg4" : "Colors you selected at sku table don't correspond with ones at image table.",
       "alert-msg5" : "Main image is required."
     },
     "blog" : {
@@ -216,7 +216,7 @@
       "brand-category" : "Brand Category",
       "gender-category" : "Gender category",
       "gender-category-ex" : "Select gender category",
-      "keyword-ex" : "Title name"
+      "keyword-ex" : "Title"
     },
     "news" : {
       "index-title" : "NEWS LIST",
@@ -234,7 +234,7 @@
       "brand-category" : "Brand Category",
       "gender-category" : "Gender category",
       "gender-category-ex" : "Select gender category",
-      "keyword-ex" : "Title name"
+      "keyword-ex" : "Title"
     },
     "order" : {
       "index-title" : "ORDER LIST",
@@ -559,7 +559,7 @@
     },
     "blog" : {
       "index-title" : "BLOG",
-      "keyword-ex" : "Title name",
+      "keyword-ex" : "Title",
       "brand" : "Brand",
       "brand-ex" : "Add Brand",
       "category" : "Category",
@@ -618,6 +618,7 @@
       "price-range" : "Price range",
       "price-low-ex" : "Minimum price",
       "price-high-ex" : "Maximum price",
+      "quantity" : "Stock",
       "stock-status" : "Stock status",
       "all" : "Include Out of Stock",
       "stock-only" : "In stock only",

@@ -28,7 +28,7 @@ class JapanesePhoneNumber implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match("/^(0{1}\d{1,4}-{0,1}\d{1,4}-{0,1}\d{4})$/", $value);
+        return preg_match("/[0-9]{2,4}-[0-9]{2,4}-[0-9]{3,4}/", $value);
     }
 
     /**

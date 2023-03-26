@@ -27,7 +27,8 @@ class AdminController extends Controller
         try {
             $search_admin = Admin::query();
             $search_admin->filterKeyword($request, ['last_name', 'first_name', 'last_name_kana', 'first_name_kana']);
-            $search_admin->filterDateRange($request);
+            $search_admin->filterDateFrom($request);
+            $search_admin->filterDateTo($request);
             // last_name > created_at > updated_at
             $search_admin->orderByName($request);
             $search_admin->orderByCreatedAt($request);

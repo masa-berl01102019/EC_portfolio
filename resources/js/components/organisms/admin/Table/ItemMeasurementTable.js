@@ -64,7 +64,7 @@ const ItemMeasurementTable = memo(({ measurements, sizes, className = '', delete
                     if (measurements.length > 1) {
                       deleteMethod('measurements', index, list.id)
                     } else {
-                      alert({ body: t('admin.table-alert'), type: 'alert' });
+                      alert({ body: t('admin.item.table-alert'), type: 'alert' });
                     }
                   }}
                   style={{ 'maxWidth': '65px' }}

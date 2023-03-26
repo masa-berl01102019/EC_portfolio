@@ -8,7 +8,8 @@ use App\Traits\OrderByNameScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CustomPaginateScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
-use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\FilterDateFromScopeTrait;
+use App\Traits\FilterDateToScopeTrait;
 use App\Traits\OrderByCreatedAtScopeTrait;
 use App\Traits\OrderByUpdatedAtScopeTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,7 +22,8 @@ class Order extends Model
     use OrderByCreatedAtScopeTrait;
     use OrderByUpdatedAtScopeTrait;
     use FilterKeywordScopeTrait;
-    use FilterDateRangeScopeTrait;
+    use FilterDateFromScopeTrait;
+    use FilterDateToScopeTrait;
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;
 

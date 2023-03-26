@@ -17,7 +17,7 @@ import ItemFilter from '../../common/Filter/ItemFilter';
 import styles from './styles.module.css';
 import { CONST } from '../../../constants/constants';
 
-const BlogForm = memo(({
+const BlogForm = ({
   data,
   mutation,
   serverErrorMsg,
@@ -61,31 +61,27 @@ const BlogForm = memo(({
     <div className={[styles.form_area, className].join(' ')}>
       <form onSubmit={handleFormSubmit} {...props}>
         <div className={[styles.flex, styles.mb_40, styles.flex_tb].join(' ')}>
-          <div className={styles.blog_area}>
-            <FormInputText
-              name={'title'}
-              onChange={handleFormData}
-              value={formData.title}
-              label={t('admin.blog.title')}
-              error={serverErrorMsg}
-              validation={validation}
-              valid={valid}
-              placeholder={t('admin.blog.title-ex')}
-              className={styles.mb_16}
-            />
-            <div className={styles.editor_area}>
-              <Text className={styles.mb_8}>{t('admin.blog.body')}</Text>
-              <MediaEditor
-                initialValue={isEdit ? blog.body : formData.body}
-                onChange={content => setFormData({ ...formData, body: content })}
-                className={styles.edit_area}
-              />
-              <ValidationMsg errKey={'body'} valid={valid} validation={validation} />
-              {serverErrorMsg && <Text role='error' size='s' className={styles.mt_8}>{serverErrorMsg.body}</Text>}
-            </div>
-          </div>
+          <FormInputText
+            name={'title'}
+            onChange={handleFormData}
+            value={formData.title}
+            label={t('admin.blog.title')}
+            error={serverErrorMsg}
+            validation={validation}
+            valid={valid}
+            placeholder={t('admin.blog.title-ex')}
+            className={styles.mb_16}
+          />
+          <Text className={styles.mb_8}>{t('admin.blog.body')}</Text>
+          <MediaEditor
+            initialValue={isEdit ? blog.body : formData.body}
+            onChange={content => setFormData({ ...formData, body: content })}
+            className={styles.edit_area}
+          />
+          <ValidationMsg errKey={'body'} valid={valid} validation={validation} />
+          {serverErrorMsg && <Text role='error' size='s' className={styles.mt_8}>{serverErrorMsg.body}</Text>}
           <div className={styles.sidebar_box}>
-            <div className={[styles.sidebar_card, styles.mb_16].join(' ')}>
+            <div className={[styles.sidebar_card, styles.mb_24].join(' ')}>
               <div className={styles.title_box}>
                 <Text size='l'>{t('admin.set-published-status')}</Text>
               </div>
@@ -103,7 +99,7 @@ const BlogForm = memo(({
                 </FormSelectbox>
               </div>
             </div>
-            <div className={[styles.sidebar_card, styles.mb_16].join(' ')}>
+            <div className={[styles.sidebar_card, styles.mb_24].join(' ')}>
               <div className={styles.title_box}>
                 <Text size='l'>{t('admin.blog.thumbnail')}</Text>
               </div>
@@ -121,7 +117,7 @@ const BlogForm = memo(({
                 {serverErrorMsg && <Text role='error' size='s' className={styles.mt_8}>{serverErrorMsg.thumbnail}</Text>}
               </div>
             </div>
-            <div className={[styles.sidebar_card, styles.mb_16].join(' ')}>
+            <div className={[styles.sidebar_card, styles.mb_24].join(' ')}>
               <div className={styles.title_box}>
                 <Text size='l'>{t('admin.blog.category')}</Text>
               </div>
@@ -153,7 +149,7 @@ const BlogForm = memo(({
                 </FormSelectbox>
               </div>
             </div>
-            <div className={[styles.sidebar_card, styles.mb_16].join(' ')}>
+            <div className={[styles.sidebar_card, styles.mb_24].join(' ')}>
               <div className={styles.title_box}>
                 <Text size='l'>{t('admin.blog.related-item')}</Text>
               </div>
@@ -198,6 +194,6 @@ const BlogForm = memo(({
       </form>
     </div>
   );
-});
+};
 
 export default BlogForm;

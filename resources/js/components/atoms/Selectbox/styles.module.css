@@ -6,6 +6,7 @@
   border-top: none;
   border-left: none;
   border-right: none;
+  color: #666;
   border-bottom: 1px solid #666;
   background: none;
   padding: 2px 29px 2px 2px;
@@ -14,9 +15,9 @@
   line-height: 29px;
 }
 .container {
-    position: relative;
-    width: 100%;
-    display: inline-block;
+  position: relative;
+  width: 100%;
+  display: inline-block;
 }
 .container:after {
   content: "";

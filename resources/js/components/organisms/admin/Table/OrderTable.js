@@ -11,6 +11,7 @@ import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 import Text from '../../../atoms/Text/Text';
+import useHelper from '../../../hooks/useHelper';
 
 
 // TODO: Implement order cancel function
@@ -21,6 +22,7 @@ const OrderTable = memo(({ orders, className = '', deleteMethod, csvOutputMethod
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
   const { t } = useTranslation();
+  const { check } = useHelper();
 
   const handleConfirmDelete = async () => {
     const result = await confirm({
@@ -102,7 +104,7 @@ const OrderTable = memo(({ orders, className = '', deleteMethod, csvOutputMethod
                 <Td>
                   <Text tag='span'>{order.full_name}</Text>
                   <Text tag='span'>
-                    {order.full_name_kana.trim() !== '' && `(${order.full_name_kana})`}
+                    {check(order.full_name_kana) && `(${order.full_name_kana})`}
                   </Text>
                 </Td>
                 <Td>{order.tel}</Td>

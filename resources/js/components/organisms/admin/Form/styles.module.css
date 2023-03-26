@@ -32,11 +32,6 @@
 /* blog create / edit */
 .sidebar_box {
   margin-top: 26px;
-  flex-basis: 30%;
-  height: 576px;
-  overflow-y: scroll;
-  box-shadow: inset 0px 0px 2px 4px #f1f1f1;
-  overflow-x: hidden;
 }
 .sidebar_card {
   border: 1px solid #666;
@@ -51,21 +46,33 @@
 }
 .edit_area {
   border: 1px solid #666;
-  max-height: 530px;
-  height: calc(100% - 27px);
-}
-.blog_area {
-  margin-right: 16px;
-  flex-basis: 70%;
-  display: flex;
-  flex-flow: column;
-}
-.editor_area {
-  height: calc(100% - 68px);
 }
 .blog_news_img {
   max-width: 150px;
   max-height: 100px;
+}
+.flex_tb {
+  flex-flow: column;
+}
+.flex_tb > .mr_24{
+  margin-right: 0;
+}
+.flex_tb > .mb_16_tb{
+  margin-bottom: 16px;
+}
+.flex_tb > .sidebar_box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.sidebar_box > .sidebar_card {
+  width: 100%;
+}
+.sidebar_box > .sidebar_card:nth-child(2) {
+  width: 48%;
+}
+.sidebar_box > .sidebar_card:nth-child(3) {
+  width: 48%;
 }
 
 /* other */
@@ -201,43 +208,6 @@
 }
 .ml_auto {
   margin-left: auto;
-}
-
-@media screen and (max-width : 767px) {
-  .flex_tb {
-    flex-flow: column;
-  }
-  .flex_tb > .mr_24{
-    margin-right: 0;
-  }
-  .flex_tb > .mb_16_tb{
-    margin-bottom: 16px;
-  }
-  .flex_tb > .blog_area {
-    margin-right: 0;
-  }
-  .flex_tb > .sidebar_box {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    overflow: inherit;
-    box-shadow: none;
-  }
-  .sidebar_box > .sidebar_card {
-    width: 100%;
-  }
-  .sidebar_box > .sidebar_card:nth-child(2) {
-    width: 48%;
-  }
-  .sidebar_box > .sidebar_card:nth-child(3) {
-    width: 48%;
-  }
-  .edit_area {
-    max-height: none;
-    height: 100%;
-    min-height: 670px;
-  }
 }
 
 @media screen and (max-width : 440px) {

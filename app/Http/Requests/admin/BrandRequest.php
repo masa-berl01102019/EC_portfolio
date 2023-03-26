@@ -24,7 +24,7 @@ class BrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'brand_name' => 'required|string|max:255',
+            'brand_name' => 'required|string|max:30',
         ];
     }
 }

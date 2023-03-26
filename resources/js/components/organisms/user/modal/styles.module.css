@@ -36,7 +36,11 @@
   line-height: 30px;
 }
 .bookmark_btn_width {
-  width: 155px !important;
+  width: auto !important;
+}
+.cart_btn_width {
+  width: 100% !important;
+  max-width: 110px !important;
 }
 
 /* button override */

@@ -38,6 +38,7 @@ const useCreateParams = (model) => {
 
   const handlePerPage = (e) => {
     // console.log('handlePerPage', params);
+    if (e.target.value < 1) return false;
     setParams({
       ...params,
       paginate: {

@@ -80,8 +80,9 @@
   margin: 4px;
 }
 /* CaetStep */
-.justify_center {
+.center {
   justify-content: center;
+  align-items: center;
 }
 .disable {
   color: #D4D4D4;
@@ -107,6 +108,36 @@
 .w_170p {
   width: 170px !important;
 }
+/* NotificationList */
+.container {
+  border: 1px solid #D4D4D4;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+.title_area {
+  background: #D4D4D4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px
+}
+.body_area {
+  background: #fff;
+  padding: 8px;
+  line-height: 18px;
+  letter-spacing: 1px;
+}
+.mb_4 {
+  margin-bottom: 4px;
+}
+/* Notification */
+.notification_title {
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+.notification_title_area {
+  width: calc(100% - 32px);
+}
 
 /* other */
 .flex {
@@ -115,6 +146,9 @@
 .flex_1 {
   flex: 1;
   min-width: 0;
+}
+.flex_nowrap {
+  flex-flow: nowrap;
 }
 .scroll_x {
   overflow-x: scroll;

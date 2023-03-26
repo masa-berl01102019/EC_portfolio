@@ -7,6 +7,7 @@ import BookmarkBtn from '../../../molecules/IconBtn/BookmarkBtn';
 import styles from './styles.module.css';
 import CompletePopup from '../../../molecules/Popup/CompletePopup';
 import { useTranslation } from 'react-i18next';
+import { CONST } from '../../../constants/constants';
 
 const BookmarkModal = memo(({
   item,
@@ -18,6 +19,8 @@ const BookmarkModal = memo(({
 
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
+
+  console.log(item)
 
   return (
     <Mask>
@@ -38,9 +41,16 @@ const BookmarkModal = memo(({
                   <li key={index} className={styles.stock_area}>
                     <span>
                       {sizes.filter((size) => size.id == sku_item.size_id).map(el => (
-                        <Text tag='span' key={el.id} className={[styles.text_height, styles.mr_8].join(' ')}>{el.size_name}</Text>
+                        <Text tag='span' key={el.id} className={styles.text_height}>{el.size_name} / </Text>
                       ))}
-                      <Text tag='span' className={styles.text_height}>{sku_item.quantity > 0 ? t('user.in-stock') : t('user.sold-out')}</Text>
+                      <Text tag='span' className={styles.text_height}>
+                        {
+                          sku_item.quantity > CONST.STOCK_PARAMETER.PLENTY ? `${t('user.item.quantity')}: 〇` :
+                            sku_item.quantity > CONST.STOCK_PARAMETER.SLIGHT ? `${t('user.item.quantity')}: △` :
+                              sku_item.quantity < CONST.STOCK_PARAMETER.SHORTAGE ? `${t('user.item.quantity')}: ☓` :
+                                `${t('user.item.quantity')}: ー`
+                        }
+                      </Text>
                     </span>
                     <BookmarkBtn
                       onClick={() => {

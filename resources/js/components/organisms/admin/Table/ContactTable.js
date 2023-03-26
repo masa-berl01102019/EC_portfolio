@@ -11,6 +11,7 @@ import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 import Text from '../../../atoms/Text/Text';
+import useHelper from '../../../hooks/useHelper';
 
 
 const ContactTable = memo(({ contacts, className = '', deleteMethod, csvOutputMethod }) => {
@@ -19,6 +20,7 @@ const ContactTable = memo(({ contacts, className = '', deleteMethod, csvOutputMe
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
   const { t } = useTranslation();
+  const { check } = useHelper();
 
   const handleConfirmDelete = async () => {
     const result = await confirm({
@@ -99,7 +101,7 @@ const ContactTable = memo(({ contacts, className = '', deleteMethod, csvOutputMe
                 <Td>
                   <Text tag='span'>{contact.admin_full_name && contact.admin_full_name}</Text>
                   <Text tag='span'>
-                    {contact.admin_full_name_kana && contact.admin_full_name_kana.trim() !== '' && `(${contact.admin_full_name_kana})`}
+                    {check(contact.admin_full_name_kana) && `(${contact.admin_full_name_kana})`}
                   </Text>
                 </Td>
                 <Td>{contact.memo}</Td>

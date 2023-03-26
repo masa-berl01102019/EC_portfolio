@@ -95,12 +95,7 @@ const useFetchApiData = (url, model) => {
     },
     {
       onSuccess: (res) => {
-        // Get file name of CSV which is stored at content-disposition in HTTP response header
-        const contentDisposition = res.headers['content-disposition'];
-        const fileName = getFileName(contentDisposition);
-        // Output CSV file
-        useDownloadCsv(res.data, fileName);
-        queryClient.invalidateQueries(model);
+        useDownloadCsv(res.data, res.headers['x-output-csv-file-name']);
       },
       onError: (err) => handleApiErrorMessage(err),
     }

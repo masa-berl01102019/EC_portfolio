@@ -24,7 +24,7 @@ class CategoryRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_name' => 'required|string|max:50',
+            'category_name' => 'required|string|max:30',
             'category_type' => 'required|integer|min:1|max:3',
             'parent_id' => 'required|integer',
         ];

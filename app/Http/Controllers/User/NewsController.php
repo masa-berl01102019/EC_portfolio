@@ -21,7 +21,8 @@ class NewsController extends Controller
         try {
             $search_news = News::getPublished()->with(['admin', 'brand', 'tags']);
             $search_news->filterKeyword($request, ['title']);
-            $search_news->filterDateRange($request);
+            $search_news->filterDateFrom($request);
+            $search_news->filterDateTo($request);
             $search_news->filterBrand($request);
             $search_news->filterGenderCategory($request);
             $search_news->filterTag($request);

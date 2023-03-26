@@ -11,6 +11,7 @@ import { TableRow as Row } from '../../../atoms/TableRow/TableRow';
 import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 import Text from '../../../atoms/Text/Text';
+import useHelper from '../../../hooks/useHelper';
 
 
 const NotificationTable = memo(({ notifications, className = '', deleteMethod, csvOutputMethod }) => {
@@ -19,6 +20,7 @@ const NotificationTable = memo(({ notifications, className = '', deleteMethod, c
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
   const { t } = useTranslation();
+  const { check } = useHelper();
 
   const handleConfirmDelete = async () => {
     const result = await confirm({
@@ -88,7 +90,7 @@ const NotificationTable = memo(({ notifications, className = '', deleteMethod, c
                 <Td>
                   <Text tag='span'>{notification.full_name}</Text>
                   <Text tag='span'>
-                    {notification.full_name_kana.trim() !== '' && `(${notification.full_name_kana})`}
+                    {check(notification.full_name_kana) && `(${notification.full_name_kana})`}
                   </Text>
                 </Td>
                 <Td>{notification.expired_at}</Td>

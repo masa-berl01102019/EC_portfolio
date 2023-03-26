@@ -133,11 +133,15 @@ class ItemsTableSeeder extends Seeder
             // Assign categories related with items to variables
             $category_item = $factory_items[0]['category_item'][$item->product_number];
 
-            for ($n = 0; $n < count($category_item); $n++) {
-                DB::table('category_item')->insert([
-                    'item_id' => $item->id,
-                    'category_id' => $category_item[$n],
-                ]);
+            if (count($category_item) < 3) {
+                $item->delete();
+            } else {
+                for ($n = 0; $n < count($category_item); $n++) {
+                    DB::table('category_item')->insert([
+                        'item_id' => $item->id,
+                        'category_id' => $category_item[$n],
+                    ]);
+                }
             }
         }
 

@@ -8,9 +8,9 @@ const useValidation = (data, scope, config_key) => {
 
   const [valid, setValid] = useState(false);
 
-  const validation = new Validator(data, config[scope][config_key].rules);
-
   Validator.useLang(localStorage.getItem('lang') || 'ja');
+
+  const validation = new Validator(data, config[scope][config_key].rules);
 
   validation.setAttributeNames(config[scope][config_key].attributes);
 

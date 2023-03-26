@@ -27,7 +27,8 @@ class NotificationController extends Controller
         try {
             $search_notification = Notification::with('admin');
             $search_notification->filterKeyword($request, ['title']);
-            $search_notification->filterDateRange($request);
+            $search_notification->filterDateFrom($request);
+            $search_notification->filterDateTo($request);
             $search_notification->filterIsPublished($request);
             // expired_at > posted_at > updated_at
             $search_notification->orderByExpiredAt($request);
