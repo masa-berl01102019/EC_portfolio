@@ -53,6 +53,7 @@ function UserEdit(props) {
                 valid={valid}
                 validation={validation}
                 errorMessage={errorMessage}
+                isEdit={true}
               />
               <div className={[styles.flex, styles.justify_center].join(' ')}>
                 <LinkBtn to={`/admin/users`} size='l' className={styles.mr_12} style={{ 'width': '100%' }} >

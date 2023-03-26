@@ -1,6 +1,6 @@
-import React from 'react';
-
 export const useDownloadCsv = (data, fileName) => {
+  // Decode encoded file name ＊ replace '+' with space because space will be '+' when decode it 
+  const decodedFileName = decodeURI(fileName).replace(/\+/g, " ");
   // Attach BOM （Not to garble in Excel）
   const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
   // Create data by Blob
@@ -10,19 +10,9 @@ export const useDownloadCsv = (data, fileName) => {
   // Create an ObjectURL from Blob and assign it to link.
   link.href = window.URL.createObjectURL(blob);
   // Assign file name to download attribute
-  link.download = fileName;
+  link.download = decodedFileName;
   // Click created URL and execute download 
   link.click();
   // Release ObjectURL 
   window.URL.revokeObjectURL(link.href);
 };
-
-export const getFileName = (contentDisposition) => {
-  // File name is stored like 'attachment; filename=.csv; filename*=utf-8''file name which is URI encoded.csv' in HTTP response header
-  // Get the file name from argument
-  let fileName = contentDisposition.substring(contentDisposition.indexOf("''") + 2);
-  // Decode encoded file name ＊ replace '+' with space because space will be '+' when decode it 
-  fileName = decodeURI(fileName).replace(/\+/g, " ");
-  // return file name
-  return fileName;
-}

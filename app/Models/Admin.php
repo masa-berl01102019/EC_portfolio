@@ -8,7 +8,8 @@ use App\Traits\OrderByNameScopeTrait;
 use App\Traits\FilterKeywordScopeTrait;
 use App\Traits\CustomPaginateScopeTrait;
 use Illuminate\Notifications\Notifiable;
-use App\Traits\FilterDateRangeScopeTrait;
+use App\Traits\FilterDateFromScopeTrait;
+use App\Traits\FilterDateToScopeTrait;
 use App\Traits\OrderByCreatedAtScopeTrait;
 use App\Traits\OrderByUpdatedAtScopeTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,7 +27,8 @@ class Admin extends Authenticatable
     use OrderByCreatedAtScopeTrait;
     use OrderByUpdatedAtScopeTrait;
     use FilterKeywordScopeTrait;
-    use FilterDateRangeScopeTrait;
+    use FilterDateFromScopeTrait;
+    use FilterDateToScopeTrait;
     use TimestampCastTrait;
     use CustomPaginateScopeTrait;
 

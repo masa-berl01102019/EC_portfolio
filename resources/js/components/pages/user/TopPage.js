@@ -15,7 +15,6 @@ import GenderCategoryTab from "../../organisms/user/Cotents/GenderCategoryTab";
 import NewItems from "../../organisms/user/Cotents/NewItems";
 import RecommendItems from "../../organisms/user/Cotents/RecommendItems";
 import RankedItems from "../../organisms/user/Cotents/RankedItems";
-import { useTranslation } from "react-i18next";
 
 // TODO: Create carousel UI to show the thumbnails of blogs and news to want to promote
 
@@ -26,7 +25,6 @@ function TopPage() {
   const [params, setParams] = useRecoilState(paramState(model));
   const { data, errorMessage } = useFetchApiData(useCreateUrl(baseUrl, params), model)
   const { data: items, blogs, news, notifications, ranked_items, recommend_items } = data;
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (params.scope === null) {

@@ -15,9 +15,9 @@ const AddressField = memo(({
 
   return (
     <fieldset className={[styles.field_area, className].join(' ')} {...props}>
-      <legend className={styles.flex}>
-        <Text role='title' className={styles.filed_title}>{t('user.cart.delivery-place')}</Text>
-        {!isConfirmed && <Text className={styles.pr_8}>(　<Link to={`/users/edit`}>{t('user.edit-link')}</Link>　)</Text>}
+      <legend className={[styles.flex, styles.flex_nowrap].join(' ')}>
+        <Text tag='span' role='title' className={styles.filed_title}>{t('user.cart.delivery-place')}</Text>
+        {!isConfirmed && <Text tag='span' className={styles.pr_8}>(　<Link to={`/users/edit`}>{t('user.edit-link')}</Link>　)</Text>}
       </legend>
       <Text className={styles.mb_8}>{user.delivery_post_code_text ? user.delivery_post_code_text : user.post_code_text}</Text>
       <Text className={styles.mb_8}>{user.full_delivery_address ? user.full_delivery_address : user.full_address}</Text>

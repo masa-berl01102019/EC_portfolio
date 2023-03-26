@@ -5,11 +5,13 @@
 }
 .container_open_menu {
   width: calc(100% - 244px);
-  margin: 86px 0 72px;
-  transform: translateX(212px);
+  margin: 86px 0 72px 212px;
 }
 .max_content {
   max-width: 1024px;
+}
+.media_max_content {
+  max-width: 768px;
 }
 .login_max_content {
   max-width: 520px;
@@ -58,6 +60,7 @@
 .master_text_area {
   width: 300px;
   margin: 0 8px;
+  overflow: hidden;
 }
 .master_editable_text {
   color : #49A3D8;

@@ -11,22 +11,25 @@ use Illuminate\Support\Facades\Storage;
  */
 function csvExport($csv_body, $csv_header, $filename)
 {
-    // create an instace of the SplFileObject class
-    $file = new \SplFileObject('php://output', 'w');
-    // Attach BOM （Not to garble in Excel）* EXCEL is shift-JIS by default
-    $file->fwrite(pack('C*', 0xEF, 0xBB, 0xBF));
-    // Read header line of CSV
-    $file->fputcsv($csv_header);
-    // Retrieve values from an associative array row by row and store them in the array
-    for ($i = 0; $i < count($csv_body); $i++) {
-        $file->fputcsv($csv_body[$i]);
-    }
-    // Set request header
-    $headers = array(
-        'Content-Type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename*=UTF-8\'\'' . rawurlencode($filename)
-    );
-    return response()->make($file, 200, $headers);
+    $callback = function () use ($csv_body, $csv_header) {
+        // create an instace of the SplFileObject class
+        $file = new \SplFileObject('php://output', 'w');
+        // Attach BOM （Not to garble in Excel）* EXCEL is shift-JIS by default
+        $file->fwrite(pack('C*', 0xEF, 0xBB, 0xBF));
+        // Read header line of CSV
+        $file->fputcsv($csv_header);
+        // Retrieve values from an associative array row by row and store them in the array
+        for ($i = 0; $i < count($csv_body); $i++) {
+            $file->fputcsv($csv_body[$i]);
+        }
+    };
+
+    $header = [
+        'Content-Type' => 'application/octet-stream',
+        'X-Output-CSV-File-Name' => rawurlencode($filename)
+    ];
+
+    return response()->streamDownload($callback, $filename, $header);
 }
 
 /**

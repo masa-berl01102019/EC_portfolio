@@ -15,6 +15,7 @@ import FormInputTextarea from '../../../molecules/Form/FormInputTextarea';
 import useValidation from '../../../hooks/useValidation';
 import { useTranslation } from 'react-i18next';
 import { CONST } from '../../../constants/constants';
+import useHelper from '../../../hooks/useHelper'
 
 function ContactEdit(props) {
 
@@ -26,6 +27,7 @@ function ContactEdit(props) {
   const history = useHistory();
   const openAdminMenu = useRecoilValue(menuAdminState);
   const { t } = useTranslation();
+  const { check } = useHelper();
 
   const handleFormSubmit = e => {
     e.preventDefault();
@@ -52,7 +54,7 @@ function ContactEdit(props) {
                 <Text className={styles.mb_4}>
                   {t('admin.contact.name')}:
                   {formData.full_name}
-                  {formData.full_name_kana.trim() !== '' && `(${formData.full_name_kana})`}
+                  {check(formData.full_name_kana) && `(${formData.full_name_kana})`}
                 </Text>
                 <Text className={styles.mb_4}>{t('admin.contact.tel')}: {formData.tel}</Text>
                 <Text className={styles.mb_4}>{t('admin.contact.email')}: {formData.email}</Text>

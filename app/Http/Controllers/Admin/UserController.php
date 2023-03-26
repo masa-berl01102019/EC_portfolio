@@ -32,7 +32,8 @@ class UserController extends Controller
             $search_user->filterKeyword($request, ['last_name', 'first_name', 'last_name_kana', 'first_name_kana']);
             $search_user->filterGender($request);
             $search_user->filterIsReceived($request);
-            $search_user->filterDateRange($request);
+            $search_user->filterDateFrom($request);
+            $search_user->filterDateTo($request);
             // last_name > birthday > created_at > updated_at
             $search_user->orderByName($request);
             $search_user->orderByBirthday($request);

@@ -12,7 +12,7 @@ const NotificationCard = memo(({
 
   return (
     <div className={styles.notification_card} {...props}>
-      <Link to={`/notifications`} className={[styles.link_fill, styles.flex].join(' ')}>
+      <Link to={{ pathname: '/notifications', state: { id: notification.id } }} className={[styles.link_fill, styles.flex].join(' ')}>
         <div className={[styles.text_contents].join(' ')}>
           <Text size='s' className={[styles.mb_4, styles.card_text].join(' ')}>
             {notification.modified_at ? notification.modified_at : notification.posted_at}

@@ -35,7 +35,7 @@ const ItemSkuTable = memo(({ skus, colors, sizes, className = '', deleteMethod, 
                     if (skus.length > 1) {
                       deleteMethod('skus', index, list.id)
                     } else {
-                      alert({ body: t('admin.table-alert'), type: 'alert' });
+                      alert({ body: t('admin.item.table-alert'), type: 'alert' });
                     }
                   }}
                   style={{ 'maxWidth': '65px' }}

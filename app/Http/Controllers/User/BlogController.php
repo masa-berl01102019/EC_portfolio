@@ -22,7 +22,8 @@ class BlogController extends Controller
         try {
             $search_blog = Blog::getPublished()->with(['admin', 'brand', 'tags', 'items']);
             $search_blog->filterKeyword($request, ['title']);
-            $search_blog->filterDateRange($request);
+            $search_blog->filterDateFrom($request);
+            $search_blog->filterDateTo($request);
             $search_blog->filterBrand($request);
             $search_blog->filterGenderCategory($request);
             $search_blog->filterItem($request);

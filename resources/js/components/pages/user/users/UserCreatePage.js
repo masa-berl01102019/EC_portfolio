@@ -72,6 +72,7 @@ function UserCreatePage() {
               valid={valid}
               validation={validation}
               errorMessage={errorMessage}
+              isEdit={false}
             />
             <div className={[styles.flex, styles.justify_center].join(' ')}>
               <LinkBtn to={`/`} className={[styles.mr_8, styles.btn_max].join(' ')}>

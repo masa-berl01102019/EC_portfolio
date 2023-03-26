@@ -19,6 +19,7 @@ COPY . /var/www/html
 RUN composer install --optimize-autoloader --no-dev \
     && mkdir -p storage/logs \
     && php artisan optimize:clear \
+    && php artisan storage:link \
     && chown -R www-data:www-data /var/www/html \
     && sed -i 's/protected \$proxies/protected \$proxies = "*"/g' app/Http/Middleware/TrustProxies.php \
     && echo "MAILTO=\"\"\n* * * * * www-data /usr/bin/php /var/www/html/artisan schedule:run" > /etc/cron.d/laravel \
@@ -27,17 +28,17 @@ RUN composer install --optimize-autoloader --no-dev \
 
 # If we're using Octane...
 RUN if grep -Fq "laravel/octane" /var/www/html/composer.json; then \
-        rm -rf /etc/supervisor/conf.d/fpm.conf; \
-        if grep -Fq "spiral/roadrunner" /var/www/html/composer.json; then \
-            mv /etc/supervisor/octane-rr.conf /etc/supervisor/conf.d/octane-rr.conf; \
-            if [ -f ./vendor/bin/rr ]; then ./vendor/bin/rr get-binary; fi; \
-            rm -f .rr.yaml; \
-        else \
-            mv .fly/octane-swoole /etc/services.d/octane; \
-            mv /etc/supervisor/octane-swoole.conf /etc/supervisor/conf.d/octane-swoole.conf; \
-        fi; \
-        rm /etc/nginx/sites-enabled/default; \
-        ln -sf /etc/nginx/sites-available/default-octane /etc/nginx/sites-enabled/default; \
+    rm -rf /etc/supervisor/conf.d/fpm.conf; \
+    if grep -Fq "spiral/roadrunner" /var/www/html/composer.json; then \
+    mv /etc/supervisor/octane-rr.conf /etc/supervisor/conf.d/octane-rr.conf; \
+    if [ -f ./vendor/bin/rr ]; then ./vendor/bin/rr get-binary; fi; \
+    rm -f .rr.yaml; \
+    else \
+    mv .fly/octane-swoole /etc/services.d/octane; \
+    mv /etc/supervisor/octane-swoole.conf /etc/supervisor/conf.d/octane-swoole.conf; \
+    fi; \
+    rm /etc/nginx/sites-enabled/default; \
+    ln -sf /etc/nginx/sites-available/default-octane /etc/nginx/sites-enabled/default; \
     fi
 
 # Multi-stage build: Build static assets
@@ -56,19 +57,19 @@ COPY --from=base /var/www/html/vendor /app/vendor
 # NPM if no lock file is found.
 # Note: We run "production" for Mix and "build" for Vite
 RUN if [ -f "vite.config.js" ]; then \
-        ASSET_CMD="build"; \
+    ASSET_CMD="build"; \
     else \
-        ASSET_CMD="production"; \
+    ASSET_CMD="production"; \
     fi; \
     if [ -f "yarn.lock" ]; then \
-        yarn install --frozen-lockfile; \
-        yarn $ASSET_CMD; \
+    yarn install --frozen-lockfile; \
+    yarn $ASSET_CMD; \
     elif [ -f "package-lock.json" ]; then \
-        npm ci --no-audit; \
-        npm run $ASSET_CMD; \
+    npm ci --no-audit; \
+    npm run $ASSET_CMD; \
     else \
-        npm install; \
-        npm run $ASSET_CMD; \
+    npm install; \
+    npm run $ASSET_CMD; \
     fi;
 
 # From our base container created above, we

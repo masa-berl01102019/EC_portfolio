@@ -12,6 +12,7 @@ import Image from '../../../atoms/Image/Image';
 import useNotify from '../../../context/NotifyContext';
 import { useTranslation } from 'react-i18next';
 import Text from '../../../atoms/Text/Text';
+import useHelper from '../../../hooks/useHelper';
 
 
 const BlogTable = memo(({ blogs, className = '', deleteMethod, csvOutputMethod }) => {
@@ -20,6 +21,7 @@ const BlogTable = memo(({ blogs, className = '', deleteMethod, csvOutputMethod }
   const [checkItemAll, setCheckItemAll] = useState(false);
   const confirm = useNotify();
   const { t } = useTranslation();
+  const { check } = useHelper();
 
   const handleConfirmDelete = async () => {
     const result = await confirm({
@@ -95,7 +97,7 @@ const BlogTable = memo(({ blogs, className = '', deleteMethod, csvOutputMethod }
                 <Td>{blog.tags.join(' / ')}</Td>
                 <Td>
                   <Text tag='span'>{blog.full_name}</Text>
-                  <Text tag='span'>{blog.full_name_kana.trim() !== '' && `(${blog.full_name_kana})`}</Text>
+                  <Text tag='span'>{check(blog.full_name_kana) && `(${blog.full_name_kana})`}</Text>
                 </Td>
                 <Td>{blog.posted_at}</Td>
                 <Td>{blog.modified_at}</Td>

@@ -26,7 +26,17 @@ const useHelper = () => {
     return new_arr.size != arr.length;
   }
 
-  return { isJson, isObject, isDuplicated };
+  // Function for Checking if it is null, undefined, '' and 0 
+  const check = (val) => {
+    if (val) {
+      if (val.trim() !== '') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return { isJson, isObject, isDuplicated, check };
 }
 
 export default useHelper;

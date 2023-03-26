@@ -36,7 +36,7 @@ const ItemImageTable = memo(({ images, colors, className = '', deleteMethod, han
                     if (images.length > 1) {
                       deleteMethod('images', index, list.id)
                     } else {
-                      alert({ body: t('admin.table-alert'), type: 'alert' });
+                      alert({ body: t('admin.item.table-alert'), type: 'alert' });
                     }
                   }}
                   style={{ 'maxWidth': '65px' }}

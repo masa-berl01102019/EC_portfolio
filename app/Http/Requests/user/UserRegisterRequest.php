@@ -30,8 +30,8 @@ class UserRegisterRequest extends FormRequest
         return [
             'last_name' => 'required|string|max:25',
             'first_name' => 'required|string|max:25',
-            'last_name_kana' => ['nullable', 'required', 'string', 'max:25', new Kana],
-            'first_name_kana' => ['nullable', 'required', 'string', 'max:25', new Kana],
+            'last_name_kana' => ['nullable', 'string', 'max:25', new Kana],
+            'first_name_kana' => ['nullable', 'string', 'max:25', new Kana],
             'gender' => 'required|integer|min:0|max:3',
             'birthday' => 'required|date',
             'post_code' => ['required', 'string', new JapanesePostCode, 'max:10'],

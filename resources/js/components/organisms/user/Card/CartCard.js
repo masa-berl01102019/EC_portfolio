@@ -35,7 +35,10 @@ const CartCard = memo(({
             {cart.color_name} / {cart.size_name}
           </Text>
           <Text className={[styles.mb_4, styles.card_text].join(' ')}>
-            {t('user.cart.stock-status')}: {cart.stock > 100 ? '〇' : cart.stock > 10 ? '△' : cart.stock < 1 ? '☓' : 'ー'}
+            {t('user.cart.stock-status')}:
+            {cart.stock > CONST.STOCK_PARAMETER.PLENTY ? '〇' :
+              cart.stock > CONST.STOCK_PARAMETER.SLIGHT ? '△' :
+                cart.stock < CONST.STOCK_PARAMETER.SHORTAGE ? '☓' : 'ー'}
           </Text>
         </div>
       </div>

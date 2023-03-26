@@ -49,7 +49,8 @@ class ItemController extends Controller
             $search_item->filterPriceFrom($request, 'exclude');
             $search_item->filterPriceTo($request, 'exclude');
             $search_item->filterStock($request);
-            $search_item->filterDateRange($request);
+            $search_item->filterDateFrom($request);
+            $search_item->filterDateTo($request);
             // product_number > item_name > price > cost > posted_at > modified_at
             $search_item->orderByProductNumber($request);
             $search_item->orderByItemName($request);
