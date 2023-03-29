@@ -265,7 +265,6 @@ const UserForm = memo(({
       </div>
       <FormInputText
         name={'tel'}
-        type='tel'
         onChange={handleFormData}
         value={formData.tel}
         label={t('admin.user.tel')}

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useCookies } from 'react-cookie';
 import Heading from '../../atoms/Heading/Heading';
 import styles from './styles.module.css';
 import { useTranslation } from 'react-i18next';
 import ItemCardLists from '../../organisms/user/Cotents/ItemCardLists';
+import { CircularProgress } from '@material-ui/core';
 
 function HistoryPage() {
 
@@ -14,12 +15,14 @@ function HistoryPage() {
 
   return (
     <main className={styles.mt_40}>
-      <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
-        {t('user.view-record.index-title')}
-      </Heading>
-      <div className={styles.main_contents_area}>
-        <ItemCardLists items={items} />
-      </div>
+      <Suspense fallback={<CircularProgress disableShrink />}>
+        <Heading tag={'h1'} tag_style={'h1'} className={styles.section_title}>
+          {t('user.view-record.index-title')}
+        </Heading>
+        <div className={styles.main_contents_area}>
+          <ItemCardLists items={items} />
+        </div>
+      </Suspense>
     </main>
   );
 }

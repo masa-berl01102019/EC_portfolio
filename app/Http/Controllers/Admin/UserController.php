@@ -115,6 +115,10 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $users = $request->all();
+            // Added the following condition so that visitors don't delete published test account accidentary.
+            if (in_array(1, $users)) {
+                return response()->json(['status' => config('define.api_status.error'), 'message' => "403 Published TEST account for visitors is included."], 403);
+            }
             foreach ($users as $user) {
                 $user = User::find($user);
                 $user->delete();

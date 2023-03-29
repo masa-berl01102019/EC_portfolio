@@ -20,8 +20,6 @@ const CartModal = memo(({
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
 
-  console.log(item)
-
   return (
     <Mask>
       {!isOpen ? (

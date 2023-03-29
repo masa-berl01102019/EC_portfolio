@@ -93,6 +93,10 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Added the following condition so that visitors don't delete published test account accidentary.
+            if ($user->id === 1) {
+                return response()->json(['status' => config('define.api_status.error'), 'message' => "403 This TEST account is published for visitors, so you can't delete it."], 403);
+            }
             $user->delete();
             DB::commit();
             return response()->json(['status' => config('define.api_status.success'), 'message' => trans('api.user.users.delete_msg')], 200);

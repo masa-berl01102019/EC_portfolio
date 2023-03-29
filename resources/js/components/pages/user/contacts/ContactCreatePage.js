@@ -105,7 +105,6 @@ function ContactCreatePage() {
             </div>
             <FormInputText
               name={'tel'}
-              type='tel'
               onChange={handleFormData}
               value={formData.tel}
               label={t('user.contact.tel')}

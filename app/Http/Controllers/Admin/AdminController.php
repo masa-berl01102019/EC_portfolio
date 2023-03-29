@@ -94,6 +94,10 @@ class AdminController extends Controller
         DB::beginTransaction();
         try {
             $admins = $request->all();
+            // Added the following condition so that visitors don't delete published test account accidentary.
+            if (in_array(1, $admins)) {
+                return response()->json(['status' => config('define.api_status.error'), 'message' => "403 Published TEST account for visitors is included."], 403);
+            }
             foreach ($admins as $admin) {
                 $admin = Admin::find($admin);
                 $admin->delete();
