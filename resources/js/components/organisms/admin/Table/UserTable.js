@@ -67,7 +67,7 @@ const UserTable = memo(({ users, className = '', deleteMethod, csvOutputMethod }
               <Th>{t('admin.user.address')}</Th>
               <Th>{t('admin.user.delivery-postcode')}</Th>
               <Th>{t('admin.user.delivery-address')}</Th>
-              <Th>{t('admin.user.tel')}</Th>
+              <Th>{t('admin.user.tel-table')}</Th>
               <Th>{t('admin.user.email')}</Th>
               <Th>{t('admin.user.dm-register')}</Th>
               <Th>{t('admin.created-date')}</Th>

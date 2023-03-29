@@ -61,7 +61,7 @@ const AdminTable = memo(({ admins, className = '', deleteMethod, csvOutputMethod
               <Th>{t('admin.edit-link')}</Th>
               <Th>{t('admin.admin.name')}</Th>
               <Th>{t('admin.admin.name-kana')}</Th>
-              <Th>{t('admin.admin.tel')}</Th>
+              <Th>{t('admin.admin.tel-table')}</Th>
               <Th>{t('admin.admin.email')}</Th>
               <Th>{t('admin.created-date')}</Th>
               <Th>{t('admin.updated-date')}</Th>

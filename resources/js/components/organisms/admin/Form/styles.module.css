@@ -46,6 +46,8 @@
 }
 .edit_area {
   border: 1px solid #666;
+  max-height: 670px;
+  overflow-y: scroll;
 }
 .blog_news_img {
   max-width: 150px;
