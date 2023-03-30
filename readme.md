@@ -50,22 +50,10 @@
   + Display / search Blogs
   + Display / search News
   + Display notifications
-- For Admin 
-  + Authentication
-  + Reset and change passwords
-  + Item CRUD operations / Output CSV
-  + Notification CRUD operations / Output CSV
-  + News CRUD operations / Output CSV
-  + Blog CRUD operations / Output CSV
-  + Admin CRUD operations / Output CSV
-  + User CRUD operations / Output CSV
-  + Update / Delete contacts
-  + Update order status / Output CSV
-  + Size CRUD operations
-  + Color CRUD operations
-  + Brand CRUD operations
-  + Category CRUD operations
-  + Tag CRUD operations
+  
+### Feature of admin pages 
+Admin pages are managing product information, master data such as sizes, colors, brands, categories and tags. Besides, posting notifications regarding service, news which is related with general information for brands and blogs for promoting certain products. 
+There are features for controlling information of users and admins, providing authentication such as loggin, logout and reseting passwords through sending an email. Basically, most of data can output as a CSV file for sharing offline easily. Recieving inquiries of general customers so that admins can manage them, for instance cancellation of their orders. Last but not least, admin page also has feature of managing orders.
   
 ## Issues 
  [Check here](https://github.com/users/masa-berl01102019/projects/2)
