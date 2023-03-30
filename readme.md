@@ -38,17 +38,19 @@
 ## Features
 
 ### Feature of user pages
-・Contacting with admins such as services and cancelation of orders.
-・Registering and updating members information. 
-・Main features can search products using filter and sort, register bookmark and cart, then purchase it.
-・Viewing order history and browsing history in the past.
-・Searching blogs and news related with products and brands through filter and sort.
-・Providing authentication such as loggin, logout and reseting passwords through sending an email.
-・Receiving notifications regarding services.
+Contacting with admins such as services and cancelation of orders.
+Registering and updating members information. 
+Viewing order history and browsing history in the past.
+Searching blogs and news related with products and brands through filter and sort.
+Providing authentication such as loggin, logout and reseting passwords through sending an email.
+Receiving notifications regarding services.
   
 ### Feature of admin pages 
-Admin pages are managing product information, master data such as sizes, colors, brands, categories and tags. Besides, posting notifications regarding service, news which is related with general information for brands and blogs for promoting certain products. 
-There are features for controlling information of users and admins, providing authentication such as loggin, logout and reseting passwords through sending an email. Basically, most of data can output as a CSV file for sharing offline easily. Recieving inquiries of general customers so that admins can manage them, for instance cancellation of their orders. Last but not least, admin page also has feature of managing orders.
+Admin pages are managing product information, master data such as sizes, colors, brands, categories and tags. 
+Besides, posting notifications regarding service, news which is related with general information for brands and blogs for promoting certain products. 
+There are features for controlling information of users and admins, providing authentication such as loggin, logout and reseting passwords through sending an email. Basically, most of data can output as a CSV file for sharing offline easily. 
+Recieving inquiries of general customers so that admins can manage them, for instance cancellation of their orders. 
+Last but not least, admin page also has feature of managing orders.
   
 ## Issues 
  [Check here](https://github.com/users/masa-berl01102019/projects/2)
