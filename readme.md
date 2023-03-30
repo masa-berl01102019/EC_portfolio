@@ -36,20 +36,15 @@
 - デモ画像と説明文を記載
 
 ## Features
-- For general user
-  + Authentication
-  + User CRUD operations
-  + Reset and change passwords
-  + Contact form 
-  + Display / search products 
-  + Add / delete bookmarks 
-  + Add / delete carts
-  + Display browsing history
-  + Display user's order history
-  + Purchase products
-  + Display / search Blogs
-  + Display / search News
-  + Display notifications
+
+### Feature of user pages
+・Contacting with admins such as services and cancelation of orders.
+・Registering and updating members information. 
+・Main features can search products using filter and sort, register bookmark and cart, then purchase it.
+・Viewing order history and browsing history in the past.
+・Searching blogs and news related with products and brands through filter and sort.
+・Providing authentication such as loggin, logout and reseting passwords through sending an email.
+・Receiving notifications regarding services.
   
 ### Feature of admin pages 
 Admin pages are managing product information, master data such as sizes, colors, brands, categories and tags. Besides, posting notifications regarding service, news which is related with general information for brands and blogs for promoting certain products. 
