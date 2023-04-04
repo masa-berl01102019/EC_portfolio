@@ -4,10 +4,9 @@
 - E-commerce service managed by an domestic apparel company which has multiple brands.
 - The target customers is living in Japan, so Timezone is Asia/Tokyo.
 - Managing stocks of products and finance is out of scope in this project.
-
-### cautions
-- Demo data of products is registered by using Yahoo searching items API when seed command is executed, so there is some difference between data and the facts like colors of images doesn't correpond with color which is displayed.
-- This portfoliio can switch language, but some data which is registered by external API such as Yahoo searching items API has been registered in Japanese so it doesn't change even though switching language.
+ ### cautions
+ - Demo data of products is registered by using Yahoo searching items API when seed command is executed, so there is some difference between data and the facts like colors of images doesn't correpond with color which is displayed.
+ - This portfoliio can switch language, but some data which is registered by external API such as Yahoo searching items API has been registered in Japanese so it doesn't change even though switching language.
 
 ## Table of Contents
 * [URL](#URL)
