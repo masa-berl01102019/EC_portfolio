@@ -28,6 +28,10 @@
   overflow-y: scroll;
   max-height: 260px;
 }
+.flex_box {
+  display: flex;
+  justify-content: space-between;
+}
 
 /* blog create / edit */
 .sidebar_box {
@@ -58,9 +62,6 @@
 }
 .flex_tb > .mr_24{
   margin-right: 0;
-}
-.flex_tb > .mb_16_tb{
-  margin-bottom: 16px;
 }
 .flex_tb > .sidebar_box {
   display: flex;
@@ -219,5 +220,20 @@
   }
   .sidebar_box > .sidebar_card {
     width: 100% !important;
+  }
+}
+
+@media screen and (max-width : 767px) {
+  .flex_box {
+    flex-flow: column;
+  }
+  .flex_box > .mr_24{
+    margin-right: 0;
+  }
+  .flex_box > .mb_16_tb{
+    margin-bottom: 16px;
+  }
+  .flex_box > .mb_32_tb{
+    margin-bottom: 32px;
   }
 }
