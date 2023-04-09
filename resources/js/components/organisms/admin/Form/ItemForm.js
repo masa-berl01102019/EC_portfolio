@@ -104,7 +104,7 @@ const ItemForm = memo(({
     <div className={[styles.form_area, className].join(' ')} {...props}>
       <div className={styles.mb_32}>
         <ItemTitleHeader badge_num='1' text={t('admin.item.basic-info')} />
-        <div className={[styles.flex, styles.flex_tb].join(' ')}>
+        <div className={[styles.flex, styles.flex_box].join(' ')}>
           <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb].join(' ')}>
             <FormInputText
               name={'product_number'}
@@ -199,8 +199,8 @@ const ItemForm = memo(({
         </div>
       </div>
 
-      <div className={[styles.flex, styles.mb_32, styles.flex_tb].join(' ')}>
-        <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb].join(' ')}>
+      <div className={[styles.flex, styles.mb_32, styles.flex_box].join(' ')}>
+        <div className={[styles.flex_basis_50, styles.mr_24, styles.mb_16_tb, styles.mb_32_tb].join(' ')}>
           <ItemTitleHeader badge_num='2' text={t('admin.item.category')} />
           <FormSelectbox
             name='brand_id'

@@ -60,6 +60,7 @@
   transform: translateY(-50%);
   width:30px;
   height: 30px;
+  cursor: pointer;
 }
 .right_icon {
   position: absolute;
@@ -68,16 +69,19 @@
   transform: translateY(-50%);
   width:30px;
   height: 30px;
+  cursor: pointer;
 }
 .item_thumbnail_area {
   overflow-x: scroll;
   white-space: nowrap;
   margin-bottom: 24px;
+  cursor: pointer;
 }
 /* Breadcrumbs */
 .text_nowrap {
   white-space: nowrap;
   margin: 4px;
+  cursor: pointer;
 }
 /* CaetStep */
 .center {

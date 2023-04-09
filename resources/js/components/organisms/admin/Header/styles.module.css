@@ -18,11 +18,13 @@
 }
 .meun_icon {
   margin-right: auto;
+  cursor: pointer;
 }
 .text {
   color: #fff;
   font-size: 14px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 .ml {
   margin-left: 8px;
