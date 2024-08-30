@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import RadioBoxTab from '../../../molecules/RadioboxTab/RadioBoxTab';
+import RadioBoxTab from '../../../molecules/RadioBoxTab/RadioBoxTab';
 import styles from './styles.module.css';
 
 const ItemInfoTab = memo(({ children: [tab1, tab2], className, ...props }) => {

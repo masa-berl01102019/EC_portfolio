@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\user;
 
 use App\Rules\Kana;
 use App\Rules\JapanesePhoneNumber;

@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { CONST } from '../../../constants/constants';
-import RadioBoxTab from '../../../molecules/RadioboxTab/RadioBoxTab';
+import RadioBoxTab from '../../../molecules/RadioBoxTab/RadioBoxTab';
 import styles from './styles.module.css';
 
 const GenderCategoryTab = memo(({ genderCategory, onChange, className, ...props }) => {

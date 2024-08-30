@@ -12,12 +12,13 @@ require('mix-env-file');
  | file for the application as well as bundling up all the JS files.
  |
  */
- mix.env(process.env.ENV_FILE);
+mix.env(process.env.ENV_FILE);
 
- mix.react('resources/js/app.js', 'public/js')
- .reactCSSModules()
- .webpackConfig({
-     output: {
-         chunkFilename: 'chunk.[name].js',
-     }
- });
+mix.react('resources/js/app.js', 'public/js')
+    .reactCSSModules()
+    .webpackConfig({
+        output: {
+            filename: '[name].js',
+            chunkFilename: 'js/chunk.[name].[contenthash].js',
+        },
+    });
