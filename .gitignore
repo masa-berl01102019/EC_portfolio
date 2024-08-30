@@ -2,11 +2,11 @@
 /public/hot
 /public/storage
 /public/js/*
-/public/chunk.*.js
 /storage/*.key
 /vendor
 .env
-.env.backup
+.env.dev
+.env.prod
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

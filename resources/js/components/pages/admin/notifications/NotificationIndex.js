@@ -8,7 +8,7 @@ import { paramState } from '../../../store/paramState';
 import Heading from '../../../atoms/Heading/Heading';
 import FilterSortBtn from '../../../molecules/IconBtn/FilterSortBtn';
 import NotificationTable from '../../../organisms/admin/Table/NotificationTable';
-import NotificationSidebar from '../../../organisms/admin/SideBar/NotificationSideBar';
+import NotificationSidebar from '../../../organisms/admin/SideBar/NotificationSidebar';
 import CreateLink from '../../../molecules/IconLink/CreateLink';
 import styles from '../styles.module.css';
 import { menuAdminState } from '../../../store/menuState';
