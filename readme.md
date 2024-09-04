@@ -62,7 +62,7 @@
 - **Inquiry Management**: Handle customer inquiries, including order cancellations.
 - **Order Management**: Manage orders, including payment and shipping statuses.
 
-### Future Development Plans
+## Future Development Plans
 
 To enhance scalability and compatibility, I'm going to replace a monolithic Laravel application with a new architecture. 
 
