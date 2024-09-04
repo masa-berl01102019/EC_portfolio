@@ -12,13 +12,12 @@
 * [URL](#URL)
 * [Test Account](#Test-Account)
 * [Technology Stacks](#Technology-Stacks)
-* [How to Use](#How-to-Use)
 * [Features](#Features)
 * [Issues](#Issues)
 
 ## URL
-- https://ecommerce-portfolio.fly.dev (For general user)
-- https://ecommerce-portfolio.fly.dev/admin/login (For admin)
+- https://masa-portfolio.net (For general user)
+- https://masa-portfolio.net/admin/login (For admin)
 
 ## Test Account
 - ID: user@test.com / PASSWORD: abc12345
@@ -32,29 +31,36 @@
 - Database: MySQL
 - Main external API: Sanctum / Stripe etc
 - Main library: axios/react-query/recoil/i18next/react-cookie/react-draft-wysiwyg/varidatorjs etc
-- Developing environment: VirtualBox/Vagrant/Homestead
-- Production environment: Fly.io(PaaS)/PlanetScale(DBaaS)
-
-## How to Use
-- デモ画像と説明文を記載
+- Developing environment: Docker
+- Production environment: AWS EC2 / RDS
 
 ## Features
 
-### Features of user pages
+### User pages
 
-Main information such as products, blogs and news can be searched by filter and sort. Regarding products, it's displayed as browsing history.
-Basically, there are features for managing information of members, which can provide authentication such as login and logout, then reset passwords through sending an email. 
-Members can bookmark favorite products, besides they can also add it to their cart then purchase it with credit payment. ( * which is executed by test environment of Stripe, so it never sent you a bill even if you purchased products on this portfolio site. )
-After that, they can see order history, which can add it to their cart again and easily.
-There are features of receiving notifications related with services and contact with admins for asking about services and cancelation of orders so that users can use it comfortably.
+- **Search, Filter, and Sort**: Find products, blogs, and news with various filtering and sorting options.
+- **Personalized Recommendations**: Display products with personalized recommendations based on user's activity.
+- **Bookmarks and Cart**: Manage bookmarks and cart for products.
+- **Online Payment**: Complete purchases using Stripe’s test environment with provided test card details.
+- **Activity History**: Review browsing and purchase history.
+- **User Authentication**: Handle login, logout, and password resets via email.
+- **User Authorization**: Members are allowed to bookmark, add to carts, and make purchases.
+- **Member Management**: Handle account registration, profile updates, and account deletion.
+- **Service Notifications**: Receive updates and service-related information.
+- **User Inquiries**: Submit inquiries or order cancellations through the contact form.
   
-### Features of admin pages
-Admin pages are managing product information, master data such as sizes, colors, brands, categories and tags. 
-Besides, it can post notifications regarding service, news which is related with general information for brands and blog for promoting certain products. 
-There are features for managing information of users and admins, which can provide authentication such as login and logout, then reset passwords through sending an email. 
-Basically, most of data can output as a CSV file for sharing offline easily. 
-It receives inquiries of general customers so that admins can manage it, for instance cancellation of their orders.
-Last but not least, admin page also has feature of managing orders.
+### Admin pages
+
+- **Master Data Management**: Manage master data such as sizes, colors, brands, categories, and tags.
+- **Product Management**: Manage product information.
+- **Data Export**: Export data as CSV files for easy offline sharing.
+- **Search, Filter, and Sort**: Locate data using various filtering and sorting options.
+- **Content Management**: Manage notifications related to services, news related to brands, and blogs promoting certain products.
+- **Admin Authentication**: Handle login, logout, and password resets via email.
+- **Admin Authorization**: Grant admins access to and control over all data.
+- **Account Management**: Manage registration, profile updates, and deletion for both members and admins.
+- **Inquiry Management**: Handle customer inquiries, including order cancellations.
+- **Order Management**: Manage orders, including payment and shipping statuses.
   
 ## Issues 
  [Check here](https://github.com/users/masa-berl01102019/projects/2)
