@@ -36,7 +36,7 @@
 
 ## Features
 
-### User pages
+### User Pages
 
 - **Search, Filter, and Sort**: Find products, blogs, and news with various filtering and sorting options.
 - **Personalized Recommendations**: Display products with personalized recommendations based on user's activity.
@@ -49,7 +49,7 @@
 - **Service Notifications**: Receive updates and service-related information.
 - **User Inquiries**: Submit inquiries or order cancellations through the contact form.
   
-### Admin pages
+### Admin Pages
 
 - **Master Data Management**: Manage master data such as sizes, colors, brands, categories, and tags.
 - **Product Management**: Manage product information.
@@ -61,6 +61,16 @@
 - **Account Management**: Manage registration, profile updates, and deletion for both members and admins.
 - **Inquiry Management**: Handle customer inquiries, including order cancellations.
 - **Order Management**: Manage orders, including payment and shipping statuses.
+
+### Future Development Plans
+
+To enhance scalability and compatibility, I'm going to replace a monolithic Laravel application with a new architecture. 
+
+- Frontend: NextJS + React + TypeScript
+- Backend: NestJS + TypeScript
+- Architecture: BFF (Backend for Frontend)
+
+This new setup aims to improve modularity and performance, aligning with modern development practices.
   
 ## Issues 
  [Check here](https://github.com/users/masa-berl01102019/projects/2)
